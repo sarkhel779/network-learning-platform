@@ -12,6 +12,8 @@ import {
 } from "@/features/lessons/lesson-content.repository";
 import { LessonShell } from "@/features/lessons/lesson-shell";
 
+import { isExpectedCatalogError } from "./catalog-error";
+
 type LessonPageProps = {
   params: Promise<{ pathwaySlug: string; lessonSlug: string }>;
 };
@@ -21,8 +23,11 @@ function findPublishedLesson(pathwaySlug: string, lessonSlug: string): LessonSum
 
   try {
     lesson = getLesson(pathwaySlug, lessonSlug);
-  } catch {
-    notFound();
+  } catch (error) {
+    if (isExpectedCatalogError(error)) {
+      notFound();
+    }
+    throw error;
   }
 
   if (!lesson.published) {

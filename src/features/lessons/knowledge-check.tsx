@@ -62,12 +62,14 @@ export function KnowledgeCheck({
         </button>
       </fieldset>
 
-      {checked ? (
-        <div aria-live="polite" className="knowledge-check-result">
-          <p><strong>{isCorrect ? "Correct." : "Not quite."}</strong></p>
-          <p>{explanation}</p>
-        </div>
-      ) : null}
+      <div aria-live="polite" className="knowledge-check-result" role="status">
+        {checked ? (
+          <>
+            <p><strong>{isCorrect ? "Correct." : "Not quite."}</strong></p>
+            <p>{explanation}</p>
+          </>
+        ) : null}
+      </div>
     </section>
   );
 }

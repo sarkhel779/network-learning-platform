@@ -14,6 +14,14 @@ const checkProps = {
 };
 
 describe("KnowledgeCheck", () => {
+  it("mounts an empty result live region before submission", () => {
+    render(<KnowledgeCheck {...checkProps} />);
+
+    const result = screen.getByRole("status");
+    expect(result).toHaveAttribute("aria-live", "polite");
+    expect(result).toBeEmptyDOMElement();
+  });
+
   it("reveals a knowledge-check explanation only after an answer", async () => {
     const user = userEvent.setup();
     render(<KnowledgeCheck {...checkProps} />);
