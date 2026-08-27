@@ -39,11 +39,41 @@ body {
   line-height: 1.5;
 }
 
+a { color: inherit; }
+
+.site-header, .site-footer { border-color: var(--border); border-style: solid; }
+.site-header { border-width: 0 0 1px; }
+.site-footer { border-width: 1px 0 0; }
+.site-chrome { display: flex; width: min(100% - 2rem, var(--content-width)); flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; margin: 0 auto; padding: 1rem 0; }
+.site-logo { font-weight: 800; text-decoration: none; }
+.site-nav, .footer-nav { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; color: var(--muted); }
+.site-nav a:hover { text-decoration: underline; }
+.skip-link { position: absolute; top: 0.5rem; left: 0.5rem; z-index: 1; padding: 0.5rem 0.75rem; background: var(--accent); color: var(--accent-foreground); transform: translateY(-150%); }
+.skip-link:focus { transform: translateY(0); }
+
 .hero {
   width: min(100% - 2rem, var(--content-width));
   margin: 0 auto;
   padding: clamp(4rem, 12vw, 9rem) 0;
 }
+
+.pathway-hero, .pathway-content { width: min(100% - 2rem, var(--content-width)); margin: 0 auto; }
+.pathway-hero { padding: clamp(3rem, 8vw, 6rem) 0 2rem; }
+.pathway-hero h1 { max-width: 22ch; }
+.pathway-audience, .pathway-duration { margin: 1rem 0 0; color: var(--muted); }
+.pathway-duration { font-weight: 700; }
+.pathway-content { padding: 1rem 0 clamp(3rem, 8vw, 6rem); }
+.pathway-content > h2, .module h2, .lesson-card h3 { line-height: 1.2; }
+.module-list { display: grid; gap: 2rem; margin-top: 1.5rem; }
+.module > p, .lesson-card p { color: var(--muted); }
+.lesson-list { display: grid; gap: 0.75rem; margin: 1rem 0 0; padding-left: 1.5rem; }
+.lesson-card { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 0.75rem 1.5rem; padding: 1rem; border: 1px solid var(--border); border-radius: 0.5rem; }
+.lesson-card h3, .lesson-card p { margin: 0; }
+.lesson-card p { max-width: 48rem; margin-top: 0.5rem; }
+.lesson-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; color: var(--muted); font-size: 0.875rem; }
+.access-label { padding: 0.1rem 0.45rem; border: 1px solid var(--border); border-radius: 999px; color: var(--foreground); font-weight: 700; }
+.footer-content { font-size: 0.875rem; }
+.footer-content p { margin: 0; }
 
 .eyebrow {
   margin: 0 0 1rem;

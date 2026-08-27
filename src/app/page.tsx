@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <main>
+    <main id="main-content">
       <section aria-labelledby="pathway-heading" className="hero">
         <p className="eyebrow">Beginner networking pathway</p>
         <h1 id="pathway-heading">Understand how networks really work</h1>
