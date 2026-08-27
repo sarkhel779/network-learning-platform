@@ -16,6 +16,11 @@ test("presents an accessible static network journey and packet evidence", async 
   await expect(
     page.getByRole("img", { name: "Data path from a PC through a switch and router to a server" }),
   ).toBeVisible();
+  await expect(
+    page.getByText(
+      "The packet keeps the PC's source IP address and the server's destination IP address.",
+    ),
+  ).toBeVisible();
   await expect(page.getByText("arp or icmp", { exact: true })).toBeVisible();
 
   for (const field of ["eth.src", "eth.dst", "arp.opcode", "ip.src", "ip.dst", "icmp.type"]) {

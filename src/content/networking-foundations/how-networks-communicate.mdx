@@ -57,8 +57,8 @@ communication medium, and follow shared protocols. The **source** creates the da
 signals. **Protocols** are agreed rules for how devices format, address, send, receive, and
 interpret those signals.
 
-Consider a PC sending a small request to a server on another IPv4 network. The PC keeps the
-server's source and destination IP addresses in an IP **packet**. It compares the destination
+Consider a PC sending a small request to a server on another IPv4 network. The packet keeps the
+PC's source IP address and the server's destination IP address. The PC compares the destination
 with its own network information and decides that the server is remote, so the next hop is its
 default router. For IPv4, the PC can use ARP to learn the router interface's MAC address. It
 then places the packet inside an Ethernet **frame** addressed to that next-hop MAC address.
