@@ -23,3 +23,6 @@ Thumbs.db
 
 # Local Codex brainstorming artifacts
 .superpowers/
+
+# Isolated feature worktrees
+.worktrees/
