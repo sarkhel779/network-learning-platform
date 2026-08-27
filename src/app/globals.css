@@ -75,6 +75,29 @@ a { color: inherit; }
 .footer-content { font-size: 0.875rem; }
 .footer-content p { margin: 0; }
 
+.lesson-page { width: min(100% - 2rem, 52rem); margin: 0 auto; padding: clamp(3rem, 8vw, 6rem) 0; }
+.lesson-header { margin-bottom: 2rem; }
+.lesson-header h1 { max-width: 18ch; }
+.lesson-byline { color: var(--muted); font-weight: 700; }
+.lesson-content { margin-top: 2rem; }
+.lesson-content h2 { margin-top: 2.5rem; }
+.learning-block { margin: 2rem 0; padding: 1.25rem; border: 1px solid var(--border); border-radius: 0.5rem; }
+.learning-block h2, .learning-block h3, .learning-block p:first-child { margin-top: 0; }
+.learning-objective { border-left: 0.35rem solid var(--accent); }
+.knowledge-check fieldset { margin: 0; padding: 0; border: 0; }
+.knowledge-check legend { font-size: 1.125rem; font-weight: 700; }
+.knowledge-check-options { display: grid; gap: 0.75rem; margin: 1rem 0; }
+.knowledge-check-options label { display: flex; align-items: flex-start; gap: 0.5rem; }
+.knowledge-check button { padding: 0.6rem 0.9rem; border: 1px solid var(--accent); border-radius: 0.35rem; background: var(--accent); color: var(--accent-foreground); font: inherit; font-weight: 700; }
+.knowledge-check button:disabled { cursor: not-allowed; opacity: 0.55; }
+.knowledge-check-result { margin-top: 1rem; }
+.knowledge-check-result p { margin: 0.5rem 0 0; }
+.interview-scenario summary { cursor: pointer; font-weight: 700; }
+.interview-scenario details > div { margin-top: 1rem; }
+.wireshark-check code { overflow-wrap: anywhere; }
+.premium-preview { background: color-mix(in srgb, var(--accent) 8%, var(--background)); }
+.lesson-navigation { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem 2rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+
 .eyebrow {
   margin: 0 0 1rem;
   color: var(--accent);
