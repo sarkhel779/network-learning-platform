@@ -4,7 +4,10 @@ export type LessonContentModule = { default: ComponentType };
 type LessonContentImport = () => Promise<LessonContentModule>;
 type LessonContentKey = `${string}/${string}`;
 
-const lessonImports: Readonly<Record<LessonContentKey, LessonContentImport>> = {};
+const lessonImports: Readonly<Record<LessonContentKey, LessonContentImport>> = {
+  "networking-foundations/how-networks-communicate": () =>
+    import("@/content/networking-foundations/how-networks-communicate.mdx"),
+};
 
 export async function loadLessonContent(
   pathwaySlug: string,

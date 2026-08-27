@@ -19,7 +19,7 @@ const curriculum: Pathway[] = [
             id: "lesson_how_networks_communicate",
             slug: "how-networks-communicate",
             title: "How Networks Communicate",
-            objective: "Explain how data travels between devices across a network.",
+            objective: "Explain the minimum decisions required to move data between two hosts.",
             access: "free",
             published: true,
             estimatedMinutes: 12,

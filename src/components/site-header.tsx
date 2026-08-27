@@ -8,7 +8,7 @@ export function SiteHeader() {
         <Link className="site-logo" href="/">Network Learning Platform</Link>
         <nav aria-label="Primary navigation" className="site-nav">
           <Link href="/paths/networking-foundations">Learning Paths</Link>
-          <span>Pricing</span>
+          <Link href="/pricing">Pricing</Link>
         </nav>
       </div>
     </header>
