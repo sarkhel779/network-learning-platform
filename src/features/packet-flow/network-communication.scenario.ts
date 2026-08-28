@@ -90,7 +90,7 @@ export const networkCommunicationScenario: PacketFlowScenario = parsePacketFlowS
       durationMs: 2600,
       activeDeviceIds: ["pc"],
       activeLinkIds: [],
-      summaryFields: [{ label: "ICMP", value: "Echo request" }, { label: "Destination IP", value: "198.51.100.20" }],
+      summaryFields: [{ label: "ICMP", value: "Echo request" }, { label: "Destination IP", value: "198.51.100.20" }, { label: "TTL", value: "64" }],
       detailFields: [{ label: "Source IP", value: "192.0.2.10" }, { label: "Destination MAC", value: "00:11:22:33:44:01" }],
     },
     {
@@ -101,7 +101,7 @@ export const networkCommunicationScenario: PacketFlowScenario = parsePacketFlowS
       activeDeviceIds: ["pc", "switch"],
       activeLinkIds: ["pc-switch"],
       packet: { kind: "frame", label: "ICMP echo request", from: "pc", to: "switch" },
-      summaryFields: [{ label: "Source IP", value: "192.0.2.10" }, { label: "Destination IP", value: "198.51.100.20" }],
+      summaryFields: [{ label: "Source IP", value: "192.0.2.10" }, { label: "Destination IP", value: "198.51.100.20" }, { label: "TTL", value: "64" }],
       detailFields: [{ label: "Source MAC", value: "00:11:22:33:44:10" }, { label: "Destination MAC", value: "00:11:22:33:44:01" }],
     },
     {
@@ -118,12 +118,12 @@ export const networkCommunicationScenario: PacketFlowScenario = parsePacketFlowS
     {
       id: "router-routes-icmp-request",
       title: "The router routes the echo request",
-      explanation: "The router removes the incoming Ethernet frame, examines the route to the server, reduces the IP TTL, and prepares a new Ethernet frame for the server-side network.",
+      explanation: "The router removes the incoming Ethernet frame, examines the route to the server, reduces the IP TTL from 64 to 63, and prepares a new Ethernet frame for the server-side network.",
       durationMs: 2600,
       activeDeviceIds: ["router"],
       activeLinkIds: [],
       summaryFields: [{ label: "Source IP", value: "192.0.2.10" }, { label: "Destination IP", value: "198.51.100.20" }],
-      detailFields: [{ label: "TTL", value: "63", changed: true }, { label: "Outgoing source MAC", value: "00:11:22:33:55:01", changed: true }, { label: "Outgoing destination MAC", value: "00:11:22:33:55:20", changed: true }],
+      detailFields: [{ label: "TTL", value: "63", changed: true }, { label: "TTL transition", value: "64 → 63", changed: true }, { label: "Outgoing source MAC", value: "00:11:22:33:55:01", changed: true }, { label: "Outgoing destination MAC", value: "00:11:22:33:55:20", changed: true }],
       stateNote: "Routing replaces the Ethernet frame but preserves the end-to-end IP addresses.",
     },
     {

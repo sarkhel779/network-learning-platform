@@ -49,7 +49,10 @@ describe("network communication scenario", () => {
   it("keeps IP addresses end-to-end while frames use the correct next-hop MAC addresses", () => {
     expect(fieldValue("pc-sends-icmp-request", "Destination MAC")).toMatchObject({ value: "00:11:22:33:44:01" });
     expect(fieldValue("pc-sends-icmp-request", "Destination IP")).toMatchObject({ value: "198.51.100.20" });
+    expect(fieldValue("pc-creates-icmp-echo-request", "TTL")).toMatchObject({ value: "64" });
+    expect(fieldValue("pc-sends-icmp-request", "TTL")).toMatchObject({ value: "64" });
     expect(fieldValue("router-routes-icmp-request", "TTL")).toMatchObject({ value: "63", changed: true });
+    expect(fieldValue("router-routes-icmp-request", "TTL transition")).toMatchObject({ value: "64 → 63", changed: true });
     expect(fieldValue("router-sends-icmp-request", "Source MAC")).toMatchObject({ value: "00:11:22:33:55:01" });
     expect(fieldValue("router-sends-icmp-request", "Destination MAC")).toMatchObject({ value: "00:11:22:33:55:20" });
 
