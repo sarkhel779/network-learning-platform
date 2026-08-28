@@ -107,6 +107,39 @@ a { color: inherit; }
 .network-link-label { fill: var(--muted); font-size: 0.8rem; }
 .network-journey figcaption { margin-top: 0.75rem; color: var(--muted); text-align: center; }
 .lesson-notice { margin: 2rem 0; padding: 1rem 1.25rem; border-left: 0.35rem solid var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--background)); }
+.packet-flow { margin: 2rem 0; padding: clamp(1rem, 4vw, 1.5rem); border: 1px solid var(--border); border-radius: 0.75rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); }
+.packet-flow > h2, .packet-flow > p { margin-top: 0; }
+.packet-flow-topology, .network-topology svg { display: block; width: 100%; height: auto; overflow: visible; border: 1px solid var(--border); border-radius: 0.5rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
+.network-topology__links { stroke: var(--muted); stroke-width: 3; }
+.network-topology__link[data-active="true"] { stroke: var(--accent); stroke-width: 6; stroke-dasharray: 10 6; }
+.network-topology__device circle { fill: var(--background); stroke: var(--muted); stroke-width: 3; }
+.network-topology__device[data-active="true"] circle { stroke: var(--accent); stroke-width: 6; }
+.network-topology__device text { fill: var(--foreground); font-size: 1.1rem; font-weight: 700; }
+.network-topology__device .network-topology__device-role { fill: var(--muted); font-size: 0.75rem; font-weight: 400; }
+.network-topology__packet-marker { fill: var(--accent); stroke: var(--foreground); stroke-width: 2; transition: transform 600ms ease; }
+.network-topology__packet-marker--broadcast { fill: #b45309; stroke-width: 3; }
+.network-topology__packet-marker text { fill: var(--accent-foreground); font-size: 0.65rem; font-weight: 700; }
+.network-topology__packet-marker--discrete { transition: none; }
+.network-topology__active-text { margin: 0.75rem 0 0; color: var(--foreground); font-weight: 700; }
+.packet-flow-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin: 1rem 0; }
+.packet-flow-controls button, .packet-flow-controls select { min-height: 2.75rem; border: 1px solid var(--accent); border-radius: 0.35rem; background: var(--background); color: var(--foreground); font: inherit; }
+.packet-flow-controls button { min-width: 5.5rem; padding: 0.55rem 0.8rem; cursor: pointer; font-weight: 700; }
+.packet-flow-controls label { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; font-weight: 700; }
+.packet-flow-controls select { padding: 0.4rem; }
+.packet-flow-controls button:disabled { cursor: not-allowed; opacity: 0.55; }
+.packet-flow-details { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+.packet-flow-progress, .packet-inspector { min-width: 0; padding: 1rem; border: 1px solid var(--border); border-radius: 0.5rem; }
+.packet-flow-progress > :first-child, .packet-inspector > :first-child { margin-top: 0; }
+.packet-inspector dl { margin: 0; }
+.packet-inspector dl > div { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.2rem; padding: 0.65rem 0; border-top: 1px solid var(--border); }
+.packet-inspector dt { font-weight: 700; }
+.packet-inspector dd { min-width: 0; margin: 0; overflow-wrap: anywhere; }
+.packet-inspector [data-changed="true"] { border-left: 0.25rem solid var(--accent); padding-left: 0.65rem; color: var(--accent); font-weight: 700; }
+.packet-inspector [data-changed="true"] span { display: block; margin-top: 0.2rem; color: var(--foreground); font-size: 0.875rem; }
+
+@media (min-width: 56rem) {
+  .packet-flow-details { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
 
 .informational-page { width: min(100% - 2rem, 52rem); margin: 0 auto; padding: clamp(3rem, 8vw, 6rem) 0; }
 .informational-page h1 { max-width: 20ch; }
@@ -169,5 +202,11 @@ h1 {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+
+  .network-topology__packet-marker,
+  .network-topology__packet-marker--discrete {
+    transition: none !important;
+    animation: none !important;
   }
 }

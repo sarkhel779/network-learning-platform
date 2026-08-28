@@ -42,6 +42,8 @@ test("keeps the complete lesson readable without JavaScript", async ({ browser }
     page.getByRole("img", { name: "Data path from a PC through a switch and router to a server" }),
   ).toBeVisible();
   await expect(page.getByText(/source host must identify the destination/i)).toBeVisible();
+  await expect(page.getByText(/The packet keeps the PC's source IP address and the server's destination IP address\./)).toBeVisible();
+  await expect(page.getByText("arp or icmp", { exact: true })).toBeVisible();
 
   await context.close();
 });

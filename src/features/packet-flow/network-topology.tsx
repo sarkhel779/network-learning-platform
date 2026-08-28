@@ -80,7 +80,8 @@ export function NetworkTopology({ scenario, step, reducedMotion }: NetworkTopolo
         </g>
         {packetLink && packetFrom && packetTo && step.packet ? (
           <g
-            className={`network-topology__packet-marker${reducedMotion ? " network-topology__packet-marker--discrete" : ""}`}
+            className={`network-topology__packet-marker${step.packet.broadcast ? " network-topology__packet-marker--broadcast" : ""}${reducedMotion ? " network-topology__packet-marker--discrete" : ""}`}
+            data-broadcast={step.packet.broadcast ? "true" : undefined}
             data-packet-marker="true"
             data-link-id={packetLink.id}
             aria-hidden="true"
