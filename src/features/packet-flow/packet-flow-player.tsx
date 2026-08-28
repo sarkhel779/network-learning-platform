@@ -27,7 +27,7 @@ export function PacketFlowPlayer({ scenario }: PacketFlowPlayerProps) {
   }, [reducedMotion]);
 
   useEffect(() => {
-    if (!state.playing || atFinalStep || reducedMotion) return;
+    if (!state.playing || atFinalStep) return;
 
     const timeoutId = window.setTimeout(() => dispatch({ type: "tick" }), getStepDelay(currentStep.durationMs, state.speed));
     return () => window.clearTimeout(timeoutId);

@@ -37,8 +37,9 @@ export function NetworkTopology({ scenario, step, reducedMotion }: NetworkTopolo
   const packetLink = step.packet
     ? scenario.links.find(
         (link) =>
-          (link.from === step.packet!.from && link.to === step.packet!.to) ||
-          (link.from === step.packet!.to && link.to === step.packet!.from),
+          step.activeLinkIds.includes(link.id) &&
+          ((link.from === step.packet!.from && link.to === step.packet!.to) ||
+            (link.from === step.packet!.to && link.to === step.packet!.from)),
       )
     : undefined;
   const packetFrom = step.packet ? devicesById.get(step.packet.from) : undefined;

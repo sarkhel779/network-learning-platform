@@ -46,6 +46,16 @@ const scenario = parsePacketFlowScenario({
   ],
 });
 
+const parallelLinkScenario = parsePacketFlowScenario({
+  ...scenario,
+  id: "parallel-link-demo",
+  links: [
+    { id: "inactive-client-gateway", from: "client", to: "gateway" },
+    { id: "active-client-gateway", from: "client", to: "gateway" },
+  ],
+  steps: [{ ...scenario.steps[0], activeLinkIds: ["active-client-gateway"] }],
+});
+
 async function advance(ms: number) {
   await act(async () => {
     await vi.advanceTimersByTimeAsync(ms);
@@ -163,10 +173,33 @@ describe("PacketFlowPlayer", () => {
     expect(screen.getByRole("button", { name: "Play" })).toBeEnabled();
   });
 
+  it("advances after a reduced-motion learner explicitly presses Play", async () => {
+    motionPreference.reduced = true;
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<PacketFlowPlayer scenario={scenario} />);
+
+    await user.click(screen.getByRole("button", { name: "Play" }));
+    await advance(1000);
+
+    expect(screen.getByText("Step 2 of 2")).toBeVisible();
+  });
+
   it("pauses before the next step when reduced motion is enabled during playback", async () => {
     const { rerender } = render(<PacketFlowPlayer scenario={scenario} />);
 
     motionPreference.reduced = true;
+    rerender(<PacketFlowPlayer scenario={scenario} />);
+    await advance(1000);
+
+    expect(screen.getByText("Step 1 of 2")).toBeVisible();
+    expect(screen.getByRole("button", { name: "Play" })).toBeEnabled();
+  });
+
+  it("does not resume when the reduced-motion preference turns off", async () => {
+    motionPreference.reduced = true;
+    const { rerender } = render(<PacketFlowPlayer scenario={scenario} />);
+
+    motionPreference.reduced = false;
     rerender(<PacketFlowPlayer scenario={scenario} />);
     await advance(1000);
 
@@ -180,5 +213,11 @@ describe("PacketFlowPlayer", () => {
     expect(screen.getByRole("img", { name: scenario.title })).toHaveAccessibleDescription(/Topology order: Client, Gateway\. Current step: Client sends an ARP request\./);
     expect(container.querySelector("[data-packet-marker]")).toHaveAttribute("aria-hidden", "true");
     expect(screen.getByText(/Active: Client, Gateway; link Client to Gateway/)).toBeVisible();
+  });
+
+  it("associates a packet marker with the active link when endpoint-matching links are parallel", () => {
+    const { container } = render(<PacketFlowPlayer scenario={parallelLinkScenario} />);
+
+    expect(container.querySelector("[data-packet-marker]")).toHaveAttribute("data-link-id", "active-client-gateway");
   });
 });
