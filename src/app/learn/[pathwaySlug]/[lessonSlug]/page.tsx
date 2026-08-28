@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import {
   getAdjacentLessons,
   getLesson,
+  listPathways,
+  listPublishedLessons,
 } from "@/features/catalog/catalog.repository";
 import type { LessonSummary } from "@/features/catalog/catalog.types";
 import {
@@ -17,6 +19,17 @@ import { isExpectedCatalogError } from "./catalog-error";
 type LessonPageProps = {
   params: Promise<{ pathwaySlug: string; lessonSlug: string }>;
 };
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return listPathways().flatMap(({ slug: pathwaySlug }) =>
+    listPublishedLessons(pathwaySlug).map(({ slug: lessonSlug }) => ({
+      pathwaySlug,
+      lessonSlug,
+    })),
+  );
+}
 
 function findPublishedLesson(pathwaySlug: string, lessonSlug: string): LessonSummary {
   let lesson: LessonSummary;

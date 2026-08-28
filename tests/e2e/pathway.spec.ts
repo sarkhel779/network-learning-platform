@@ -6,12 +6,21 @@ test("shows the networking pathway and its published lesson link", async ({ page
   await expect(
     page.getByRole("heading", { level: 1, name: "Networking Foundations" }),
   ).toBeVisible();
-  await expect(
-    page.getByRole("link", { name: /how networks communicate/i }),
-  ).toHaveAttribute(
+  const publishedLessonLink = page.getByRole("link", {
+    name: /how networks communicate/i,
+  });
+
+  await expect(publishedLessonLink).toHaveAttribute(
     "href",
     "/learn/networking-foundations/how-networks-communicate",
   );
+  await publishedLessonLink.click();
+  await expect(page).toHaveURL(
+    "/learn/networking-foundations/how-networks-communicate",
+  );
+  await expect(
+    page.getByRole("heading", { level: 1, name: "How Networks Communicate" }),
+  ).toBeVisible();
 });
 
 test("does not overflow at mobile width", async ({ page }) => {

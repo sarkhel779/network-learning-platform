@@ -1,6 +1,10 @@
 import { pathways } from "./catalog.data";
 import type { LessonSummary, Pathway } from "./catalog.types";
 
+export function listPathways(): Pathway[] {
+  return pathways;
+}
+
 export function getPathway(pathwaySlug: string): Pathway {
   const pathway = pathways.find(({ slug }) => slug === pathwaySlug);
 

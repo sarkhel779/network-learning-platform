@@ -2,9 +2,18 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PathwayOverview } from "@/features/catalog/pathway-overview";
-import { getPathway } from "@/features/catalog/catalog.repository";
+import {
+  getPathway,
+  listPathways,
+} from "@/features/catalog/catalog.repository";
 
 type PathwayPageProps = { params: Promise<{ pathwaySlug: string }> };
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return listPathways().map(({ slug }) => ({ pathwaySlug: slug }));
+}
 
 function findPathway(pathwaySlug: string) {
   try {
