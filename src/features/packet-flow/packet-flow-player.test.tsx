@@ -150,6 +150,23 @@ describe("PacketFlowPlayer", () => {
     expect(screen.getByText("Step 2 of 2")).toBeVisible();
   });
 
+  it("keeps exactly one pending autoplay timer and clears it when paused or unmounted", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const { unmount } = render(<PacketFlowPlayer scenario={scenario} />);
+
+    expect(vi.getTimerCount()).toBe(1);
+    await user.selectOptions(screen.getByRole("combobox", { name: "Playback speed" }), "2");
+    expect(vi.getTimerCount()).toBe(1);
+
+    await user.click(screen.getByRole("button", { name: "Pause" }));
+    expect(vi.getTimerCount()).toBe(0);
+    await user.click(screen.getByRole("button", { name: "Play" }));
+    expect(vi.getTimerCount()).toBe(1);
+
+    unmount();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
   it("reveals technical values and changed-field text in the native disclosure", async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<PacketFlowPlayer scenario={scenario} />);
