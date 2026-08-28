@@ -7,7 +7,7 @@ const fieldSchema = z.object({
   label: nonEmptyString,
   value: nonEmptyString,
   changed: z.boolean().optional(),
-});
+}).readonly();
 
 const deviceSchema = z.object({
   id: nonEmptyString,
@@ -15,13 +15,13 @@ const deviceSchema = z.object({
   role: nonEmptyString,
   x: z.number().finite(),
   y: z.number().finite(),
-});
+}).readonly();
 
 const linkSchema = z.object({
   id: nonEmptyString,
   from: nonEmptyString,
   to: nonEmptyString,
-});
+}).readonly();
 
 const packetSchema = z.object({
   kind: z.enum(["frame", "packet"]),
@@ -29,7 +29,7 @@ const packetSchema = z.object({
   from: nonEmptyString,
   to: nonEmptyString,
   broadcast: z.boolean().optional(),
-});
+}).readonly();
 
 const stepSchema = z.object({
   id: nonEmptyString,
@@ -42,7 +42,7 @@ const stepSchema = z.object({
   summaryFields: z.array(fieldSchema).readonly(),
   detailFields: z.array(fieldSchema).readonly(),
   stateNote: nonEmptyString.optional(),
-});
+}).readonly();
 
 const packetFlowScenarioSchema = z
   .object({
@@ -92,7 +92,8 @@ const packetFlowScenarioSchema = z
         if (!hasMatchingActiveLink) context.addIssue({ code: "custom", path: ["steps", stepIndex, "packet"], message: "Packet path must match an active link" });
       }
     });
-  });
+  })
+  .readonly();
 
 export type PacketFlowScenario = z.infer<typeof packetFlowScenarioSchema>;
 export type PacketFlowStep = z.infer<typeof stepSchema>;

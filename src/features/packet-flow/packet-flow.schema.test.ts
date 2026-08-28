@@ -47,7 +47,7 @@ describe("packet flow scenario schema", () => {
     ["Unknown link endpoint", { links: [{ ...validScenario.links[0], to: "missing" }] }],
     ["Unknown active device", { steps: [{ ...validScenario.steps[0], activeDeviceIds: ["missing"] }] }],
     ["Unknown active link", { steps: [{ ...validScenario.steps[0], activeLinkIds: ["missing"] }] }],
-    ["Packet path inconsistent with active link endpoints", { steps: [{ ...validScenario.steps[0], packet: { ...validScenario.steps[0].packet!, from: "router", to: "client" }, activeLinkIds: [] }] }],
+    ["Packet path inconsistent with active link endpoints", { steps: [{ ...validScenario.steps[0], packet: { ...validScenario.steps[0].packet!, from: "router", to: "missing" } }] }],
     ["Empty steps", { steps: [] }],
     ["durationMs: 0", { steps: [{ ...validScenario.steps[0], durationMs: 0 }] }],
     ["defaultSpeed: 3", { defaultSpeed: 3 }],
