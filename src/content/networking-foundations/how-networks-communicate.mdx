@@ -1,0 +1,127 @@
+<figure className="network-journey">
+  <svg
+    aria-label="Data path from a PC through a switch and router to a server"
+    className="network-journey-diagram"
+    role="img"
+    viewBox="0 0 800 230"
+  >
+    <desc>
+      A PC sends a frame to a switch. The switch forwards it to a router. The router
+      builds a new frame for the next link and sends it toward the destination server.
+    </desc>
+    <defs>
+      <marker id="arrowhead" markerHeight="8" markerWidth="8" orient="auto" refX="7" refY="4">
+        <path d="M0,0 L8,4 L0,8 Z" className="network-arrowhead" />
+      </marker>
+    </defs>
+    <line className="network-link" markerEnd="url(#arrowhead)" x1="150" x2="250" y1="105" y2="105" />
+    <line className="network-link" markerEnd="url(#arrowhead)" x1="350" x2="450" y1="105" y2="105" />
+    <line className="network-link" markerEnd="url(#arrowhead)" x1="550" x2="650" y1="105" y2="105" />
+    <g className="network-node">
+      <rect height="90" rx="12" width="110" x="40" y="60" />
+      <text textAnchor="middle" x="95" y="105">PC</text>
+      <text className="network-node-role" textAnchor="middle" x="95" y="130">source host</text>
+    </g>
+    <g className="network-node">
+      <rect height="90" rx="12" width="100" x="250" y="60" />
+      <text textAnchor="middle" x="300" y="105">Switch</text>
+      <text className="network-node-role" textAnchor="middle" x="300" y="130">local link</text>
+    </g>
+    <g className="network-node">
+      <rect height="90" rx="12" width="100" x="450" y="60" />
+      <text textAnchor="middle" x="500" y="105">Router</text>
+      <text className="network-node-role" textAnchor="middle" x="500" y="130">between networks</text>
+    </g>
+    <g className="network-node">
+      <rect height="90" rx="12" width="110" x="650" y="60" />
+      <text textAnchor="middle" x="705" y="105">Server</text>
+      <text className="network-node-role" textAnchor="middle" x="705" y="130">destination host</text>
+    </g>
+    <text className="network-link-label" textAnchor="middle" x="400" y="205">
+      Each link carries a frame; the IP packet is forwarded across the route.
+    </text>
+  </svg>
+  <figcaption>PC → switch → router → server: a simplified end-to-end journey.</figcaption>
+  <p className="sr-only">
+    Text alternative: The source PC sends a local frame through a switch to its router.
+    The router reads the packet destination, chooses another network, and places the packet
+    in a new frame for the path to the destination server.
+  </p>
+</figure>
+
+## The decisions behind communication
+
+For communication to work, the source host must identify the destination, choose a usable
+communication medium, and follow shared protocols. The **source** creates the data. The
+**destination** is the intended receiver. A **medium**—such as copper, fiber, or radio—carries
+signals. **Protocols** are agreed rules for how devices format, address, send, receive, and
+interpret those signals.
+
+Consider a PC sending a small request to a server on another IPv4 network. The packet keeps the
+PC's source IP address and the server's destination IP address. The PC compares the destination
+with its own network information and decides that the server is remote, so the next hop is its
+default router. For IPv4, the PC can use ARP to learn the router interface's MAC address. It
+then places the packet inside an Ethernet **frame** addressed to that next-hop MAC address.
+
+Frames and packets solve different parts of the trip. A frame carries data across one local
+link and uses link-layer addresses such as MAC addresses. A packet carries network-layer
+addresses across connected networks. At a router, the incoming frame ends. The router examines
+the packet's destination IP address, chooses a route, and builds a new frame for the next link.
+
+The devices therefore make different forwarding decisions:
+
+- A **host** decides whether the destination is local or remote and chooses the next hop.
+- A **switch** primarily reads the frame's destination MAC address and uses its MAC address
+  table to select a port. Broadcasts and unknown destinations may be sent out multiple ports.
+- A **router** removes the incoming link-layer frame, reads the destination IP address, and
+  uses its routing table to choose the next network and next hop.
+- The **destination host** accepts traffic addressed to it and passes the data to the relevant
+  protocol or application.
+
+<aside className="lesson-notice" aria-label="Interactive lesson notice">
+  <strong>Interactive packet journey:</strong> The interactive version arrives in Plan 2.
+  The static diagram and explanation above remain complete instruction for this lesson.
+</aside>
+
+<WiresharkCheck
+  filter="arp or icmp"
+  fields={["eth.src", "eth.dst", "arp.opcode", "ip.src", "ip.dst", "icmp.type"]}
+  normalEvidence="An ARP request is normally a local broadcast asking who owns an IPv4 address, followed by an ARP reply that identifies a MAC address. ICMP echo traffic then shows source and destination IP addresses, while the Ethernet source and destination identify the devices for that local link."
+  exercise="Find the ARP request and reply first. Then find the ICMP echo request and reply, and compare the Ethernet addresses with the IP addresses."
+/>
+
+<KnowledgeCheck
+  question="A PC is sending an IPv4 packet to a server on another network. After ARP resolves the default router, which destination addresses should the PC use?"
+  options={[
+    "The server's IP address in the packet and the router interface's MAC address in the frame",
+    "The router's IP address in the packet and the server's MAC address in the frame",
+    "The server's IP and MAC addresses in both the packet and the frame",
+  ]}
+  correctIndex={0}
+  explanation="The destination IP remains the remote server so routers can forward the packet toward it. On the PC's local link, the frame is addressed to the default router's MAC address. An ARP exchange provides evidence for that next-hop MAC, and the router then makes its forwarding decision from the packet's destination IP."
+/>
+
+<InterviewScenario prompt="What happens after a user enters a website address?">
+  <p>
+    Limit the answer to the concepts taught so far. A name must first be translated into a
+    destination address; that translation is handled by DNS, which a later lesson will explain.
+    Once the host has a destination IP address, it decides whether the destination is local or
+    remote. For a remote destination, it learns the next-hop router's MAC address when needed,
+    puts the packet into a frame, and sends that frame through the local medium.
+  </p>
+  <p>
+    The switch forwards the frame using the destination MAC address. The router examines the
+    destination IP address, selects a route, and creates a new frame for the next link. This
+    repeats until the packet reaches the server's network. Application protocols, TCP, TLS, and
+    the full DNS process add important steps, but they have not been taught fully yet, so this
+    answer does not pretend to trace them.
+  </p>
+</InterviewScenario>
+
+<PremiumPreview>
+  <p>
+    Deeper packet analysis follows a conversation across several captures, compares frame and
+    packet headers at each hop, and practices explaining why each device made its forwarding
+    decision. It also examines common ARP and ICMP patterns in more detail.
+  </p>
+</PremiumPreview>
