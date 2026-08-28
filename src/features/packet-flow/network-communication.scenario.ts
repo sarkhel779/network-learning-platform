@@ -6,10 +6,10 @@ export const networkCommunicationScenario: PacketFlowScenario = parsePacketFlowS
   description: "Follow a ping from a PC to a remote server and back.",
   defaultSpeed: 1,
   devices: [
-    { id: "pc", label: "PC", role: "host", x: 80, y: 240 },
-    { id: "switch", label: "Switch", role: "layer 2 switch", x: 280, y: 240 },
-    { id: "router", label: "Router", role: "default gateway", x: 520, y: 240 },
-    { id: "server", label: "Server", role: "remote host", x: 720, y: 240 },
+    { id: "pc", label: "PC", role: "host", x: 80, y: 120 },
+    { id: "switch", label: "Switch", role: "layer 2 switch", x: 280, y: 120 },
+    { id: "router", label: "Router", role: "default gateway", x: 520, y: 120 },
+    { id: "server", label: "Server", role: "remote host", x: 720, y: 120 },
   ],
   links: [
     { id: "pc-switch", from: "pc", to: "switch" },

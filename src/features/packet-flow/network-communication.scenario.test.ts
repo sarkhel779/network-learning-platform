@@ -14,7 +14,7 @@ const fieldValue = (stepId: string, label: string) =>
 describe("network communication scenario", () => {
   it("parses the ARP and ICMP journey with the expected topology", () => {
     expect(networkCommunicationScenario.devices.map((device) => device.label)).toEqual(["PC", "Switch", "Router", "Server"]);
-    expect(networkCommunicationScenario.devices.map((device) => device.x)).toEqual([80, 280, 520, 720]);
+    expect(networkCommunicationScenario.devices.map(({ x, y }) => [x, y])).toEqual([[80, 120], [280, 120], [520, 120], [720, 120]]);
     expect(networkCommunicationScenario.links.map((link) => link.id)).toEqual(["pc-switch", "switch-router", "router-server"]);
   });
 
