@@ -75,4 +75,37 @@ describe("network communication scenario", () => {
       expect([link!.from, link!.to]).toContain(step.packet.to);
     }
   });
+
+  it("provides protocol fields for every Ethernet frame in the inspector", () => {
+    const packetSteps = networkCommunicationScenario.steps.filter((step) => step.packet);
+    const detailValue = (step: (typeof packetSteps)[number], label: string) =>
+      step.detailFields.find((field) => field.label === label)?.value;
+
+    const arpRequests = packetSteps.filter((step) => step.packet?.label === "ARP request");
+    const arpReplies = packetSteps.filter((step) => step.packet?.label === "ARP reply");
+    const echoRequests = packetSteps.filter((step) => step.packet?.label === "ICMP echo request");
+    const echoReplies = packetSteps.filter((step) => step.packet?.label === "ICMP echo reply");
+
+    expect(arpRequests).toHaveLength(2);
+    expect(arpReplies).toHaveLength(2);
+    expect(echoRequests).toHaveLength(3);
+    expect(echoReplies).toHaveLength(3);
+
+    for (const step of arpRequests) {
+      expect(detailValue(step, "EtherType")).toBe("0x0806");
+      expect(detailValue(step, "ARP opcode")).toBe("1 (request)");
+    }
+    for (const step of arpReplies) {
+      expect(detailValue(step, "EtherType")).toBe("0x0806");
+      expect(detailValue(step, "ARP opcode")).toBe("2 (reply)");
+    }
+    for (const step of echoRequests) {
+      expect(detailValue(step, "EtherType")).toBe("0x0800");
+      expect(detailValue(step, "ICMP type")).toBe("8 (Echo request)");
+    }
+    for (const step of echoReplies) {
+      expect(detailValue(step, "EtherType")).toBe("0x0800");
+      expect(detailValue(step, "ICMP type")).toBe("0 (Echo reply)");
+    }
+  });
 });

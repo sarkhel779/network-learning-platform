@@ -37,7 +37,7 @@ export const networkCommunicationScenario: PacketFlowScenario = parsePacketFlowS
       activeLinkIds: ["pc-switch"],
       packet: { kind: "frame", label: "ARP request", from: "pc", to: "switch", broadcast: true },
       summaryFields: [{ label: "Ethernet destination", value: "FF:FF:FF:FF:FF:FF" }, { label: "Target IP", value: "192.0.2.1" }],
-      detailFields: [{ label: "Sender MAC", value: "00:11:22:33:44:10" }, { label: "Sender IP", value: "192.0.2.10" }],
+      detailFields: [{ label: "Sender MAC", value: "00:11:22:33:44:10" }, { label: "Sender IP", value: "192.0.2.10" }, { label: "EtherType", value: "0x0806" }, { label: "ARP opcode", value: "1 (request)" }],
     },
     {
       id: "switch-floods-arp-request",
@@ -48,7 +48,7 @@ export const networkCommunicationScenario: PacketFlowScenario = parsePacketFlowS
       activeLinkIds: ["switch-router"],
       packet: { kind: "frame", label: "ARP request", from: "switch", to: "router", broadcast: true },
       summaryFields: [{ label: "Ethernet destination", value: "FF:FF:FF:FF:FF:FF" }, { label: "Target IP", value: "192.0.2.1" }],
-      detailFields: [{ label: "Flooded by", value: "Switch" }],
+      detailFields: [{ label: "Flooded by", value: "Switch" }, { label: "EtherType", value: "0x0806" }, { label: "ARP opcode", value: "1 (request)" }],
     },
     {
       id: "router-replies-to-arp",
@@ -59,7 +59,7 @@ export const networkCommunicationScenario: PacketFlowScenario = parsePacketFlowS
       activeLinkIds: ["switch-router"],
       packet: { kind: "frame", label: "ARP reply", from: "router", to: "switch" },
       summaryFields: [{ label: "Router LAN IP", value: "192.0.2.1" }, { label: "Router LAN MAC", value: "00:11:22:33:44:01" }],
-      detailFields: [{ label: "Destination MAC", value: "00:11:22:33:44:10" }],
+      detailFields: [{ label: "Destination MAC", value: "00:11:22:33:44:10" }, { label: "EtherType", value: "0x0806" }, { label: "ARP opcode", value: "2 (reply)" }],
     },
     {
       id: "switch-forwards-arp-reply",
@@ -70,7 +70,7 @@ export const networkCommunicationScenario: PacketFlowScenario = parsePacketFlowS
       activeLinkIds: ["pc-switch"],
       packet: { kind: "frame", label: "ARP reply", from: "switch", to: "pc" },
       summaryFields: [{ label: "Router LAN MAC", value: "00:11:22:33:44:01" }],
-      detailFields: [{ label: "Destination MAC", value: "00:11:22:33:44:10" }],
+      detailFields: [{ label: "Destination MAC", value: "00:11:22:33:44:10" }, { label: "EtherType", value: "0x0806" }, { label: "ARP opcode", value: "2 (reply)" }],
     },
     {
       id: "pc-records-arp-mapping",
@@ -102,7 +102,7 @@ export const networkCommunicationScenario: PacketFlowScenario = parsePacketFlowS
       activeLinkIds: ["pc-switch"],
       packet: { kind: "frame", label: "ICMP echo request", from: "pc", to: "switch" },
       summaryFields: [{ label: "Source IP", value: "192.0.2.10" }, { label: "Destination IP", value: "198.51.100.20" }, { label: "TTL", value: "64" }],
-      detailFields: [{ label: "Source MAC", value: "00:11:22:33:44:10" }, { label: "Destination MAC", value: "00:11:22:33:44:01" }],
+      detailFields: [{ label: "Source MAC", value: "00:11:22:33:44:10" }, { label: "Destination MAC", value: "00:11:22:33:44:01" }, { label: "EtherType", value: "0x0800" }, { label: "ICMP type", value: "8 (Echo request)" }],
     },
     {
       id: "switch-forwards-icmp-request",
@@ -113,7 +113,7 @@ export const networkCommunicationScenario: PacketFlowScenario = parsePacketFlowS
       activeLinkIds: ["switch-router"],
       packet: { kind: "frame", label: "ICMP echo request", from: "switch", to: "router" },
       summaryFields: [{ label: "Destination MAC", value: "00:11:22:33:44:01" }],
-      detailFields: [{ label: "Destination IP", value: "198.51.100.20" }],
+      detailFields: [{ label: "Destination IP", value: "198.51.100.20" }, { label: "EtherType", value: "0x0800" }, { label: "ICMP type", value: "8 (Echo request)" }],
     },
     {
       id: "router-routes-icmp-request",
@@ -135,7 +135,7 @@ export const networkCommunicationScenario: PacketFlowScenario = parsePacketFlowS
       activeLinkIds: ["router-server"],
       packet: { kind: "frame", label: "ICMP echo request", from: "router", to: "server" },
       summaryFields: [{ label: "Source IP", value: "192.0.2.10" }, { label: "Destination IP", value: "198.51.100.20" }],
-      detailFields: [{ label: "Source MAC", value: "00:11:22:33:55:01" }, { label: "Destination MAC", value: "00:11:22:33:55:20" }],
+      detailFields: [{ label: "Source MAC", value: "00:11:22:33:55:01" }, { label: "Destination MAC", value: "00:11:22:33:55:20" }, { label: "EtherType", value: "0x0800" }, { label: "ICMP type", value: "8 (Echo request)" }],
     },
     {
       id: "server-receives-icmp-request",
@@ -166,7 +166,7 @@ export const networkCommunicationScenario: PacketFlowScenario = parsePacketFlowS
       activeLinkIds: ["router-server"],
       packet: { kind: "frame", label: "ICMP echo reply", from: "server", to: "router" },
       summaryFields: [{ label: "Source IP", value: "198.51.100.20" }, { label: "Destination IP", value: "192.0.2.10" }],
-      detailFields: [{ label: "Source MAC", value: "00:11:22:33:55:20" }, { label: "Destination MAC", value: "00:11:22:33:55:01" }],
+      detailFields: [{ label: "Source MAC", value: "00:11:22:33:55:20" }, { label: "Destination MAC", value: "00:11:22:33:55:01" }, { label: "EtherType", value: "0x0800" }, { label: "ICMP type", value: "0 (Echo reply)" }],
     },
     {
       id: "router-routes-icmp-reply",
@@ -188,7 +188,7 @@ export const networkCommunicationScenario: PacketFlowScenario = parsePacketFlowS
       activeLinkIds: ["switch-router"],
       packet: { kind: "frame", label: "ICMP echo reply", from: "router", to: "switch" },
       summaryFields: [{ label: "Source IP", value: "198.51.100.20" }, { label: "Destination IP", value: "192.0.2.10" }],
-      detailFields: [{ label: "Source MAC", value: "00:11:22:33:44:01" }, { label: "Destination MAC", value: "00:11:22:33:44:10" }],
+      detailFields: [{ label: "Source MAC", value: "00:11:22:33:44:01" }, { label: "Destination MAC", value: "00:11:22:33:44:10" }, { label: "EtherType", value: "0x0800" }, { label: "ICMP type", value: "0 (Echo reply)" }],
     },
     {
       id: "switch-forwards-icmp-reply",
@@ -199,7 +199,7 @@ export const networkCommunicationScenario: PacketFlowScenario = parsePacketFlowS
       activeLinkIds: ["pc-switch"],
       packet: { kind: "frame", label: "ICMP echo reply", from: "switch", to: "pc" },
       summaryFields: [{ label: "Source IP", value: "198.51.100.20" }, { label: "Destination IP", value: "192.0.2.10" }],
-      detailFields: [{ label: "Destination MAC", value: "00:11:22:33:44:10" }],
+      detailFields: [{ label: "Destination MAC", value: "00:11:22:33:44:10" }, { label: "EtherType", value: "0x0800" }, { label: "ICMP type", value: "0 (Echo reply)" }],
     },
     {
       id: "pc-receives-icmp-echo-reply",
