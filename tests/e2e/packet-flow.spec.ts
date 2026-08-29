@@ -11,6 +11,10 @@ function technicalDetails(page: Page): Locator {
   return page.locator("details").filter({ has: page.getByText("Technical packet details", { exact: true }) });
 }
 
+function packetInspector(page: Page): Locator {
+  return page.getByRole("heading", { name: "Packet inspector", exact: true }).locator("..");
+}
+
 async function openTechnicalDetails(page: Page): Promise<Locator> {
   const details = technicalDetails(page);
   if (!(await details.evaluate((element) => element.open))) {
@@ -18,10 +22,6 @@ async function openTechnicalDetails(page: Page): Promise<Locator> {
   }
   await expect(details).toHaveAttribute("open", "");
   return details;
-}
-
-function currentProgress(page: Page): Locator {
-  return page.getByText(/^Step \d+ of 18$/, { exact: true });
 }
 
 async function openLesson(page: Page) {
@@ -47,10 +47,10 @@ test("autoplays, pauses, and resumes the packet journey", async ({ page }) => {
 
   await expect(progress(page, 2)).toBeVisible({ timeout: 4_500 });
   await pause(page);
-  const pausedProgress = await currentProgress(page).textContent();
+  await expect(progress(page, 2)).toBeVisible();
 
   await page.waitForTimeout(2_000);
-  await expect(currentProgress(page)).toHaveText(pausedProgress ?? "");
+  await expect(progress(page, 2)).toBeVisible();
 
   await page.getByRole("button", { name: "Play", exact: true }).click();
   await expect(progress(page, 3)).toBeVisible({ timeout: 3_000 });
@@ -109,8 +109,11 @@ test("shows the full ARP and ICMP sequence with packet details", async ({ page }
   await advanceTo(page, 4, 7);
   await expect(progress(page, 7)).toBeVisible();
   await expect(page.getByRole("heading", { name: "The PC creates an ICMP echo request" })).toBeVisible();
-  await expect(page.getByText("TTL", { exact: true })).toBeVisible();
-  await expect(page.getByText("64", { exact: true })).toBeVisible();
+  details = await openTechnicalDetails(page);
+  await expect(details).toBeVisible();
+  const inspector = packetInspector(page);
+  await expect(inspector.getByText("TTL", { exact: true })).toBeVisible();
+  await expect(inspector.getByText("64", { exact: true })).toBeVisible();
 
   await advanceTo(page, 7, 8);
   await expect(progress(page, 8)).toBeVisible();
