@@ -17,7 +17,7 @@ function packetInspector(page: Page): Locator {
 
 async function openTechnicalDetails(page: Page): Promise<Locator> {
   const details = technicalDetails(page);
-  if (!(await details.evaluate((element) => element.open))) {
+  if (!(await details.evaluate((element) => element.hasAttribute("open")))) {
     await details.locator("summary").click();
   }
   await expect(details).toHaveAttribute("open", "");
@@ -94,9 +94,13 @@ test("shows the full ARP and ICMP sequence with packet details", async ({ page }
   await expect(progress(page, 2)).toBeVisible();
   await expect(page.getByRole("heading", { name: "The PC broadcasts an ARP request" })).toBeVisible();
   await expect(page.locator('[data-packet-marker="true"]')).toHaveAttribute("data-broadcast", "true");
+  let inspector = packetInspector(page);
+  await expect(inspector.getByText("EtherType", { exact: true })).toBeVisible();
+  await expect(inspector.getByText("0x0806", { exact: true })).toBeVisible();
+  await expect(inspector.getByText("Source MAC", { exact: true })).toBeVisible();
+  await expect(inspector.getByText("Destination MAC", { exact: true })).toBeVisible();
+  await expect(inspector.getByText("ARP request", { exact: true })).toBeVisible();
   let details = await openTechnicalDetails(page);
-  await expect(details.getByText("EtherType", { exact: true })).toBeVisible();
-  await expect(details.getByText("0x0806", { exact: true })).toBeVisible();
   await expect(details.getByText("ARP opcode", { exact: true })).toBeVisible();
   await expect(details.getByText("1 (request)", { exact: true })).toBeVisible();
 
@@ -111,7 +115,7 @@ test("shows the full ARP and ICMP sequence with packet details", async ({ page }
   await expect(page.getByRole("heading", { name: "The PC creates an ICMP echo request" })).toBeVisible();
   details = await openTechnicalDetails(page);
   await expect(details).toBeVisible();
-  const inspector = packetInspector(page);
+  inspector = packetInspector(page);
   await expect(inspector.getByText("TTL", { exact: true })).toBeVisible();
   await expect(inspector.getByText("64", { exact: true })).toBeVisible();
 

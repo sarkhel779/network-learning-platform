@@ -116,10 +116,9 @@ a { color: inherit; }
 .network-topology__device[data-active="true"] circle { stroke: var(--accent); stroke-width: 6; }
 .network-topology__device text { fill: var(--foreground); font-size: 1.1rem; font-weight: 700; }
 .network-topology__device .network-topology__device-role { fill: var(--muted); font-size: 0.75rem; font-weight: 400; }
-.network-topology__packet-marker { fill: var(--accent); stroke: var(--foreground); stroke-width: 2; transition: transform 600ms ease; }
+.network-topology__packet-marker { fill: var(--accent); stroke: var(--foreground); stroke-width: 2; }
 .network-topology__packet-marker--broadcast { fill: #b45309; stroke-width: 3; }
 .network-topology__packet-marker text { fill: var(--accent-foreground); font-size: 0.65rem; font-weight: 700; }
-.network-topology__packet-marker--discrete { transition: none; }
 .network-topology__active-text { margin: 0.75rem 0 0; color: var(--foreground); font-weight: 700; }
 .packet-flow-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin: 1rem 0; }
 .packet-flow-controls button, .packet-flow-controls select { min-height: 2.75rem; border: 1px solid var(--accent); border-radius: 0.35rem; background: var(--background); color: var(--foreground); font: inherit; }

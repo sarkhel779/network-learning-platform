@@ -1,6 +1,6 @@
 # Packet-Flow Animation Engine — Approved Design
 
-Date: 28 August 2026  
+Date: 28 August 2026
 Status: Approved for implementation planning
 
 ## 1. Purpose

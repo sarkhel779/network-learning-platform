@@ -2,6 +2,7 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { NetworkTopology } from "./network-topology";
 import { parsePacketFlowScenario } from "./packet-flow.schema";
 import { PacketFlowPlayer } from "./packet-flow-player";
 
@@ -55,6 +56,14 @@ const parallelLinkScenario = parsePacketFlowScenario({
   ],
   steps: [{ ...scenario.steps[0], activeLinkIds: ["active-client-gateway"] }],
 });
+
+const reverseTravelStep = {
+  ...scenario.steps[0],
+  id: "reply-on-same-link",
+  title: "Gateway sends a reply",
+  explanation: "The reply travels back across the same link.",
+  packet: { ...scenario.steps[0].packet!, from: "gateway", to: "client" },
+};
 
 async function advance(ms: number) {
   await act(async () => {
@@ -150,6 +159,23 @@ describe("PacketFlowPlayer", () => {
     expect(screen.getByText("Step 2 of 2")).toBeVisible();
   });
 
+  it("allows all four supported playback speeds to be selected", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<PacketFlowPlayer scenario={scenario} />);
+
+    const speedSelector = screen.getByRole("combobox", { name: "Playback speed" });
+    expect(screen.getAllByRole("option").map((option) => [option.textContent, option.getAttribute("value")])).toEqual([
+      ["0.5×", "0.5"],
+      ["1×", "1"],
+      ["1.5×", "1.5"],
+      ["2×", "2"],
+    ]);
+    for (const speed of ["0.5", "1", "1.5", "2"]) {
+      await user.selectOptions(speedSelector, speed);
+      expect(speedSelector).toHaveValue(speed);
+    }
+  });
+
   it("keeps exactly one pending autoplay timer and clears it when paused or unmounted", async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     const { unmount } = render(<PacketFlowPlayer scenario={scenario} />);
@@ -227,9 +253,42 @@ describe("PacketFlowPlayer", () => {
   it("provides SVG text alternatives, hides the moving packet marker, and names active entities in visible text", () => {
     const { container } = render(<PacketFlowPlayer scenario={scenario} />);
 
-    expect(screen.getByRole("img", { name: scenario.title })).toHaveAccessibleDescription(/Topology order: Client, Gateway\. Current step: Client sends an ARP request\./);
+    expect(screen.getByRole("img", { name: scenario.title })).toHaveAccessibleDescription(
+      "Topology order: Client, Gateway. Current step: Client sends an ARP request. Step 1 explanation.",
+    );
     expect(container.querySelector("[data-packet-marker]")).toHaveAttribute("aria-hidden", "true");
     expect(screen.getByText(/Active: Client, Gateway; link Client to Gateway/)).toBeVisible();
+  });
+
+  it("travels between step endpoints and remounts the marker when direction reverses", () => {
+    const { container, rerender } = render(
+      <NetworkTopology scenario={scenario} step={scenario.steps[0]} reducedMotion={false} />,
+    );
+    const requestMarker = container.querySelector("[data-packet-marker]");
+    const requestAnimation = requestMarker?.querySelector("animateTransform");
+
+    expect(requestMarker).toHaveAttribute("data-step-id", "request");
+    expect(requestAnimation).toHaveAttribute("from", "80 120");
+    expect(requestAnimation).toHaveAttribute("to", "720 120");
+
+    rerender(<NetworkTopology scenario={scenario} step={reverseTravelStep} reducedMotion={false} />);
+    const replyMarker = container.querySelector("[data-packet-marker]");
+    const replyAnimation = replyMarker?.querySelector("animateTransform");
+
+    expect(replyMarker).not.toBe(requestMarker);
+    expect(replyMarker).toHaveAttribute("data-step-id", "reply-on-same-link");
+    expect(replyAnimation).toHaveAttribute("from", "720 120");
+    expect(replyAnimation).toHaveAttribute("to", "80 120");
+  });
+
+  it("renders a reduced-motion packet directly at the destination", () => {
+    const { container } = render(
+      <NetworkTopology scenario={scenario} step={scenario.steps[0]} reducedMotion />,
+    );
+    const marker = container.querySelector("[data-packet-marker]");
+
+    expect(marker).toHaveAttribute("transform", "translate(720 120)");
+    expect(marker?.querySelector("animateTransform")).not.toBeInTheDocument();
   });
 
   it("associates a packet marker with the active link when endpoint-matching links are parallel", () => {

@@ -11,6 +11,12 @@ const fieldsFor = (stepId: string) => {
 const fieldValue = (stepId: string, label: string) =>
   [...fieldsFor(stepId).summaryFields, ...fieldsFor(stepId).detailFields].find((field) => field.label === label);
 
+const summaryValue = (stepId: string, label: string) =>
+  fieldsFor(stepId).summaryFields.find((field) => field.label === label)?.value;
+
+const detailValue = (stepId: string, label: string) =>
+  fieldsFor(stepId).detailFields.find((field) => field.label === label)?.value;
+
 describe("network communication scenario", () => {
   it("parses the ARP and ICMP journey with the expected topology", () => {
     expect(networkCommunicationScenario.devices.map((device) => device.label)).toEqual(["PC", "Switch", "Router", "Server"]);
@@ -76,36 +82,47 @@ describe("network communication scenario", () => {
     }
   });
 
-  it("provides protocol fields for every Ethernet frame in the inspector", () => {
+  it("keeps frame essentials in the beginner summary and protocol codes in technical details", () => {
     const packetSteps = networkCommunicationScenario.steps.filter((step) => step.packet);
-    const detailValue = (step: (typeof packetSteps)[number], label: string) =>
-      step.detailFields.find((field) => field.label === label)?.value;
+    const expectedMacs: Record<string, [string, string]> = {
+      "pc-broadcasts-arp-request": ["00:11:22:33:44:10", "FF:FF:FF:FF:FF:FF"],
+      "switch-floods-arp-request": ["00:11:22:33:44:10", "FF:FF:FF:FF:FF:FF"],
+      "router-replies-to-arp": ["00:11:22:33:44:01", "00:11:22:33:44:10"],
+      "switch-forwards-arp-reply": ["00:11:22:33:44:01", "00:11:22:33:44:10"],
+      "pc-sends-icmp-request": ["00:11:22:33:44:10", "00:11:22:33:44:01"],
+      "switch-forwards-icmp-request": ["00:11:22:33:44:10", "00:11:22:33:44:01"],
+      "router-sends-icmp-request": ["00:11:22:33:55:01", "00:11:22:33:55:20"],
+      "server-sends-icmp-reply": ["00:11:22:33:55:20", "00:11:22:33:55:01"],
+      "router-sends-icmp-reply": ["00:11:22:33:44:01", "00:11:22:33:44:10"],
+      "switch-forwards-icmp-reply": ["00:11:22:33:44:01", "00:11:22:33:44:10"],
+    };
 
-    const arpRequests = packetSteps.filter((step) => step.packet?.label === "ARP request");
-    const arpReplies = packetSteps.filter((step) => step.packet?.label === "ARP reply");
-    const echoRequests = packetSteps.filter((step) => step.packet?.label === "ICMP echo request");
-    const echoReplies = packetSteps.filter((step) => step.packet?.label === "ICMP echo reply");
+    expect(packetSteps).toHaveLength(Object.keys(expectedMacs).length);
+    for (const step of packetSteps) {
+      const [sourceMac, destinationMac] = expectedMacs[step.id];
+      const etherType = step.packet!.label.startsWith("ARP") ? "0x0806" : "0x0800";
 
-    expect(arpRequests).toHaveLength(2);
-    expect(arpReplies).toHaveLength(2);
-    expect(echoRequests).toHaveLength(3);
-    expect(echoReplies).toHaveLength(3);
+      expect(summaryValue(step.id, "Source MAC"), `${step.id} source MAC`).toBe(sourceMac);
+      expect(summaryValue(step.id, "Destination MAC"), `${step.id} destination MAC`).toBe(destinationMac);
+      expect(summaryValue(step.id, "EtherType"), `${step.id} EtherType`).toBe(etherType);
+      expect(summaryValue(step.id, "Protocol"), `${step.id} protocol role`).toBe(step.packet!.label);
+      expect(detailValue(step.id, "EtherType"), `${step.id} keeps EtherType out of disclosure`).toBeUndefined();
 
-    for (const step of arpRequests) {
-      expect(detailValue(step, "EtherType")).toBe("0x0806");
-      expect(detailValue(step, "ARP opcode")).toBe("1 (request)");
+      if (step.packet!.label === "ARP request") expect(detailValue(step.id, "ARP opcode")).toBe("1 (request)");
+      if (step.packet!.label === "ARP reply") expect(detailValue(step.id, "ARP opcode")).toBe("2 (reply)");
+      if (step.packet!.label === "ICMP echo request") expect(detailValue(step.id, "ICMP type")).toBe("8 (Echo request)");
+      if (step.packet!.label === "ICMP echo reply") expect(detailValue(step.id, "ICMP type")).toBe("0 (Echo reply)");
     }
-    for (const step of arpReplies) {
-      expect(detailValue(step, "EtherType")).toBe("0x0806");
-      expect(detailValue(step, "ARP opcode")).toBe("2 (reply)");
-    }
-    for (const step of echoRequests) {
-      expect(detailValue(step, "EtherType")).toBe("0x0800");
-      expect(detailValue(step, "ICMP type")).toBe("8 (Echo request)");
-    }
-    for (const step of echoReplies) {
-      expect(detailValue(step, "EtherType")).toBe("0x0800");
-      expect(detailValue(step, "ICMP type")).toBe("0 (Echo reply)");
-    }
+  });
+
+  it("shows the frame decision for the composed echo request before technical details are expanded", () => {
+    expect(fieldsFor("pc-creates-icmp-echo-request").summaryFields).toEqual(expect.arrayContaining([
+      { label: "Source MAC", value: "00:11:22:33:44:10" },
+      { label: "Destination MAC", value: "00:11:22:33:44:01" },
+      { label: "EtherType", value: "0x0800" },
+      { label: "Protocol", value: "ICMP echo request" },
+      { label: "Destination IP", value: "198.51.100.20" },
+    ]));
+    expect(detailValue("pc-creates-icmp-echo-request", "ICMP type")).toBe("8 (Echo request)");
   });
 });

@@ -44,8 +44,6 @@ export function NetworkTopology({ scenario, step, reducedMotion }: NetworkTopolo
     : undefined;
   const packetFrom = step.packet ? devicesById.get(step.packet.from) : undefined;
   const packetTo = step.packet ? devicesById.get(step.packet.to) : undefined;
-  const markerX = packetFrom && packetTo ? (reducedMotion ? packetTo.x : (packetFrom.x + packetTo.x) / 2) : 0;
-  const markerY = packetFrom && packetTo ? (reducedMotion ? packetTo.y : (packetFrom.y + packetTo.y) / 2) : 0;
   const titleId = `${scenario.id}-topology-title`;
   const descriptionId = `${scenario.id}-topology-description`;
 
@@ -56,7 +54,7 @@ export function NetworkTopology({ scenario, step, reducedMotion }: NetworkTopolo
     >
       <svg viewBox="0 0 800 240" role="img" aria-labelledby={titleId} aria-describedby={descriptionId}>
         <title id={titleId}>{scenario.title}</title>
-        <desc id={descriptionId}>Topology order: {scenario.devices.map((device) => device.label).join(", ")}. Current step: {step.title}.</desc>
+        <desc id={descriptionId}>Topology order: {scenario.devices.map((device) => device.label).join(", ")}. Current step: {step.title}. {step.explanation}</desc>
         <g className="network-topology__links">
           {scenario.links.map((link) => {
             const from = devicesById.get(link.from);
@@ -80,13 +78,25 @@ export function NetworkTopology({ scenario, step, reducedMotion }: NetworkTopolo
         </g>
         {packetLink && packetFrom && packetTo && step.packet ? (
           <g
+            key={step.id}
             className={`network-topology__packet-marker${step.packet.broadcast ? " network-topology__packet-marker--broadcast" : ""}${reducedMotion ? " network-topology__packet-marker--discrete" : ""}`}
             data-broadcast={step.packet.broadcast ? "true" : undefined}
             data-packet-marker="true"
             data-link-id={packetLink.id}
+            data-step-id={step.id}
             aria-hidden="true"
-            transform={`translate(${markerX} ${markerY})`}
+            transform={`translate(${packetTo.x} ${packetTo.y})`}
           >
+            {!reducedMotion ? (
+              <animateTransform
+                attributeName="transform"
+                type="translate"
+                from={`${packetFrom.x} ${packetFrom.y}`}
+                to={`${packetTo.x} ${packetTo.y}`}
+                dur="600ms"
+                fill="freeze"
+              />
+            ) : null}
             <circle r="18" />
             <text textAnchor="middle" dy="0.35em">{packetKindLabel(step.packet.label)}</text>
           </g>
