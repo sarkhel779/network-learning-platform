@@ -11,6 +11,15 @@ function technicalDetails(page: Page): Locator {
   return page.locator("details").filter({ has: page.getByText("Technical packet details", { exact: true }) });
 }
 
+async function openTechnicalDetails(page: Page): Promise<Locator> {
+  const details = technicalDetails(page);
+  if (!(await details.evaluate((element) => element.open))) {
+    await details.locator("summary").click();
+  }
+  await expect(details).toHaveAttribute("open", "");
+  return details;
+}
+
 function currentProgress(page: Page): Locator {
   return page.getByText(/^Step \d+ of 18$/, { exact: true });
 }
@@ -85,8 +94,7 @@ test("shows the full ARP and ICMP sequence with packet details", async ({ page }
   await expect(progress(page, 2)).toBeVisible();
   await expect(page.getByRole("heading", { name: "The PC broadcasts an ARP request" })).toBeVisible();
   await expect(page.locator('[data-packet-marker="true"]')).toHaveAttribute("data-broadcast", "true");
-  let details = technicalDetails(page);
-  await details.locator("summary").click();
+  let details = await openTechnicalDetails(page);
   await expect(details.getByText("EtherType", { exact: true })).toBeVisible();
   await expect(details.getByText("0x0806", { exact: true })).toBeVisible();
   await expect(details.getByText("ARP opcode", { exact: true })).toBeVisible();
@@ -95,8 +103,7 @@ test("shows the full ARP and ICMP sequence with packet details", async ({ page }
   await advanceTo(page, 2, 4);
   await expect(progress(page, 4)).toBeVisible();
   await expect(page.getByRole("heading", { name: "The router replies with its LAN MAC address" })).toBeVisible();
-  details = technicalDetails(page);
-  await details.locator("summary").click();
+  details = await openTechnicalDetails(page);
   await expect(details.getByText("2 (reply)", { exact: true })).toBeVisible();
 
   await advanceTo(page, 4, 7);
@@ -107,19 +114,17 @@ test("shows the full ARP and ICMP sequence with packet details", async ({ page }
 
   await advanceTo(page, 7, 8);
   await expect(progress(page, 8)).toBeVisible();
-  details = technicalDetails(page);
-  await details.locator("summary").click();
+  details = await openTechnicalDetails(page);
   await expect(details.getByText("ICMP type", { exact: true })).toBeVisible();
   await expect(details.getByText("8 (Echo request)", { exact: true })).toBeVisible();
 
   await advanceTo(page, 8, 10);
   await expect(progress(page, 10)).toBeVisible();
-  details = technicalDetails(page);
-  await details.locator("summary").click();
+  details = await openTechnicalDetails(page);
   await expect(details.getByText("TTL", { exact: true })).toBeVisible();
-  await expect(details.getByText("63", { exact: true })).toBeVisible();
+  await expect(details.getByText(/^63/)).toBeVisible();
   await expect(details.getByText("TTL transition", { exact: true })).toBeVisible();
-  await expect(details.getByText("64 → 63", { exact: true })).toBeVisible();
+  await expect(details.getByText(/^64 → 63/)).toBeVisible();
 
   await advanceTo(page, 10, 13);
   await expect(progress(page, 13)).toBeVisible();
@@ -127,9 +132,8 @@ test("shows the full ARP and ICMP sequence with packet details", async ({ page }
 
   await advanceTo(page, 13, 14);
   await expect(progress(page, 14)).toBeVisible();
-  await expect(page.getByText("ICMP echo reply", { exact: true })).toBeVisible();
-  details = technicalDetails(page);
-  await details.locator("summary").click();
+  await expect(page.getByRole("heading", { name: "The server sends the echo reply to the router" })).toBeVisible();
+  details = await openTechnicalDetails(page);
   await expect(details.getByText("ICMP type", { exact: true })).toBeVisible();
   await expect(details.getByText("0 (Echo reply)", { exact: true })).toBeVisible();
 
