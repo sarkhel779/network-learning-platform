@@ -37,16 +37,14 @@
       <text textAnchor="middle" x="705" y="105">Server</text>
       <text className="network-node-role" textAnchor="middle" x="705" y="130">destination host</text>
     </g>
-    <text className="network-link-label" textAnchor="middle" x="400" y="205">
-      Each link carries a frame; the IP packet is forwarded across the route.
-    </text>
+    <text className="network-link-label" textAnchor="middle" x="400" y="205">Each link carries a frame; the IP packet is forwarded across the route.</text>
   </svg>
   <figcaption>PC → switch → router → server: a simplified end-to-end journey.</figcaption>
-  <p className="sr-only">
+  <div className="sr-only">
     Text alternative: The source PC sends a local frame through a switch to its router.
     The router reads the packet destination, chooses another network, and places the packet
     in a new frame for the path to the destination server.
-  </p>
+  </div>
 </figure>
 
 ## The decisions behind communication
@@ -99,26 +97,21 @@ The devices therefore make different forwarding decisions:
 />
 
 <InterviewScenario prompt="What happens after a user enters a website address?">
-  <p>
-    Limit the answer to the concepts taught so far. A name must first be translated into a
-    destination address; that translation is handled by DNS, which a later lesson will explain.
-    Once the host has a destination IP address, it decides whether the destination is local or
-    remote. For a remote destination, it learns the next-hop router's MAC address when needed,
-    puts the packet into a frame, and sends that frame through the local medium.
-  </p>
-  <p>
-    The switch forwards the frame using the destination MAC address. The router examines the
-    destination IP address, selects a route, and creates a new frame for the next link. This
-    repeats until the packet reaches the server's network. Application protocols, TCP, TLS, and
-    the full DNS process add important steps, but they have not been taught fully yet, so this
-    answer does not pretend to trace them.
-  </p>
+  Limit the answer to the concepts taught so far. A name must first be translated into a
+  destination address; that translation is handled by DNS, which a later lesson will explain.
+  Once the host has a destination IP address, it decides whether the destination is local or
+  remote. For a remote destination, it learns the next-hop router's MAC address when needed,
+  puts the packet into a frame, and sends that frame through the local medium.
+
+  The switch forwards the frame using the destination MAC address. The router examines the
+  destination IP address, selects a route, and creates a new frame for the next link. This
+  repeats until the packet reaches the server's network. Application protocols, TCP, TLS, and
+  the full DNS process add important steps, but they have not been taught fully yet, so this
+  answer does not pretend to trace them.
 </InterviewScenario>
 
 <PremiumPreview>
-  <p>
-    Deeper packet analysis follows a conversation across several captures, compares frame and
-    packet headers at each hop, and practices explaining why each device made its forwarding
-    decision. It also examines common ARP and ICMP patterns in more detail.
-  </p>
+  Deeper packet analysis follows a conversation across several captures, compares frame and
+  packet headers at each hop, and practices explaining why each device made its forwarding
+  decision. It also examines common ARP and ICMP patterns in more detail.
 </PremiumPreview>

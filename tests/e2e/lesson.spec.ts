@@ -57,3 +57,24 @@ test("keeps the complete lesson readable without JavaScript", async ({ browser }
     await context.close();
   }
 });
+
+test("hydrates the lesson without invalid HTML or React errors", async ({ page }) => {
+  const failures: string[] = [];
+
+  page.on("pageerror", (error) => failures.push(error.message));
+  page.on("console", (message) => {
+    if (
+      message.type() === "error" &&
+      /hydration|cannot be a descendant|server rendered html didn't match/i.test(message.text())
+    ) {
+      failures.push(message.text());
+    }
+  });
+
+  await page.goto("/learn/networking-foundations/how-networks-communicate");
+  await expect(page.getByRole("heading", { level: 1, name: "How Networks Communicate" })).toBeVisible();
+  await page.waitForTimeout(250);
+
+  expect(failures).toEqual([]);
+  await expect(page.getByRole("dialog", { name: /console error/i })).toHaveCount(0);
+});
