@@ -10,9 +10,9 @@ const curriculum: Pathway[] = [
     audience: "Complete beginners who want to understand how computer networks work.",
     modules: [
       {
-        id: "module_networking_fundamentals",
-        slug: "networking-fundamentals",
-        title: "Networking Fundamentals",
+        id: "module_networking_essentials",
+        slug: "networking-essentials",
+        title: "Networking Essentials",
         description: "Learn the core concepts behind network communication.",
         lessons: [
           {
@@ -23,6 +23,13 @@ const curriculum: Pathway[] = [
             access: "free",
             published: true,
             estimatedMinutes: 12,
+            sections: [
+              { id: "communication-decisions", label: "Communication decisions" },
+              { id: "packet-journey", label: "Interactive packet journey" },
+              { id: "wireshark-check", label: "Basic Wireshark check" },
+              { id: "knowledge-check", label: "Knowledge check" },
+              { id: "interview-scenario", label: "Interview scenario" },
+            ],
           },
           {
             id: "lesson_hosts_and_network_devices",
@@ -42,6 +49,40 @@ const curriculum: Pathway[] = [
             published: false,
             estimatedMinutes: 15,
           },
+        ],
+      },
+      {
+        id: "module_ethernet_and_local_networks",
+        slug: "ethernet-and-local-networks",
+        title: "Ethernet and Local Networks",
+        description: "Understand how local networks identify and separate devices.",
+        lessons: [
+          {
+            id: "lesson_arp_and_mac_learning",
+            slug: "arp-and-mac-learning",
+            title: "ARP and MAC Learning",
+            objective: "Describe how local networks learn device hardware addresses.",
+            access: "premium",
+            published: false,
+            estimatedMinutes: 14,
+          },
+          {
+            id: "lesson_switching_and_vlan_basics",
+            slug: "switching-and-vlan-basics",
+            title: "Switching and VLAN Basics",
+            objective: "Explain how switches forward traffic and VLANs separate networks.",
+            access: "premium",
+            published: false,
+            estimatedMinutes: 16,
+          },
+        ],
+      },
+      {
+        id: "module_ip_addressing_and_routing",
+        slug: "ip-addressing-and-routing",
+        title: "IP Addressing and Routing",
+        description: "Learn how networks assign addresses and reach remote destinations.",
+        lessons: [
           {
             id: "lesson_ipv4_addressing",
             slug: "ipv4-addressing",
@@ -61,24 +102,6 @@ const curriculum: Pathway[] = [
             estimatedMinutes: 18,
           },
           {
-            id: "lesson_arp_and_mac_learning",
-            slug: "arp-and-mac-learning",
-            title: "ARP and MAC Learning",
-            objective: "Describe how local networks learn device hardware addresses.",
-            access: "premium",
-            published: false,
-            estimatedMinutes: 14,
-          },
-          {
-            id: "lesson_switching_and_vlan_basics",
-            slug: "switching-and-vlan-basics",
-            title: "Switching and VLAN Basics",
-            objective: "Explain how switches forward traffic and VLANs separate networks.",
-            access: "premium",
-            published: false,
-            estimatedMinutes: 16,
-          },
-          {
             id: "lesson_routing_and_default_gateways",
             slug: "routing-and-default-gateways",
             title: "Routing and Default Gateways",
@@ -87,6 +110,14 @@ const curriculum: Pathway[] = [
             published: false,
             estimatedMinutes: 16,
           },
+        ],
+      },
+      {
+        id: "module_transport_and_network_services",
+        slug: "transport-and-network-services",
+        title: "Transport and Network Services",
+        description: "Explore transport protocols and the services applications rely on.",
+        lessons: [
           {
             id: "lesson_tcp_udp_and_ports",
             slug: "tcp-udp-and-ports",
@@ -105,15 +136,49 @@ const curriculum: Pathway[] = [
             published: false,
             estimatedMinutes: 20,
           },
+        ],
+      },
+      {
+        id: "module_network_security_fundamentals",
+        slug: "network-security-fundamentals",
+        title: "Network Security Fundamentals",
+        description: "Learn the essential controls that protect network traffic.",
+        lessons: [
           {
-            id: "lesson_nat_and_basic_firewall_concepts",
-            slug: "nat-and-basic-firewall-concepts",
-            title: "NAT and Basic Firewall Concepts",
-            objective: "Explain how NAT and firewalls control network connections.",
+            id: "lesson_nat_fundamentals",
+            slug: "nat-fundamentals",
+            title: "NAT Fundamentals",
+            objective: "Explain why networks translate addresses and ports.",
             access: "premium",
             published: false,
             estimatedMinutes: 15,
           },
+          {
+            id: "lesson_firewall_fundamentals",
+            slug: "firewall-fundamentals",
+            title: "Firewall Fundamentals",
+            objective: "Explain how stateful firewalls permit and deny network traffic.",
+            access: "premium",
+            published: false,
+            estimatedMinutes: 16,
+          },
+          {
+            id: "lesson_palo_alto_basics",
+            slug: "palo-alto-basics",
+            title: "Palo Alto Basics",
+            objective: "Identify the core components of a Palo Alto Networks firewall.",
+            access: "premium",
+            published: false,
+            estimatedMinutes: 18,
+          },
+        ],
+      },
+      {
+        id: "module_packet_analysis_and_troubleshooting",
+        slug: "packet-analysis-and-troubleshooting",
+        title: "Packet Analysis and Troubleshooting",
+        description: "Trace packets and reason about faults across a network path.",
+        lessons: [
           {
             id: "lesson_end_to_end_packet_journey",
             slug: "end-to-end-packet-journey",
