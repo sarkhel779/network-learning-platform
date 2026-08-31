@@ -7,6 +7,8 @@ type LessonContentKey = `${string}/${string}`;
 const lessonImports: Readonly<Record<LessonContentKey, LessonContentImport>> = {
   "networking-foundations/how-networks-communicate": () =>
     import("@/content/networking-foundations/how-networks-communicate.mdx"),
+  "networking-foundations/hosts-and-network-devices": () =>
+    import("@/content/networking-foundations/hosts-and-network-devices.mdx"),
 };
 
 export async function loadLessonContent(

@@ -53,7 +53,10 @@ describe("catalog repository", () => {
   it("lists only published lessons in module order", () => {
     expect(
       listPublishedLessons("networking-foundations").map((lesson) => lesson.slug),
-    ).toEqual(["how-networks-communicate"]);
+    ).toEqual([
+      "how-networks-communicate",
+      "hosts-and-network-devices",
+    ]);
   });
 
   it("finds a lesson by its stable public slug", () => {

@@ -26,6 +26,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "how-networks-communicate",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "hosts-and-network-devices",
+      },
     ]);
   });
 
