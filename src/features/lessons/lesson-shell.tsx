@@ -1,13 +1,15 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import type { LessonSummary } from "@/features/catalog/catalog.types";
+import type { LessonSummary, Pathway } from "@/features/catalog/catalog.types";
 
+import { CurriculumNavigation } from "./curriculum-navigation";
 import { LearningObjective } from "./learning-objective";
+import { LessonSectionNavigation } from "./lesson-section-navigation";
 
 type LessonShellProps = {
+  pathway: Pathway;
   lesson: LessonSummary;
-  pathwaySlug: string;
   previous?: LessonSummary;
   next?: LessonSummary;
   children: ReactNode;
@@ -34,8 +36,8 @@ function LessonDirection({ direction, lesson, pathwaySlug }: LessonDirectionProp
 }
 
 export function LessonShell({
+  pathway,
   lesson,
-  pathwaySlug,
   previous,
   next,
   children,
@@ -44,7 +46,14 @@ export function LessonShell({
 
   return (
     <main className="lesson-page" id="main-content">
+      <aside aria-label="Course contents" className="lesson-curriculum lesson-curriculum--desktop">
+        <CurriculumNavigation pathway={pathway} currentLessonSlug={lesson.slug} />
+      </aside>
       <article className="lesson-shell">
+        <details className="lesson-curriculum lesson-curriculum--mobile">
+          <summary>Course contents</summary>
+          <CurriculumNavigation pathway={pathway} currentLessonSlug={lesson.slug} />
+        </details>
         <header className="lesson-header">
           <p className="eyebrow">Lesson</p>
           <h1>{lesson.title}</h1>
@@ -55,15 +64,17 @@ export function LessonShell({
 
         <LearningObjective>{lesson.objective}</LearningObjective>
 
+        <LessonSectionNavigation sections={lesson.sections} />
+
         <div className="lesson-content">{children}</div>
 
         <nav aria-label="Lesson navigation" className="lesson-navigation">
           <LessonDirection
             direction="Previous"
             lesson={previous}
-            pathwaySlug={pathwaySlug}
+            pathwaySlug={pathway.slug}
           />
-          <LessonDirection direction="Next" lesson={next} pathwaySlug={pathwaySlug} />
+          <LessonDirection direction="Next" lesson={next} pathwaySlug={pathway.slug} />
         </nav>
       </article>
     </main>

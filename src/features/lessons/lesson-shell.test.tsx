@@ -1,6 +1,7 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
+import { getPathway } from "@/features/catalog/catalog.repository";
 import type { LessonSummary } from "@/features/catalog/catalog.types";
 
 import { loadLessonContent } from "./lesson-content.repository";
@@ -33,12 +34,14 @@ const nextLesson: LessonSummary = {
   published: false,
 };
 
+const pathway = getPathway("networking-foundations");
+
 describe("LessonShell", () => {
   it("renders the learning objective before lesson content", () => {
     render(
       <LessonShell
+        pathway={pathway}
         lesson={lesson}
-        pathwaySlug="networking-foundations"
         previous={previousLesson}
         next={nextLesson}
       >
@@ -59,8 +62,8 @@ describe("LessonShell", () => {
   it("links a published previous lesson", () => {
     render(
       <LessonShell
+        pathway={pathway}
         lesson={lesson}
-        pathwaySlug="networking-foundations"
         previous={previousLesson}
       >
         <p>Lesson content</p>
@@ -76,8 +79,8 @@ describe("LessonShell", () => {
   it("renders an unpublished next lesson as non-link guidance", () => {
     render(
       <LessonShell
+        pathway={pathway}
         lesson={lesson}
-        pathwaySlug="networking-foundations"
         next={nextLesson}
       >
         <p>Lesson content</p>
@@ -87,6 +90,43 @@ describe("LessonShell", () => {
     const navigation = screen.getByRole("navigation", { name: "Lesson navigation" });
     expect(within(navigation).getByText("Next: Switches — Coming later")).toBeVisible();
     expect(within(navigation).queryByRole("link", { name: /next: switches/i })).not.toBeInTheDocument();
+  });
+
+  it("renders the pathway in desktop and mobile course navigation", () => {
+    render(
+      <LessonShell pathway={pathway} lesson={pathway.modules[0].lessons[0]}>
+        <p>Lesson content</p>
+      </LessonShell>,
+    );
+
+    expect(screen.getByRole("complementary", { name: "Course contents" })).toBeVisible();
+    expect(screen.getAllByText("Networking Essentials")[0]).toBeVisible();
+    expect(screen.getByText("Course contents", { selector: "summary" })).toBeVisible();
+    expect(
+      screen.getAllByRole("link", { name: /how networks communicate/i })[0],
+    ).toHaveAttribute("aria-current", "page");
+  });
+
+  it("renders section navigation separately from the course curriculum", () => {
+    render(
+      <LessonShell
+        pathway={pathway}
+        lesson={{
+          ...lesson,
+          sections: [{ id: "communication-decisions", label: "Communication decisions" }],
+        }}
+      >
+        <p>Lesson content</p>
+      </LessonShell>,
+    );
+
+    const sectionNavigation = screen.getByRole("navigation", { name: "On this page" });
+    const curriculumNavigation = screen.getAllByRole("navigation", { name: "Course curriculum" })[0];
+
+    expect(
+      within(sectionNavigation).getByRole("link", { name: "Communication decisions" }),
+    ).toHaveAttribute("href", "#communication-decisions");
+    expect(curriculumNavigation.contains(sectionNavigation)).toBe(false);
   });
 });
 

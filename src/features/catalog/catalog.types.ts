@@ -1,5 +1,10 @@
 export type AccessLevel = "free" | "premium";
 
+export type LessonSection = {
+  id: string;
+  label: string;
+};
+
 export type LessonSummary = {
   id: string;
   slug: string;
@@ -8,6 +13,7 @@ export type LessonSummary = {
   access: AccessLevel;
   published: boolean;
   estimatedMinutes: number;
+  sections?: LessonSection[];
 };
 
 export type Module = {

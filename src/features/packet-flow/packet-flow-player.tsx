@@ -9,9 +9,13 @@ import { PlaybackControls } from "./playback-controls";
 import { createPlaybackState, getStepDelay, playbackReducer } from "./playback";
 import { useReducedMotion } from "./use-reduced-motion";
 
-type PacketFlowPlayerProps = Readonly<{ scenario: PacketFlowScenario }>;
+type PacketFlowPlayerProps = Readonly<{
+  scenario: PacketFlowScenario;
+  headingId?: string;
+  suppressHeading?: boolean;
+}>;
 
-export function PacketFlowPlayer({ scenario }: PacketFlowPlayerProps) {
+export function PacketFlowPlayer({ scenario, headingId, suppressHeading = false }: PacketFlowPlayerProps) {
   const reducedMotion = useReducedMotion();
   const [state, dispatch] = useReducer(
     playbackReducer,
@@ -21,6 +25,7 @@ export function PacketFlowPlayer({ scenario }: PacketFlowPlayerProps) {
   );
   const currentStep = scenario.steps[state.stepIndex];
   const atFinalStep = state.stepIndex === state.stepCount - 1;
+  const resolvedHeadingId = headingId ?? `${scenario.id}-title`;
 
   useEffect(() => {
     if (reducedMotion) dispatch({ type: "pause" });
@@ -34,8 +39,8 @@ export function PacketFlowPlayer({ scenario }: PacketFlowPlayerProps) {
   }, [atFinalStep, currentStep.durationMs, reducedMotion, state.playing, state.speed, state.stepIndex]);
 
   return (
-    <section className="packet-flow" aria-labelledby={`${scenario.id}-title`}>
-      <h2 id={`${scenario.id}-title`}>Interactive packet journey</h2>
+    <section className="packet-flow" aria-labelledby={resolvedHeadingId}>
+      {suppressHeading ? null : <h2 id={resolvedHeadingId}>Interactive packet journey</h2>}
       <p>{scenario.description}</p>
       <NetworkTopology scenario={scenario} step={currentStep} reducedMotion={reducedMotion} />
       <PlaybackControls state={state} dispatch={dispatch} reducedMotion={reducedMotion} />

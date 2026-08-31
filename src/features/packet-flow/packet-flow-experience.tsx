@@ -7,34 +7,60 @@ import { PacketFlowErrorBoundary, PacketFlowFallback } from "./packet-flow-error
 import { PacketFlowPlayer } from "./packet-flow-player";
 import { safeParsePacketFlowScenario } from "./packet-flow.schema";
 
-type PacketFlowExperienceProps = Readonly<{ scenario: unknown }>;
+type PacketFlowExperienceProps = Readonly<{
+  scenario: unknown;
+  headingId?: string;
+  suppressHeading?: boolean;
+}>;
 
 function subscribeToClientRender() {
   return () => undefined;
 }
 
-function ClientOnlyPacketFlowPlayer({ scenario }: { scenario: Parameters<typeof PacketFlowPlayer>[0]["scenario"] }) {
+function ClientOnlyPacketFlowPlayer({
+  scenario,
+  headingId,
+  suppressHeading,
+}: {
+  scenario: Parameters<typeof PacketFlowPlayer>[0]["scenario"];
+  headingId?: string;
+  suppressHeading?: boolean;
+}) {
   const canRenderInteractively = useSyncExternalStore(
     subscribeToClientRender,
     () => true,
     () => false,
   );
 
-  return canRenderInteractively ? <PacketFlowPlayer scenario={scenario} /> : <PacketFlowFallback />;
+  return canRenderInteractively ? (
+    <PacketFlowPlayer headingId={headingId} scenario={scenario} suppressHeading={suppressHeading} />
+  ) : (
+    <PacketFlowFallback />
+  );
 }
 
-export function PacketFlowExperience({ scenario }: PacketFlowExperienceProps) {
+export function PacketFlowExperience({ scenario, headingId, suppressHeading }: PacketFlowExperienceProps) {
   const parsedScenario = safeParsePacketFlowScenario(scenario);
 
   if (!parsedScenario.success) return <PacketFlowFallback />;
 
   return (
     <PacketFlowErrorBoundary>
-      <ClientOnlyPacketFlowPlayer scenario={parsedScenario.data} />
+      <ClientOnlyPacketFlowPlayer
+        headingId={headingId}
+        scenario={parsedScenario.data}
+        suppressHeading={suppressHeading}
+      />
     </PacketFlowErrorBoundary>
   );
 }
 
 export function NetworkCommunicationPacketFlow() {
-  return <PacketFlowExperience scenario={networkCommunicationScenario} />;
+  return (
+    <PacketFlowExperience
+      headingId="packet-journey"
+      scenario={networkCommunicationScenario}
+      suppressHeading
+    />
+  );
 }
