@@ -13,9 +13,17 @@ type PacketFlowPlayerProps = Readonly<{
   scenario: PacketFlowScenario;
   headingId?: string;
   suppressHeading?: boolean;
+  selectedDeviceId?: string;
+  onDeviceSelect?: (deviceId: string) => void;
 }>;
 
-export function PacketFlowPlayer({ scenario, headingId, suppressHeading = false }: PacketFlowPlayerProps) {
+export function PacketFlowPlayer({
+  scenario,
+  headingId,
+  suppressHeading = false,
+  selectedDeviceId,
+  onDeviceSelect,
+}: PacketFlowPlayerProps) {
   const reducedMotion = useReducedMotion();
   const [state, dispatch] = useReducer(
     playbackReducer,
@@ -26,6 +34,12 @@ export function PacketFlowPlayer({ scenario, headingId, suppressHeading = false 
   const currentStep = scenario.steps[state.stepIndex];
   const atFinalStep = state.stepIndex === state.stepCount - 1;
   const resolvedHeadingId = headingId ?? `${scenario.id}-title`;
+  const handleDeviceSelect = onDeviceSelect
+    ? (deviceId: string) => {
+        dispatch({ type: "pause" });
+        onDeviceSelect(deviceId);
+      }
+    : undefined;
 
   useEffect(() => {
     if (reducedMotion) dispatch({ type: "pause" });
@@ -42,7 +56,13 @@ export function PacketFlowPlayer({ scenario, headingId, suppressHeading = false 
     <section className="packet-flow" aria-labelledby={resolvedHeadingId}>
       {suppressHeading ? null : <h2 id={resolvedHeadingId}>Interactive packet journey</h2>}
       <p>{scenario.description}</p>
-      <NetworkTopology scenario={scenario} step={currentStep} reducedMotion={reducedMotion} />
+      <NetworkTopology
+        scenario={scenario}
+        step={currentStep}
+        reducedMotion={reducedMotion}
+        selectedDeviceId={selectedDeviceId}
+        onDeviceSelect={handleDeviceSelect}
+      />
       <PlaybackControls state={state} dispatch={dispatch} reducedMotion={reducedMotion} />
       <div className="packet-flow-details">
         <section className="packet-flow-progress" aria-live="polite" aria-atomic="true">

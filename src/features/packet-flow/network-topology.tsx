@@ -4,6 +4,8 @@ type NetworkTopologyProps = Readonly<{
   scenario: PacketFlowScenario;
   step: PacketFlowStep;
   reducedMotion: boolean;
+  selectedDeviceId?: string;
+  onDeviceSelect?: (deviceId: string) => void;
 }>;
 
 function isLinkActive(linkId: string, step: PacketFlowStep): boolean {
@@ -32,7 +34,13 @@ function packetKindLabel(label: string): string {
   return label;
 }
 
-export function NetworkTopology({ scenario, step, reducedMotion }: NetworkTopologyProps) {
+export function NetworkTopology({
+  scenario,
+  step,
+  reducedMotion,
+  selectedDeviceId,
+  onDeviceSelect,
+}: NetworkTopologyProps) {
   const devicesById = new Map(scenario.devices.map((device) => [device.id, device]));
   const packetLink = step.packet
     ? scenario.links.find(
@@ -104,6 +112,21 @@ export function NetworkTopology({ scenario, step, reducedMotion }: NetworkTopolo
         <g className="network-topology__devices">
           {scenario.devices.map((device) => {
             const active = step.activeDeviceIds.includes(device.id);
+            const selectableProps = onDeviceSelect
+              ? {
+                  role: "button",
+                  tabIndex: 0,
+                  "aria-label": `Explore ${device.label}`,
+                  "aria-pressed": selectedDeviceId === device.id,
+                  onClick: () => onDeviceSelect(device.id),
+                  onKeyDown: (event: React.KeyboardEvent<SVGGElement>) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      onDeviceSelect(device.id);
+                    }
+                  },
+                } as const
+              : {};
             return (
               <g
                 key={device.id}
@@ -111,6 +134,7 @@ export function NetworkTopology({ scenario, step, reducedMotion }: NetworkTopolo
                 data-active={active ? "true" : undefined}
                 data-device-id={device.id}
                 transform={`translate(${device.x} ${device.y})`}
+                {...selectableProps}
               >
                 <circle r="26" />
                 <text textAnchor="middle" y="42">{device.label}</text>

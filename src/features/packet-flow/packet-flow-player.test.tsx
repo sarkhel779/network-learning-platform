@@ -296,4 +296,35 @@ describe("PacketFlowPlayer", () => {
 
     expect(container.querySelector("[data-packet-marker]")).toHaveAttribute("data-link-id", "active-client-gateway");
   });
+
+  it("pauses playback and reports an optionally selected topology device", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const onDeviceSelect = vi.fn();
+    const { rerender } = render(
+      <PacketFlowPlayer scenario={scenario} onDeviceSelect={onDeviceSelect} />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Explore Client" }));
+
+    expect(onDeviceSelect).toHaveBeenCalledWith("client");
+    expect(screen.getByRole("button", { name: "Play" })).toBeEnabled();
+
+    rerender(
+      <PacketFlowPlayer
+        scenario={scenario}
+        onDeviceSelect={onDeviceSelect}
+        selectedDeviceId="client"
+      />,
+    );
+    expect(screen.getByRole("button", { name: "Explore Client" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+  });
+
+  it("keeps topology devices non-interactive when no selection callback is supplied", () => {
+    render(<PacketFlowPlayer scenario={scenario} />);
+
+    expect(screen.queryByRole("button", { name: "Explore Client" })).not.toBeInTheDocument();
+  });
 });
