@@ -75,12 +75,37 @@ a { color: inherit; }
 .footer-content { font-size: 0.875rem; }
 .footer-content p { margin: 0; }
 
-.lesson-page { width: min(100% - 2rem, 52rem); margin: 0 auto; padding: clamp(3rem, 8vw, 6rem) 0; }
+.lesson-page { display: grid; width: min(100% - 2rem, 80rem); gap: clamp(1.5rem, 4vw, 3rem); margin: 0 auto; padding: clamp(2rem, 6vw, 5rem) 0; }
+.lesson-shell { min-width: 0; }
+.lesson-curriculum--desktop { display: none; }
+.lesson-curriculum--mobile { display: block; margin-bottom: 1.5rem; }
+.lesson-curriculum--mobile summary { cursor: pointer; font-weight: 700; }
+.lesson-curriculum--mobile[open] summary { margin-bottom: 1rem; }
+.curriculum-navigation ol { margin: 0; padding: 0; list-style: none; }
+.curriculum-navigation__module + .curriculum-navigation__module { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.curriculum-navigation__module h2 { margin: 0 0 0.75rem; font-size: 1rem; line-height: 1.25; }
+.curriculum-navigation__lessons { display: grid; gap: 0.5rem; }
+.curriculum-navigation__lesson > a, .curriculum-navigation__lesson > div { display: grid; gap: 0.2rem; padding: 0.65rem 0.75rem; overflow-wrap: anywhere; border-inline-start: 0.25rem solid transparent; border-radius: 0.25rem; color: var(--muted); text-decoration: none; }
+.curriculum-navigation__lesson > a:hover { color: var(--foreground); text-decoration: underline; }
+.curriculum-navigation__lesson > a span:first-child, .curriculum-navigation__lesson > div span:first-child { color: var(--foreground); font-weight: 700; }
+.curriculum-navigation__lesson > a span:not(:first-child), .curriculum-navigation__lesson > div span:not(:first-child) { font-size: 0.875rem; }
+.curriculum-navigation [aria-current="page"] { border-inline-start-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--background)); color: var(--foreground); }
+.curriculum-navigation [aria-current="page"] span:last-child { font-weight: 700; }
+@media (min-width: 64rem) {
+  .lesson-page { grid-template-columns: minmax(15rem, 18rem) minmax(0, 52rem); }
+  .lesson-curriculum--desktop { display: block; position: sticky; top: 1.5rem; align-self: start; max-height: calc(100vh - 3rem); overflow-y: auto; }
+  .lesson-curriculum--mobile { display: none; }
+}
 .lesson-header { margin-bottom: 2rem; }
 .lesson-header h1 { max-width: 18ch; }
 .lesson-byline { color: var(--muted); font-weight: 700; }
 .lesson-content { margin-top: 2rem; }
 .lesson-content h2 { margin-top: 2.5rem; }
+.lesson-section-navigation { margin: 2rem 0; padding: 1.25rem; border: 1px solid var(--border); border-radius: 0.5rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); }
+.lesson-section-navigation h2 { margin: 0; font-size: 1.125rem; }
+.lesson-section-navigation ol { display: grid; gap: 0.5rem; margin: 0.75rem 0 0; padding-left: 1.25rem; }
+.lesson-section-navigation a { color: var(--accent); font-weight: 700; }
+.lesson-section-navigation a:hover { text-decoration-thickness: 0.15em; }
 .learning-block { margin: 2rem 0; padding: 1.25rem; border: 1px solid var(--border); border-radius: 0.5rem; }
 .learning-block h2, .learning-block h3, .learning-block p:first-child { margin-top: 0; }
 .learning-objective { border-left: 0.35rem solid var(--accent); }

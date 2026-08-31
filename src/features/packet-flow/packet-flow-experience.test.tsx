@@ -21,10 +21,28 @@ describe("packet-flow lesson integration", () => {
   it("renders the network communication journey with its first step and controls", () => {
     render(<NetworkCommunicationPacketFlow />);
 
-    expect(screen.getByRole("heading", { name: "Interactive packet journey" })).toBeVisible();
     expect(screen.getByText(/Step 1 of \d+/)).toBeVisible();
     expect(screen.getByRole("button", { name: "Previous" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Next" })).toBeVisible();
+  });
+
+  it("uses the MDX lesson heading as the packet player accessible name", () => {
+    const { container } = render(
+      <>
+        <h2 id="packet-journey">Interactive packet journey</h2>
+        <NetworkCommunicationPacketFlow />
+      </>,
+    );
+
+    expect(screen.getAllByRole("heading", { level: 2, name: "Interactive packet journey" })).toHaveLength(1);
+    expect(screen.getByRole("heading", { level: 2, name: "Interactive packet journey" })).toHaveAttribute(
+      "id",
+      "packet-journey",
+    );
+    expect(container.querySelector("section.packet-flow")).toHaveAttribute(
+      "aria-labelledby",
+      "packet-journey",
+    );
   });
 
   it("shows the static-lesson fallback without player controls for an invalid scenario", () => {

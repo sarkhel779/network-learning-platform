@@ -14,7 +14,7 @@ describe("PathwayOverview", () => {
       screen.getByRole("heading", { name: "Networking Foundations" }),
     ).toBeVisible();
     expect(screen.getByText(/complete beginners/i)).toBeVisible();
-    expect(screen.getAllByRole("listitem")).toHaveLength(12);
+    expect(screen.getAllByRole("listitem")).toHaveLength(14);
   });
 
   it("links published lessons and marks unpublished lessons as coming later", () => {

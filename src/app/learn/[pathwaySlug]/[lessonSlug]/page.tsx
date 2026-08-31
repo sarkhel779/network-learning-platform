@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import {
   getAdjacentLessons,
   getLesson,
+  getPathway,
   listPathways,
   listPublishedLessons,
 } from "@/features/catalog/catalog.repository";
@@ -60,6 +61,7 @@ export async function generateMetadata({ params }: LessonPageProps): Promise<Met
 export default async function LessonPage({ params }: LessonPageProps) {
   const { pathwaySlug, lessonSlug } = await params;
   const lesson = findPublishedLesson(pathwaySlug, lessonSlug);
+  const pathway = getPathway(pathwaySlug);
   const { previous, next } = getAdjacentLessons(pathwaySlug, lessonSlug);
 
   let LessonContent: LessonContentModule["default"];
@@ -75,8 +77,8 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
   return (
     <LessonShell
+      pathway={pathway}
       lesson={lesson}
-      pathwaySlug={pathwaySlug}
       previous={previous}
       next={next}
     >

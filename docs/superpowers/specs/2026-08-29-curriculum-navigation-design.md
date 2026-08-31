@@ -1,7 +1,7 @@
 # Curriculum Navigation and Hydration Repair Design
 
-**Date:** 2026-08-29  
-**Status:** Approved design, pending implementation plan  
+**Date:** 2026-08-29
+**Status:** Approved design, pending implementation plan
 **Scope:** Phase 1 only: repair the current lesson hydration error and introduce scalable curriculum and lesson navigation. The `Hosts and Network Devices` lesson is Phase 2 and is not implemented by this specification.
 
 ## Purpose
