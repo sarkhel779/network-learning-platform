@@ -45,7 +45,16 @@ a { color: inherit; }
 .site-header { border-width: 0 0 1px; }
 .site-footer { border-width: 1px 0 0; }
 .site-chrome { display: flex; width: min(100% - 2rem, var(--content-width)); flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; margin: 0 auto; padding: 1rem 0; }
-.site-logo { font-weight: 800; text-decoration: none; }
+.site-logo { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--foreground); text-decoration: none; }
+.site-logo__mark { position: relative; display: inline-grid; width: 2rem; height: 2rem; place-items: center; border: 2px solid var(--accent); border-radius: 0.45rem; background: color-mix(in srgb, var(--accent) 10%, var(--background)); transform: rotate(-4deg); }
+.site-logo__mark::before, .site-logo__mark::after, .site-logo__mark i { position: absolute; display: block; content: ""; }
+.site-logo__mark::before { left: 0.35rem; width: 0.42rem; height: 0.42rem; border-radius: 50%; background: var(--accent); box-shadow: 0.85rem -0.45rem 0 var(--accent), 0.85rem 0.45rem 0 var(--accent); }
+.site-logo__mark::after { left: 0.68rem; width: 0.75rem; height: 1px; background: var(--accent); }
+.site-logo__mark i { display: none; }
+.site-logo__wordmark { font-family: "Arial Narrow", "Aptos Display", "Segoe UI", sans-serif; font-size: 1.35rem; font-weight: 900; letter-spacing: -0.055em; line-height: 1; }
+.site-logo__packet { color: var(--foreground); }
+.site-logo__secrets { color: var(--accent); }
+.site-logo:hover .site-logo__wordmark { text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 65%, transparent); text-underline-offset: 0.25rem; }
 .site-nav, .footer-nav { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; color: var(--muted); }
 .site-nav a:hover, .footer-nav a:hover { text-decoration: underline; }
 .skip-link { position: absolute; top: 0.5rem; left: 0.5rem; z-index: 1; padding: 0.5rem 0.75rem; background: var(--accent); color: var(--accent-foreground); transform: translateY(-150%); }
@@ -137,14 +146,16 @@ a { color: inherit; }
 .packet-flow-topology, .network-topology svg { display: block; width: 100%; height: auto; overflow: visible; border: 1px solid var(--border); border-radius: 0.5rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
 .network-topology__links { stroke: var(--muted); stroke-width: 3; }
 .network-topology__link[data-active="true"] { stroke: var(--accent); stroke-width: 6; stroke-dasharray: 10 6; }
-.network-topology__device circle { fill: var(--background); stroke: var(--muted); stroke-width: 3; }
-.network-topology__device[data-active="true"] circle { stroke: var(--accent); stroke-width: 6; }
+.network-topology__device-symbol { fill: none; stroke: var(--muted); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.network-topology__device-surface { fill: var(--background); }
+.network-topology__device[data-active="true"] .network-topology__device-symbol { stroke: var(--accent); stroke-width: 5; }
 .network-topology__device text { fill: var(--foreground); font-size: 1.1rem; font-weight: 700; }
 .network-topology__device .network-topology__device-role { fill: var(--muted); font-size: 0.75rem; font-weight: 400; }
 .network-topology__device[role="button"] { cursor: pointer; }
-.network-topology__device[role="button"]:hover circle,
-.network-topology__device[role="button"]:focus-visible circle { stroke: var(--accent); stroke-width: 5; }
-.network-topology__device[aria-pressed="true"] circle { fill: color-mix(in srgb, var(--accent) 12%, var(--background)); stroke: var(--accent); stroke-width: 6; }
+.network-topology__device[role="button"]:hover .network-topology__device-symbol,
+.network-topology__device[role="button"]:focus-visible .network-topology__device-symbol { stroke: var(--accent); stroke-width: 5; }
+.network-topology__device[aria-pressed="true"] .network-topology__device-surface { fill: color-mix(in srgb, var(--accent) 12%, var(--background)); }
+.network-topology__device[aria-pressed="true"] .network-topology__device-symbol { stroke: var(--accent); stroke-width: 5; }
 .network-topology__packet-marker { fill: var(--accent); stroke: var(--foreground); stroke-width: 2; }
 .network-topology__packet-marker--broadcast { fill: #b45309; stroke-width: 3; }
 .network-topology__packet-marker text { fill: var(--accent-foreground); font-size: 0.65rem; font-weight: 700; }

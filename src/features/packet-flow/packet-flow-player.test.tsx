@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NetworkTopology } from "./network-topology";
 import { parsePacketFlowScenario } from "./packet-flow.schema";
 import { PacketFlowPlayer } from "./packet-flow-player";
+import { hostsAndDevicesLab } from "../hosts-and-devices/hosts-and-devices.data";
 
 const motionPreference = vi.hoisted(() => ({ reduced: false }));
 
@@ -326,5 +327,19 @@ describe("PacketFlowPlayer", () => {
     render(<PacketFlowPlayer scenario={scenario} />);
 
     expect(screen.queryByRole("button", { name: "Explore Client" })).not.toBeInTheDocument();
+  });
+
+  it("renders recognizable network symbols for each device category", () => {
+    const lessonScenario = hostsAndDevicesLab.journeys[2].scenario;
+    const { container } = render(
+      <NetworkTopology scenario={lessonScenario} step={lessonScenario.steps[0]} reducedMotion />,
+    );
+
+    expect(container.querySelector('[data-device-id="wired-pc"] [data-device-symbol="host"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-device-id="switch"] [data-device-symbol="switch"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-device-id="gateway"] [data-device-symbol="router"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-device-id="access-point"] [data-device-symbol="access-point"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-device-id="firewall"] [data-device-symbol="firewall"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-device-id="remote-server"] [data-device-symbol="server"]')).toBeInTheDocument();
   });
 });
