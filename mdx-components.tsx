@@ -8,6 +8,7 @@ import { LearningObjective } from "@/features/lessons/learning-objective";
 import { PremiumPreview } from "@/features/lessons/premium-preview";
 import { WiresharkCheck } from "@/features/lessons/wireshark-check";
 import { NetworkCommunicationPacketFlow } from "@/features/packet-flow/packet-flow-experience";
+import { NetworkDeviceSymbol } from "@/features/packet-flow/network-device-symbol";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -17,6 +18,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     KnowledgeCheck,
     LearningObjective,
     NetworkCommunicationPacketFlow,
+    NetworkDeviceSymbol,
     PremiumPreview,
     WiresharkCheck,
     ...components,

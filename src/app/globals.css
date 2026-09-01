@@ -1,5 +1,5 @@
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
   --background: #f8fafc;
   --foreground: #172033;
   --muted: #526077;
@@ -11,7 +11,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --background: #101827;
     --foreground: #f5f7fb;
     --muted: #b4bed0;
@@ -21,6 +21,19 @@
     --focus-ring: #ffd27a;
   }
 }
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #101827;
+  --foreground: #f5f7fb;
+  --muted: #b4bed0;
+  --accent: #80b1ff;
+  --accent-foreground: #102044;
+  --border: #33425d;
+  --focus-ring: #ffd27a;
+}
+
+:root[data-theme="light"] { color-scheme: light; }
 
 * {
   box-sizing: border-box;
@@ -56,6 +69,9 @@ a { color: inherit; }
 .site-logo__secrets { color: var(--accent); }
 .site-logo:hover .site-logo__wordmark { text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 65%, transparent); text-underline-offset: 0.25rem; }
 .site-nav, .footer-nav { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; color: var(--muted); }
+.site-header__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; }
+.theme-control { display: inline-flex; min-height: 2.25rem; align-items: center; gap: 0.35rem; padding: 0.2rem 0.35rem; border: 1px solid var(--border); border-radius: 999px; background: color-mix(in srgb, var(--accent) 6%, var(--background)); color: var(--foreground); }
+.theme-control select { border: 0; background: transparent; color: inherit; font: inherit; font-size: 0.875rem; font-weight: 700; cursor: pointer; }
 .site-nav a:hover, .footer-nav a:hover { text-decoration: underline; }
 .skip-link { position: absolute; top: 0.5rem; left: 0.5rem; z-index: 1; padding: 0.5rem 0.75rem; background: var(--accent); color: var(--accent-foreground); transform: translateY(-150%); }
 .skip-link:focus { transform: translateY(0); }
@@ -133,7 +149,7 @@ a { color: inherit; }
 .lesson-navigation { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem 2rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
 .network-journey { margin: 2rem 0; }
 .network-journey-diagram { display: block; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 0.75rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
-.network-node rect { fill: var(--background); stroke: var(--accent); stroke-width: 3; }
+.network-journey .network-topology__device-symbol { stroke: var(--accent); }
 .network-node text { fill: var(--foreground); font-size: 1.1rem; font-weight: 700; }
 .network-node .network-node-role { fill: var(--muted); font-size: 0.75rem; font-weight: 400; }
 .network-link { stroke: var(--accent); stroke-width: 4; }

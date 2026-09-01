@@ -1,4 +1,5 @@
 import { cleanup, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { metadata } from "@/app/layout";
@@ -26,5 +27,21 @@ describe("Packetsecrets site branding", () => {
   it("uses the production brand and domain in page metadata", () => {
     expect(metadata.title).toBe("Packetsecrets");
     expect(metadata.metadataBase?.href).toBe("https://packetsecrets.com/");
+  });
+
+  it("lets learners choose and retain system, light, or dark appearance", async () => {
+    const user = userEvent.setup();
+    render(<SiteHeader />);
+
+    const themeControl = screen.getByRole("combobox", { name: "Color theme" });
+    expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual([
+      "System",
+      "Light",
+      "Dark",
+    ]);
+
+    await user.selectOptions(themeControl, "dark");
+    expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+    expect(localStorage.getItem("packetsecrets-theme")).toBe("dark");
   });
 });

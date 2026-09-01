@@ -14,28 +14,28 @@
         <path d="M0,0 L8,4 L0,8 Z" className="network-arrowhead" />
       </marker>
     </defs>
-    <line className="network-link" markerEnd="url(#arrowhead)" x1="150" x2="250" y1="105" y2="105" />
-    <line className="network-link" markerEnd="url(#arrowhead)" x1="350" x2="450" y1="105" y2="105" />
-    <line className="network-link" markerEnd="url(#arrowhead)" x1="550" x2="650" y1="105" y2="105" />
+    <line className="network-link" markerEnd="url(#arrowhead)" x1="130" x2="260" y1="100" y2="100" />
+    <line className="network-link" markerEnd="url(#arrowhead)" x1="340" x2="460" y1="100" y2="100" />
+    <line className="network-link" markerEnd="url(#arrowhead)" x1="535" x2="670" y1="100" y2="100" />
     <g className="network-node">
-      <rect height="90" rx="12" width="110" x="40" y="60" />
-      <text textAnchor="middle" x="95" y="105">PC</text>
-      <text className="network-node-role" textAnchor="middle" x="95" y="130">source host</text>
+      <NetworkDeviceSymbol kind="host" transform="translate(95 100)" />
+      <text textAnchor="middle" x="95" y="150">PC</text>
+      <text className="network-node-role" textAnchor="middle" x="95" y="168">source host</text>
     </g>
     <g className="network-node">
-      <rect height="90" rx="12" width="100" x="250" y="60" />
-      <text textAnchor="middle" x="300" y="105">Switch</text>
-      <text className="network-node-role" textAnchor="middle" x="300" y="130">local link</text>
+      <NetworkDeviceSymbol kind="switch" transform="translate(300 100)" />
+      <text textAnchor="middle" x="300" y="150">Switch</text>
+      <text className="network-node-role" textAnchor="middle" x="300" y="168">local link</text>
     </g>
     <g className="network-node">
-      <rect height="90" rx="12" width="100" x="450" y="60" />
-      <text textAnchor="middle" x="500" y="105">Router</text>
-      <text className="network-node-role" textAnchor="middle" x="500" y="130">between networks</text>
+      <NetworkDeviceSymbol kind="router" transform="translate(500 100)" />
+      <text textAnchor="middle" x="500" y="150">Router</text>
+      <text className="network-node-role" textAnchor="middle" x="500" y="168">between networks</text>
     </g>
     <g className="network-node">
-      <rect height="90" rx="12" width="110" x="650" y="60" />
-      <text textAnchor="middle" x="705" y="105">Server</text>
-      <text className="network-node-role" textAnchor="middle" x="705" y="130">destination host</text>
+      <NetworkDeviceSymbol kind="server" transform="translate(705 100)" />
+      <text textAnchor="middle" x="705" y="150">Server</text>
+      <text className="network-node-role" textAnchor="middle" x="705" y="168">destination host</text>
     </g>
     <text className="network-link-label" textAnchor="middle" x="400" y="205">Each link carries a frame; the IP packet is forwarded across the route.</text>
   </svg>

@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { ThemeToggle } from "./theme-toggle";
+
 export function SiteHeader() {
   return (
     <header className="site-header">
@@ -9,10 +11,13 @@ export function SiteHeader() {
           <span className="site-logo__mark" aria-hidden="true"><i /><i /><i /></span>
           <span className="site-logo__wordmark"><span className="site-logo__packet">Packet</span><span className="site-logo__secrets">secrets</span></span>
         </Link>
-        <nav aria-label="Primary navigation" className="site-nav">
-          <Link href="/paths/networking-foundations">Learning Paths</Link>
-          <Link href="/pricing">Pricing</Link>
-        </nav>
+        <div className="site-header__actions">
+          <nav aria-label="Primary navigation" className="site-nav">
+            <Link href="/paths/networking-foundations">Learning Paths</Link>
+            <Link href="/pricing">Pricing</Link>
+          </nav>
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

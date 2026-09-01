@@ -30,6 +30,9 @@ test("presents an accessible static network journey and packet evidence", async 
   await expect(
     page.getByRole("img", { name: "Data path from a PC through a switch and router to a server" }),
   ).toBeVisible();
+  for (const symbol of ["host", "switch", "router", "server"]) {
+    await expect(page.locator(`.network-journey [data-device-symbol="${symbol}"]`)).toHaveCount(1);
+  }
   await expect(
     page.getByText(
       "The packet keeps the PC's source IP address and the server's destination IP address.",
