@@ -7,7 +7,10 @@ test("completes the representative beginner lesson", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Basic Wireshark check" })).toBeVisible();
   await expect(page.getByRole("group", { name: /knowledge check/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Interview scenario" })).toBeVisible();
-  await expect(page.getByText("Next: Hosts and Network Devices — Coming later")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Next: Hosts and Network Devices" })).toHaveAttribute(
+    "href",
+    "/learn/networking-foundations/hosts-and-network-devices",
+  );
 
   for (const anchor of [
     "communication-decisions",
@@ -61,7 +64,11 @@ test("shows the complete curriculum and current lesson on desktop", async ({ pag
     .locator(".curriculum-navigation__lesson")
     .filter({ hasText: "Hosts and Network Devices" });
   await expect(nextLesson.getByText("Hosts and Network Devices", { exact: true })).toBeVisible();
-  await expect(nextLesson.getByText("Coming later", { exact: true })).toBeVisible();
+  await expect(nextLesson.getByText("Free", { exact: true })).toBeVisible();
+  await expect(nextLesson.getByRole("link")).toHaveAttribute(
+    "href",
+    "/learn/networking-foundations/hosts-and-network-devices",
+  );
 
   const premiumLesson = desktop
     .locator(".curriculum-navigation__lesson")
@@ -116,7 +123,11 @@ test("keeps the complete lesson readable without JavaScript", async ({ browser }
     await expect(
       upcomingLesson.getByText("Hosts and Network Devices", { exact: true }),
     ).toBeVisible();
-    await expect(upcomingLesson.getByText("Coming later", { exact: true })).toBeVisible();
+    await expect(upcomingLesson.getByText("Free", { exact: true })).toBeVisible();
+    await expect(upcomingLesson.getByRole("link")).toHaveAttribute(
+      "href",
+      "/learn/networking-foundations/hosts-and-network-devices",
+    );
 
     await expect(page.getByRole("heading", { level: 1, name: "How Networks Communicate" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Learning objective" })).toBeVisible();
@@ -157,7 +168,7 @@ test("hydrates the lesson without invalid HTML or React errors", async ({ page }
 
   await page.goto("/learn/networking-foundations/how-networks-communicate");
   await expect(page.getByRole("heading", { level: 1, name: "How Networks Communicate" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Next" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Next", exact: true })).toBeVisible();
   await expect(page.locator("section.packet-flow .network-topology svg")).toBeVisible();
   await expect(page.locator("h2#packet-journey")).toHaveCount(1);
 

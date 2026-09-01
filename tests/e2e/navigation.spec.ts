@@ -33,7 +33,7 @@ test("unknown and unpublished lessons return not found", async ({ request }) => 
   expect(unknownResponse.status()).toBe(404);
 
   const unpublishedResponse = await request.get(
-    "/learn/networking-foundations/hosts-and-network-devices",
+    "/learn/networking-foundations/osi-and-tcp-ip-models",
   );
   expect(unpublishedResponse.status()).toBe(404);
 });

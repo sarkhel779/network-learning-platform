@@ -141,6 +141,10 @@ a { color: inherit; }
 .network-topology__device[data-active="true"] circle { stroke: var(--accent); stroke-width: 6; }
 .network-topology__device text { fill: var(--foreground); font-size: 1.1rem; font-weight: 700; }
 .network-topology__device .network-topology__device-role { fill: var(--muted); font-size: 0.75rem; font-weight: 400; }
+.network-topology__device[role="button"] { cursor: pointer; }
+.network-topology__device[role="button"]:hover circle,
+.network-topology__device[role="button"]:focus-visible circle { stroke: var(--accent); stroke-width: 5; }
+.network-topology__device[aria-pressed="true"] circle { fill: color-mix(in srgb, var(--accent) 12%, var(--background)); stroke: var(--accent); stroke-width: 6; }
 .network-topology__packet-marker { fill: var(--accent); stroke: var(--foreground); stroke-width: 2; }
 .network-topology__packet-marker--broadcast { fill: #b45309; stroke-width: 3; }
 .network-topology__packet-marker text { fill: var(--accent-foreground); font-size: 0.65rem; font-weight: 700; }
@@ -160,6 +164,34 @@ a { color: inherit; }
 .packet-inspector dd { min-width: 0; margin: 0; overflow-wrap: anywhere; }
 .packet-inspector [data-changed="true"] { border-left: 0.25rem solid var(--accent); padding-left: 0.65rem; color: var(--accent); font-weight: 700; }
 .packet-inspector [data-changed="true"] span { display: block; margin-top: 0.2rem; color: var(--foreground); font-size: 0.875rem; }
+
+.hosts-devices-experience { margin: 2rem 0; }
+.journey-selector { margin: 0 0 1rem; padding: clamp(1rem, 4vw, 1.5rem); border: 1px solid var(--border); border-radius: 0.75rem; }
+.journey-selector legend { padding: 0 0.4rem; font-size: 1.125rem; font-weight: 700; }
+.journey-selector__choices { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
+.journey-selector__choices label { display: flex; align-items: flex-start; gap: 0.65rem; min-width: 0; padding: 0.9rem; border: 1px solid var(--border); border-radius: 0.5rem; cursor: pointer; }
+.journey-selector__choices label:has(input:checked) { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--background)); }
+.journey-selector__choices input { flex: 0 0 auto; margin-top: 0.25rem; }
+.journey-selector__choices span { display: grid; min-width: 0; gap: 0.25rem; }
+.journey-selector__choices small { color: var(--muted); line-height: 1.4; }
+.device-details { margin: 1rem 0 2rem; padding: clamp(1rem, 4vw, 1.5rem); border: 2px solid var(--accent); border-radius: 0.75rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
+.device-details__header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.device-details__header h3 { margin: 0.15rem 0 0; }
+.device-details__header button { min-height: 2.5rem; padding: 0.45rem 0.75rem; border: 1px solid var(--accent); border-radius: 0.35rem; background: var(--background); color: var(--foreground); font: inherit; font-weight: 700; cursor: pointer; }
+.device-details__category { margin: 0; color: var(--accent); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.device-details__explanations { margin: 1.25rem 0; }
+.device-details__explanations > div { display: grid; grid-template-columns: minmax(8rem, 0.35fr) minmax(0, 1fr); gap: 0.5rem 1rem; padding: 0.75rem 0; border-top: 1px solid var(--border); }
+.device-details__explanations dt { font-weight: 700; }
+.device-details__explanations dd { min-width: 0; margin: 0; overflow-wrap: anywhere; }
+.device-details summary { cursor: pointer; font-weight: 700; }
+
+@media (min-width: 46rem) {
+  .journey-selector__choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 35rem) {
+  .device-details__explanations > div { grid-template-columns: minmax(0, 1fr); }
+}
 
 @media (min-width: 56rem) {
   .packet-flow-details { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }

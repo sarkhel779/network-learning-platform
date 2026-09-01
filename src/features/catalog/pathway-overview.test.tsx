@@ -27,10 +27,14 @@ describe("PathwayOverview", () => {
       "href",
       "/learn/networking-foundations/how-networks-communicate",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(1);
+    expect(screen.getByRole("link", { name: /hosts and network devices/i })).toHaveAttribute(
+      "href",
+      "/learn/networking-foundations/hosts-and-network-devices",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(2);
 
     const unpublishedLesson = screen
-      .getByRole("heading", { name: /hosts and network devices/i })
+      .getByRole("heading", { name: /osi and tcp\/ip models/i })
       .closest("li");
     expect(unpublishedLesson).not.toBeNull();
     expect(within(unpublishedLesson!).getByText("Coming later")).toBeVisible();

@@ -17,8 +17,12 @@ test("shows the networking pathway and its published lesson link", async ({ page
   ]);
 
   const lessonLinks = page.locator(".lesson-list h3 a");
-  await expect(lessonLinks).toHaveCount(1);
+  await expect(lessonLinks).toHaveCount(2);
   const publishedLessonLink = lessonLinks.filter({ hasText: "How Networks Communicate" });
+  await expect(lessonLinks.filter({ hasText: "Hosts and Network Devices" })).toHaveAttribute(
+    "href",
+    "/learn/networking-foundations/hosts-and-network-devices",
+  );
 
   await expect(publishedLessonLink).toHaveAttribute(
     "href",
