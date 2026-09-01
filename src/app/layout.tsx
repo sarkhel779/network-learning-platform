@@ -7,7 +7,8 @@ import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Network Learning Platform",
+  metadataBase: new URL("https://packetsecrets.com"),
+  title: "Packetsecrets",
   description: "A beginner-friendly path to understanding computer networks.",
 };
 

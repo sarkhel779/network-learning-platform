@@ -1,5 +1,5 @@
 {
-  "name": "network-learning-platform",
+  "name": "packetsecrets",
   "private": true,
   "engines": {
     "node": ">=22"
