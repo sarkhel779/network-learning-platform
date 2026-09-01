@@ -20,7 +20,7 @@ const devices = [
   { id: "wired-pc", label: "Wired PC", role: "host", x: 70, y: 70 },
   { id: "wireless-laptop", label: "Wireless laptop", role: "host", x: 70, y: 190 },
   { id: "access-point", label: "Access point", role: "wireless bridge", x: 205, y: 190 },
-  { id: "switch", label: "Switch", role: "LAN forwarding", x: 330, y: 120 },
+  { id: "switch", label: "Layer 2 switch", role: "LAN forwarding", x: 330, y: 120 },
   { id: "gateway", label: "Gateway", role: "router", x: 475, y: 75 },
   { id: "firewall", label: "Firewall", role: "security boundary", x: 610, y: 75 },
   { id: "local-server", label: "Local server", role: "LAN host", x: 475, y: 190 },
