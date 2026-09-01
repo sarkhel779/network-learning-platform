@@ -77,4 +77,23 @@ describe("hosts and devices lesson data", () => {
       }
     }
   });
+
+  it("uses the actual link endpoint MAC addresses across remote outbound and return hops", () => {
+    const scenario = hostsAndDevicesLab.journeys.find(({ id }) => id === "wired-remote")!.scenario;
+    const expected = [
+      ["wired-remote-outbound-2", "02:00:00:00:10:10", "02:00:00:00:10:01"],
+      ["wired-remote-outbound-3", "02:00:00:00:10:01", "02:00:00:00:20:01"],
+      ["wired-remote-outbound-4", "02:00:00:00:20:01", "02:00:00:00:71:50"],
+      ["wired-remote-return-1", "02:00:00:00:71:50", "02:00:00:00:20:01"],
+      ["wired-remote-return-2", "02:00:00:00:20:01", "02:00:00:00:10:01"],
+      ["wired-remote-return-3", "02:00:00:00:10:01", "02:00:00:00:10:10"],
+    ] as const;
+
+    for (const [stepId, sourceMac, destinationMac] of expected) {
+      const step = scenario.steps.find(({ id }) => id === stepId);
+      expect(step, stepId).toBeDefined();
+      expect(fieldValue(step!, "Source MAC"), stepId).toBe(sourceMac);
+      expect(fieldValue(step!, "Destination MAC"), stepId).toBe(destinationMac);
+    }
+  });
 });

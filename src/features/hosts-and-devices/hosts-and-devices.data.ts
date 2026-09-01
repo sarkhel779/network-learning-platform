@@ -92,14 +92,31 @@ function travelSteps(
   return path.slice(0, -1).map((from, index) => {
     const to = path[index + 1];
     const routedLink = from === "gateway" || to === "gateway" || from === "firewall" || to === "firewall";
-    const sourceMac = index === 0 ? firstSourceMac : routedLink ? addresses.firewallMac : firstSourceMac;
-    const destinationMac = index === 0
-      ? firstDestinationMac
-      : to === "remote-server"
-        ? addresses.remoteServerMac
-        : to === "gateway"
-          ? addresses.gatewayMac
-          : firstDestinationMac;
+    const remotePath = path.includes("firewall");
+    let sourceMac = firstSourceMac;
+    let destinationMac = firstDestinationMac;
+
+    if (remotePath && phase === "outbound") {
+      if (from === "gateway") {
+        sourceMac = addresses.gatewayMac;
+        destinationMac = addresses.firewallMac;
+      } else if (from === "firewall") {
+        sourceMac = addresses.firewallMac;
+        destinationMac = addresses.remoteServerMac;
+      }
+    } else if (remotePath && phase === "return") {
+      if (from === "remote-server") {
+        sourceMac = addresses.remoteServerMac;
+        destinationMac = addresses.firewallMac;
+      } else if (from === "firewall") {
+        sourceMac = addresses.firewallMac;
+        destinationMac = addresses.gatewayMac;
+      } else {
+        sourceMac = addresses.gatewayMac;
+        destinationMac = firstDestinationMac;
+      }
+    }
+    const linkLayerChanged = sourceMac !== firstSourceMac || destinationMac !== firstDestinationMac;
     const direction = phase === "return" || phase === "arp-reply" ? "back toward the sender" : "toward the destination";
 
     return {
@@ -116,7 +133,7 @@ function travelSteps(
         to,
         broadcast: phase === "arp-request",
       },
-      ...fields(protocol, sourceIp, destinationIp, sourceMac, destinationMac, to, routedLink && index > 0),
+      ...fields(protocol, sourceIp, destinationIp, sourceMac, destinationMac, to, linkLayerChanged),
       stateNote: routedLink && phase === "outbound"
         ? "The router or firewall uses a new link-layer frame; the end-to-end destination IP remains unchanged. NAT is not shown."
         : undefined,

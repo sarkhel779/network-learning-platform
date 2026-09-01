@@ -10,6 +10,7 @@ import { hostsAndDevicesLab } from "./hosts-and-devices.data";
 export function HostsAndDevicesExperience() {
   const [journeyId, setJourneyId] = useState(hostsAndDevicesLab.journeys[0].id);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>();
+  const [autoplay, setAutoplay] = useState(true);
   const journey = hostsAndDevicesLab.journeys.find(({ id }) => id === journeyId)
     ?? hostsAndDevicesLab.journeys[0];
   const selectedProfile = hostsAndDevicesLab.profiles.find(
@@ -32,6 +33,7 @@ export function HostsAndDevicesExperience() {
                 onChange={() => {
                   setJourneyId(choice.id);
                   setSelectedDeviceId(undefined);
+                  setAutoplay(false);
                 }}
               />
               <span>
@@ -50,6 +52,7 @@ export function HostsAndDevicesExperience() {
         suppressHeading
         selectedDeviceId={selectedDeviceId}
         onDeviceSelect={setSelectedDeviceId}
+        autoplay={autoplay}
       />
 
       {selectedProfile ? (

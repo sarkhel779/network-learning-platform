@@ -27,6 +27,7 @@ describe("Hosts and Network Devices lesson content", () => {
 
   it("contains the interactive lab, practical checks, and scenario practice", () => {
     expect(lesson).toContain("<HostsAndDevicesExperience />");
+    expect(lesson).toContain("<HostsAndDevicesStaticOverview />");
     expect(lesson.match(/<KnowledgeCheck/g)).toHaveLength(2);
     expect(lesson.match(/<InterviewScenario/g)?.length).toBeGreaterThanOrEqual(5);
 

@@ -166,6 +166,12 @@ a { color: inherit; }
 .packet-inspector [data-changed="true"] span { display: block; margin-top: 0.2rem; color: var(--foreground); font-size: 0.875rem; }
 
 .hosts-devices-experience { margin: 2rem 0; }
+.static-topology-guide { margin: 1.5rem 0; padding: clamp(1rem, 4vw, 1.5rem); border: 1px solid var(--border); border-radius: 0.75rem; background: color-mix(in srgb, var(--accent) 3%, var(--background)); }
+.static-topology-guide > h3 { margin-top: 0; }
+.static-topology-guide__devices { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; margin-top: 1rem; }
+.static-topology-guide__devices section { padding: 0.85rem; border: 1px solid var(--border); border-radius: 0.5rem; }
+.static-topology-guide__devices h4 { margin: 0; }
+.static-topology-guide__devices p { margin-bottom: 0; color: var(--muted); }
 .journey-selector { margin: 0 0 1rem; padding: clamp(1rem, 4vw, 1.5rem); border: 1px solid var(--border); border-radius: 0.75rem; }
 .journey-selector legend { padding: 0 0.4rem; font-size: 1.125rem; font-weight: 700; }
 .journey-selector__choices { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
@@ -187,6 +193,7 @@ a { color: inherit; }
 
 @media (min-width: 46rem) {
   .journey-selector__choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .static-topology-guide__devices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 35rem) {

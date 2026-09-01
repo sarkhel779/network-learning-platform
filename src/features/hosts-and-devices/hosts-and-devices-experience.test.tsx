@@ -40,6 +40,7 @@ describe("HostsAndDevicesExperience", () => {
     expect(screen.getByRole("radio", { name: "Wireless host to remote server" })).toBeChecked();
     expect(screen.getByRole("img", { name: "Wireless host to remote server" })).toBeVisible();
     expect(screen.getByText(/Step 1 of/)).toBeVisible();
+    expect(screen.getByRole("button", { name: "Play" })).toBeVisible();
   });
 
   it("opens descriptive device details, pauses, and preserves the current step when closed", async () => {

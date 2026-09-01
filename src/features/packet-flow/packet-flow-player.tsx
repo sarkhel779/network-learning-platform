@@ -15,6 +15,7 @@ type PacketFlowPlayerProps = Readonly<{
   suppressHeading?: boolean;
   selectedDeviceId?: string;
   onDeviceSelect?: (deviceId: string) => void;
+  autoplay?: boolean;
 }>;
 
 export function PacketFlowPlayer({
@@ -23,13 +24,16 @@ export function PacketFlowPlayer({
   suppressHeading = false,
   selectedDeviceId,
   onDeviceSelect,
+  autoplay = true,
 }: PacketFlowPlayerProps) {
   const reducedMotion = useReducedMotion();
   const [state, dispatch] = useReducer(
     playbackReducer,
-    { stepCount: scenario.steps.length, defaultSpeed: scenario.defaultSpeed, reducedMotion },
-    ({ stepCount, defaultSpeed, reducedMotion: initialReducedMotion }) =>
-      createPlaybackState(stepCount, defaultSpeed, initialReducedMotion),
+    { stepCount: scenario.steps.length, defaultSpeed: scenario.defaultSpeed, reducedMotion, autoplay },
+    ({ stepCount, defaultSpeed, reducedMotion: initialReducedMotion, autoplay: initialAutoplay }) => ({
+      ...createPlaybackState(stepCount, defaultSpeed, initialReducedMotion),
+      playing: initialAutoplay && !initialReducedMotion,
+    }),
   );
   const currentStep = scenario.steps[state.stepIndex];
   const atFinalStep = state.stepIndex === state.stepCount - 1;
