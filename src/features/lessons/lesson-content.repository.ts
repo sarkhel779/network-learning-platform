@@ -9,6 +9,8 @@ const lessonImports: Readonly<Record<LessonContentKey, LessonContentImport>> = {
     import("@/content/networking-foundations/how-networks-communicate.mdx"),
   "networking-foundations/hosts-and-network-devices": () =>
     import("@/content/networking-foundations/hosts-and-network-devices.mdx"),
+  "networking-foundations/osi-and-tcp-ip-models": () =>
+    import("@/content/networking-foundations/osi-and-tcp-ip-models.mdx"),
 };
 
 export async function loadLessonContent(

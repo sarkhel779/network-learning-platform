@@ -1,0 +1,163 @@
+# OSI and TCP/IP Models
+
+Layered models help teams describe one browser-to-server exchange without treating it as one
+undifferentiated event. The browser creates a request, transport selects a conversation, IP
+identifies an end-to-end path, and local networking carries each frame as signals. This lesson
+uses the models as practical reasoning tools, not as a claim that every implementation fits
+perfectly into fixed boxes.
+
+<h2 id="why-layers">Why layered models exist</h2>
+
+Layering separates responsibilities. A laptop can move from Ethernet to Wi-Fi while its browser
+still uses the same HTTP request and destination IP address. When something fails, the layers
+give us an ordered way to ask what is working: the link, local delivery, the IP path, transport,
+or the application.
+
+The models are useful when they lead to a specific question: *which information is a protocol or
+device using to make its decision?* They are not a memorization test or a promise that real
+software always divides itself in the same way.
+
+<h2 id="osi-model">The seven OSI layers</h2>
+
+The **Open Systems Interconnection (OSI)** model names seven conceptual layers. Read downward
+while the sender prepares data, then upward while the receiver uses it.
+
+| OSI layer | Browser-to-server example | Main question |
+| --- | --- | --- |
+| Application | HTTP, DNS, DHCP | What service or data does the application need? |
+| Presentation | Representation, compression, encryption formats | How is the application data represented? |
+| Session | Organizing an application exchange | How is the application interaction managed? |
+| Transport | TCP, UDP, and ports | Which application conversation receives the data? |
+| Network | IPv4 and routing | Which network path leads toward the destination? |
+| Data Link | Ethernet, Wi-Fi, MAC addresses, frames | Which local device receives this frame? |
+| Physical | Copper, fiber, radio, bits | How are bits signaled across this medium? |
+
+Modern applications often handle the top three responsibilities together. That grouping helps
+explain why the TCP/IP model has fewer layers.
+
+<h2 id="tcp-ip-model">The four-layer TCP/IP model</h2>
+
+The **TCP/IP** model describes the Internet protocol suite in four layers:
+
+- **Application:** services such as HTTP, DNS, and DHCP.
+- **Transport:** TCP or UDP plus ports, which identify a host conversation.
+- **Internet:** IP addresses and routing between networks.
+- **Network Access:** Ethernet or Wi-Fi frames, MAC addresses, and the physical medium.
+
+TCP is a transport protocol, not the name of the entire model. A UDP exchange can use the same
+Internet and Network Access layers while making a different transport choice.
+
+<h2 id="model-mapping">OSI-to-TCP/IP mapping</h2>
+
+The two models overlap instead of providing a one-to-one translation.
+
+| TCP/IP layer | Related OSI layers | Example evidence |
+| --- | --- | --- |
+| Application | Application, Presentation, Session | HTTP method, DNS name, TLS record |
+| Transport | Transport | TCP or UDP protocol, source and destination port |
+| Internet | Network | IPv4 source, destination, route |
+| Network Access | Data Link, Physical | Ethernet or Wi-Fi frame, MAC address, signal |
+
+A layer name alone is not a full explanation. Say what a device commonly examines and what
+decision it makes. A router commonly uses a destination IP address to select a next network, then
+needs a new local frame to send the packet over that next link.
+
+<h2 id="encapsulation-lab">Interactive encapsulation and decapsulation</h2>
+
+An interactive layer animation will be added in a later update. For now, trace this static
+encapsulation sequence for a small HTTP request:
+
+<ol>
+  <li><strong>Data:</strong> the browser creates an HTTP request.</li>
+  <li><strong>Segment:</strong> TCP adds ports and transport information.</li>
+  <li><strong>Packet:</strong> IPv4 adds source and destination IP addresses.</li>
+  <li><strong>Frame:</strong> Ethernet or Wi-Fi adds local-link addressing for the next hop.</li>
+  <li><strong>Bits:</strong> the interface signals the frame across copper, fiber, or radio.</li>
+</ol>
+
+When UDP is used instead, its transport unit is a datagram rather than a TCP segment; that datagram is carried in an IP packet, a local-link frame, and finally bits.
+
+At the receiver, **decapsulation** reverses the order. The interface receives bits and a frame,
+IP accepts the packet for the host, TCP uses the destination port, and the browser receives the
+application data. At a router, the incoming frame ends and a new frame is created for the next
+link; the router does not deliver the browser's HTTP request to its own application.
+
+<h2 id="device-layer-scope">What each network device examines</h2>
+
+No device is permanently limited to one layer. This comparison describes what each device
+**commonly examines** in a familiar network task.
+
+| Device | Commonly examines | Practical scope |
+| --- | --- | --- |
+| Host or server | Application through Physical | Creates or consumes application data and uses a network interface. |
+| Layer 2 switch | Physical and Data Link / Network Access | Uses local-link information, commonly a destination MAC address, to forward a frame. |
+| Router | Physical, Data Link, Network / Internet | Receives a frame, routes with the destination IP, then builds an outgoing frame. |
+| Firewall | Packet, transport, sometimes application information | Scope depends on design; it can be application-aware without this lesson teaching policy configuration. |
+
+One home gateway can contain an access point, switch, router, and firewall. The functions stay
+distinct even when they share hardware.
+
+<h2 id="wireshark-layers">Wireshark layer identification</h2>
+
+Capture on the active host interface and choose a filter that matches your question.
+
+| Filter | Evidence to identify |
+| --- | --- |
+| `eth` | Ethernet frames and local-link addresses |
+| `ip` | IPv4 source and destination |
+| `tcp` | TCP ports and conversation details |
+| `udp` | UDP datagrams and ports |
+| `dns` | Application request and response names |
+| `http` | HTTP methods, status codes, and headers when visible |
+| `tls` | Encrypted web-traffic records and handshake evidence |
+
+<WiresharkCheck
+  filter="eth or ip or tcp or udp or dns or http or tls"
+  fields={["eth.src", "eth.dst", "ip.src", "ip.dst", "tcp.srcport", "tcp.dstport"]}
+  normalEvidence="A TCP web exchange can show Ethernet addresses for the local link, IPv4 addresses for the packet path, and TCP ports for the application conversation. HTTP may be visible for unencrypted traffic; HTTPS commonly shows TLS instead."
+  exercise="Open one packet and identify its Ethernet, IPv4, TCP, and HTTP or TLS sections. State which section supplies local-link, Internet, transport, and application evidence."
+/>
+
+A capture on one host cannot reveal every frame rebuilt beyond a router. Compare other capture
+points only when you have access to them.
+
+<h2 id="troubleshooting-interview">Troubleshooting and interview scenarios</h2>
+
+Work upward from link, to local delivery, to IP path, transport reachability, and application
+behavior. A successful lower-layer check narrows the next question; it does not prove every
+higher layer is healthy.
+
+<InterviewScenario prompt="A laptop has a link light but cannot open an internal website. How would you organize your first checks?">
+  Verify the interface and link, then check local addressing and gateway reachability. Next test
+  the IP path toward the server, determine whether the needed TCP or UDP transport is reachable,
+  and finally inspect the application response. Explain the evidence at each layer rather than
+  treating a link light as proof that HTTP is healthy.
+</InterviewScenario>
+
+<InterviewScenario prompt="How would you explain encapsulation and compare OSI with TCP/IP in an interview?">
+  Describe a browser request gaining transport, IP, and local-frame information at the sender,
+  then losing it in reverse at the receiver. Explain that OSI separates seven conceptual layers
+  while TCP/IP groups them into four practical layers. Anchor the answer to HTTP, TCP or UDP,
+  IPv4, and Ethernet or Wi-Fi instead of reciting layer names alone.
+</InterviewScenario>
+
+<h2 id="knowledge-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck
+  question="Which item is the best example of Internet or OSI Network-layer information?"
+  options={["An IPv4 destination address used for routing", "A destination TCP port", "An Ethernet destination MAC address"]}
+  correctIndex={0}
+  explanation="IP addressing and routing belong to the TCP/IP Internet layer and OSI Network layer. TCP ports are transport information, while a MAC address is local-link information."
+/>
+
+<KnowledgeCheck
+  question="A router forwards a packet to another network. What normally changes at that routed boundary?"
+  options={["The local-link frame is replaced for the next link", "The browser request is delivered to the router application", "The server destination IP becomes the router IP"]}
+  correctIndex={0}
+  explanation="The router removes the incoming local frame, uses the destination IP to select a next hop, and builds a frame for the outgoing link. The packet still identifies the intended destination server."
+/>
+
+You can now connect a visible protocol field to a responsibility: application data serves the
+user, transport identifies a conversation, IP identifies a path, and Network Access carries a
+frame over one local link. Later lessons will examine DNS, TCP and UDP, routing, switching, and
+firewall policy in greater depth.

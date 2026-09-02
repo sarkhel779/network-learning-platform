@@ -56,8 +56,31 @@ const curriculum: Pathway[] = [
             title: "OSI and TCP/IP Models",
             objective: "Relate common network tasks to the OSI and TCP/IP models.",
             access: "free",
-            published: false,
-            estimatedMinutes: 15,
+            published: true,
+            estimatedMinutes: 18,
+            sections: [
+              { id: "why-layers", label: "Why layered models exist" },
+              { id: "osi-model", label: "The seven OSI layers" },
+              { id: "tcp-ip-model", label: "The four-layer TCP/IP model" },
+              { id: "model-mapping", label: "OSI-to-TCP/IP mapping" },
+              {
+                id: "encapsulation-lab",
+                label: "Interactive encapsulation and decapsulation",
+              },
+              {
+                id: "device-layer-scope",
+                label: "What each network device examines",
+              },
+              { id: "wireshark-layers", label: "Wireshark layer identification" },
+              {
+                id: "troubleshooting-interview",
+                label: "Troubleshooting and interview scenarios",
+              },
+              {
+                id: "knowledge-summary",
+                label: "Knowledge check and summary",
+              },
+            ],
           },
         ],
       },

@@ -56,6 +56,7 @@ describe("catalog repository", () => {
     ).toEqual([
       "how-networks-communicate",
       "hosts-and-network-devices",
+      "osi-and-tcp-ip-models",
     ]);
   });
 

@@ -30,6 +30,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "hosts-and-network-devices",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "osi-and-tcp-ip-models",
+      },
     ]);
   });
 
