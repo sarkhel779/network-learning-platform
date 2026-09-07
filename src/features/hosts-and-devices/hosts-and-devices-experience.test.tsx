@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -39,7 +39,7 @@ describe("HostsAndDevicesExperience", () => {
 
     await user.click(screen.getByRole("radio", { name: "Wireless host to remote server" }));
     expect(screen.getByRole("radio", { name: "Wireless host to remote server" })).toBeChecked();
-    expect(screen.getByRole("img", { name: "Wireless host to remote server" })).toBeVisible();
+    expect(screen.getByRole("group", { name: "Wireless host to remote server" })).toBeVisible();
     expect(screen.getByText(/Step 1 of/)).toBeVisible();
     expect(screen.getByRole("button", { name: "Play" })).toBeVisible();
   });
@@ -59,5 +59,25 @@ describe("HostsAndDevicesExperience", () => {
     await user.click(screen.getByRole("button", { name: "Close device details" }));
     expect(screen.queryByRole("heading", { name: "Layer 2 switch" })).not.toBeInTheDocument();
     expect(screen.getByText(/Step 2 of/)).toBeVisible();
+  });
+
+  it.each(["Explore Layer 2 switch", "Explore Gateway"])("returns keyboard focus to %s after closing its details", async (name) => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<HostsAndDevicesExperience />);
+    const trigger = screen.getByRole("button", { name });
+    // Reach the SVG device through the same tab sequence a keyboard user takes.
+    for (let tab = 0; document.activeElement !== trigger && tab < 20; tab += 1) await user.tab();
+    expect(trigger).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(trigger).toHaveAttribute("aria-pressed", "true");
+    const close = screen.getByRole("button", { name: "Close device details" });
+    expect(close).toHaveFocus();
+    const details = close.closest("section")!;
+    expect(within(details).getByRole("heading", { level: 3 })).toBeVisible();
+    await user.keyboard("{Enter}");
+    expect(screen.queryByRole("button", { name: "Close device details" })).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
+    expect(trigger).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("button", { name: "Play" })).toBeEnabled();
   });
 });

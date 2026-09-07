@@ -22,8 +22,8 @@ type EncapsulationPlayerProps = Readonly<{
 const PDU_BLOCKS = {
   Data: ["Application data"],
   Segment: ["TCP header", "Application data"],
-  Packet: ["IPv4 header", "TCP segment", "Application data"],
-  Frame: ["Ethernet header", "IPv4 packet", "TCP segment", "Application data", "Ethernet trailer"],
+  Packet: ["IPv4 header", "TCP header", "Application data"],
+  Frame: ["Ethernet header", "IPv4 header", "TCP header", "Application data", "Ethernet trailer"],
   Bits: ["Physical signals carrying the frame bits"],
 } as const;
 

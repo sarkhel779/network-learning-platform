@@ -1,5 +1,3 @@
-# OSI and TCP/IP Models
-
 Layered models help teams describe one browser-to-server exchange without treating it as one
 undifferentiated event. The browser creates a request, transport selects a conversation, IP
 identifies an end-to-end path, and local networking carries each frame as signals. This lesson
@@ -22,15 +20,23 @@ software always divides itself in the same way.
 The **Open Systems Interconnection (OSI)** model names seven conceptual layers. Read downward
 while the sender prepares data, then upward while the receiver uses it.
 
-| OSI layer | Browser-to-server example | Main question |
-| --- | --- | --- |
-| Application | HTTP, DNS, DHCP | What service or data does the application need? |
-| Presentation | Representation, compression, encryption formats | How is the application data represented? |
-| Session | Organizing an application exchange | How is the application interaction managed? |
-| Transport | TCP, UDP, and ports | Which application conversation receives the data? |
-| Network | IPv4 and routing | Which network path leads toward the destination? |
-| Data Link | Ethernet, Wi-Fi, MAC addresses, frames | Which local device receives this frame? |
-| Physical | Copper, fiber, radio, bits | How are bits signaled across this medium? |
+<div className="lesson-table" role="region" aria-label="The seven OSI layers table" tabIndex={0}>
+  <table>
+    <caption>The seven OSI layers</caption>
+    <thead>
+      <tr><th scope="col">OSI layer</th><th scope="col">Browser-to-server example</th><th scope="col">Main question</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">Application</th><td>HTTP, DNS, DHCP</td><td>What service or data does the application need?</td></tr>
+      <tr><th scope="row">Presentation</th><td>Representation, compression, encryption formats</td><td>How is the application data represented?</td></tr>
+      <tr><th scope="row">Session</th><td>Organizing an application exchange</td><td>How is the application interaction managed?</td></tr>
+      <tr><th scope="row">Transport</th><td>TCP, UDP, and ports</td><td>Which application conversation receives the data?</td></tr>
+      <tr><th scope="row">Network</th><td>IPv4 and routing</td><td>Which network path leads toward the destination?</td></tr>
+      <tr><th scope="row">Data Link</th><td>Ethernet, Wi-Fi, MAC addresses, frames</td><td>Which local device receives this frame?</td></tr>
+      <tr><th scope="row">Physical</th><td>Copper, fiber, radio, bits</td><td>How are bits signaled across this medium?</td></tr>
+    </tbody>
+  </table>
+</div>
 
 Modern applications often handle the top three responsibilities together. That grouping helps
 explain why the TCP/IP model has fewer layers.

@@ -31,6 +31,27 @@ afterEach(() => {
 });
 
 describe("EncapsulationPlayer", () => {
+  it("shows each header and exactly one payload during encapsulation and decapsulation", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<EncapsulationPlayer steps={layerModelsLab.encapsulationSteps} />);
+    const expected = [
+      ["Application data"],
+      ["TCP header", "Application data"],
+      ["IPv4 header", "TCP header", "Application data"],
+      ["Ethernet header", "IPv4 header", "TCP header", "Application data", "Ethernet trailer"],
+      ["Physical signals carrying the frame bits"],
+      ["Ethernet header", "IPv4 header", "TCP header", "Application data", "Ethernet trailer"],
+      ["IPv4 header", "TCP header", "Application data"],
+      ["TCP header", "Application data"],
+      ["Application data"],
+    ];
+    for (const [index, parts] of expected.entries()) {
+      const pdu = screen.getByRole("list", { name: "Visible protocol data unit" });
+      expect(within(pdu).getAllByRole("listitem").map((item) => item.textContent)).toEqual(parts);
+      if (index < expected.length - 1) await user.click(screen.getByRole("button", { name: "Next" }));
+    }
+  });
+
   it("starts at application Data and automatically advances to the synchronized transport Segment", async () => {
     render(<EncapsulationPlayer steps={layerModelsLab.encapsulationSteps} />);
 

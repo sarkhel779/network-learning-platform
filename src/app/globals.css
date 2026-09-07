@@ -12,6 +12,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
+    color-scheme: dark;
     --background: #101827;
     --foreground: #f5f7fb;
     --muted: #b4bed0;
@@ -102,6 +103,11 @@ a { color: inherit; }
 
 .lesson-page { display: grid; width: min(100% - 2rem, 80rem); gap: clamp(1.5rem, 4vw, 3rem); margin: 0 auto; padding: clamp(2rem, 6vw, 5rem) 0; }
 .lesson-shell { min-width: 0; }
+.lesson-table { max-width: 100%; overflow-x: auto; margin: 1.5rem 0; border: 1px solid var(--border); border-radius: 0.5rem; }
+.lesson-table table { width: 100%; min-width: 32rem; border-collapse: collapse; }
+.lesson-table caption { padding: 0.75rem; color: var(--foreground); font-weight: 700; text-align: left; }
+.lesson-table th, .lesson-table td { padding: 0.75rem; border-top: 1px solid var(--border); text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.lesson-table thead { background: color-mix(in srgb, var(--accent) 8%, var(--background)); }
 .lesson-curriculum--desktop { display: none; }
 .lesson-curriculum--mobile { display: block; margin-bottom: 1.5rem; }
 .lesson-curriculum--mobile summary { cursor: pointer; font-weight: 700; }

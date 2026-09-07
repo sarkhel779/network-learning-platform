@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { PacketFlowExperience } from "@/features/packet-flow/packet-flow-experience";
 
@@ -8,6 +8,7 @@ import { DeviceDetails } from "./device-details";
 import { hostsAndDevicesLab } from "./hosts-and-devices.data";
 
 export function HostsAndDevicesExperience() {
+  const experienceRef = useRef<HTMLElement>(null);
   const [journeyId, setJourneyId] = useState(hostsAndDevicesLab.journeys[0].id);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>();
   const [autoplay, setAutoplay] = useState(true);
@@ -17,8 +18,16 @@ export function HostsAndDevicesExperience() {
     ({ deviceId }) => deviceId === selectedDeviceId,
   );
 
+  function closeDeviceDetails() {
+    const trigger = experienceRef.current?.querySelector<SVGGElement>(
+      `[data-device-id="${selectedDeviceId}"][role="button"]`,
+    );
+    setSelectedDeviceId(undefined);
+    trigger?.focus();
+  }
+
   return (
-    <section className="hosts-devices-experience" aria-label="Hosts and devices packet journeys">
+    <section ref={experienceRef} className="hosts-devices-experience" aria-label="Hosts and devices packet journeys">
       <fieldset className="journey-selector">
         <legend>Choose a packet journey</legend>
         <div className="journey-selector__choices">
@@ -59,7 +68,7 @@ export function HostsAndDevicesExperience() {
         <DeviceDetails
           profile={selectedProfile}
           journeyId={journey.id}
-          onClose={() => setSelectedDeviceId(undefined)}
+          onClose={closeDeviceDetails}
         />
       ) : null}
     </section>

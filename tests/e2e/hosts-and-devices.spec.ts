@@ -38,7 +38,7 @@ test("keeps the lesson usable on mobile without hydration errors or overflow", a
 
   await page.goto(lessonRoute);
   await expect(page.getByRole("group", { name: "Choose a packet journey" })).toBeVisible();
-  await expect(page.getByRole("img", { name: "Wired host to local server" })).toBeVisible();
+  await expect(page.getByRole("group", { name: "Wired host to local server" })).toBeVisible();
 
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth > document.documentElement.clientWidth,

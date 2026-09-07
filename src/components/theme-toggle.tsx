@@ -14,16 +14,25 @@ export function ThemeToggle() {
   const [theme, setTheme] = useState<ThemePreference>("system");
 
   useEffect(() => {
-    const saved = localStorage.getItem(storageKey);
-    const preference: ThemePreference = saved === "light" || saved === "dark" ? saved : "system";
+    let preference: ThemePreference = "system";
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved === "light" || saved === "dark") preference = saved;
+    } catch {
+      // Storage can be unavailable; system styling remains usable.
+    }
     setTheme(preference);
     applyTheme(preference);
   }, []);
 
   function updateTheme(preference: ThemePreference) {
     setTheme(preference);
-    localStorage.setItem(storageKey, preference);
     applyTheme(preference);
+    try {
+      localStorage.setItem(storageKey, preference);
+    } catch {
+      // The chosen theme still applies for this page without persistence.
+    }
   }
 
   return (

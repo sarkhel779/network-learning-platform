@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
 import type { DeviceProfile } from "./hosts-and-devices.schema";
 
 type DeviceDetailsProps = Readonly<{
@@ -17,6 +21,11 @@ function Explanation({ label, children }: Readonly<{ label: string; children: st
 
 export function DeviceDetails({ profile, journeyId, onClose }: DeviceDetailsProps) {
   const headingId = `${profile.deviceId}-details-heading`;
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    closeButtonRef.current?.focus();
+  }, [profile.deviceId]);
 
   return (
     <section className="device-details" aria-labelledby={headingId}>
@@ -25,7 +34,7 @@ export function DeviceDetails({ profile, journeyId, onClose }: DeviceDetailsProp
           <p className="device-details__category">{profile.category.replace("-", " ")}</p>
           <h3 id={headingId}>{profile.name}</h3>
         </div>
-        <button type="button" onClick={onClose} aria-label="Close device details">
+        <button ref={closeButtonRef} type="button" onClick={onClose} aria-label="Close device details">
           Close
         </button>
       </div>

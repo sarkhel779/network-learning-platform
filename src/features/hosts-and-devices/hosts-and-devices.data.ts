@@ -62,7 +62,8 @@ function fields(
   sourceMac: string,
   destinationMac: string,
   nextHop: string,
-  changed = false,
+  sourceMacChanged = false,
+  destinationMacChanged = false,
 ): Pick<PacketFlowStep, "summaryFields" | "detailFields"> {
   return {
     summaryFields: [
@@ -73,8 +74,8 @@ function fields(
     detailFields: [
       { label: "Source IP", value: sourceIp },
       { label: "Destination IP", value: destinationIp },
-      { label: "Source MAC", value: sourceMac, changed },
-      { label: "Destination MAC", value: destinationMac, changed },
+      { label: "Source MAC", value: sourceMac, changed: sourceMacChanged },
+      { label: "Destination MAC", value: destinationMac, changed: destinationMacChanged },
     ],
   };
 }
@@ -89,9 +90,11 @@ function travelSteps(
   firstSourceMac: string,
   firstDestinationMac: string,
 ): PacketFlowStep[] {
+  let previousSourceMac: string | undefined;
+  let previousDestinationMac: string | undefined;
+
   return path.slice(0, -1).map((from, index) => {
     const to = path[index + 1];
-    const routedLink = from === "gateway" || to === "gateway" || from === "firewall" || to === "firewall";
     const remotePath = path.includes("firewall");
     let sourceMac = firstSourceMac;
     let destinationMac = firstDestinationMac;
@@ -116,7 +119,12 @@ function travelSteps(
         destinationMac = firstDestinationMac;
       }
     }
-    const linkLayerChanged = sourceMac !== firstSourceMac || destinationMac !== firstDestinationMac;
+    const sourceMacChanged = previousSourceMac !== undefined && sourceMac !== previousSourceMac;
+    const destinationMacChanged = previousDestinationMac !== undefined && destinationMac !== previousDestinationMac;
+    previousSourceMac = sourceMac;
+    previousDestinationMac = destinationMac;
+    const routedForwarding = remotePath && (phase === "outbound" || phase === "return")
+      && (from === "gateway" || from === "firewall");
     const direction = phase === "return" || phase === "arp-reply" ? "back toward the sender" : "toward the destination";
 
     return {
@@ -133,8 +141,8 @@ function travelSteps(
         to,
         broadcast: phase === "arp-request",
       },
-      ...fields(protocol, sourceIp, destinationIp, sourceMac, destinationMac, to, linkLayerChanged),
-      stateNote: routedLink && phase === "outbound"
+      ...fields(protocol, sourceIp, destinationIp, sourceMac, destinationMac, to, sourceMacChanged, destinationMacChanged),
+      stateNote: routedForwarding && (sourceMacChanged || destinationMacChanged)
         ? "The router or firewall uses a new link-layer frame; the end-to-end destination IP remains unchanged. NAT is not shown."
         : undefined,
     };

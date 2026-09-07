@@ -21,25 +21,26 @@ Before sending IPv4 traffic, a host makes one crucial decision:
 ARP can supply the required local-link MAC address. ARP is introduced here only as evidence
 of that decision; a later lesson will examine ARP and MAC learning in depth.
 
-<KnowledgeCheck
-  question="A PC needs to reach a server outside its own IPv4 subnet. Which local device should receive the first Ethernet frame?"
-  options={["The default gateway", "The remote server directly", "Every host on the internet"]}
-  correctIndex={0}
-  explanation="The IP packet still names the remote server as its destination, but the first local Ethernet frame is addressed to the default gateway's MAC address."
-/>
-
 <h2 id="connecting-devices">Devices that connect hosts</h2>
 
 An **intermediary device** connects endpoints or network segments. It forwards, filters, or
 translates traffic; it is not normally the application endpoint for the user's conversation.
 
-| Device | Primary evidence | Main decision | What changes or stays the same |
-| --- | --- | --- | --- |
-| Layer 2 switch | Destination MAC address and MAC table | Which LAN port should receive the frame? | Forwards the frame; does not route the IP packet |
-| Wireless access point | Wi-Fi association plus link-layer addressing | Which wired or wireless side should carry the frame? | Bridges wireless and wired LAN traffic |
-| Router/default gateway | Destination IP address and routing table | Which next network or next hop should receive the packet? | Removes the incoming frame and builds a new frame for the next link |
-| Firewall | Session state, zones, addresses, ports, applications, and policy | Is this traffic permitted across the boundary? | May allow, deny, log, or translate traffic |
-| Server | Destination address and listening service | Which local application should process the request? | Receives the request and can originate the return traffic |
+<div className="lesson-table" role="region" aria-label="Network device roles table" tabIndex={0}>
+  <table>
+    <caption>Network device roles</caption>
+    <thead>
+      <tr><th scope="col">Device</th><th scope="col">Primary evidence</th><th scope="col">Main decision</th><th scope="col">What changes or stays the same</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">Layer 2 switch</th><td>Destination MAC address and MAC table</td><td>Which LAN port should receive the frame?</td><td>Forwards the frame; does not route the IP packet</td></tr>
+      <tr><th scope="row">Wireless access point</th><td>Wi-Fi association plus link-layer addressing</td><td>Which wired or wireless side should carry the frame?</td><td>Bridges wireless and wired LAN traffic</td></tr>
+      <tr><th scope="row">Router/default gateway</th><td>Destination IP address and routing table</td><td>Which next network or next hop should receive the packet?</td><td>Removes the incoming frame and builds a new frame for the next link</td></tr>
+      <tr><th scope="row">Firewall</th><td>Session state, zones, addresses, ports, applications, and policy</td><td>Is this traffic permitted across the boundary?</td><td>May allow, deny, log, or translate traffic</td></tr>
+      <tr><th scope="row">Server</th><td>Destination address and listening service</td><td>Which local application should process the request?</td><td>Receives the request and can originate the return traffic</td></tr>
+    </tbody>
+  </table>
+</div>
 
 A home device may combine an access point, switch, router, firewall, and DHCP service in one
 box. The functions remain distinct even when the hardware is shared. This lesson introduces
@@ -74,22 +75,3 @@ The switch is still important in a remote journey, but it does not decide the en
 route. The access point does not become the laptop's IP gateway merely because it provides the
 wireless connection. At every routed hop, the link-layer frame can change while the source and
 destination IP addresses normally continue to identify the communicating hosts.
-
-<InterviewScenario prompt="A user can reach local devices, but remote destinations fail after someone changed the default gateway. Where do you start?">
-  Confirm the host's IP address, mask, and configured gateway with `ipconfig /all`. Compare the
-  destination with the local subnet, inspect `route print`, and test whether the configured
-  gateway is locally reachable. Local communication can still work because it does not need
-  the gateway; remote communication exposes the incorrect next-hop decision.
-</InterviewScenario>
-
-<InterviewScenario prompt="Several wired hosts lose connectivity when one access switch becomes unavailable. What does that tell you?">
-  Start at the shared switch, its power and uplinks, and the affected access ports. A failed
-  Layer 2 path can prevent ARP, gateway reachability, and local server access at the same time.
-  Separate the host-specific checks from evidence common to every affected host.
-</InterviewScenario>
-
-<InterviewScenario prompt="A wireless laptop is disconnected from its access point while wired users still work. Which boundary is most likely failing?">
-  Investigate the wireless association first: radio availability, SSID, authentication, signal,
-  and whether the client obtained valid network settings. The working wired users make the
-  upstream switch, gateway, and server less likely as the first failure point.
-</InterviewScenario>

@@ -71,7 +71,7 @@ export function NetworkTopology({
       className={`network-topology${reducedMotion ? " network-topology--reduced-motion" : ""}`}
       data-reduced-motion={reducedMotion ? "true" : undefined}
     >
-      <svg viewBox="0 0 800 240" role="img" aria-labelledby={titleId} aria-describedby={descriptionId}>
+      <svg viewBox="0 0 800 240" role={onDeviceSelect ? "group" : "img"} aria-labelledby={titleId} aria-describedby={descriptionId}>
         <title id={titleId}>{scenario.title}</title>
         <desc id={descriptionId}>Topology order: {scenario.devices.map((device) => device.label).join(", ")}. Current step: {step.title}. {step.explanation}</desc>
         <g className="network-topology__links">

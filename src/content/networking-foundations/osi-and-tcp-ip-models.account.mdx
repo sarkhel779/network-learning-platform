@@ -12,15 +12,23 @@ distinct even when they share hardware.
 
 Capture on the active host interface and choose a filter that matches your question.
 
-| Filter | Evidence to identify |
-| --- | --- |
-| `eth` | Ethernet frames and local-link addresses |
-| `ip` | IPv4 source and destination |
-| `tcp` | TCP ports and conversation details |
-| `udp` | UDP datagrams and ports |
-| `dns` | Application request and response names |
-| `http` | HTTP methods, status codes, and headers when visible |
-| `tls` | Encrypted web-traffic records and handshake evidence |
+<div className="lesson-table" role="region" aria-label="Wireshark layer identification filters table" tabIndex={0}>
+  <table>
+    <caption>Wireshark layer identification filters</caption>
+    <thead>
+      <tr><th scope="col">Filter</th><th scope="col">Evidence to identify</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row"><code>eth</code></th><td>Ethernet frames and local-link addresses</td></tr>
+      <tr><th scope="row"><code>ip</code></th><td>IPv4 source and destination</td></tr>
+      <tr><th scope="row"><code>tcp</code></th><td>TCP ports and conversation details</td></tr>
+      <tr><th scope="row"><code>udp</code></th><td>UDP datagrams and ports</td></tr>
+      <tr><th scope="row"><code>dns</code></th><td>Application request and response names</td></tr>
+      <tr><th scope="row"><code>http</code></th><td>HTTP methods, status codes, and headers when visible</td></tr>
+      <tr><th scope="row"><code>tls</code></th><td>Encrypted web-traffic records and handshake evidence</td></tr>
+    </tbody>
+  </table>
+</div>
 
 <WiresharkCheck
   filter="eth or ip or tcp or udp or dns or http or tls"

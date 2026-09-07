@@ -2,6 +2,11 @@ import { expect, test } from "@playwright/test";
 
 const lessonPath = "/learn/networking-foundations/how-networks-communicate";
 const canonical = `https://packetsecrets.com${lessonPath}`;
+const publishedLessons = [
+  { slug: "how-networks-communicate", title: "How Networks Communicate" },
+  { slug: "hosts-and-network-devices", title: "Hosts and Network Devices" },
+  { slug: "osi-and-tcp-ip-models", title: "OSI and TCP/IP Models" },
+];
 // Actual account-only prose/answers plus the loader's protected fixture markers.
 // No production Pro body exists yet; Pro exclusion is additionally covered by loader tests.
 const protectedSentinels = [
@@ -10,11 +15,20 @@ const protectedSentinels = [
   "What happens after a user enters a website address?",
   "Capture on the active host interface and choose a filter that matches your question.",
   "Check the active adapter, IPv4 address, subnet mask, default gateway",
+  "Which local device should receive the first Ethernet frame?",
+  "The IP packet still names the remote server as its destination",
+  "A user can reach local devices, but remote destinations fail",
+  "Several wired hosts lose connectivity when one access switch becomes unavailable",
+  "A wireless laptop is disconnected from its access point while wired users still work",
+  "Start at the shared switch, its power and uplinks",
+  "Investigate the wireless association first",
+  "Which item is the best example of Internet or OSI Network-layer information?",
+  "How would you explain encapsulation and compare OSI with TCP/IP in an interview?",
   "ACCOUNT_ONLY_SENTINEL",
   "PRO_ONLY_SENTINEL",
 ];
 
-test("anonymous direct lesson exposes public learning, canonical metadata, and safe network payloads", async ({ page }) => {
+test("anonymous direct lesson exposes public learning, canonical metadata, and safe network payloads", async ({ page, request }) => {
   const errors: string[] = [];
   const payloads: Array<Promise<{ url: string; text: string }>> = [];
   page.on("pageerror", (error) => errors.push(error.message));
@@ -62,9 +76,10 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
   expect(data.hasPart.at(-1)).toMatchObject({ name: "Pro Deep Dive", description: "Requires Packetsecrets Pro access." });
 
   // Save the RSC bytes before fulfillment so navigation cannot invalidate the body.
-  const hostsRscPayloads: Array<{ url: string; text: string }> = [];
+  const navigationRscPayloads: Array<{ url: string; text: string }> = [];
+  const destinationPaths = publishedLessons.slice(1).map(({ slug }) => `/learn/networking-foundations/${slug}`);
   await page.route((url) => (
-    url.pathname === "/learn/networking-foundations/hosts-and-network-devices"
+    destinationPaths.includes(url.pathname)
       && url.searchParams.has("_rsc")
   ), async (route) => {
     if (route.request().resourceType() === "document") {
@@ -73,22 +88,84 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
     }
     const navigationResponse = await route.fetch();
     const body = await navigationResponse.body();
-    hostsRscPayloads.push({ url: route.request().url(), text: body.toString("utf8") });
+    navigationRscPayloads.push({ url: route.request().url(), text: body.toString("utf8") });
     await route.fulfill({ response: navigationResponse, body });
   });
-  await page.getByRole("link", { name: "Next: Hosts and Network Devices" }).click();
-  await expect(page.getByRole("heading", { level: 1, name: "Hosts and Network Devices" })).toBeVisible();
-  await page.waitForLoadState("networkidle");
-  expect(hostsRscPayloads.length, "Hosts navigation must yield an intercepted RSC payload").toBeGreaterThan(0);
-  for (const { url, text } of hostsRscPayloads) {
+  try {
+    for (const { slug, title } of publishedLessons.slice(1)) {
+      await page.getByRole("link", { name: `Next: ${title}` }).click();
+      await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
+      await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+      await page.waitForLoadState("networkidle");
+      expect(navigationRscPayloads.some(({ url }) => new URL(url).pathname === `/learn/networking-foundations/${slug}`), `${slug} must yield an intercepted RSC payload`).toBe(true);
+    }
+  } finally {
+    // Finish every captured response before auditing it or closing the page.
+    await page.unrouteAll({ behavior: "wait" });
+  }
+  for (const { url, text } of navigationRscPayloads) {
     expect(text.trim(), `${url} must contain an RSC body`).not.toBe("");
   }
+  const documents = await Promise.all(publishedLessons.map(async ({ slug }) => {
+    const url = `/learn/networking-foundations/${slug}`;
+    const response = await request.get(url);
+    expect(response.status(), url).toBe(200);
+    return { url, text: await response.text() };
+  }));
   const responses = await Promise.all(payloads);
   expect(responses.some(({ url }) => url.includes("_next/static"))).toBe(true);
-  for (const { url, text } of [{ url: lessonPath, text: html }, ...hostsRscPayloads, ...responses]) {
+  for (const { url, text } of [{ url: lessonPath, text: html }, ...documents, ...navigationRscPayloads, ...responses]) {
     for (const sentinel of protectedSentinels) expect(text, `${url} leaked ${sentinel}`).not.toContain(sentinel);
   }
   expect(errors).toEqual([]);
+});
+
+test("public tables expose row and column headers and remain keyboard-scrollable at 360px", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  for (const [slug, caption, columns, rows] of [
+    ["hosts-and-network-devices", "Network device roles", 4, 6],
+    ["osi-and-tcp-ip-models", "The seven OSI layers", 3, 8],
+  ] as const) {
+    await page.goto(`/learn/networking-foundations/${slug}`);
+    const table = page.getByRole("table", { name: caption, exact: true });
+    await expect(table.getByRole("columnheader")).toHaveCount(columns);
+    await expect(table.getByRole("row")).toHaveCount(rows);
+    await expect(table.getByRole("rowheader")).toHaveCount(rows - 1);
+    const region = page.getByRole("region", { name: `${caption} table`, exact: true });
+    await region.focus();
+    await expect(region).toBeFocused();
+    await region.press("ArrowRight");
+    await expect.poll(() => region.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)).toBe(false);
+  }
+});
+
+test("interactive topology exposes device controls and returns focus after closing details", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/learn/networking-foundations/hosts-and-network-devices");
+  const topology = page.getByRole("group", { name: "Wired host to local server", exact: true });
+  await expect(topology.getByRole("button")).toHaveCount(8);
+  const device = topology.getByRole("button", { name: "Explore Layer 2 switch" });
+  await device.focus();
+  await page.keyboard.press("Enter");
+  const close = page.getByRole("button", { name: "Close device details" });
+  await expect(close).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(close).toHaveCount(0);
+  await expect(device).toBeFocused();
+  await expect(device).toHaveAttribute("aria-pressed", "false");
+});
+
+test("system dark preference applies the native dark color scheme with a working light override", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto(lessonPath);
+  const theme = page.getByRole("combobox", { name: "Color theme" });
+  await theme.selectOption("system");
+  await expect(page.locator("html")).toHaveCSS("color-scheme", "dark");
+  await theme.selectOption("light");
+  await expect(page.locator("html")).toHaveCSS("color-scheme", "light");
+  await theme.selectOption("system");
+  await expect(page.locator("html")).toHaveCSS("color-scheme", "dark");
 });
 
 test("public content and registration remain useful during no-JavaScript navigation", async ({ browser }) => {

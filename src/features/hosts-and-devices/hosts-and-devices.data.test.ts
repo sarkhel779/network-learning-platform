@@ -10,6 +10,38 @@ function fieldValue(
 }
 
 describe("hosts and devices lesson data", () => {
+  it("marks only routed frame replacements against the previous hop, including wired-remote step 13", () => {
+    const scenario = hostsAndDevicesLab.journeys.find(({ id }) => id === "wired-remote")!.scenario;
+    const expected = [
+      ["wired-remote-outbound-1", false],
+      ["wired-remote-outbound-2", false],
+      ["wired-remote-outbound-3", true],
+      ["wired-remote-outbound-4", true],
+      ["wired-remote-return-1", false],
+      ["wired-remote-return-2", true],
+      ["wired-remote-return-3", true],
+      ["wired-remote-return-4", false],
+    ] as const;
+    for (const [stepId, changed] of expected) {
+      const step = scenario.steps.find(({ id }) => id === stepId)!;
+      expect(step.detailFields.filter(({ label }) => label.endsWith("MAC")).map((field) => Boolean(field.changed)), stepId)
+        .toEqual([changed, changed]);
+      if (changed) expect(step.stateNote, stepId).toMatch(/new link-layer frame/);
+      else expect(step.stateNote, stepId).toBeUndefined();
+    }
+    expect(scenario.steps[12].id).toBe("wired-remote-return-4");
+  });
+
+  it("does not describe bridge-only forwarding as routing on any journey", () => {
+    for (const { scenario } of hostsAndDevicesLab.journeys) {
+      for (const step of scenario.steps) {
+        if (step.packet?.from !== "switch" && step.packet?.from !== "access-point") continue;
+        expect(step.stateNote, step.id).toBeUndefined();
+        expect(step.detailFields.filter(({ label }) => label.endsWith("MAC")).some(({ changed }) => changed), step.id).toBe(false);
+      }
+    }
+  });
+
   it("offers the four approved journeys in order", () => {
     expect(hostsAndDevicesLab.journeys.map(({ id }) => id)).toEqual([
       "wired-local",
