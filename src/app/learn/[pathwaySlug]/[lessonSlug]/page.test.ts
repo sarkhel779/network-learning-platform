@@ -142,10 +142,10 @@ describe("lesson route generation", () => {
     );
 
     expect(screen.getByRole("complementary", { name: "Course contents" })).toBeVisible();
-    expect(screen.getAllByText("Networking Essentials")[0]).toBeVisible();
+    expect(screen.getAllByText("Network and Device Essentials")[0]).toBeVisible();
     expect(screen.getByText("Course contents", { selector: "summary" })).toBeVisible();
     expect(
-      screen.getAllByRole("link", { name: /how networks communicate/i })[0],
+      screen.getAllByRole("link", { name: /what is a computer network/i })[0],
     ).toHaveAttribute("aria-current", "page");
   });
 });
