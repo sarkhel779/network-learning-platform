@@ -51,6 +51,18 @@ describe("OSI and TCP/IP Models lesson content", () => {
     }
   });
 
+  it("presents each interview answer as an ordered sequence of points", () => {
+    const scenarios = [...lesson.matchAll(/<InterviewScenario\b[\s\S]*?<\/InterviewScenario>/g)].map(
+      (match) => match[0],
+    );
+
+    expect(scenarios).toHaveLength(2);
+    for (const scenario of scenarios) {
+      expect(scenario).toMatch(/<ol>[\s\S]*?<\/ol>/);
+      expect(scenario.match(/<li>/g)?.length).toBeGreaterThanOrEqual(4);
+    }
+  });
+
   it("contrasts UDP datagrams with TCP segments in the encapsulation sequence", () => {
     expect(lesson).toContain("When UDP is used instead, its transport unit is a datagram rather than a TCP segment");
   });

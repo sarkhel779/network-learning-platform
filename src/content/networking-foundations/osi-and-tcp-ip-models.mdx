@@ -111,17 +111,25 @@ behavior. A successful lower-layer check narrows the next question; it does not 
 higher layer is healthy.
 
 <InterviewScenario prompt="A laptop has a link light but cannot open an internal website. How would you organize your first checks?">
-  Verify the interface and link, then check local addressing and gateway reachability. Next test
-  the IP path toward the server, determine whether the needed TCP or UDP transport is reachable,
-  and finally inspect the application response. Explain the evidence at each layer rather than
-  treating a link light as proof that HTTP is healthy.
+  <ol>
+    <li>Verify the interface is enabled and confirm the physical or wireless link is stable.</li>
+    <li>Check the laptop's IP address, subnet mask, DNS settings, and default gateway.</li>
+    <li>Test local delivery, followed by gateway and destination IP reachability.</li>
+    <li>Verify that the required TCP or UDP port is reachable.</li>
+    <li>Inspect DNS resolution and the website's HTTP, HTTPS, or TLS response.</li>
+    <li>State the evidence found at each layer; a link light alone does not prove HTTP is healthy.</li>
+  </ol>
 </InterviewScenario>
 
 <InterviewScenario prompt="How would you explain encapsulation and compare OSI with TCP/IP in an interview?">
-  Describe a browser request gaining transport, IP, and local-frame information at the sender,
-  then losing it in reverse at the receiver. Explain that OSI separates seven conceptual layers
-  while TCP/IP groups them into four practical layers. Anchor the answer to HTTP, TCP or UDP,
-  IPv4, and Ethernet or Wi-Fi instead of reciting layer names alone.
+  <ol>
+    <li>Begin with application data, such as an HTTP request created by a browser.</li>
+    <li>Explain that transport adds TCP or UDP information, including port numbers.</li>
+    <li>Explain that the Internet layer adds IP addressing and the local link adds frame information.</li>
+    <li>Describe the receiver removing and interpreting that information in reverse order.</li>
+    <li>Compare the models: OSI separates seven conceptual layers, while TCP/IP groups them into four practical layers.</li>
+    <li>Anchor the explanation to HTTP, TCP or UDP, IPv4, and Ethernet or Wi-Fi instead of only reciting layer names.</li>
+  </ol>
 </InterviewScenario>
 
 <h2 id="knowledge-summary">Knowledge check and summary</h2>
