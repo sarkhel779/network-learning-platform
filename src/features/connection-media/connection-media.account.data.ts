@@ -39,7 +39,7 @@ const scenarios: readonly ConnectionScenario[] = [
     budget: "medium",
     recommendedMediumId: "wireless",
     evaluations: {
-      copper: { outcome: "workable-with-trade-offs", decisiveRequirements: ["Movement between rooms", "High reliability"], explanation: "Copper gives a reliable connection at a desk, but a cable prevents the laptop from moving freely through the office." },
+      copper: { outcome: "unsuitable", decisiveRequirements: ["Movement between rooms", "The staff laptop"], explanation: "A fixed copper cable prevents the staff laptop from moving freely between rooms, so it does not meet the required mobility." },
       fibre: { outcome: "unsuitable", decisiveRequirements: ["Movement between rooms", "The staff laptop"], explanation: "A fibre run is a fixed, specialist link and does not meet the laptop's mobility requirement." },
       wireless: { outcome: "recommended", decisiveRequirements: ["Movement between rooms", "100 Mbit/s minimum bandwidth"], explanation: "Managed wireless coverage lets the laptop move between rooms while still meeting ordinary office traffic needs." },
     },
@@ -115,7 +115,7 @@ const scenarios: readonly ConnectionScenario[] = [
     budget: "low",
     recommendedMediumId: "wireless",
     evaluations: {
-      copper: { outcome: "workable-with-trade-offs", decisiveRequirements: ["Temporary room", "Student mobility"], explanation: "Copper can serve a fixed teacher station, but running cables to moving student laptops is inconvenient for the temporary classroom." },
+      copper: { outcome: "unsuitable", decisiveRequirements: ["Student mobility", "Temporary room"], explanation: "Fixed copper cables do not meet the student laptops' required mobility in this temporary classroom." },
       fibre: { outcome: "unsuitable", decisiveRequirements: ["Temporary room", "Low budget", "Student mobility"], explanation: "Installing fibre for a short-term, low-budget classroom does not meet the practical mobility or setup constraints." },
       wireless: { outcome: "recommended", decisiveRequirements: ["Student mobility", "Temporary room", "100 Mbit/s minimum bandwidth"], explanation: "The nearby access point gives mobile student devices a practical short-term connection for ordinary classroom traffic." },
     },

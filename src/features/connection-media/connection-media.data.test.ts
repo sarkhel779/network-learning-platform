@@ -45,4 +45,19 @@ describe("connection media lesson data", () => {
 
     expect(outcomes).toEqual(new Set(["recommended", "workable-with-trade-offs", "unsuitable"]));
   });
+
+  it("rejects fixed copper for mobile endpoints that require mobility", () => {
+    const expectedMobileScenarios = [
+      ["mobile-office", "staff laptop"],
+      ["temporary-classroom", "student laptops"],
+    ] as const;
+
+    for (const [scenarioId, endpoint] of expectedMobileScenarios) {
+      const scenario = accountConnectionScenarios.find(({ id }) => id === scenarioId)!;
+
+      expect(scenario.mobilityRequired, scenarioId).toBe(true);
+      expect(scenario.evaluations.copper.outcome, scenarioId).toBe("unsuitable");
+      expect(scenario.evaluations.copper.explanation, scenarioId).toMatch(new RegExp(endpoint, "i"));
+    }
+  });
 });
