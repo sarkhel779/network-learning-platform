@@ -342,20 +342,37 @@ a { color: inherit; }
 .connection-media-card { min-width: 0; padding: 0.85rem; overflow-wrap: anywhere; border: 1px solid var(--border); border-radius: 0.5rem; background: var(--background); }
 .connection-media-card h4 { margin: 0; font-size: 1.125rem; }
 .connection-media-card p:last-child { margin-bottom: 0; }
-.signal-track { position: relative; min-width: 0; max-width: 100%; padding: 0.5rem 0 1.25rem; color: var(--accent); }
+.signal-track { --signal-duration: 2.8s; --signal-end: calc(100% - 0.7rem); position: relative; min-width: 0; max-width: 100%; padding: 0.5rem 0 1.25rem; color: var(--accent); }
 .signal-track::after { position: absolute; right: 0; bottom: 0.5rem; left: 0; content: ""; border-top: 3px solid currentColor; }
 .signal-track[data-signal="electrical"]::after { border-top-style: dashed; }
 .signal-track[data-signal="optical"]::after { border-top-style: double; border-top-width: 4px; }
 .signal-track[data-signal="radio"]::after { border-top-style: dotted; }
 .signal-track__stages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.2rem; color: var(--foreground); font-size: 0.75rem; text-align: center; }
-.signal-track__stages span { min-width: 0; padding: 0.3rem 0.1rem; border: 1px solid var(--border); border-radius: 0.25rem; }
+.signal-track__stages span { min-width: 0; padding: 0.3rem 0.1rem; border: 1px solid var(--border); border-radius: 0.25rem; opacity: 0.45; }
+.signal-track[data-active-stage="source"] .signal-track__stage--source,
+.signal-track[data-active-stage="medium"] .signal-track__stage--medium,
+.signal-track[data-active-stage="destination"] .signal-track__stage--destination { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--background)); opacity: 1; }
 .signal-track__pulse { position: absolute; z-index: 1; bottom: 0.3rem; left: 0; width: 0.7rem; height: 0.7rem; border: 1px solid var(--foreground); background: var(--accent); }
 .signal-track[data-signal="optical"] .signal-track__pulse { border-radius: 50%; }
 .signal-track[data-signal="radio"] .signal-track__pulse { border-radius: 50% 50% 0 0; }
-.signal-track[data-motion="travel"] .signal-track__pulse { animation: connection-signal-travel 2.8s linear infinite; }
+.signal-track[data-motion="travel"] .signal-track__pulse { animation: connection-signal-travel var(--signal-duration) linear infinite; }
 .signal-track[data-motion="reduced"] .signal-track__pulse { display: none; animation: none; }
-.signal-track[data-motion="reduced"] .signal-track__stages span { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--background)); }
-@keyframes connection-signal-travel { from { left: 0; } to { left: calc(100% - 0.7rem); } }
+.signal-track[data-quality="distance"][data-signal="electrical"] { --signal-duration: 1.7s; --signal-end: 42%; }
+.signal-track[data-quality="distance"][data-signal="optical"] { --signal-duration: 3.2s; --signal-end: calc(100% - 0.7rem); }
+.signal-track[data-quality="distance"][data-signal="radio"] { --signal-duration: 2.4s; --signal-end: 62%; }
+.signal-track[data-quality="bandwidth"][data-signal="electrical"] { --signal-duration: 1.9s; --signal-end: 72%; }
+.signal-track[data-quality="bandwidth"][data-signal="optical"] { --signal-duration: 1.3s; --signal-end: calc(100% - 0.7rem); }
+.signal-track[data-quality="bandwidth"][data-signal="radio"] { --signal-duration: 3.4s; --signal-end: 54%; }
+.signal-track[data-quality="interference"][data-signal="electrical"] { --signal-duration: 3.5s; --signal-end: 58%; }
+.signal-track[data-quality="interference"][data-signal="optical"] { --signal-duration: 1.8s; --signal-end: calc(100% - 0.7rem); }
+.signal-track[data-quality="interference"][data-signal="radio"] { --signal-duration: 3.7s; --signal-end: 48%; }
+.signal-track[data-quality="mobility"][data-signal="electrical"],
+.signal-track[data-quality="mobility"][data-signal="optical"] { --signal-duration: 2.5s; --signal-end: 68%; }
+.signal-track[data-quality="mobility"][data-signal="radio"] { --signal-duration: 1.6s; --signal-end: calc(100% - 0.7rem); }
+.signal-track[data-quality="cost"][data-signal="electrical"] { --signal-duration: 1.8s; --signal-end: 74%; }
+.signal-track[data-quality="cost"][data-signal="optical"] { --signal-duration: 3.1s; --signal-end: 64%; }
+.signal-track[data-quality="cost"][data-signal="radio"] { --signal-duration: 2.2s; --signal-end: 78%; }
+@keyframes connection-signal-travel { from { left: 0; } to { left: var(--signal-end); } }
 .connection-media-lab .journey-selector { min-width: 0; padding: 0.75rem; }
 .connection-requirements { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.5rem; margin: 1rem 0; }
 .connection-requirements > div { min-width: 0; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.35rem; background: var(--background); }
@@ -430,7 +447,6 @@ h1 {
 
 @media (prefers-reduced-motion: reduce) {
   .signal-track .signal-track__pulse { display: none; animation: none !important; }
-  .signal-track__stages span { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--background)); }
   *,
   *::before,
   *::after {

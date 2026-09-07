@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -114,6 +117,84 @@ describe("ConnectionMediaComparison", () => {
       "Temporary classroom network",
     ]) {
       expect(screen.queryByText(scenarioTitle)).not.toBeInTheDocument();
+    }
+  });
+
+  it("changes each panel's descriptive signal cue for every comparison quality", async () => {
+    const user = userEvent.setup();
+    render(<ConnectionMediaComparison />);
+    const expectedCues = {
+      Distance: {
+        Copper: "Short copper run: the electrical signal reaches a nearby destination.",
+        Fibre: "Long fibre run: light stays clear over a much longer route.",
+        Wireless: "Coverage edge: radio range changes with the surroundings.",
+      },
+      Bandwidth: {
+        Copper: "Negotiated link: cable category and ports set the available capacity.",
+        Fibre: "High-capacity path: compatible optics carry more data together.",
+        Wireless: "Shared airtime: devices take turns using radio capacity.",
+      },
+      Interference: {
+        Copper: "Noise-sensitive path: electrical interference can disrupt the signal.",
+        Fibre: "Optical isolation: electrical noise stays outside the light path.",
+        Wireless: "Radio contention: nearby transmissions compete for airtime.",
+      },
+      Mobility: {
+        Copper: "Fixed endpoint: moving the device breaks its cable connection.",
+        Fibre: "Careful fixed link: fibre connects fixed equipment, not moving endpoints.",
+        Wireless: "Roaming coverage: a device can move while it remains in range.",
+      },
+      Cost: {
+        Copper: "Familiar hardware: nearby runs use common ports and cable.",
+        Fibre: "Specialist optics: compatible equipment adds initial cost.",
+        Wireless: "Coverage planning: fewer device cables still need capable coverage.",
+      },
+    } as const;
+
+    for (const [quality, cues] of Object.entries(expectedCues)) {
+      await user.click(screen.getByRole("radio", { name: quality }));
+
+      for (const [medium, cue] of Object.entries(cues)) {
+        const article = screen.getByRole("heading", { name: medium }).closest("article");
+
+        expect(article, `${medium} panel`).not.toBeNull();
+        expect(within(article!).getByText(cue)).toBeVisible();
+      }
+    }
+  });
+
+  it("shows one computed discrete stage per reduced-motion signal track", async () => {
+    const stylesheet = document.head.appendChild(document.createElement("style"));
+    stylesheet.textContent = readFileSync(join(process.cwd(), "src", "app", "globals.css"), "utf8");
+    vi.stubGlobal("matchMedia", () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+    const user = userEvent.setup();
+    render(<ConnectionMediaComparison />);
+    const activeStages = {
+      Distance: { Copper: "destination", Fibre: "destination", Wireless: "medium" },
+      Bandwidth: { Copper: "medium", Fibre: "destination", Wireless: "source" },
+      Interference: { Copper: "medium", Fibre: "destination", Wireless: "source" },
+      Mobility: { Copper: "destination", Fibre: "destination", Wireless: "medium" },
+      Cost: { Copper: "source", Fibre: "medium", Wireless: "destination" },
+    } as const;
+
+    try {
+      for (const [quality, mediaStages] of Object.entries(activeStages)) {
+        await user.click(screen.getByRole("radio", { name: quality }));
+
+        for (const [medium, activeStage] of Object.entries(mediaStages)) {
+          const article = screen.getByRole("heading", { name: medium }).closest("article");
+          const track = within(article!).getByRole("img", { name: /signal track/i });
+          const activeElement = track.querySelector(`.signal-track__stage--${activeStage}`);
+
+          expect(activeElement, `${medium} ${quality} active stage`).not.toBeNull();
+          expect(getComputedStyle(activeElement!).opacity).toBe("1");
+          for (const inactiveElement of track.querySelectorAll(`.signal-track__stage:not(.signal-track__stage--${activeStage})`)) {
+            expect(getComputedStyle(inactiveElement).opacity).toBe("0.45");
+          }
+        }
+      }
+    } finally {
+      stylesheet.remove();
     }
   });
 
