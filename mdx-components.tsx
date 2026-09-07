@@ -1,5 +1,6 @@
 import type { MDXComponents } from "mdx/types";
 
+import { ConnectionMediaComparison } from "@/features/connection-media/connection-media-comparison";
 import { HostsAndDevicesExperience } from "@/features/hosts-and-devices/hosts-and-devices-experience";
 import { HostsAndDevicesStaticOverview } from "@/features/hosts-and-devices/hosts-and-devices-static-overview";
 import { InterviewScenario } from "@/features/lessons/interview-scenario";
@@ -15,6 +16,7 @@ import { NetworkDeviceSymbol } from "@/features/packet-flow/network-device-symbo
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
+    ConnectionMediaComparison,
     EncapsulationExperience,
     DeviceLayerScope,
     HostsAndDevicesExperience,
