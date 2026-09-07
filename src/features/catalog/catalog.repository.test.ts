@@ -97,13 +97,17 @@ describe("catalog repository", () => {
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(osi.sections?.every(({ access }) => access !== "public")).toBe(true);
+    expect(
+      lessons.slice(2).some(({ sections }) =>
+        sections?.some(({ access }) => access === "public"),
+      ),
+    ).toBe(false);
     for (const lesson of [first, second, osi]) {
       expect(lesson.sections?.at(-1)).toEqual(expect.objectContaining({
         id: "pro-deep-dive",
         label: "Pro Deep Dive",
         access: "pro",
-        preview: expect.any(String),
+        preview: expect.stringMatching(/\S/),
       }));
     }
   });
