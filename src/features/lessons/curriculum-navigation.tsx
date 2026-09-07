@@ -23,7 +23,7 @@ export function CurriculumNavigation({
                 const lessonMeta = (
                   <>
                     <span>{lesson.title}</span>
-                    <span>Free</span>
+                    {lesson.published ? <span>Free</span> : null}
                     {!lesson.published ? <span>Coming later</span> : null}
                     {isCurrent ? <span>Current lesson</span> : null}
                   </>

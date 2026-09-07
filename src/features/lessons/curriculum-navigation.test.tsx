@@ -92,7 +92,14 @@ describe("CurriculumNavigation", () => {
 
     expect(within(navigation).getByText("Current lesson")).toBeVisible();
     expect(within(navigation).getAllByText("Coming later")).toHaveLength(2);
-    expect(within(navigation).getAllByText("Free")).toHaveLength(3);
+    expect(within(navigation).getAllByText("Free")).toHaveLength(1);
+    for (const title of ["Switching basics", "Premium troubleshooting"]) {
+      const upcomingLesson = within(navigation).getByText(title).closest("li");
+
+      expect(upcomingLesson).not.toBeNull();
+      expect(within(upcomingLesson as HTMLElement).getByText("Coming later")).toBeVisible();
+      expect(within(upcomingLesson as HTMLElement).queryByText("Free")).toBeNull();
+    }
     expect(within(navigation).queryByText("Premium")).toBeNull();
     expect(within(navigation).queryByText("Palo Alto Basics")).toBeNull();
     expect(within(navigation).queryByRole("link", { name: /switching basics/i })).toBeNull();
@@ -121,7 +128,7 @@ describe("CurriculumNavigation", () => {
     const lessonItems = within(moduleOne as HTMLElement).getAllByRole("listitem");
     expect(lessonItems.map(({ textContent }) => textContent)).toEqual([
       "Intro to packetsFreeCurrent lesson",
-      "Switching basicsFreeComing later",
+      "Switching basicsComing later",
     ]);
   });
 });
