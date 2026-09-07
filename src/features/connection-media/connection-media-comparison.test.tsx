@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it } from "vitest";
@@ -36,11 +36,46 @@ describe("ConnectionMediaComparison", () => {
       expect(screen.getByRole("radio", { name: quality })).toBeVisible();
     }
 
-    await user.click(screen.getByRole("radio", { name: "Interference" }));
+    const expectedExplanations = {
+      Bandwidth: {
+        Copper: "Copper Ethernet can provide useful high-speed links when cable category and equipment support the negotiated rate.",
+        Fibre: "Fibre supports high-capacity links when the optics and equipment on both ends are compatible.",
+        Wireless: "Wireless capacity is shared airtime, so useful throughput depends on signal quality and other active devices.",
+      },
+      Interference: {
+        Copper: "Electrical signals can be affected by electromagnetic interference, so routing and installation matter.",
+        Fibre: "Light in fibre is not affected by electromagnetic interference from nearby machinery.",
+        Wireless: "A shared radio environment can introduce congestion and interference from nearby networks or equipment.",
+      },
+      Mobility: {
+        Copper: "A cable keeps a fixed device reliably connected but does not support movement while in use.",
+        Fibre: "Fibre is a fixed link and needs careful handling rather than supporting moving endpoints.",
+        Wireless: "Wireless lets a compatible device move within coverage without carrying a physical cable.",
+      },
+      Cost: {
+        Copper: "Familiar ports, cable, and installation often make nearby copper connections economical.",
+        Fibre: "Optics, compatible equipment, and installation can raise the initial cost while enabling longer links.",
+        Wireless: "Wireless can avoid running a cable to each mobile device, but coverage and capacity still need planning.",
+      },
+      Distance: {
+        Copper: "Common twisted-pair Ethernet channels are intended for nearby runs, typically up to 100 metres.",
+        Fibre: "Fibre is well suited to links that exceed the practical distance of common copper Ethernet.",
+        Wireless: "Wireless range changes with walls, obstructions, antenna placement, and signal strength.",
+      },
+    } as const;
 
-    expect(screen.getByText(/Electrical signals can be affected by electromagnetic interference/i)).toBeVisible();
-    expect(screen.getByText(/Light in fibre is not affected by electromagnetic interference/i)).toBeVisible();
-    expect(screen.getByText(/shared radio environment/i)).toBeVisible();
+    for (const [quality, explanations] of Object.entries(expectedExplanations)) {
+      await user.click(screen.getByRole("radio", { name: quality }));
+
+      for (const [medium, explanation] of Object.entries(explanations)) {
+        const heading = screen.getByRole("heading", { name: medium });
+        const article = heading.closest("article");
+
+        expect(article, `${medium} panel`).not.toBeNull();
+        expect(within(article!).getByText(explanation)).toBeVisible();
+      }
+    }
+
     expect(container.querySelectorAll("article[aria-labelledby]")).toHaveLength(3);
     expect(container.querySelectorAll("[data-signal]")).toHaveLength(3);
     expect(container.querySelectorAll("[data-signal=\"electrical\"]")).toHaveLength(1);
