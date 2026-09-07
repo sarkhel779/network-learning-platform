@@ -1,7 +1,7 @@
 # Cables, Fibre, Wireless and Network Connections Lesson Design
 
 **Date:** 2026-09-08  
-**Status:** Approved conversational design, pending written-spec approval  
+**Status:** Approved
 **Scope:** Publish the third Networking Foundations lesson with a guided visual comparison, a scenario-based connection-design lab, foundational troubleshooting, and explicit public, free-account, and Pro boundaries.
 
 ## Purpose
