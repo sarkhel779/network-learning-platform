@@ -1,9 +1,12 @@
 import type { PacketFlowScenario, PacketFlowStep } from "./packet-flow.schema";
+import { NetworkDeviceSymbol, type NetworkDeviceSymbolKind } from "./network-device-symbol";
 
 type NetworkTopologyProps = Readonly<{
   scenario: PacketFlowScenario;
   step: PacketFlowStep;
   reducedMotion: boolean;
+  selectedDeviceId?: string;
+  onDeviceSelect?: (deviceId: string) => void;
 }>;
 
 function isLinkActive(linkId: string, step: PacketFlowStep): boolean {
@@ -32,7 +35,23 @@ function packetKindLabel(label: string): string {
   return label;
 }
 
-export function NetworkTopology({ scenario, step, reducedMotion }: NetworkTopologyProps) {
+function deviceSymbolKind(device: PacketFlowScenario["devices"][number]): NetworkDeviceSymbolKind {
+  const identity = `${device.id} ${device.label} ${device.role}`.toLowerCase();
+  if (identity.includes("firewall") || identity.includes("security boundary")) return "firewall";
+  if (identity.includes("access point") || identity.includes("wireless bridge")) return "access-point";
+  if (identity.includes("switch") || identity.includes("lan forwarding")) return "switch";
+  if (identity.includes("router") || identity.includes("gateway")) return "router";
+  if (identity.includes("server")) return "server";
+  return "host";
+}
+
+export function NetworkTopology({
+  scenario,
+  step,
+  reducedMotion,
+  selectedDeviceId,
+  onDeviceSelect,
+}: NetworkTopologyProps) {
   const devicesById = new Map(scenario.devices.map((device) => [device.id, device]));
   const packetLink = step.packet
     ? scenario.links.find(
@@ -52,7 +71,7 @@ export function NetworkTopology({ scenario, step, reducedMotion }: NetworkTopolo
       className={`network-topology${reducedMotion ? " network-topology--reduced-motion" : ""}`}
       data-reduced-motion={reducedMotion ? "true" : undefined}
     >
-      <svg viewBox="0 0 800 240" role="img" aria-labelledby={titleId} aria-describedby={descriptionId}>
+      <svg viewBox="0 0 800 240" role={onDeviceSelect ? "group" : "img"} aria-labelledby={titleId} aria-describedby={descriptionId}>
         <title id={titleId}>{scenario.title}</title>
         <desc id={descriptionId}>Topology order: {scenario.devices.map((device) => device.label).join(", ")}. Current step: {step.title}. {step.explanation}</desc>
         <g className="network-topology__links">
@@ -104,6 +123,22 @@ export function NetworkTopology({ scenario, step, reducedMotion }: NetworkTopolo
         <g className="network-topology__devices">
           {scenario.devices.map((device) => {
             const active = step.activeDeviceIds.includes(device.id);
+            const symbolKind = deviceSymbolKind(device);
+            const selectableProps = onDeviceSelect
+              ? {
+                  role: "button",
+                  tabIndex: 0,
+                  "aria-label": `Explore ${device.label}`,
+                  "aria-pressed": selectedDeviceId === device.id,
+                  onClick: () => onDeviceSelect(device.id),
+                  onKeyDown: (event: React.KeyboardEvent<SVGGElement>) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      onDeviceSelect(device.id);
+                    }
+                  },
+                } as const
+              : {};
             return (
               <g
                 key={device.id}
@@ -111,10 +146,11 @@ export function NetworkTopology({ scenario, step, reducedMotion }: NetworkTopolo
                 data-active={active ? "true" : undefined}
                 data-device-id={device.id}
                 transform={`translate(${device.x} ${device.y})`}
+                {...selectableProps}
               >
-                <circle r="26" />
-                <text textAnchor="middle" y="42">{device.label}</text>
-                <text className="network-topology__device-role" textAnchor="middle" y="58">{device.role}</text>
+                <NetworkDeviceSymbol kind={symbolKind} />
+                <text textAnchor="middle" y="48">{device.label}</text>
+                <text className="network-topology__device-role" textAnchor="middle" y="64">{device.role}</text>
               </g>
             );
           })}

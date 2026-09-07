@@ -1,4 +1,4 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { getPathway } from "./catalog.repository";
@@ -14,7 +14,7 @@ describe("PathwayOverview", () => {
       screen.getByRole("heading", { name: "Networking Foundations" }),
     ).toBeVisible();
     expect(screen.getByText(/complete beginners/i)).toBeVisible();
-    expect(screen.getAllByRole("listitem")).toHaveLength(14);
+    expect(screen.getAllByRole("listitem")).toHaveLength(13);
   });
 
   it("links published lessons and marks unpublished lessons as coming later", () => {
@@ -27,13 +27,15 @@ describe("PathwayOverview", () => {
       "href",
       "/learn/networking-foundations/how-networks-communicate",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(1);
-
-    const unpublishedLesson = screen
-      .getByRole("heading", { name: /hosts and network devices/i })
-      .closest("li");
-    expect(unpublishedLesson).not.toBeNull();
-    expect(within(unpublishedLesson!).getByText("Coming later")).toBeVisible();
-    expect(within(unpublishedLesson!).queryByRole("link")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /hosts and network devices/i })).toHaveAttribute(
+      "href",
+      "/learn/networking-foundations/hosts-and-network-devices",
+    );
+    const osiLesson = screen.getByRole("link", { name: /osi and tcp\/ip models/i });
+    expect(osiLesson).toHaveAttribute(
+      "href",
+      "/learn/networking-foundations/osi-and-tcp-ip-models",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(3);
   });
 });

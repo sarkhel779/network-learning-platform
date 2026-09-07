@@ -5,11 +5,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NetworkTopology } from "./network-topology";
 import { parsePacketFlowScenario } from "./packet-flow.schema";
 import { PacketFlowPlayer } from "./packet-flow-player";
+import { hostsAndDevicesLab } from "../hosts-and-devices/hosts-and-devices.data";
 
 const motionPreference = vi.hoisted(() => ({ reduced: false }));
 
 vi.mock("./use-reduced-motion", () => ({
   useReducedMotion: () => motionPreference.reduced,
+  useReducedMotionState: () => ({ reducedMotion: motionPreference.reduced, isHydrated: true }),
 }));
 
 const scenario = parsePacketFlowScenario({
@@ -295,5 +297,50 @@ describe("PacketFlowPlayer", () => {
     const { container } = render(<PacketFlowPlayer scenario={parallelLinkScenario} />);
 
     expect(container.querySelector("[data-packet-marker]")).toHaveAttribute("data-link-id", "active-client-gateway");
+  });
+
+  it("pauses playback and reports an optionally selected topology device", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const onDeviceSelect = vi.fn();
+    const { rerender } = render(
+      <PacketFlowPlayer scenario={scenario} onDeviceSelect={onDeviceSelect} />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Explore Client" }));
+
+    expect(onDeviceSelect).toHaveBeenCalledWith("client");
+    expect(screen.getByRole("button", { name: "Play" })).toBeEnabled();
+
+    rerender(
+      <PacketFlowPlayer
+        scenario={scenario}
+        onDeviceSelect={onDeviceSelect}
+        selectedDeviceId="client"
+      />,
+    );
+    expect(screen.getByRole("button", { name: "Explore Client" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+  });
+
+  it("keeps topology devices non-interactive when no selection callback is supplied", () => {
+    render(<PacketFlowPlayer scenario={scenario} />);
+
+    expect(screen.queryByRole("button", { name: "Explore Client" })).not.toBeInTheDocument();
+  });
+
+  it("renders recognizable network symbols for each device category", () => {
+    const lessonScenario = hostsAndDevicesLab.journeys[2].scenario;
+    const { container } = render(
+      <NetworkTopology scenario={lessonScenario} step={lessonScenario.steps[0]} reducedMotion />,
+    );
+
+    expect(container.querySelector('[data-device-id="wired-pc"] [data-device-symbol="host"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-device-id="switch"] [data-device-symbol="switch"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-device-id="gateway"] [data-device-symbol="router"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-device-id="access-point"] [data-device-symbol="access-point"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-device-id="firewall"] [data-device-symbol="firewall"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-device-id="remote-server"] [data-device-symbol="server"]')).toBeInTheDocument();
   });
 });

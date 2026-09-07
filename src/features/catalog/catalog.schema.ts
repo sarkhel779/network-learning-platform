@@ -3,10 +3,34 @@ import { z } from "zod";
 const idSchema = z.string().regex(/^(path|module|lesson)_[a-z0-9_]+$/);
 const slugSchema = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 const learnerTextSchema = z.string().trim().min(1);
-const lessonSectionSchema = z.object({
-  id: slugSchema,
-  label: learnerTextSchema,
+const contentAccessSchema = z.enum(["public", "account", "pro"]);
+const lessonSeoSchema = z.object({
+  title: learnerTextSchema,
+  description: learnerTextSchema,
 });
+
+export const lessonSectionSchema = z
+  .object({
+    id: slugSchema,
+    label: learnerTextSchema,
+    access: contentAccessSchema,
+    preview: learnerTextSchema.optional(),
+  })
+  .superRefine(({ access, preview }, context) => {
+    if (access === "pro" && !preview) {
+      context.addIssue({
+        code: "custom",
+        message: "Pro lesson sections require a preview.",
+        path: ["preview"],
+      });
+    }
+  });
+
+const accessOrder = {
+  public: 0,
+  account: 1,
+  pro: 2,
+} as const;
 
 export const lessonSummarySchema = z
   .object({
@@ -14,14 +38,25 @@ export const lessonSummarySchema = z
     slug: slugSchema,
     title: learnerTextSchema,
     objective: learnerTextSchema,
-    access: z.enum(["free", "premium"]),
+    seo: lessonSeoSchema,
     published: z.boolean(),
     estimatedMinutes: z.number().int().min(1).max(60),
     sections: z.array(lessonSectionSchema).optional(),
   })
-  .superRefine(({ sections }, context) => {
+  .superRefine(({ published, sections }, context) => {
     const seen = new Set<string>();
-    sections?.forEach(({ id }, index) => {
+    let previousAccess = "public" as keyof typeof accessOrder;
+
+    if (published && !sections?.length) {
+      context.addIssue({
+        code: "custom",
+        message: "Published lessons require at least one section.",
+        path: ["sections"],
+      });
+    }
+
+    sections?.forEach((section, index) => {
+      const { id, access } = section;
       if (seen.has(id)) {
         context.addIssue({
           code: "custom",
@@ -30,6 +65,16 @@ export const lessonSummarySchema = z
         });
       }
       seen.add(id);
+
+      if (accessOrder[access] < accessOrder[previousAccess]) {
+        context.addIssue({
+          code: "custom",
+          message: `Lesson section access cannot move from ${previousAccess} back to ${access}.`,
+          path: ["sections", index, "access"],
+        });
+      }
+
+      previousAccess = access;
     });
   });
 

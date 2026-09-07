@@ -26,14 +26,14 @@ test("all header and footer links lead to successful pages", async ({ page, requ
   }
 });
 
-test("unknown and unpublished lessons return not found", async ({ request }) => {
+test("unknown lessons return not found while the published models lesson resolves", async ({ request }) => {
   const unknownResponse = await request.get(
     "/learn/networking-foundations/not-a-real-lesson",
   );
   expect(unknownResponse.status()).toBe(404);
 
-  const unpublishedResponse = await request.get(
-    "/learn/networking-foundations/hosts-and-network-devices",
+  const publishedResponse = await request.get(
+    "/learn/networking-foundations/osi-and-tcp-ip-models",
   );
-  expect(unpublishedResponse.status()).toBe(404);
+  expect(publishedResponse.ok()).toBe(true);
 });

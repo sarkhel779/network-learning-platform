@@ -4,7 +4,6 @@ import { afterEach, describe, expect, it } from "vitest";
 import { getPathway } from "@/features/catalog/catalog.repository";
 import type { LessonSummary } from "@/features/catalog/catalog.types";
 
-import { loadLessonContent } from "./lesson-content.repository";
 import { LessonShell } from "./lesson-shell";
 
 afterEach(cleanup);
@@ -14,7 +13,8 @@ const lesson: LessonSummary = {
   slug: "hosts",
   title: "Hosts",
   objective: "Identify hosts on a network.",
-  access: "free",
+  seo: { title: "Hosts", description: "Identify hosts on a network." },
+  sections: [{ id: "hosts", label: "Hosts", access: "public" }],
   published: true,
   estimatedMinutes: 8,
 };
@@ -56,7 +56,7 @@ describe("LessonShell", () => {
       objective.compareDocumentPosition(content) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Hosts", level: 1 })).toBeVisible();
-    expect(screen.getByText("8 minutes · Free")).toBeVisible();
+    expect(screen.getByText("8 minutes · Public introduction · Free account to continue")).toBeVisible();
   });
 
   it("links a published previous lesson", () => {
@@ -113,7 +113,7 @@ describe("LessonShell", () => {
         pathway={pathway}
         lesson={{
           ...lesson,
-          sections: [{ id: "communication-decisions", label: "Communication decisions" }],
+          sections: [{ id: "communication-decisions", label: "Communication decisions", access: "public" }],
         }}
       >
         <p>Lesson content</p>
@@ -128,12 +128,21 @@ describe("LessonShell", () => {
     ).toHaveAttribute("href", "#communication-decisions");
     expect(curriculumNavigation.contains(sectionNavigation)).toBe(false);
   });
-});
 
-describe("loadLessonContent", () => {
-  it("rejects a lesson absent from the explicit import map", async () => {
-    await expect(loadLessonContent("unknown-pathway", "unknown-lesson")).rejects.toThrow(
-      "LESSON_CONTENT_NOT_FOUND",
+  it("places registration after public content and before bottom lesson navigation", () => {
+    render(
+      <LessonShell pathway={pathway} lesson={lesson}>
+        <p>Public explanation and player content.</p>
+      </LessonShell>,
+    );
+
+    const content = screen.getByText("Public explanation and player content.");
+    const boundary = screen.getByRole("region", { name: "Continue this lesson for free" });
+    const navigation = screen.getByRole("navigation", { name: "Lesson navigation" });
+    expect(content.compareDocumentPosition(boundary) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(boundary.compareDocumentPosition(navigation) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Continue with Google or email" })).toHaveAttribute(
+      "href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fhosts",
     );
   });
 });

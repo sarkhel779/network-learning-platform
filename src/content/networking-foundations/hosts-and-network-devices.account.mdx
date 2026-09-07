@@ -1,0 +1,147 @@
+<h2 id="windows-checks">Windows checks</h2>
+
+Run commands in Command Prompt or PowerShell and treat the output as evidence, not as a pass or
+fail badge.
+
+```text
+ipconfig /all
+```
+
+Check the active adapter, IPv4 address, subnet mask, default gateway, DHCP state, DNS servers,
+and physical address. A disconnected adapter or a self-assigned `169.254.0.0/16` address changes
+the investigation immediately.
+
+```text
+arp -a
+```
+
+Look for the local target's address on a local journey or the gateway's address on a remote
+journey. An empty entry is not automatically a fault; it can mean the host has not communicated
+recently. Generate relevant traffic and observe whether resolution succeeds.
+
+```text
+route print
+```
+
+Find the route that best matches the destination. For a remote destination, confirm that the
+default route points to a gateway reachable through the expected interface. More-specific
+routes take precedence over the default route.
+
+<InterviewScenario prompt="The ARP cache is empty before a ping. Is that proof of a network fault?">
+  No. The entry may have expired or the host may not have needed it yet. Start a capture, ping
+  the relevant local target or gateway, and look for an ARP request and reply. Repeated requests
+  without a reply are stronger evidence of a local-link, VLAN, target, or addressing problem.
+</InterviewScenario>
+
+<h2 id="wireshark-checks">Wireshark checks</h2>
+
+Capture on the host's active interface and begin with narrow display filters:
+
+<div className="lesson-table" role="region" aria-label="Hosts Wireshark display filters table" tabIndex={0}>
+  <table>
+    <caption>Hosts Wireshark display filters</caption>
+    <thead>
+      <tr><th scope="col">Goal</th><th scope="col">Display filter</th><th scope="col">Evidence to compare</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">Find address resolution</th><td><code>arp</code></td><td>Request, reply, requested IPv4 address, learned MAC address</td></tr>
+      <tr><th scope="row">Follow a ping</th><td><code>icmp</code></td><td>Echo request and reply, source and destination IP</td></tr>
+      <tr><th scope="row">Focus on the remote server</th><td><code>ip.addr == 203.0.113.50</code></td><td>Both outbound and return packets</td></tr>
+      <tr><th scope="row">Focus on one Ethernet endpoint</th><td><code>eth.addr == 02:00:00:00:10:01</code></td><td>Frames visible on this capture link</td></tr>
+      <tr><th scope="row">Find TCP conversations</th><td><code>tcp</code></td><td>Endpoints, ports, flags, retransmissions, and replies</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<WiresharkCheck
+  filter="arp or icmp or ip.addr == 203.0.113.50"
+  fields={["eth.src", "eth.dst", "arp.opcode", "ip.src", "ip.dst", "icmp.type"]}
+  normalEvidence="A local IPv4 journey commonly shows ARP followed by request and reply traffic. A remote journey resolves the gateway on the first link, while the IP destination continues to identify the remote server."
+  exercise="Choose one journey, predict the next-hop MAC address, then compare the request and return packets. Use tcp separately when testing a TCP-based service."
+/>
+
+Your capture point limits what you can see. A capture on the source host shows its local link;
+it cannot reveal every Ethernet frame rebuilt beyond a router. To compare routed-link frames,
+you need captures or telemetry at those other points. Never infer an entire path from one
+capture without stating that limitation.
+
+<InterviewScenario prompt="Traffic reaches a firewall boundary but no reply returns. How would you explain the next checks without turning this into a firewall deep dive?">
+  Verify that the request arrived on the expected interface and that the source, destination,
+  service, and session evidence match the intended flow. Then check whether policy permits it,
+  whether translation is expected, and whether a route exists in both directions. A firewall
+  deny is one possibility; an asymmetric or missing return route can look similar from the host.
+</InterviewScenario>
+
+<h2 id="test-understanding">Test your understanding</h2>
+
+<KnowledgeCheck
+  question="A PC needs to reach a server outside its own IPv4 subnet. Which local device should receive the first Ethernet frame?"
+  options={["The default gateway", "The remote server directly", "Every host on the internet"]}
+  correctIndex={0}
+  explanation="The IP packet still names the remote server as its destination, but the first local Ethernet frame is addressed to the default gateway's MAC address."
+/>
+
+<KnowledgeCheck
+  question="A wireless laptop can reach its gateway but not a remote server. Which statement best narrows the problem?"
+  options={[
+    "The wireless association and local path to the gateway are working; investigate routing, security policy, remote service, and the return path next",
+    "The access point must be disconnected",
+    "The switch cannot have learned the laptop's traffic",
+  ]}
+  correctIndex={0}
+  explanation="Gateway reachability provides evidence for the laptop, access point, switched LAN, and local next hop. It does not prove the routed, secured, service, or return portions of the journey."
+/>
+
+<InterviewScenario prompt="A user can reach local devices, but remote destinations fail after someone changed the default gateway. Where do you start?">
+  Confirm the host's IP address, mask, and configured gateway with `ipconfig /all`. Compare the
+  destination with the local subnet, inspect `route print`, and test whether the configured
+  gateway is locally reachable. Local communication can still work because it does not need
+  the gateway; remote communication exposes the incorrect next-hop decision.
+</InterviewScenario>
+
+<InterviewScenario prompt="Several wired hosts lose connectivity when one access switch becomes unavailable. What does that tell you?">
+  Start at the shared switch, its power and uplinks, and the affected access ports. A failed
+  Layer 2 path can prevent ARP, gateway reachability, and local server access at the same time.
+  Separate the host-specific checks from evidence common to every affected host.
+</InterviewScenario>
+
+<InterviewScenario prompt="A wireless laptop is disconnected from its access point while wired users still work. Which boundary is most likely failing?">
+  Investigate the wireless association first: radio availability, SSID, authentication, signal,
+  and whether the client obtained valid network settings. The working wired users make the
+  upstream switch, gateway, and server less likely as the first failure point.
+</InterviewScenario>
+
+**Decision challenge:** You are shown an unfamiliar topology containing two laptops, an access
+point, three switches, two routers, a firewall, and a server. One laptop reaches the server and
+the other does not. Explain your investigation in this order:
+
+1. Classify the source and destination hosts and each intermediary function.
+2. Decide whether the server is local or remote from the failing host.
+3. Name the first frame's expected destination and the evidence that supports it.
+4. Identify the last confirmed working boundary using host commands and packet captures.
+5. Trace the return path instead of stopping when the request leaves the source.
+6. State what your capture location cannot prove.
+
+<h2 id="summary">Summary</h2>
+
+<div className="lesson-table" role="region" aria-label="Hosts and network devices summary table" tabIndex={0}>
+  <table>
+    <caption>Hosts and network devices summary</caption>
+    <thead>
+      <tr><th scope="col">Question</th><th scope="col">Practical answer</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">Who creates or consumes the data?</th><td>A host, acting as a source, destination, client, or server</td></tr>
+      <tr><th scope="row">Who forwards within the LAN?</th><td>A switch or access point using link-layer information</td></tr>
+      <tr><th scope="row">Who connects different IP networks?</th><td>A router/default gateway using its routing table</td></tr>
+      <tr><th scope="row">Who enforces the security boundary?</th><td>A firewall using policy and session context</td></tr>
+      <tr><th scope="row">What does the host choose first?</th><td>Local destination or remote next hop</td></tr>
+      <tr><th scope="row">What must troubleshooting include?</th><td>The outbound path, return path, evidence, and capture limitations</td></tr>
+    </tbody>
+  </table>
+</div>
+
+You can now identify what each device contributes to a packet journey and choose a sensible
+first troubleshooting boundary. The next lesson maps these functions to the OSI and TCP/IP
+models; later modules will deepen ARP, switching, routing, firewall behavior, and Palo Alto
+basics without overloading this foundation.

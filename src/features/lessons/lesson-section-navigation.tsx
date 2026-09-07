@@ -11,9 +11,18 @@ export function LessonSectionNavigation({ sections }: LessonSectionNavigationPro
     <nav aria-label="On this page" className="lesson-section-navigation">
       <h2>On this page</h2>
       <ol>
-        {sections.map(({ id, label }) => (
+        {sections.map(({ id, label, access, preview }) => (
           <li key={id}>
-            <a href={`#${id}`}>{label}</a>
+            {access === "public" ? (
+              <a href={`#${id}`}>{label}</a>
+            ) : (
+              <div className="lesson-section-navigation__locked">
+                <span>{label}</span>
+                <span className="access-label">{access === "pro" ? "Pro" : "Free account"}</span>
+                <span className="lesson-section-navigation__status">Locked</span>
+                {access === "pro" && preview ? <p>{preview}</p> : null}
+              </div>
+            )}
           </li>
         ))}
       </ol>

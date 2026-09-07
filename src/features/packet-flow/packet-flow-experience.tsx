@@ -11,6 +11,9 @@ type PacketFlowExperienceProps = Readonly<{
   scenario: unknown;
   headingId?: string;
   suppressHeading?: boolean;
+  selectedDeviceId?: string;
+  onDeviceSelect?: (deviceId: string) => void;
+  autoplay?: boolean;
 }>;
 
 function subscribeToClientRender() {
@@ -21,10 +24,16 @@ function ClientOnlyPacketFlowPlayer({
   scenario,
   headingId,
   suppressHeading,
+  selectedDeviceId,
+  onDeviceSelect,
+  autoplay,
 }: {
   scenario: Parameters<typeof PacketFlowPlayer>[0]["scenario"];
   headingId?: string;
   suppressHeading?: boolean;
+  selectedDeviceId?: string;
+  onDeviceSelect?: (deviceId: string) => void;
+  autoplay?: boolean;
 }) {
   const canRenderInteractively = useSyncExternalStore(
     subscribeToClientRender,
@@ -33,13 +42,27 @@ function ClientOnlyPacketFlowPlayer({
   );
 
   return canRenderInteractively ? (
-    <PacketFlowPlayer headingId={headingId} scenario={scenario} suppressHeading={suppressHeading} />
+    <PacketFlowPlayer
+      headingId={headingId}
+      scenario={scenario}
+      suppressHeading={suppressHeading}
+      selectedDeviceId={selectedDeviceId}
+      onDeviceSelect={onDeviceSelect}
+      autoplay={autoplay}
+    />
   ) : (
     <PacketFlowFallback />
   );
 }
 
-export function PacketFlowExperience({ scenario, headingId, suppressHeading }: PacketFlowExperienceProps) {
+export function PacketFlowExperience({
+  scenario,
+  headingId,
+  suppressHeading,
+  selectedDeviceId,
+  onDeviceSelect,
+  autoplay,
+}: PacketFlowExperienceProps) {
   const parsedScenario = safeParsePacketFlowScenario(scenario);
 
   if (!parsedScenario.success) return <PacketFlowFallback />;
@@ -50,6 +73,9 @@ export function PacketFlowExperience({ scenario, headingId, suppressHeading }: P
         headingId={headingId}
         scenario={parsedScenario.data}
         suppressHeading={suppressHeading}
+        selectedDeviceId={selectedDeviceId}
+        onDeviceSelect={onDeviceSelect}
+        autoplay={autoplay}
       />
     </PacketFlowErrorBoundary>
   );

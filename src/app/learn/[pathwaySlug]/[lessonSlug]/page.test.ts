@@ -1,9 +1,31 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/features/lessons/lesson-content.repository", () => ({
-  loadLessonContent: async () => ({ default: () => null }),
+vi.mock("server-only", () => ({}));
+vi.mock("@/features/packet-flow/use-reduced-motion", () => ({
+  useReducedMotion: () => false,
+  useReducedMotionState: () => ({ reducedMotion: false, isHydrated: true }),
 }));
+// Vitest does not compile MDX. Substitute only the content modules, retaining
+// the real server access loader, lesson shell, and interactive player.
+vi.mock("@/content/networking-foundations/how-networks-communicate.public.mdx", async () => {
+  const { createElement, Fragment } = await import("react");
+  const { NetworkCommunicationPacketFlow } = await import("@/features/packet-flow/packet-flow-experience");
+  return {
+    default: () => createElement(Fragment, null,
+      createElement("p", null, "Public lesson explanation."),
+      createElement("h2", { id: "packet-journey" }, "Interactive packet journey"),
+      createElement(NetworkCommunicationPacketFlow),
+    ),
+  };
+});
+vi.mock("@/content/networking-foundations/how-networks-communicate.account.mdx", () => {
+  throw new Error("ACCOUNT_ONLY_SENTINEL: anonymous route imported a protected body");
+});
+
+import * as contentRepository from "@/features/lessons/lesson-content.repository";
+import { listPublishedLessons } from "@/features/catalog/catalog.repository";
 
 import * as lessonPage from "./page";
 
@@ -17,14 +39,90 @@ type StaticLessonPage = {
 
 const staticLessonPage = lessonPage as StaticLessonPage;
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
 
 describe("lesson route generation", () => {
+  it("provides unique catalog SEO and a relative canonical for each published lesson", async () => {
+    const metadata = await Promise.all(listPublishedLessons("networking-foundations").map((lesson) =>
+      lessonPage.generateMetadata({ params: Promise.resolve({ pathwaySlug: "networking-foundations", lessonSlug: lesson.slug }) }),
+    ));
+    expect(metadata[0]).toEqual({
+      title: "How Networks Communicate: A Beginner's Guide",
+      description: "Learn the decisions that move data between hosts and trace a packet across a network.",
+      alternates: { canonical: "/learn/networking-foundations/how-networks-communicate" },
+      openGraph: {
+        type: "article",
+        url: "/learn/networking-foundations/how-networks-communicate",
+        title: "How Networks Communicate: A Beginner's Guide",
+        description: "Learn the decisions that move data between hosts and trace a packet across a network.",
+      },
+    });
+    expect(new Set(metadata.map(({ title }) => title)).size).toBe(metadata.length);
+    expect(new Set(metadata.map(({ description }) => description)).size).toBe(metadata.length);
+  });
+
+  it.each([
+    ["missing", "how-networks-communicate"],
+    ["networking-foundations", "missing"],
+    ["networking-foundations", "arp-and-mac-learning"],
+  ])("keeps metadata and content not-found for %s/%s", async (pathwaySlug, lessonSlug) => {
+    const props = { params: Promise.resolve({ pathwaySlug, lessonSlug }) };
+    await expect(lessonPage.generateMetadata(props)).rejects.toThrow("NEXT_HTTP_ERROR_FALLBACK;404");
+    await expect(lessonPage.default(props)).rejects.toThrow("NEXT_HTTP_ERROR_FALLBACK;404");
+  });
+
+  it("server-renders one parseable JSON-LD resource with safe access flags", async () => {
+    const { container } = render(await lessonPage.default({ params: Promise.resolve({
+      pathwaySlug: "networking-foundations", lessonSlug: "how-networks-communicate",
+    }) }));
+    const scripts = container.querySelectorAll('script[type="application/ld+json"]');
+    expect(scripts).toHaveLength(1);
+    const data = JSON.parse(scripts[0].textContent ?? "");
+    expect(data.url).toBe("https://packetsecrets.com/learn/networking-foundations/how-networks-communicate");
+    expect(data.hasPart.map((part: { isAccessibleForFree: boolean }) => part.isAccessibleForFree)).toEqual([true, true, false, false, false, false]);
+  });
+
+  it("renders usable public content before registration and excludes protected bodies", async () => {
+    const loader = vi.spyOn(contentRepository, "loadAuthorizedLessonContent");
+    const page = await lessonPage.default({
+      params: Promise.resolve({
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "how-networks-communicate",
+      }),
+    });
+    const { container } = render(page);
+    const boundary = screen.getByRole("region", { name: "Continue this lesson for free" });
+    const introduction = screen.getByText("Public lesson explanation.");
+    const playerNext = screen.getByRole("button", { name: "Next" });
+    expect(introduction.compareDocumentPosition(boundary) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(playerNext.compareDocumentPosition(boundary) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    fireEvent.click(playerNext);
+    expect(screen.getByText(/Step 2 of/)).toBeVisible();
+    expect(boundary).toHaveTextContent("No payment required.");
+    expect(screen.getByRole("link", { name: "Continue with Google or email" })).toHaveAttribute(
+      "href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fhow-networks-communicate",
+    );
+    expect(loader).toHaveBeenCalledWith("networking-foundations/how-networks-communicate", "anonymous");
+    expect(container.innerHTML).not.toMatch(/ACCOUNT_ONLY_SENTINEL|PRO_ONLY_SENTINEL/);
+    expect(renderToStaticMarkup(page)).not.toMatch(/ACCOUNT_ONLY_SENTINEL|PRO_ONLY_SENTINEL/);
+  });
+
   it("emits only published lessons from the validated catalogue", () => {
     expect(staticLessonPage.generateStaticParams?.()).toEqual([
       {
         pathwaySlug: "networking-foundations",
         lessonSlug: "how-networks-communicate",
+      },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "hosts-and-network-devices",
+      },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "osi-and-tcp-ip-models",
       },
     ]);
   });

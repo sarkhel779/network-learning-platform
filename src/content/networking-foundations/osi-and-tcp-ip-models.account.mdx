@@ -1,0 +1,90 @@
+<h2 id="device-layer-scope">What each network device examines</h2>
+
+No device is permanently limited to one layer. This comparison describes what each device
+**commonly examines** in a familiar network task.
+
+<DeviceLayerScope />
+
+One home gateway can contain an access point, switch, router, and firewall. The functions stay
+distinct even when they share hardware.
+
+<h2 id="wireshark-layers">Wireshark layer identification</h2>
+
+Capture on the active host interface and choose a filter that matches your question.
+
+<div className="lesson-table" role="region" aria-label="Wireshark layer identification filters table" tabIndex={0}>
+  <table>
+    <caption>Wireshark layer identification filters</caption>
+    <thead>
+      <tr><th scope="col">Filter</th><th scope="col">Evidence to identify</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row"><code>eth</code></th><td>Ethernet frames and local-link addresses</td></tr>
+      <tr><th scope="row"><code>ip</code></th><td>IPv4 source and destination</td></tr>
+      <tr><th scope="row"><code>tcp</code></th><td>TCP ports and conversation details</td></tr>
+      <tr><th scope="row"><code>udp</code></th><td>UDP datagrams and ports</td></tr>
+      <tr><th scope="row"><code>dns</code></th><td>Application request and response names</td></tr>
+      <tr><th scope="row"><code>http</code></th><td>HTTP methods, status codes, and headers when visible</td></tr>
+      <tr><th scope="row"><code>tls</code></th><td>Encrypted web-traffic records and handshake evidence</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<WiresharkCheck
+  filter="eth or ip or tcp or udp or dns or http or tls"
+  fields={["eth.src", "eth.dst", "ip.src", "ip.dst", "tcp.srcport", "tcp.dstport"]}
+  normalEvidence="A TCP web exchange can show Ethernet addresses for the local link, IPv4 addresses for the packet path, and TCP ports for the application conversation. HTTP may be visible for unencrypted traffic; HTTPS commonly shows TLS instead."
+  exercise="Open one packet and identify its Ethernet, IPv4, TCP, and HTTP or TLS sections. State which section supplies local-link, Internet, transport, and application evidence."
+/>
+
+A capture on one host cannot reveal every frame rebuilt beyond a router. Compare other capture
+points only when you have access to them.
+
+<h2 id="troubleshooting-interview">Troubleshooting and interview scenarios</h2>
+
+Work upward from link, to local delivery, to IP path, transport reachability, and application
+behavior. A successful lower-layer check narrows the next question; it does not prove every
+higher layer is healthy.
+
+<InterviewScenario prompt="A laptop has a link light but cannot open an internal website. How would you organize your first checks?">
+  <ol>
+    <li>Verify the interface is enabled and confirm the physical or wireless link is stable.</li>
+    <li>Check the laptop's IP address, subnet mask, DNS settings, and default gateway.</li>
+    <li>Test local delivery, followed by gateway and destination IP reachability.</li>
+    <li>Verify that the required TCP or UDP port is reachable.</li>
+    <li>Inspect DNS resolution and the website's HTTP, HTTPS, or TLS response.</li>
+    <li>State the evidence found at each layer; a link light alone does not prove HTTP is healthy.</li>
+  </ol>
+</InterviewScenario>
+
+<InterviewScenario prompt="How would you explain encapsulation and compare OSI with TCP/IP in an interview?">
+  <ol>
+    <li>Begin with application data, such as an HTTP request created by a browser.</li>
+    <li>Explain that transport adds TCP or UDP information, including port numbers.</li>
+    <li>Explain that the Internet layer adds IP addressing and the local link adds frame information.</li>
+    <li>Describe the receiver removing and interpreting that information in reverse order.</li>
+    <li>Compare the models: OSI separates seven conceptual layers, while TCP/IP groups them into four practical layers.</li>
+    <li>Anchor the explanation to HTTP, TCP or UDP, IPv4, and Ethernet or Wi-Fi instead of only reciting layer names.</li>
+  </ol>
+</InterviewScenario>
+
+<h2 id="knowledge-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck
+  question="Which item is the best example of Internet or OSI Network-layer information?"
+  options={["An IPv4 destination address used for routing", "A destination TCP port", "An Ethernet destination MAC address"]}
+  correctIndex={0}
+  explanation="IP addressing and routing belong to the TCP/IP Internet layer and OSI Network layer. TCP ports are transport information, while a MAC address is local-link information."
+/>
+
+<KnowledgeCheck
+  question="A router forwards a packet to another network. What normally changes at that routed boundary?"
+  options={["The local-link frame is replaced for the next link", "The browser request is delivered to the router application", "The server destination IP becomes the router IP"]}
+  correctIndex={0}
+  explanation="The router removes the incoming local frame, uses the destination IP to select a next hop, and builds a frame for the outgoing link. The packet still identifies the intended destination server."
+/>
+
+You can now connect a visible protocol field to a responsibility: application data serves the
+user, transport identifies a conversation, IP identifies a path, and Network Access carries a
+frame over one local link. Later lessons will examine DNS, TCP and UDP, routing, switching, and
+firewall policy in greater depth.

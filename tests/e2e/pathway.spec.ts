@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("shows the networking pathway and its published lesson link", async ({ page }) => {
+test("shows the networking pathway and its published lesson links", async ({ page }) => {
   await page.goto("/paths/networking-foundations");
 
   await expect(
@@ -17,8 +17,16 @@ test("shows the networking pathway and its published lesson link", async ({ page
   ]);
 
   const lessonLinks = page.locator(".lesson-list h3 a");
-  await expect(lessonLinks).toHaveCount(1);
+  await expect(lessonLinks).toHaveCount(3);
   const publishedLessonLink = lessonLinks.filter({ hasText: "How Networks Communicate" });
+  await expect(lessonLinks.filter({ hasText: "Hosts and Network Devices" })).toHaveAttribute(
+    "href",
+    "/learn/networking-foundations/hosts-and-network-devices",
+  );
+  await expect(lessonLinks.filter({ hasText: "OSI and TCP/IP Models" })).toHaveAttribute(
+    "href",
+    "/learn/networking-foundations/osi-and-tcp-ip-models",
+  );
 
   await expect(publishedLessonLink).toHaveAttribute(
     "href",
@@ -42,8 +50,8 @@ test("keeps the security lessons in separate curriculum rows", async ({ page }) 
   await expect(securityModule.locator(".lesson-card h3")).toHaveText([
     "NAT Fundamentals",
     "Firewall Fundamentals",
-    "Palo Alto Basics",
   ]);
+  await expect(page.getByText("Palo Alto Basics", { exact: true })).toHaveCount(0);
 });
 
 test("does not overflow at mobile width", async ({ page }) => {
