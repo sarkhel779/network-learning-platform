@@ -11,6 +11,7 @@ const fallbackMessage = "The interactive packet journey is unavailable. Use the 
 
 vi.mock("./use-reduced-motion", () => ({
   useReducedMotion: () => false,
+  useReducedMotionState: () => ({ reducedMotion: false, isHydrated: true }),
 }));
 
 afterEach(() => {

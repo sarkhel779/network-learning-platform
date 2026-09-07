@@ -74,6 +74,14 @@ describe("parseLayerModelsLab", () => {
     expect(() => parseLayerModelsLab({ ...validLab, mapping: duplicatedCoverage })).toThrow(/exactly one mapping/i);
   });
 
+  it("requires every canonical TCP/IP layer to have exactly one mapping entry", () => {
+    const missingMapping = validLab.mapping.filter((entry) => entry.tcpIpLayer !== "internet");
+    expect(() => parseLayerModelsLab({ ...validLab, mapping: missingMapping })).toThrow();
+
+    const duplicateMapping = [...validLab.mapping, { ...validLab.mapping[0] }];
+    expect(() => parseLayerModelsLab({ ...validLab, mapping: duplicateMapping })).toThrow();
+  });
+
   it("rejects invalid encapsulation layer references and non-positive durations", () => {
     const unknownLayer = [{ ...validLab.encapsulationSteps[0], activeOsiLayer: 8 }];
     expect(() => parseLayerModelsLab({ ...validLab, encapsulationSteps: unknownLayer })).toThrow(/OSI layer reference/i);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useRef } from "react";
 
 import { PLAYBACK_SPEEDS } from "../packet-flow/packet-flow.schema";
 import {
@@ -9,7 +9,7 @@ import {
   playbackReducer,
   type PlaybackSpeed,
 } from "../packet-flow/playback";
-import { useReducedMotion } from "../packet-flow/use-reduced-motion";
+import { useReducedMotionState } from "../packet-flow/use-reduced-motion";
 import { layerModelsLab } from "./layer-models.data";
 import type { LayerModelsLab } from "./layer-models.schema";
 
@@ -32,18 +32,31 @@ function titleCaseDirection(direction: EncapsulationStep["direction"]): string {
 }
 
 export function EncapsulationPlayer({ steps }: EncapsulationPlayerProps) {
-  const reducedMotion = useReducedMotion();
+  const { reducedMotion, isHydrated } = useReducedMotionState();
+  const preferenceResolved = useRef(false);
+  const playbackReducedMotion = reducedMotion || !isHydrated;
   const [state, dispatch] = useReducer(
     playbackReducer,
-    { stepCount: steps.length, reducedMotion },
+    { stepCount: steps.length, reducedMotion: playbackReducedMotion },
     ({ stepCount, reducedMotion: initialReducedMotion }) => createPlaybackState(stepCount, 1, initialReducedMotion),
   );
   const currentStep = steps[state.stepIndex];
   const atFinalStep = state.stepIndex === state.stepCount - 1;
 
   useEffect(() => {
-    if (reducedMotion) dispatch({ type: "pause" });
-  }, [reducedMotion]);
+    if (!isHydrated) return;
+
+    if (!preferenceResolved.current) {
+      preferenceResolved.current = true;
+      if (!reducedMotion) dispatch({ type: "play" });
+      else dispatch({ type: "pause" });
+      return;
+    }
+
+    if (reducedMotion) {
+      dispatch({ type: "pause" });
+    }
+  }, [isHydrated, reducedMotion]);
 
   useEffect(() => {
     if (!state.playing || atFinalStep) return;

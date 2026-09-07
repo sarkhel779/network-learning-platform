@@ -54,4 +54,13 @@ describe("layerModelsLab", () => {
       expect(device.explanation).toMatch(/commonly|may|can|depends/i);
     }
   });
+
+  it("keeps firewall defaults focused on common Network, Transport, and optional Application inspection", () => {
+    const firewall = layerModelsLab.deviceScopes.find(({ id }) => id === "firewall");
+    expect(firewall).toBeDefined();
+    expect(firewall?.osiLayers).toEqual([7, 4, 3]);
+    expect(firewall?.tcpIpLayers).toEqual(["application", "transport", "internet"]);
+    expect(firewall?.commonlyExamines).toMatch(/Network, Transport, and sometimes Application/i);
+    expect(firewall?.explanation).toMatch(/depends on (?:its )?design/i);
+  });
 });

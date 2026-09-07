@@ -11,6 +11,7 @@ const motionPreference = vi.hoisted(() => ({ reduced: false }));
 
 vi.mock("./use-reduced-motion", () => ({
   useReducedMotion: () => motionPreference.reduced,
+  useReducedMotionState: () => ({ reducedMotion: motionPreference.reduced, isHydrated: true }),
 }));
 
 const scenario = parsePacketFlowScenario({

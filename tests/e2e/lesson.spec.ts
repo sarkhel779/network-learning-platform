@@ -187,6 +187,10 @@ test("presents the OSI and TCP/IP lesson with device scope and playback", async 
   }
   await expect(page.locator(".encapsulation-player__counter")).toHaveText("Step 1 of 9");
   await expect(page.getByRole("button", { name: "Play", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Pause", exact: true })).toHaveCount(0);
+  await page.waitForTimeout(2600);
+  await expect(page.locator(".encapsulation-player__counter")).toHaveText("Step 1 of 9");
+  await expect(page.getByRole("button", { name: "Play", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Play", exact: true }).click();
   await page.getByRole("button", { name: "Pause", exact: true }).click();
   await expect(page.locator("[data-current-pdu]")).toHaveText("Data");

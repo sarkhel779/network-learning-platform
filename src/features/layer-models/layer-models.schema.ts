@@ -98,6 +98,22 @@ const layerModelsLabSchema = z.object({
     });
   }
 
+  const mappingCounts = new Map<string, number>();
+  for (const entry of lab.mapping) {
+    mappingCounts.set(entry.tcpIpLayer, (mappingCounts.get(entry.tcpIpLayer) ?? 0) + 1);
+  }
+  if (
+    EXPECTED_TCP_IP_LAYERS.some((id) => mappingCounts.get(id) !== 1)
+    || [...mappingCounts.keys()].some((id) => !EXPECTED_TCP_IP_LAYERS.includes(id as never))
+    || lab.mapping.length !== EXPECTED_TCP_IP_LAYERS.length
+  ) {
+    context.addIssue({
+      code: "custom",
+      path: ["mapping"],
+      message: "Every canonical TCP/IP layer must have exactly one mapping entry.",
+    });
+  }
+
   for (const [index, step] of lab.encapsulationSteps.entries()) {
     if (!osiNumbers.includes(step.activeOsiLayer)) {
       context.addIssue({ code: "custom", path: ["encapsulationSteps", index, "activeOsiLayer"], message: `Invalid OSI layer reference: ${step.activeOsiLayer}.` });

@@ -9,6 +9,7 @@ const motionPreference = vi.hoisted(() => ({ reduced: false }));
 
 vi.mock("../packet-flow/use-reduced-motion", () => ({
   useReducedMotion: () => motionPreference.reduced,
+  useReducedMotionState: () => ({ reducedMotion: motionPreference.reduced, isHydrated: true }),
 }));
 
 async function advance(ms: number) {
@@ -178,6 +179,18 @@ describe("EncapsulationPlayer", () => {
     expect(screen.getByText("Step 2 of 9")).toBeVisible();
     await user.click(screen.getByRole("button", { name: "Restart" }));
     expect(screen.getByRole("button", { name: "Play" })).toBeEnabled();
+  });
+
+  it("does not autoplay or schedule a timer during the SSR-to-hydration preference handoff", async () => {
+    motionPreference.reduced = true;
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const { container } = render(<EncapsulationPlayer steps={layerModelsLab.encapsulationSteps} />);
+
+    expect(screen.getByRole("button", { name: "Play" })).toBeEnabled();
+    expect(vi.getTimerCount()).toBe(0);
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    expect(screen.getByText("Step 2 of 9")).toBeVisible();
+    expect(vi.getTimerCount()).toBe(0);
   });
 
   it("renders semantic encapsulation blocks while hiding decorative layers", () => {

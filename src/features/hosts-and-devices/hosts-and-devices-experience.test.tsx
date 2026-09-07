@@ -6,6 +6,7 @@ import { HostsAndDevicesExperience } from "./hosts-and-devices-experience";
 
 vi.mock("@/features/packet-flow/use-reduced-motion", () => ({
   useReducedMotion: () => false,
+  useReducedMotionState: () => ({ reducedMotion: false, isHydrated: true }),
 }));
 
 beforeEach(() => {
