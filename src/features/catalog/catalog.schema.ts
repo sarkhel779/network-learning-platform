@@ -9,12 +9,22 @@ const lessonSeoSchema = z.object({
   description: learnerTextSchema,
 });
 
-export const lessonSectionSchema = z.object({
-  id: slugSchema,
-  label: learnerTextSchema,
-  access: contentAccessSchema,
-  preview: learnerTextSchema.optional(),
-});
+export const lessonSectionSchema = z
+  .object({
+    id: slugSchema,
+    label: learnerTextSchema,
+    access: contentAccessSchema,
+    preview: learnerTextSchema.optional(),
+  })
+  .superRefine(({ access, preview }, context) => {
+    if (access === "pro" && !preview) {
+      context.addIssue({
+        code: "custom",
+        message: "Pro lesson sections require a preview.",
+        path: ["preview"],
+      });
+    }
+  });
 
 const accessOrder = {
   public: 0,
@@ -33,12 +43,20 @@ export const lessonSummarySchema = z
     estimatedMinutes: z.number().int().min(1).max(60),
     sections: z.array(lessonSectionSchema).optional(),
   })
-  .superRefine(({ sections }, context) => {
+  .superRefine(({ published, sections }, context) => {
     const seen = new Set<string>();
     let previousAccess = "public" as keyof typeof accessOrder;
 
+    if (published && !sections?.length) {
+      context.addIssue({
+        code: "custom",
+        message: "Published lessons require at least one section.",
+        path: ["sections"],
+      });
+    }
+
     sections?.forEach((section, index) => {
-      const { id, access, preview } = section;
+      const { id, access } = section;
       if (seen.has(id)) {
         context.addIssue({
           code: "custom",
@@ -47,14 +65,6 @@ export const lessonSummarySchema = z
         });
       }
       seen.add(id);
-
-      if (access === "pro" && !preview) {
-        context.addIssue({
-          code: "custom",
-          message: "Pro lesson sections require a preview.",
-          path: ["sections", index, "preview"],
-        });
-      }
 
       if (accessOrder[access] < accessOrder[previousAccess]) {
         context.addIssue({

@@ -18,6 +18,7 @@ function validLesson() {
     },
     published: true,
     estimatedMinutes: 10,
+    sections: [{ id: "introduction", label: "Introduction", access: "public" }],
   };
 }
 
@@ -46,6 +47,7 @@ function validPathway() {
             },
             published: true,
             estimatedMinutes: 10,
+            sections: [{ id: "introduction", label: "Introduction", access: "public" }],
           },
         ],
       },
@@ -109,6 +111,33 @@ describe("lesson summary schema", () => {
     ).toThrow();
   });
 
+  it("rejects a Pro section without a preview when parsed directly", () => {
+    expect(() =>
+      lessonSectionSchema.parse({
+        id: "pro-deep-dive",
+        label: "Pro Deep Dive",
+        access: "pro",
+      }),
+    ).toThrow(/preview/i);
+  });
+
+  it("requires published lessons to have at least one section", () => {
+    const publishedLesson = { ...validLesson(), sections: undefined };
+
+    expect(() => lessonSummarySchema.parse(publishedLesson)).toThrow(/section/i);
+    expect(() =>
+      lessonSummarySchema.parse({ ...validLesson(), sections: [] }),
+    ).toThrow(/section/i);
+  });
+
+  it("allows unpublished lesson placeholders without sections", () => {
+    const unpublishedLesson = { ...validLesson(), sections: undefined };
+
+    expect(() =>
+      lessonSummarySchema.parse({ ...unpublishedLesson, published: false }),
+    ).not.toThrow();
+  });
+
   it("accepts ordered lesson sections and preserves SEO metadata", () => {
     const lesson = lessonSummarySchema.parse({
       ...validLesson(),
@@ -152,7 +181,7 @@ describe("lesson summary schema", () => {
     ).toThrow();
   });
 
-  it("requires a non-empty preview for Pro sections", () => {
+  it("rejects whitespace-only previews for Pro sections", () => {
     expect(() =>
       lessonSummarySchema.parse({
         ...validLesson(),
