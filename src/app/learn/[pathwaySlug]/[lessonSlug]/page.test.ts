@@ -25,6 +25,7 @@ vi.mock("@/content/networking-foundations/how-networks-communicate.account.mdx",
 });
 
 import * as contentRepository from "@/features/lessons/lesson-content.repository";
+import { listPublishedLessons } from "@/features/catalog/catalog.repository";
 
 import * as lessonPage from "./page";
 
@@ -44,6 +45,46 @@ afterEach(() => {
 });
 
 describe("lesson route generation", () => {
+  it("provides unique catalog SEO and a relative canonical for each published lesson", async () => {
+    const metadata = await Promise.all(listPublishedLessons("networking-foundations").map((lesson) =>
+      lessonPage.generateMetadata({ params: Promise.resolve({ pathwaySlug: "networking-foundations", lessonSlug: lesson.slug }) }),
+    ));
+    expect(metadata[0]).toEqual({
+      title: "How Networks Communicate: A Beginner's Guide",
+      description: "Learn the decisions that move data between hosts and trace a packet across a network.",
+      alternates: { canonical: "/learn/networking-foundations/how-networks-communicate" },
+      openGraph: {
+        type: "article",
+        url: "/learn/networking-foundations/how-networks-communicate",
+        title: "How Networks Communicate: A Beginner's Guide",
+        description: "Learn the decisions that move data between hosts and trace a packet across a network.",
+      },
+    });
+    expect(new Set(metadata.map(({ title }) => title)).size).toBe(metadata.length);
+    expect(new Set(metadata.map(({ description }) => description)).size).toBe(metadata.length);
+  });
+
+  it.each([
+    ["missing", "how-networks-communicate"],
+    ["networking-foundations", "missing"],
+    ["networking-foundations", "arp-and-mac-learning"],
+  ])("keeps metadata and content not-found for %s/%s", async (pathwaySlug, lessonSlug) => {
+    const props = { params: Promise.resolve({ pathwaySlug, lessonSlug }) };
+    await expect(lessonPage.generateMetadata(props)).rejects.toThrow("NEXT_HTTP_ERROR_FALLBACK;404");
+    await expect(lessonPage.default(props)).rejects.toThrow("NEXT_HTTP_ERROR_FALLBACK;404");
+  });
+
+  it("server-renders one parseable JSON-LD resource with safe access flags", async () => {
+    const { container } = render(await lessonPage.default({ params: Promise.resolve({
+      pathwaySlug: "networking-foundations", lessonSlug: "how-networks-communicate",
+    }) }));
+    const scripts = container.querySelectorAll('script[type="application/ld+json"]');
+    expect(scripts).toHaveLength(1);
+    const data = JSON.parse(scripts[0].textContent ?? "");
+    expect(data.url).toBe("https://packetsecrets.com/learn/networking-foundations/how-networks-communicate");
+    expect(data.hasPart.map((part: { isAccessibleForFree: boolean }) => part.isAccessibleForFree)).toEqual([true, true, false, false, false, false]);
+  });
+
   it("renders usable public content before registration and excludes protected bodies", async () => {
     const loader = vi.spyOn(contentRepository, "loadAuthorizedLessonContent");
     const page = await lessonPage.default({
