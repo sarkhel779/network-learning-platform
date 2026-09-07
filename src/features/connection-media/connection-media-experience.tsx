@@ -3,13 +3,13 @@
 import { useMemo } from "react";
 
 import { ConnectionMediaLab } from "./connection-media-lab";
-import { accountConnectionScenarios } from "./connection-media.account.data";
+import { accountConnectionScenarioInput } from "./connection-media.account.scenarios";
 import { publicConnectionMedia } from "./connection-media.data";
 import { safeParseConnectionMediaCatalog } from "./connection-media.schema";
 
 // Import this composition only from the server-authorized account MDX module.
 // The shared MDX registry must not import it or its protected scenario dataset.
-export function ConnectionMediaExperience({ scenarios = accountConnectionScenarios }: { scenarios?: unknown }) {
+export function ConnectionMediaExperience({ scenarios = accountConnectionScenarioInput }: { scenarios?: unknown }) {
   const catalog = useMemo(
     () => safeParseConnectionMediaCatalog({ media: publicConnectionMedia, scenarios }),
     [scenarios],
