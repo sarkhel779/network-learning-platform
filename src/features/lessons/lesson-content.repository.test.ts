@@ -12,6 +12,12 @@ vi.mock("@/content/networking-foundations/how-networks-communicate.public.mdx", 
 vi.mock("@/content/networking-foundations/hosts-and-network-devices.public.mdx", () => ({
   default: () => null,
 }));
+vi.mock("@/content/networking-foundations/cables-fibre-wireless-and-network-connections.public.mdx", () => ({
+  default: () => null,
+}));
+vi.mock("@/content/networking-foundations/cables-fibre-wireless-and-network-connections.account.mdx", () => ({
+  default: () => null,
+}));
 vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx", () => ({
   default: () => null,
 }));
@@ -76,6 +82,20 @@ describe("loadAuthorizedLessonContent", () => {
     expect(result.public).toBeDefined();
     expect(result.account).toBeUndefined();
     expect(result.pro).toBeUndefined();
+  });
+
+  it("loads the connection media public body anonymously and its account body only for an account", async () => {
+    const key = "networking-foundations/cables-fibre-wireless-and-network-connections";
+    const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
+
+    expect(anonymous.public).toBeDefined();
+    expect(anonymous.account).toBeUndefined();
+    expect(anonymous.pro).toBeUndefined();
+
+    const account = await loadAuthorizedLessonContent(key, "account");
+    expect(account.public).toBeDefined();
+    expect(account.account).toBeDefined();
+    expect(account.pro).toBeUndefined();
   });
 
   it("returns no OSI content to anonymous viewers", async () => {

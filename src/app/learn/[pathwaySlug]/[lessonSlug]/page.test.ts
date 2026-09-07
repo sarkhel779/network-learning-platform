@@ -23,6 +23,18 @@ vi.mock("@/content/networking-foundations/how-networks-communicate.public.mdx", 
 vi.mock("@/content/networking-foundations/how-networks-communicate.account.mdx", () => {
   throw new Error("ACCOUNT_ONLY_SENTINEL: anonymous route imported a protected body");
 });
+vi.mock("@/content/networking-foundations/cables-fibre-wireless-and-network-connections.public.mdx", async () => {
+  const { createElement, Fragment } = await import("react");
+  return {
+    default: () => createElement(Fragment, null,
+      createElement("p", null, "Public connection media comparison."),
+      createElement("h2", { id: "compare-media" }, "Compare connection media"),
+    ),
+  };
+});
+vi.mock("@/content/networking-foundations/cables-fibre-wireless-and-network-connections.account.mdx", () => {
+  throw new Error("CONNECTION_MEDIA_ACCOUNT_SENTINEL: anonymous route imported a protected body");
+});
 vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx", () => {
   throw new Error("OSI_ACCOUNT_SENTINEL: anonymous route imported a protected body");
 });
@@ -125,9 +137,31 @@ describe("lesson route generation", () => {
       },
       {
         pathwaySlug: "networking-foundations",
+        lessonSlug: "cables-fibre-wireless-and-network-connections",
+      },
+      {
+        pathwaySlug: "networking-foundations",
         lessonSlug: "osi-and-tcp-ip-models",
       },
     ]);
+  });
+
+  it("renders only the connection-media public body for anonymous visitors", async () => {
+    const loader = vi.spyOn(contentRepository, "loadAuthorizedLessonContent");
+    const page = await lessonPage.default({ params: Promise.resolve({
+      pathwaySlug: "networking-foundations",
+      lessonSlug: "cables-fibre-wireless-and-network-connections",
+    }) });
+    const { container } = render(page);
+
+    expect(screen.getByText("Public connection media comparison.")).toBeVisible();
+    expect(screen.getByRole("heading", { level: 2, name: "Compare connection media" })).toBeVisible();
+    expect(loader).toHaveBeenCalledWith(
+      "networking-foundations/cables-fibre-wireless-and-network-connections",
+      "anonymous",
+    );
+    expect(container.innerHTML).not.toContain("CONNECTION_MEDIA_ACCOUNT_SENTINEL");
+    expect(renderToStaticMarkup(page)).not.toContain("CONNECTION_MEDIA_ACCOUNT_SENTINEL");
   });
 
   it("renders the OSI account boundary without loading or serializing its foundations", async () => {

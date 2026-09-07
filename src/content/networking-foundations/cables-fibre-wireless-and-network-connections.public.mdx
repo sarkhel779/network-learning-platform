@@ -1,0 +1,120 @@
+Every network connection carries bits by changing a physical signal. Copper uses electrical
+changes, fibre uses light, and wireless uses radio. Each can be a good choice when it matches
+the distance, environment, capacity, and mobility a connection needs.
+
+<h2 id="how-connections-carry-data">How connections carry data</h2>
+
+Imagine sending a message with a changing torch beam: the receiver needs to recognize the
+changes, not catch a physical letter. A network interface similarly represents bits using
+changes in a signal, and the receiving interface interprets those changes as data.
+
+Copper carries changing electrical signals along conductors. Fibre guides light along a
+strand. Wireless sends radio waves through the surrounding space. These analogies explain
+the carrier; real signalling can encode several bits in one signal pattern, so it is not
+always a simple one-flash-per-bit system. Every connection needs compatible interfaces at
+both ends and a signal the receiver can distinguish reliably.
+
+<h2 id="connection-qualities">Connection qualities</h2>
+
+Bandwidth is the theoretical carrying capacity, while throughput is the useful rate actually
+achieved after overhead, contention, and other limits. A road with many lanes has capacity,
+but that does not guarantee how much useful traffic arrives each second. **Latency** is the
+time a transfer takes to travel or wait; adding capacity does not remove every delay.
+
+Consider these qualities together:
+
+- **Distance and reliability:** Can the signal arrive consistently across the full installed path?
+- **Interference:** Could electrical noise, other radios, or the environment disturb it?
+- **Mobility:** Must the device remain connected while its user moves?
+- **Cost:** Include compatible interfaces, installation, maintenance, and the cable or radio equipment.
+- **Speed:** A negotiated link rate describes that link, not guaranteed application throughput.
+- **Duplex:** Full duplex permits simultaneous sending and receiving. Half duplex takes turns.
+- **Link state:** A link light is evidence of a physical connection or link negotiation. It is
+  not proof of end-to-end connectivity or that an application works.
+
+Modern switched copper and fibre Ethernet links commonly use full duplex. Wi-Fi shares
+airtime and contends for access; it is not full-duplex switched Ethernet. A fast link label
+and a green indicator therefore answer different questions from a successful application test.
+
+<h2 id="copper-ethernet">Copper Ethernet</h2>
+
+Copper Ethernet is like a conversation carried along a dedicated wire path. Twisted pairs
+help reduce unwanted electrical effects. **UTP** means unshielded twisted pair; **STP** is
+commonly used for shielded twisted-pair cabling. Shielded cable is installation-dependent:
+appropriate shielding continuity, bonding, and grounding matter. It is not automatically
+preferable to well-installed unshielded cable.
+
+Categories such as **Cat 5e, Cat 6, and Cat 6A** describe cabling performance specifications,
+not a promise that every device will run at the same speed. Twisted-pair Ethernet usually
+uses an eight-contact modular connector commonly called **RJ45**. A connector fitting into
+a socket does not establish cable quality or supported speed.
+
+For a concrete scope, **1000BASE-T Gigabit Ethernet over compliant Cat 5e or better cabling
+supports a channel up to 100 metres**, including the patch cords at both ends. This is common
+twisted-pair Ethernet guidance, not a limit for every copper technology or every faster
+Ethernet mode. Check the selected Ethernet standard, category, installed length, and equipment
+requirements together. Damaged pairs, poor terminations, sharp bends, or nearby electrical
+noise can affect a link even when its length is within the limit.
+
+<h2 id="fibre-connections">Fibre connections</h2>
+
+Think of fibre as a carefully guided light path. Network fibre commonly uses glass strands;
+the light carries the information, not electricity along a copper conductor. It is useful
+where distance, capacity, or electromagnetic interference makes a copper path less suitable.
+
+**Single-mode** fibre guides a single propagation mode and commonly supports longer links.
+**Multimode** fibre allows multiple propagation modes and is common on shorter building or
+data-centre links. Neither name alone tells you the supported speed or distance: the fibre
+type and the selected optical equipment must work together.
+
+An optical **transceiver** converts between the equipment's electrical signals and the
+fibre's light signals. Connectors such as **LC** and **SC** join the physical path; matching
+connector shapes alone does not prove that the fibre types or transceivers are compatible.
+Fibre requires suitable handling, bend limits, clean connections, and appropriate installation.
+Do not look into a fibre end or optical port; use approved inspection procedures.
+
+Fibre is not universally better. On a short, ordinary connection, its installation and
+interface requirements may add cost without solving a real constraint. Choose it for the
+requirements it satisfies, not because light sounds inherently faster in every application.
+
+<h2 id="wireless-connections">Wireless connections</h2>
+
+Wireless resembles a conversation in a room: the receiver needs a clear enough signal, and
+other conversations can occupy the same space. Wi-Fi uses radio **bands**, such as 2.4 GHz,
+5 GHz, and, where supported and permitted, 6 GHz. A **channel** is a portion of a band.
+Compatible devices, local radio rules, and the environment determine usable choices.
+
+Distance and obstructions such as walls weaken the received signal. Other networks may share
+airtime; interference can also come from other radio sources. A strong signal does not promise
+an uncongested channel, and a weak signal does not identify the exact source of interference.
+The effective throughput depends on contention, retries, signal quality, and the number and
+activity of devices sharing the medium.
+
+Wireless supports mobility without a cable following the user. That flexibility comes with
+coverage and capacity planning: moving between locations can change the available signal and
+airtime. A wired link and a Wi-Fi link with similar advertised rates can behave differently
+under load.
+
+<h2 id="compare-media">Compare connection media</h2>
+
+Copper, fibre, and wireless are trade-offs rather than a ranking. Compare their distance,
+capacity, resistance to interference, mobility, and cost before choosing one for a connection.
+
+<div className="lesson-table" role="region" aria-label="Connection media at a glance table" tabIndex={0}>
+  <table>
+    <caption>Connection media at a glance</caption>
+    <thead>
+      <tr><th scope="col">Medium</th><th scope="col">Signal</th><th scope="col">Strong fit</th><th scope="col">Main constraints</th><th scope="col">First evidence</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">Copper</th><td>Electrical changes</td><td>Short, fixed device connections</td><td>Installed length, cable quality, electrical noise</td><td>Seating, cable condition, link state and negotiated rate</td></tr>
+      <tr><th scope="row">Fibre</th><td>Light</td><td>Longer paths, high capacity, electrical-noise environments</td><td>Compatible optics and fibre, handling, installation cost</td><td>Component compatibility and link state at both ends</td></tr>
+      <tr><th scope="row">Wireless</th><td>Radio waves</td><td>Mobile devices and flexible access</td><td>Coverage, obstructions, interference, shared airtime</td><td>Signal quality, location, channel conditions and other users</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<ConnectionMediaComparison />
+
+Use the quality selector to compare one requirement across all three media. The table above
+preserves the main trade-offs even when animation or JavaScript is unavailable.

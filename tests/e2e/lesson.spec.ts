@@ -76,9 +76,9 @@ test("shows the complete curriculum and current lesson on desktop", async ({ pag
     "/learn/networking-foundations/hosts-and-network-devices",
   );
 
-  await expect(desktop.locator(".curriculum-navigation__lesson > a")).toHaveCount(3);
-  await expect(desktop.locator(".curriculum-navigation__lesson > div")).toHaveCount(20);
-  await expect(desktop.getByText("Coming later", { exact: true })).toHaveCount(20);
+  await expect(desktop.locator(".curriculum-navigation__lesson > a")).toHaveCount(4);
+  await expect(desktop.locator(".curriculum-navigation__lesson > div")).toHaveCount(19);
+  await expect(desktop.getByText("Coming later", { exact: true })).toHaveCount(19);
 });
 
 test("reveals the mobile curriculum without horizontal overflow", async ({ page }) => {
@@ -136,7 +136,7 @@ test("keeps the public lesson readable without JavaScript", async ({ browser }) 
     await expect(page.getByRole("heading", { level: 1, name: "What Is a Computer Network?" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Learning objective" })).toBeVisible();
     await expect(
-      page.getByText("Explain the minimum decisions required to move data between two hosts."),
+      page.getByText("Explain why networks exist and identify the ingredients required for communication."),
     ).toBeVisible();
     await expect(
       page.getByRole("img", { name: "Data path from a PC through a switch and router to a server" }),

@@ -7,7 +7,9 @@ import type { MDXComponents } from "mdx/types";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as jsxRuntime from "react/jsx-runtime";
 import { within } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("server-only", () => ({}));
 
 import { useMDXComponents as getMDXComponents } from "../../mdx-components";
 import { getLesson, getPathway } from "@/features/catalog/catalog.repository";
@@ -21,9 +23,24 @@ const compilerUrl = pathToFileURL(loaderRequire.resolve("@mdx-js/mdx")).href;
 afterEach(() => document.body.replaceChildren());
 
 async function lessonComponent(file: string) {
-  const { evaluate } = await import(/* @vite-ignore */ compilerUrl);
+  const { compile, run } = await import(/* @vite-ignore */ compilerUrl);
   const source = readFileSync(join(process.cwd(), "src/content/networking-foundations", file), "utf8");
-  const compiled = await evaluate(source, jsxRuntime);
+  const code = String(await compile(source, { outputFormat: "function-body" }));
+  // MDX's runtime import uses native Node resolution. Route that import through
+  // Vite so the actual account TSX module receives the project's alias/JSX transforms.
+  const compiled = await run(code.replaceAll("await import(", "await arguments[0].importModule("), {
+    ...jsxRuntime,
+    baseUrl: import.meta.url,
+    importModule: async (specifier: string) => {
+      if (specifier === "@/features/connection-media/connection-media-experience") {
+        return import("@/features/connection-media/connection-media-experience");
+      }
+      if (specifier === "@/features/connection-media/connection-media.account-loader") {
+        return import("@/features/connection-media/connection-media.account-loader");
+      }
+      throw new Error(`Unexpected lesson import: ${specifier}`);
+    },
+  });
   return compiled.default as ComponentType<{ components: MDXComponents }>;
 }
 
@@ -34,6 +51,8 @@ describe("compiled lesson markup", () => {
     ["hosts-and-network-devices.account.mdx", "Hosts and network devices summary", 2, 7],
     ["osi-and-tcp-ip-models.account.mdx", "The seven OSI layers", 3, 8],
     ["osi-and-tcp-ip-models.account.mdx", "Wireshark layer identification filters", 2, 8],
+    ["cables-fibre-wireless-and-network-connections.public.mdx", "Connection media at a glance", 5, 4],
+    ["cables-fibre-wireless-and-network-connections.account.mdx", "Connection selection summary", 3, 4],
   ] as const)("renders %s / %s as an accessible table", async (file, caption, columns, rows) => {
     const Content = await lessonComponent(file);
     // ID-based accessible names need a Document root, not a detached element.
@@ -50,7 +69,7 @@ describe("compiled lesson markup", () => {
     expect(container.textContent).not.toMatch(/\|\s*---/);
   });
 
-  it.each(["how-networks-communicate", "hosts-and-network-devices", "osi-and-tcp-ip-models"])("integrates %s with exactly one lesson H1", async (slug) => {
+  it.each(["how-networks-communicate", "hosts-and-network-devices", "osi-and-tcp-ip-models", "cables-fibre-wireless-and-network-connections"])("integrates %s with exactly one lesson H1", async (slug) => {
     const Content = await lessonComponent(`${slug}.${slug === "osi-and-tcp-ip-models" ? "account" : "public"}.mdx`);
     const pathway = getPathway("networking-foundations");
     const lesson = getLesson(pathway.slug, slug);
@@ -62,5 +81,22 @@ describe("compiled lesson markup", () => {
     );
     expect(within(container).getAllByRole("heading", { level: 1 })).toHaveLength(1);
     expect(within(container).getByRole("heading", { level: 1 }).textContent).toBe(lesson.title);
+  });
+
+  it("renders the account lesson with unique anchors, assessment controls, and the waitlist action", async () => {
+    const Content = await lessonComponent("cables-fibre-wireless-and-network-connections.account.mdx");
+    const container = document.body.appendChild(document.createElement("div"));
+    container.innerHTML = renderToStaticMarkup(<Content components={getMDXComponents({})} />);
+    const ids = [...container.querySelectorAll("[id]")].map((element) => element.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(within(container).getByRole("heading", { name: "Design a connection" })).toHaveAttribute("tabindex", "-1");
+    expect(within(container).getByRole("radio", { name: "Desktop near a home router" })).toBeChecked();
+    expect(within(container).getByRole("group", { name: "Choose a connection scenario" }).querySelectorAll('input[type="radio"]')).toHaveLength(6);
+    expect(within(container).getAllByRole("group", { name: /^Knowledge check:/ })).toHaveLength(3);
+    expect(within(container).getByRole("link", { name: "Join the Pro Member Waitlist" })).toHaveAttribute("href", "/contact");
+    expect(container.querySelectorAll("details.interview-scenario, .interview-scenario details")).toHaveLength(2);
+    expect(container.querySelector("p section, p aside, button button, a a")).toBeNull();
+    const workflow = container.querySelector("#diagnose-link-symptoms + p + ol");
+    expect(workflow?.children).toHaveLength(6);
   });
 });

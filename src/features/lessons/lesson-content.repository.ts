@@ -22,6 +22,12 @@ const lessonImports = {
     account: () =>
       import("@/content/networking-foundations/hosts-and-network-devices.account.mdx"),
   },
+  "networking-foundations/cables-fibre-wireless-and-network-connections": {
+    public: () =>
+      import("@/content/networking-foundations/cables-fibre-wireless-and-network-connections.public.mdx"),
+    account: () =>
+      import("@/content/networking-foundations/cables-fibre-wireless-and-network-connections.account.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),
