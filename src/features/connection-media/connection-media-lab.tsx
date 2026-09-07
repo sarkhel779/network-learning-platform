@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, type FormEvent } from "react";
+import { useId, useRef, useState, type FormEvent } from "react";
 
 import { publicConnectionMedia } from "./connection-media.data";
 import type { ConnectionMediumId, ConnectionOutcome, ConnectionScenario } from "./connection-media.schema";
@@ -34,8 +34,13 @@ function ScenarioRequirements({ scenario }: { scenario: ConnectionScenario }) {
   );
 }
 
-export function ConnectionMediaLab({ scenarios }: { scenarios: readonly ConnectionScenario[] }) {
+export function ConnectionMediaLab({ scenarios, showAdvancedShortcut = false }: {
+  scenarios: readonly ConnectionScenario[];
+  showAdvancedShortcut?: boolean;
+}) {
   const id = useId();
+  const intermediateScenarioInput = useRef<HTMLInputElement>(null);
+  const intermediateScenarioId = "noisy-workshop";
   const [scenarioId, setScenarioId] = useState(scenarios[0]?.id ?? "");
   const [mediumId, setMediumId] = useState<ConnectionMediumId>();
   const [result, setResult] = useState<ConnectionChoiceResult>();
@@ -81,6 +86,18 @@ export function ConnectionMediaLab({ scenarios }: { scenarios: readonly Connecti
 
   return (
     <div className="connection-media-lab">
+      {showAdvancedShortcut && scenarios.some(({ id: scenarioId }) => scenarioId === intermediateScenarioId) ? (
+        <div className="encapsulation-player__controls">
+          <button type="button" onClick={() => {
+            setScenarioId(intermediateScenarioId);
+            setMediumId(undefined);
+            clearResult();
+            intermediateScenarioInput.current?.focus();
+          }}>
+            I know this—proceed to advanced
+          </button>
+        </div>
+      ) : null}
       <form onSubmit={checkChoice}>
         <fieldset className="journey-selector">
           <legend>Choose a connection scenario</legend>
@@ -88,6 +105,8 @@ export function ConnectionMediaLab({ scenarios }: { scenarios: readonly Connecti
             {scenarios.map((choice) => (
               <label key={choice.id}>
                 <input
+                  ref={choice.id === intermediateScenarioId ? intermediateScenarioInput : undefined}
+                  aria-describedby={showAdvancedShortcut && choice.id === intermediateScenarioId ? "connection-design-context" : undefined}
                   type="radio"
                   name={`${id}-scenario`}
                   value={choice.id}

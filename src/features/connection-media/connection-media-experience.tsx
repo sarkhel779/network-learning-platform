@@ -16,16 +16,11 @@ export function ConnectionMediaExperience({ scenarios }: { scenarios: unknown })
 
   return (
     <section aria-labelledby="design-a-connection">
-      <div className="encapsulation-player__controls">
-        <button type="button" onClick={() => document.getElementById("design-a-connection")?.focus()}>
-          I know this—proceed to advanced
-        </button>
-      </div>
       <p id="connection-design-context">
         Practise foundational and intermediate scenarios and troubleshooting. Review the requirements, choose a medium, and check your reasoning.
       </p>
       {catalog.success ? (
-        <ConnectionMediaLab scenarios={catalog.data.scenarios} />
+        <ConnectionMediaLab scenarios={catalog.data.scenarios} showAdvancedShortcut />
       ) : (
         <div>
           <h3>Connection design lab unavailable</h3>
