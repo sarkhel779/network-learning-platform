@@ -5,6 +5,7 @@ import { HostsAndDevicesStaticOverview } from "@/features/hosts-and-devices/host
 import { InterviewScenario } from "@/features/lessons/interview-scenario";
 import { KnowledgeCheck } from "@/features/lessons/knowledge-check";
 import { LayerModelComparison } from "@/features/layer-models/layer-model-comparison";
+import { EncapsulationExperience } from "@/features/layer-models/encapsulation-experience";
 import { LearningObjective } from "@/features/lessons/learning-objective";
 import { PremiumPreview } from "@/features/lessons/premium-preview";
 import { WiresharkCheck } from "@/features/lessons/wireshark-check";
@@ -13,6 +14,7 @@ import { NetworkDeviceSymbol } from "@/features/packet-flow/network-device-symbo
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
+    EncapsulationExperience,
     HostsAndDevicesExperience,
     HostsAndDevicesStaticOverview,
     InterviewScenario,

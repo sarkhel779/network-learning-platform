@@ -50,9 +50,12 @@ describe("OSI and TCP/IP Models lesson content", () => {
   });
 
   it("contrasts UDP datagrams with TCP segments in the encapsulation sequence", () => {
-    expect(lesson).toMatch(
-      /<\/ol>\s*When UDP is used instead, its transport unit is a datagram rather than a TCP segment; that datagram is carried in an IP packet, a local-link frame, and finally bits\./,
-    );
+    expect(lesson).toContain("When UDP is used instead, its transport unit is a datagram rather than a TCP segment");
+  });
+
+  it("embeds the interactive experience without retaining the temporary placeholder", () => {
+    expect(lesson.match(/<EncapsulationExperience\s*\/>/g)).toHaveLength(1);
+    expect(lesson).not.toContain("will be added in a later update");
   });
 
   it("avoids nested paragraph markup", () => {

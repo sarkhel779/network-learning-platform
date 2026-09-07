@@ -59,23 +59,16 @@ needs a new local frame to send the packet over that next link.
 
 <h2 id="encapsulation-lab">Interactive encapsulation and decapsulation</h2>
 
-An interactive layer animation will be added in a later update. For now, trace this static
-encapsulation sequence for a small HTTP request:
+Follow a browser request down the sender's stack, across the physical link, and back up the
+receiver's stack. The active layer, PDU, and delivery information remain synchronized at every
+step. Pause the automatic playback whenever you want to inspect a state more closely.
 
-<ol>
-  <li><strong>Data:</strong> the browser creates an HTTP request.</li>
-  <li><strong>Segment:</strong> TCP adds ports and transport information.</li>
-  <li><strong>Packet:</strong> IPv4 adds source and destination IP addresses.</li>
-  <li><strong>Frame:</strong> Ethernet or Wi-Fi adds local-link addressing for the next hop.</li>
-  <li><strong>Bits:</strong> the interface signals the frame across copper, fiber, or radio.</li>
-</ol>
+<EncapsulationExperience />
 
 When UDP is used instead, its transport unit is a datagram rather than a TCP segment; that datagram is carried in an IP packet, a local-link frame, and finally bits.
 
-At the receiver, **decapsulation** reverses the order. The interface receives bits and a frame,
-IP accepts the packet for the host, TCP uses the destination port, and the browser receives the
-application data. At a router, the incoming frame ends and a new frame is created for the next
-link; the router does not deliver the browser's HTTP request to its own application.
+At a router, the incoming frame ends and a new frame is created for the next link; the router
+does not deliver the browser's HTTP request to its own application.
 
 <h2 id="device-layer-scope">What each network device examines</h2>
 
