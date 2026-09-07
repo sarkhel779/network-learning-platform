@@ -27,8 +27,7 @@ export function ModuleList({ modules, pathwaySlug }: ModuleListProps) {
                 </div>
                 <div className="lesson-meta">
                   <span>{lesson.estimatedMinutes} min</span>
-                  <span className="access-label">{lesson.access === "free" ? "Free" : "Premium"}</span>
-                  {!lesson.published && <span>Coming later</span>}
+                  {lesson.published ? <span className="access-label">Free</span> : <span>Coming later</span>}
                 </div>
               </li>
             ))}

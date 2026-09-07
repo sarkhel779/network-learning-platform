@@ -9,10 +9,8 @@ import {
   listPublishedLessons,
 } from "@/features/catalog/catalog.repository";
 import type { LessonSummary } from "@/features/catalog/catalog.types";
-import {
-  loadLessonContent,
-  type LessonContentModule,
-} from "@/features/lessons/lesson-content.repository";
+import { loadAuthorizedLessonContent } from "@/features/lessons/lesson-content.repository";
+import type { LessonContentKey, LessonContentModule } from "@/features/lessons/lesson-content.types";
 import { LessonShell } from "@/features/lessons/lesson-shell";
 
 import { isExpectedCatalogError } from "./catalog-error";
@@ -63,11 +61,13 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const lesson = findPublishedLesson(pathwaySlug, lessonSlug);
   const pathway = getPathway(pathwaySlug);
   const { previous, next } = getAdjacentLessons(pathwaySlug, lessonSlug);
+  const key: LessonContentKey = `${pathway.slug}/${lesson.slug}`;
 
   let LessonContent: LessonContentModule["default"];
 
   try {
-    ({ default: LessonContent } = await loadLessonContent(pathwaySlug, lessonSlug));
+    const content = await loadAuthorizedLessonContent(key, "anonymous");
+    LessonContent = content.public.default;
   } catch (error) {
     if (error instanceof Error && error.message === "LESSON_CONTENT_NOT_FOUND") {
       notFound();

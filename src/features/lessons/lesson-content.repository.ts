@@ -3,7 +3,6 @@ import "server-only";
 import type {
   AuthorizedLessonContent,
   LessonContentKey,
-  LessonContentModule,
   LessonContentRegistry,
   ViewerAccess,
 } from "./lesson-content.types";
@@ -58,15 +57,4 @@ export async function loadAuthorizedLessonContent(
   access: ViewerAccess,
 ): Promise<AuthorizedLessonContent> {
   return loadFromRegistry(lessonImports, key, access);
-}
-
-/** @deprecated Task 4 removes this compatibility path. */
-export async function loadLessonContent(
-  pathwaySlug: string,
-  lessonSlug: string,
-): Promise<LessonContentModule> {
-  const key: LessonContentKey = `${pathwaySlug}/${lessonSlug}`;
-  const content = await loadAuthorizedLessonContent(key, "anonymous");
-
-  return content.public;
 }

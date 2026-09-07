@@ -131,6 +131,16 @@ a { color: inherit; }
 .lesson-section-navigation ol { display: grid; gap: 0.5rem; margin: 0.75rem 0 0; padding-left: 1.25rem; }
 .lesson-section-navigation a { color: var(--accent); font-weight: 700; }
 .lesson-section-navigation a:hover { text-decoration-thickness: 0.15em; }
+.lesson-section-navigation__locked { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.5rem; overflow-wrap: anywhere; }
+.lesson-section-navigation__locked > span:first-child { font-weight: 700; }
+.lesson-section-navigation__locked .access-label, .lesson-section-navigation__status { font-size: 0.8rem; }
+.lesson-section-navigation__status { color: var(--muted); }
+.lesson-section-navigation__locked p { flex-basis: 100%; margin: 0; color: var(--muted); font-size: 0.875rem; }
+.access-card { min-width: 0; padding: clamp(1rem, 4vw, 1.5rem); overflow-wrap: anywhere; border: 1px solid var(--border); border-inline-start: 0.35rem solid var(--accent); border-radius: 0.5rem; background: color-mix(in srgb, var(--accent) 6%, var(--background)); }
+.access-card h2 { margin-top: 0; }
+.access-card > p:not(.eyebrow) { color: var(--muted); }
+.access-card .primary-link { max-width: 100%; min-height: 2.75rem; }
+.registration-boundary { margin-top: 2.5rem; }
 .learning-block { margin: 2rem 0; padding: 1.25rem; border: 1px solid var(--border); border-radius: 0.5rem; }
 .learning-block h2, .learning-block h3, .learning-block p:first-child { margin-top: 0; }
 .learning-objective { border-left: 0.35rem solid var(--accent); }

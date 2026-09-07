@@ -12,24 +12,16 @@ export type LessonSeo = {
   description: string;
 };
 
-type LessonSummaryBase = {
+export type LessonSummary = {
   id: string;
   slug: string;
   title: string;
   objective: string;
   seo: LessonSeo;
   estimatedMinutes: number;
+  published: boolean;
+  sections?: LessonSection[];
 };
-
-export type LessonSummary =
-  | (LessonSummaryBase & {
-      published: true;
-      sections: [LessonSection, ...LessonSection[]];
-    })
-  | (LessonSummaryBase & {
-      published: false;
-      sections?: LessonSection[];
-    });
 
 export type Module = {
   id: string;

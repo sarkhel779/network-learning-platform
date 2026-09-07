@@ -86,9 +86,10 @@ describe("catalog repository", () => {
     const publishedLessons = listPublishedLessons("networking-foundations");
 
     expect(
-      publishedLessons.map(({ sections }) =>
-        sections.map(({ id, access }) => ({ id, access })),
-      ),
+      publishedLessons.map(({ sections }) => {
+        if (!sections?.length) throw new Error("Published lessons require sections.");
+        return sections.map(({ id, access }) => ({ id, access }));
+      }),
     ).toEqual([
       [
         { id: "communication-decisions", access: "public" },
@@ -124,6 +125,7 @@ describe("catalog repository", () => {
     ]);
 
     for (const lesson of publishedLessons) {
+      if (!lesson.sections?.length) throw new Error("Published lessons require sections.");
       expect(lesson.sections.at(-1)).toEqual({
         id: "pro-deep-dive",
         label: "Pro Deep Dive",

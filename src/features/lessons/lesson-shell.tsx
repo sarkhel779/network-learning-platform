@@ -6,6 +6,7 @@ import type { LessonSummary, Pathway } from "@/features/catalog/catalog.types";
 import { CurriculumNavigation } from "./curriculum-navigation";
 import { LearningObjective } from "./learning-objective";
 import { LessonSectionNavigation } from "./lesson-section-navigation";
+import { RegistrationBoundary } from "./registration-boundary";
 
 type LessonShellProps = {
   pathway: Pathway;
@@ -42,8 +43,6 @@ export function LessonShell({
   next,
   children,
 }: LessonShellProps) {
-  const accessLabel = lesson.access === "premium" ? "Premium" : "Free";
-
   return (
     <main className="lesson-page" id="main-content">
       <aside aria-label="Course contents" className="lesson-curriculum lesson-curriculum--desktop">
@@ -58,7 +57,7 @@ export function LessonShell({
           <p className="eyebrow">Lesson</p>
           <h1>{lesson.title}</h1>
           <p className="lesson-byline">
-            {lesson.estimatedMinutes} minutes · {accessLabel}
+            {lesson.estimatedMinutes} minutes · Public introduction · Free account to continue
           </p>
         </header>
 
@@ -67,6 +66,8 @@ export function LessonShell({
         <LessonSectionNavigation sections={lesson.sections} />
 
         <div className="lesson-content">{children}</div>
+
+        <RegistrationBoundary returnTo={`/learn/${pathway.slug}/${lesson.slug}`} />
 
         <nav aria-label="Lesson navigation" className="lesson-navigation">
           <LessonDirection
