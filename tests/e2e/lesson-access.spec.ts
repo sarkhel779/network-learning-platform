@@ -3,8 +3,8 @@ import { expect, test } from "@playwright/test";
 const lessonPath = "/learn/networking-foundations/how-networks-communicate";
 const canonical = `https://packetsecrets.com${lessonPath}`;
 const publishedLessons = [
-  { slug: "how-networks-communicate", title: "How Networks Communicate" },
-  { slug: "hosts-and-network-devices", title: "Hosts and Network Devices" },
+  { slug: "how-networks-communicate", title: "What Is a Computer Network?" },
+  { slug: "hosts-and-network-devices", title: "Hosts, Clients, Servers and Network Interfaces" },
   { slug: "osi-and-tcp-ip-models", title: "OSI and TCP/IP Models" },
 ];
 // Actual account-only prose/answers plus the loader's protected fixture markers.
@@ -50,7 +50,7 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
   const response = await page.goto(lessonPath);
   expect(response?.status()).toBe(200);
   const html = await response!.text();
-  await expect(page.getByRole("heading", { level: 1, name: "How Networks Communicate" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "What Is a Computer Network?" })).toBeVisible();
   await expect(page.locator(".lesson-content p").filter({ hasText: /source host must identify the destination/i })).toBeVisible();
   const next = page.getByRole("button", { name: "Next", exact: true });
   await next.click();
@@ -174,13 +174,13 @@ test("public content and registration remain useful during no-JavaScript navigat
     const page = await context.newPage();
     const response = await page.goto(lessonPath);
     expect(response?.status()).toBe(200);
-    await expect(page.getByRole("heading", { level: 1, name: "How Networks Communicate" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "What Is a Computer Network?" })).toBeVisible();
     await expect(page.locator(".lesson-content p").filter({ hasText: /source host must identify the destination/i })).toBeVisible();
     await expect(page.getByRole("img", { name: "Data path from a PC through a switch and router to a server" })).toBeVisible();
     await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toContainText("No payment required.");
     for (const sentinel of protectedSentinels) expect(await response!.text()).not.toContain(sentinel);
-    await page.getByRole("link", { name: "Next: Hosts and Network Devices" }).click();
-    await expect(page.getByRole("heading", { level: 1, name: "Hosts and Network Devices" })).toBeVisible();
+    await page.getByRole("link", { name: "Next: Hosts, Clients, Servers and Network Interfaces" }).click();
+    await expect(page.getByRole("heading", { level: 1, name: "Hosts, Clients, Servers and Network Interfaces" })).toBeVisible();
     await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
     await page.getByRole("link", { name: "Continue with Google or email" }).click();
     await expect(page).toHaveURL(/\/sign-in\?returnTo=/);

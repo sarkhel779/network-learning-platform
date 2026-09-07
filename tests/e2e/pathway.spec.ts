@@ -25,7 +25,7 @@ test("shows the networking pathway and its published lesson links", async ({ pag
   const lessonLinks = page.locator(".lesson-list h3 a");
   await expect(lessonLinks).toHaveCount(3);
   const publishedLessonLink = lessonLinks.filter({ hasText: "What Is a Computer Network?" });
-  await expect(lessonLinks.filter({ hasText: "Hosts and Network Devices" })).toHaveAttribute(
+  await expect(lessonLinks.filter({ hasText: "Hosts, Clients, Servers and Network Interfaces" })).toHaveAttribute(
     "href",
     "/learn/networking-foundations/hosts-and-network-devices",
   );
@@ -43,7 +43,7 @@ test("shows the networking pathway and its published lesson links", async ({ pag
     "/learn/networking-foundations/how-networks-communicate",
   );
   await expect(
-    page.getByRole("heading", { level: 1, name: "How Networks Communicate" }),
+    page.getByRole("heading", { level: 1, name: "What Is a Computer Network?" }),
   ).toBeVisible();
 });
 
