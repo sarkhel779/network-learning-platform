@@ -75,12 +75,7 @@ does not deliver the browser's HTTP request to its own application.
 No device is permanently limited to one layer. This comparison describes what each device
 **commonly examines** in a familiar network task.
 
-| Device | Commonly examines | Practical scope |
-| --- | --- | --- |
-| Host or server | Application through Physical | Creates or consumes application data and uses a network interface. |
-| Layer 2 switch | Physical and Data Link / Network Access | Uses local-link information, commonly a destination MAC address, to forward a frame. |
-| Router | Physical, Data Link, Network / Internet | Receives a frame, routes with the destination IP, then builds an outgoing frame. |
-| Firewall | Packet, transport, sometimes application information | Scope depends on design; it can be application-aware without this lesson teaching policy configuration. |
+<DeviceLayerScope />
 
 One home gateway can contain an access point, switch, router, and firewall. The functions stay
 distinct even when they share hardware.

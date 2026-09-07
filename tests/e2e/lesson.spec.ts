@@ -161,10 +161,7 @@ test("hydrates the lesson without invalid HTML or React errors", async ({ page }
 
   page.on("pageerror", (error) => failures.push(error.message));
   page.on("console", (message) => {
-    if (
-      message.type() === "error" &&
-      /hydration|cannot be a descendant|server rendered html didn't match/i.test(message.text())
-    ) {
+    if (message.type() === "error") {
       failures.push(message.text());
     }
   });
@@ -177,4 +174,61 @@ test("hydrates the lesson without invalid HTML or React errors", async ({ page }
 
   expect(failures).toEqual([]);
   await expect(page.getByRole("dialog", { name: /console error/i })).toHaveCount(0);
+});
+
+test("presents the OSI and TCP/IP lesson with device scope and playback", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/learn/networking-foundations/osi-and-tcp-ip-models");
+
+  await expect(page.getByRole("heading", { level: 1, name: "OSI and TCP/IP Models" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Compare device layer scope" })).toBeVisible();
+  for (const symbol of ["host", "switch", "router", "firewall"]) {
+    await expect(page.locator(`[data-device-layer-scope] [data-device-symbol="${symbol}"]`)).toHaveCount(1);
+  }
+  await expect(page.locator(".encapsulation-player__counter")).toHaveText("Step 1 of 9");
+  await expect(page.getByRole("button", { name: "Play", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Play", exact: true }).click();
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
+  await expect(page.locator("[data-current-pdu]")).toHaveText("Data");
+  await page.getByRole("button", { name: "Next", exact: true }).click();
+  await expect(page.locator("[data-current-pdu]")).toHaveText("Segment");
+});
+
+test("keeps the models lesson responsive and theme compatible", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const colorScheme of ["light", "dark"] as const) {
+    await page.emulateMedia({ colorScheme });
+    await page.goto("/learn/networking-foundations/osi-and-tcp-ip-models");
+    await expect(page.getByRole("heading", { level: 1, name: "OSI and TCP/IP Models" })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)).toBe(false);
+  }
+});
+
+test("keeps the models lesson useful without JavaScript", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+  try {
+    const page = await context.newPage();
+    await page.goto("/learn/networking-foundations/osi-and-tcp-ip-models");
+    await expect(page.getByRole("heading", { level: 1, name: "OSI and TCP/IP Models" })).toBeVisible();
+    await expect(page.getByText("The browser creates data")).toBeVisible();
+    await expect(page.getByText(/Capture on the active host interface/)).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Compare device layer scope" })).toBeVisible();
+  } finally {
+    await context.close();
+  }
+});
+
+test("hydrates the models lesson without console or markup errors", async ({ page }) => {
+  const failures: string[] = [];
+  page.on("pageerror", (error) => failures.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") {
+      failures.push(message.text());
+    }
+  });
+
+  await page.goto("/learn/networking-foundations/osi-and-tcp-ip-models");
+  await expect(page.getByRole("heading", { level: 1, name: "OSI and TCP/IP Models" })).toBeVisible();
+  await expect(page.locator("[data-device-layer-scope]")).toBeVisible();
+  expect(failures).toEqual([]);
 });

@@ -29,12 +29,14 @@ describe("OSI and TCP/IP Models lesson content", () => {
   });
 
   it("contains practical packet inspection, checks, and scenario practice", () => {
-    expect(lesson.match(/<WiresharkCheck/g)).toHaveLength(1);
+    const wiresharkCheck = lesson.match(/<WiresharkCheck\b[\s\S]*?\/>/)?.[0];
+
+    expect(wiresharkCheck).toBeDefined();
     expect(lesson.match(/<KnowledgeCheck/g)).toHaveLength(2);
     expect(lesson.match(/<InterviewScenario/g)).toHaveLength(2);
 
     for (const filter of ["eth", "ip", "tcp", "udp", "dns", "http", "tls"]) {
-      expect(lesson).toContain(filter);
+      expect(wiresharkCheck).toContain(filter);
     }
 
     for (const field of [
@@ -45,7 +47,7 @@ describe("OSI and TCP/IP Models lesson content", () => {
       "tcp.srcport",
       "tcp.dstport",
     ]) {
-      expect(lesson).toContain(field);
+      expect(wiresharkCheck).toContain(field);
     }
   });
 
@@ -55,6 +57,7 @@ describe("OSI and TCP/IP Models lesson content", () => {
 
   it("embeds the interactive experience without retaining the temporary placeholder", () => {
     expect(lesson.match(/<EncapsulationExperience\s*\/>/g)).toHaveLength(1);
+    expect(lesson.match(/<DeviceLayerScope\s*\/>/g)).toHaveLength(1);
     expect(lesson).not.toContain("will be added in a later update");
   });
 
