@@ -1,8 +1,15 @@
-export type AccessLevel = "free" | "premium";
+export type ContentAccess = "public" | "account" | "pro";
 
 export type LessonSection = {
   id: string;
   label: string;
+  access: ContentAccess;
+  preview?: string;
+};
+
+export type LessonSeo = {
+  title: string;
+  description: string;
 };
 
 export type LessonSummary = {
@@ -10,7 +17,7 @@ export type LessonSummary = {
   slug: string;
   title: string;
   objective: string;
-  access: AccessLevel;
+  seo: LessonSeo;
   published: boolean;
   estimatedMinutes: number;
   sections?: LessonSection[];
