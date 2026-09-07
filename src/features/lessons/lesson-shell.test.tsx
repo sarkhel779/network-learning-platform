@@ -4,7 +4,6 @@ import { afterEach, describe, expect, it } from "vitest";
 import { getPathway } from "@/features/catalog/catalog.repository";
 import type { LessonSummary } from "@/features/catalog/catalog.types";
 
-import { loadLessonContent } from "./lesson-content.repository";
 import { LessonShell } from "./lesson-shell";
 
 afterEach(cleanup);
@@ -127,13 +126,5 @@ describe("LessonShell", () => {
       within(sectionNavigation).getByRole("link", { name: "Communication decisions" }),
     ).toHaveAttribute("href", "#communication-decisions");
     expect(curriculumNavigation.contains(sectionNavigation)).toBe(false);
-  });
-});
-
-describe("loadLessonContent", () => {
-  it("rejects a lesson absent from the explicit import map", async () => {
-    await expect(loadLessonContent("unknown-pathway", "unknown-lesson")).rejects.toThrow(
-      "LESSON_CONTENT_NOT_FOUND",
-    );
   });
 });

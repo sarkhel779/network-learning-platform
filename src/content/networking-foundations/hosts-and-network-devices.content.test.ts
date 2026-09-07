@@ -3,11 +3,17 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-const lessonPath = join(
-  process.cwd(),
-  "src/content/networking-foundations/hosts-and-network-devices.mdx",
-);
-const lesson = readFileSync(lessonPath, "utf8");
+const lesson = ["public", "account"]
+  .map((access) =>
+    readFileSync(
+      join(
+        process.cwd(),
+        `src/content/networking-foundations/hosts-and-network-devices.${access}.mdx`,
+      ),
+      "utf8",
+    ),
+  )
+  .join("\n");
 
 describe("Hosts and Network Devices lesson content", () => {
   it("keeps the approved eight-section navigation structure", () => {

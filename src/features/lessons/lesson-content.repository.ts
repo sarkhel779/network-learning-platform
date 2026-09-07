@@ -1,28 +1,72 @@
-import type { ComponentType } from "react";
+import "server-only";
 
-export type LessonContentModule = { default: ComponentType };
-type LessonContentImport = () => Promise<LessonContentModule>;
-type LessonContentKey = `${string}/${string}`;
+import type {
+  AuthorizedLessonContent,
+  LessonContentKey,
+  LessonContentModule,
+  LessonContentRegistry,
+  ViewerAccess,
+} from "./lesson-content.types";
 
-const lessonImports: Readonly<Record<LessonContentKey, LessonContentImport>> = {
-  "networking-foundations/how-networks-communicate": () =>
-    import("@/content/networking-foundations/how-networks-communicate.mdx"),
-  "networking-foundations/hosts-and-network-devices": () =>
-    import("@/content/networking-foundations/hosts-and-network-devices.mdx"),
-  "networking-foundations/osi-and-tcp-ip-models": () =>
-    import("@/content/networking-foundations/osi-and-tcp-ip-models.mdx"),
-};
+export type { LessonContentModule } from "./lesson-content.types";
 
+const lessonImports = {
+  "networking-foundations/how-networks-communicate": {
+    public: () =>
+      import("@/content/networking-foundations/how-networks-communicate.public.mdx"),
+    account: () =>
+      import("@/content/networking-foundations/how-networks-communicate.account.mdx"),
+  },
+  "networking-foundations/hosts-and-network-devices": {
+    public: () =>
+      import("@/content/networking-foundations/hosts-and-network-devices.public.mdx"),
+    account: () =>
+      import("@/content/networking-foundations/hosts-and-network-devices.account.mdx"),
+  },
+  "networking-foundations/osi-and-tcp-ip-models": {
+    public: () =>
+      import("@/content/networking-foundations/osi-and-tcp-ip-models.public.mdx"),
+    account: () =>
+      import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),
+  },
+} satisfies LessonContentRegistry;
+
+async function loadFromRegistry(
+  registry: LessonContentRegistry,
+  key: LessonContentKey,
+  access: ViewerAccess,
+): Promise<AuthorizedLessonContent> {
+  const blocks = registry[key];
+
+  if (!blocks) throw new Error("LESSON_CONTENT_NOT_FOUND");
+
+  return {
+    public: await blocks.public(),
+    account:
+      access !== "anonymous" && blocks.account ? await blocks.account() : undefined,
+    pro: access === "pro" && blocks.pro ? await blocks.pro() : undefined,
+  };
+}
+
+export function createAuthorizedLessonContentLoader(registry: LessonContentRegistry) {
+  return (key: LessonContentKey, access: ViewerAccess) =>
+    loadFromRegistry(registry, key, access);
+}
+
+export async function loadAuthorizedLessonContent(
+  key: LessonContentKey,
+  access: ViewerAccess,
+): Promise<AuthorizedLessonContent> {
+  return loadFromRegistry(lessonImports, key, access);
+}
+
+/** @deprecated Task 4 removes this compatibility path. */
 export async function loadLessonContent(
   pathwaySlug: string,
   lessonSlug: string,
 ): Promise<LessonContentModule> {
   const key: LessonContentKey = `${pathwaySlug}/${lessonSlug}`;
-  const loadContent = lessonImports[key];
+  const content = await loadAuthorizedLessonContent(key, "anonymous");
 
-  if (!loadContent) {
-    throw new Error("LESSON_CONTENT_NOT_FOUND");
-  }
-
-  return loadContent();
+  return content.public;
 }
