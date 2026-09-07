@@ -51,9 +51,9 @@ const pathwayFixture: Pathway = {
     },
     {
       id: "module_two",
-      slug: "advanced-networking",
+      slug: "packet-analysis-and-troubleshooting",
       title: "Module two",
-      description: "Explore deeper routing and security topics.",
+      description: "Apply evidence to diagnose network faults.",
       lessons: [
         {
           id: "lesson_future_premium",

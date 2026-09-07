@@ -21,5 +21,17 @@ describe("public sitemap", () => {
       }
     }
     expect(urls.some((url) => url.includes("sign-in"))).toBe(false);
+
+    const unpublishedSlugs = listPathways()
+      .flatMap(({ slug: pathwaySlug, modules }) =>
+        modules.flatMap(({ lessons }) => lessons
+          .filter(({ published }) => !published)
+          .map(({ slug }) => `https://packetsecrets.com/learn/${pathwaySlug}/${slug}`)),
+      );
+
+    for (const unpublishedUrl of unpublishedSlugs) {
+      expect(urls).not.toContain(unpublishedUrl);
+    }
+    expect(unpublishedSlugs).toHaveLength(20);
   });
 });
