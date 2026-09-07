@@ -60,11 +60,25 @@ const curriculum: Pathway[] = [
               { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Check the governing RFC and relevant read-only vendor diagnostics." },
             ],
           },
-          plannedLesson({
+          {
             id: "lesson_cables_fibre_wireless_and_network_connections", slug: "cables-fibre-wireless-and-network-connections", title: "Cables, Fibre, Wireless and Network Connections",
             objective: "Choose an appropriate connection medium and explain duplex, speed, signal, and link state at a beginner level.",
-            seo: { title: "Network Cables, Fibre and Wireless Basics", description: "Compare copper, fibre, and wireless links to choose suitable connections and recognize beginner-friendly link symptoms." }, estimatedMinutes: 20,
-          }),
+            seo: { title: "Network Cables, Fibre and Wireless Basics", description: "Compare copper, fibre, and wireless links to choose suitable connections and recognize beginner-friendly link symptoms." },
+            published: true,
+            estimatedMinutes: 20,
+            sections: [
+              { id: "how-connections-carry-data", label: "How connections carry data", access: "public" },
+              { id: "connection-qualities", label: "Connection qualities", access: "public" },
+              { id: "copper-ethernet", label: "Copper Ethernet", access: "public" },
+              { id: "fibre-connections", label: "Fibre connections", access: "public" },
+              { id: "wireless-connections", label: "Wireless connections", access: "public" },
+              { id: "compare-media", label: "Compare connection media", access: "public" },
+              { id: "design-a-connection", label: "Design a connection", access: "account" },
+              { id: "diagnose-link-symptoms", label: "Diagnose link symptoms", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore optical budgets, wireless channel analysis, advanced troubleshooting, standards checks, and interview preparation." },
+            ],
+          },
           plannedLesson({
             id: "lesson_hubs_bridges_and_switches", slug: "hubs-bridges-and-switches", title: "Hubs, Bridges and Switches",
             objective: "Explain why hubs repeat signals while bridges and switches make link-layer forwarding decisions.",

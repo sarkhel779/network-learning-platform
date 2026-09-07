@@ -75,6 +75,7 @@ describe("catalog repository", () => {
     const lessons = pathway.modules.flatMap(({ lessons }) => lessons);
 
     expect(listPublishedLessons(pathway.slug).map(({ slug }) => slug).sort()).toEqual([
+      "cables-fibre-wireless-and-network-connections",
       "hosts-and-network-devices",
       "how-networks-communicate",
       "osi-and-tcp-ip-models",
@@ -90,19 +91,54 @@ describe("catalog repository", () => {
     );
   });
 
-  it("keeps only the first two lesson foundations public", () => {
+  it("publishes connection media with its approved order and access sections", () => {
+    const pathwaySlug = "networking-foundations";
+    const lessonSlug = "cables-fibre-wireless-and-network-connections";
+
+    expect(listPublishedLessons(pathwaySlug).map(({ slug }) => slug)).toEqual([
+      "how-networks-communicate",
+      "hosts-and-network-devices",
+      "cables-fibre-wireless-and-network-connections",
+      "osi-and-tcp-ip-models",
+    ]);
+    expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
+      title: "Cables, Fibre, Wireless and Network Connections",
+      objective: "Choose an appropriate connection medium and explain duplex, speed, signal, and link state at a beginner level.",
+      seo: {
+        title: "Network Cables, Fibre and Wireless Basics",
+        description: "Compare copper, fibre, and wireless links to choose suitable connections and recognize beginner-friendly link symptoms.",
+      },
+      estimatedMinutes: 20,
+      published: true,
+    });
+    expect(getLesson(pathwaySlug, lessonSlug).sections).toEqual([
+      { id: "how-connections-carry-data", label: "How connections carry data", access: "public" },
+      { id: "connection-qualities", label: "Connection qualities", access: "public" },
+      { id: "copper-ethernet", label: "Copper Ethernet", access: "public" },
+      { id: "fibre-connections", label: "Fibre connections", access: "public" },
+      { id: "wireless-connections", label: "Wireless connections", access: "public" },
+      { id: "compare-media", label: "Compare connection media", access: "public" },
+      { id: "design-a-connection", label: "Design a connection", access: "account" },
+      { id: "diagnose-link-symptoms", label: "Diagnose link symptoms", access: "account" },
+      { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+      { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore optical budgets, wireless channel analysis, advanced troubleshooting, standards checks, and interview preparation." },
+    ]);
+  });
+
+  it("keeps only the first three lesson foundations public", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, osi] = [lessons[0], lessons[1], lessons[6]];
+    const [first, second, connectionMedia, osi] = [lessons[0], lessons[1], lessons[2], lessons[6]];
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
+    expect(connectionMedia.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(
-      lessons.slice(2).some(({ sections }) =>
+      lessons.slice(3).some(({ sections }) =>
         sections?.some(({ access }) => access === "public"),
       ),
     ).toBe(false);
-    for (const lesson of [first, second, osi]) {
+    for (const lesson of [first, second, connectionMedia, osi]) {
       expect(lesson.sections?.at(-1)).toEqual(expect.objectContaining({
         id: "pro-deep-dive",
         label: "Pro Deep Dive",
@@ -119,6 +155,12 @@ describe("catalog repository", () => {
       .toBe("hosts-and-network-devices");
     expect(getAdjacentLessons("networking-foundations", "hosts-and-network-devices").next?.slug)
       .toBe("cables-fibre-wireless-and-network-connections");
+    const connectionMedia = getAdjacentLessons(
+      "networking-foundations",
+      "cables-fibre-wireless-and-network-connections",
+    );
+    expect(connectionMedia.previous?.slug).toBe("hosts-and-network-devices");
+    expect(connectionMedia.next?.slug).toBe("hubs-bridges-and-switches");
     expect(getAdjacentLessons("networking-foundations", "osi-and-tcp-ip-models").previous?.slug)
       .toBe("access-points-modems-onts-and-firewalls");
     expect(getAdjacentLessons("networking-foundations", "systematic-network-troubleshooting-capstone").next)

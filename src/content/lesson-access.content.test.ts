@@ -25,6 +25,49 @@ describe("public lesson source boundaries", () => {
     expect(source).not.toMatch(/\bcorrectIndex\s*=/);
   });
 
+  it("keeps connection-media scenarios, answers, and advanced preview copy out of the public module", () => {
+    const publicSource = readFileSync(
+      join(contentRoot, "networking-foundations/cables-fibre-wireless-and-network-connections.public.mdx"),
+      "utf8",
+    );
+    const accountSource = readFileSync(
+      join(contentRoot, "networking-foundations/cables-fibre-wireless-and-network-connections.account.mdx"),
+      "utf8",
+    );
+    const publicHeadingIds = [...publicSource.matchAll(/<h2 id="([^"]+)">/g)].map(
+      (match) => match[1],
+    );
+    const accountHeadingIds = [...accountSource.matchAll(/<h2 id="([^"]+)">/g)].map(
+      (match) => match[1],
+    );
+    const protectedStrings = [
+      "CONNECTION_MEDIA_ACCOUNT_SENTINEL",
+      "The recommended answer is copper Ethernet.",
+      "Optical power-budget planning compares transmitter output, loss, and receiver sensitivity.",
+      "Campus buildings need a connection chosen for distance and environmental exposure.",
+    ];
+
+    expect(publicHeadingIds).toEqual([
+      "how-connections-carry-data",
+      "connection-qualities",
+      "copper-ethernet",
+      "fibre-connections",
+      "wireless-connections",
+      "compare-media",
+    ]);
+    expect(accountHeadingIds).toEqual([
+      "design-a-connection",
+      "diagnose-link-symptoms",
+      "knowledge-check-summary",
+      "pro-deep-dive",
+    ]);
+    for (const value of protectedStrings) {
+      expect(accountSource).toContain(value);
+      expect(publicSource).not.toContain(value);
+    }
+    expect(publicSource).not.toContain("Join the Pro Member Waitlist");
+  });
+
   it("keeps both Hosts knowledge checks and all five interview answers in the account block", () => {
     const source = readFileSync(join(contentRoot, "networking-foundations/hosts-and-network-devices.account.mdx"), "utf8");
     expect(source.match(/<KnowledgeCheck\b/g)).toHaveLength(2);
