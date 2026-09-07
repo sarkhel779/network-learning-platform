@@ -11,12 +11,16 @@ afterEach(cleanup);
 describe("ConnectionMediaExperience", () => {
   it("moves keyboard focus to the advanced lab with its destination context", async () => {
     const user = userEvent.setup();
-    render(<ConnectionMediaExperience />);
+    render(<>
+      <h2 id="design-a-connection" tabIndex={-1} aria-describedby="connection-design-context">Design a connection</h2>
+      <ConnectionMediaExperience />
+    </>);
     await user.tab();
     expect(screen.getByRole("button", { name: "I know this—proceed to advanced" })).toHaveFocus();
     await user.keyboard("{Enter}");
     const heading = screen.getByRole("heading", { name: "Design a connection" });
     expect(heading).toHaveAttribute("id", "design-a-connection");
+    expect(document.querySelectorAll("#design-a-connection")).toHaveLength(1);
     expect(heading).toHaveAttribute("tabindex", "-1");
     expect(heading).toHaveFocus();
     expect(heading).toHaveAccessibleDescription(/intermediate scenarios and troubleshooting/i);

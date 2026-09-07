@@ -41,7 +41,7 @@ describe("public lesson source boundaries", () => {
     const publicHeadingIds = [...publicSource.matchAll(/<h2 id="([^"]+)">/g)].map(
       (match) => match[1],
     );
-    const accountHeadingIds = [...accountSource.matchAll(/<h2 id="([^"]+)">/g)].map(
+    const accountHeadingIds = [...accountSource.matchAll(/<h2 id="([^"]+)"[^>]*>/g)].map(
       (match) => match[1],
     );
     const protectedStrings = [

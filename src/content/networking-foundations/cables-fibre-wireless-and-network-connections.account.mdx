@@ -1,29 +1,148 @@
+import { ConnectionMediaExperience } from "@/features/connection-media/connection-media-experience";
+
 {/* CONNECTION_MEDIA_ACCOUNT_SENTINEL */}
 
-<h2 id="design-a-connection">Design a connection</h2>
+<h2 id="design-a-connection" tabIndex={-1} aria-describedby="connection-design-context">Design a connection</h2>
 
-Choose a medium by comparing the requirement with distance, environment, capacity, reliability,
-mobility, compatibility, installation, and cost. Campus buildings need a connection chosen for
-distance and environmental exposure. A nearby desktop is a fixed, short connection to a local
-router. The recommended connection for a nearby desktop is copper Ethernet.
+<ConnectionMediaExperience />
+
+Choose a scenario, read every requirement, select a medium, then check your reasoning.
+**Recommended** means the best overall fit for those requirements. **Workable with trade-offs**
+means a compromise needs attention. **Unsuitable** means a decisive requirement is not met.
+Changing the requirements can change the recommendation; these are not permanent rankings.
+
+Start with the nearby home desktop, then compare the mobile office, noisy workshop, campus
+buildings, high-capacity data-centre interconnect, and temporary classroom. For a compact fixed
+home setup with a suitable cable path, installation cost and reliability matter more than
+mobility. The recommended connection for a nearby desktop is copper Ethernet.
+Campus buildings need a connection chosen for distance and environmental exposure.
+Use the lab's actual requirements before applying either example elsewhere.
 
 <h2 id="diagnose-link-symptoms">Diagnose link symptoms</h2>
 
-Start with the symptom and scope, then check power, connection, and link state. Compare
-negotiated speed and duplex where applicable; inspect distance, cable condition, seating, signal
-strength, and interference; change one variable; then retest and record the evidence. A lit link
-indicator proves physical or link negotiation, not end-to-end connectivity.
+Use this six-step loop to turn an observation into a testable explanation:
+
+1. **Define the symptom and scope.** Record what fails, when it started, and whether one device,
+   one location, or several users are affected. Separate no connection from slow or intermittent service.
+2. **Check power, connection, and link state.** Confirm powered equipment and seated connections
+   at both ends. A lit link indicator proves physical or link negotiation, not end-to-end connectivity.
+3. **Compare speed and duplex where applicable.** Check both Ethernet endpoints and their
+   expected capabilities. A negotiated rate is evidence about the link, not a speed-test guarantee.
+4. **Inspect the path and environment.** Check cable length, damage, seating, and compatible
+   fibre components; for wireless, compare signal quality, obstructions, location, and channel conditions.
+5. **Change one variable.** Use an appropriate known-good cable or controlled location change.
+   Avoid changing several settings at once, which hides the cause of any improvement.
+6. **Retest and record.** Repeat the same test and note the before/after evidence. Escalate with
+   those observations if the cause remains uncertain.
+
+### Disconnected or damaged copper
+
+No link or intermittent drops may follow a loose plug or damaged pair. Inspect both ends and
+visible cable damage, then substitute a suitable known-good cable. A stable result after one
+controlled substitution supports a cable-path fault; the symptom alone does not prove one.
+
+### Excessive copper distance
+
+A long installed channel can fail to negotiate or become unreliable. Measure the whole path,
+including patch cords, and compare it with the chosen Ethernet mode's cabling requirements.
+For the 1000BASE-T example, a channel beyond 100 metres is outside the stated supported scope.
+Redesign the path or use a suitable alternative; a link light does not certify that installation.
+
+### Speed or duplex mismatch
+
+A lower-than-expected negotiated rate or errors under load warrants checking both endpoints'
+capabilities, settings, and counters. A duplex mismatch can impair performance, but low throughput
+alone does not prove it. Restore compatible negotiation/settings through the responsible
+administrator and retest; do not force a setting on just one side as a guess.
+
+### Incompatible fibre components
+
+A fibre connector may fit while the link remains down. Compare the fibre type, transceiver
+specifications, supported signalling, and transmit/receive path at both ends. Confirm seating
+and follow approved cleaning/inspection procedures. A missing link indication alone cannot tell you
+which component is wrong; compatibility is a separate check from physical fit.
+
+### Weak Wi-Fi from distance or obstruction
+
+A connection that worsens behind walls may have insufficient signal quality. Compare the same
+device and task near the access point and at the affected location. Improvement supports a
+coverage problem, but does not identify the exact obstruction or exclude other causes.
+Adjust placement or coverage using the recorded locations and retest.
+
+### Channel congestion or radio interference
+
+Wi-Fi may slow down despite a strong signal when many devices compete for airtime or other
+radio energy disrupts reception. Compare busy and quiet periods, affected locations, channel
+utilization, and retry evidence where available. A low speed-test result cannot identify a
+particular interfering device. Plan an authorized channel or placement change from evidence,
+then repeat the same test.
 
 <h2 id="knowledge-check-summary">Knowledge check and summary</h2>
 
-Use evidence to separate a damaged cable, excessive distance, duplex mismatch, weak signal, and
-radio interference. Low throughput alone does not prove a bad cable, and weak wireless does not
-identify the exact interference source.
+Apply the requirements first, then decide what evidence supports your conclusion.
+
+<KnowledgeCheck
+  question="A user must carry a laptop between meeting rooms while staying connected. Which medium best meets that requirement?"
+  options={["Copper because a cable has no shared airtime", "Wireless with suitable coverage and capacity", "Fibre because it always has the lowest delay"]}
+  correctIndex={1}
+  explanation="Wireless meets the mobility requirement when coverage and airtime capacity are adequate. Fixed copper and fibre links tether the laptop; neither is the best fit simply because its link rate is high."
+/>
+
+<KnowledgeCheck
+  question="A desktop has a link light but transfers are slow. What is the strongest next step?"
+  options={["Declare the cable healthy because the light is on", "Force full duplex at one endpoint immediately", "Check both endpoints' negotiated speed, duplex, and error evidence"]}
+  correctIndex={2}
+  explanation="A link light establishes only limited link evidence. Compare both endpoints before concluding that duplex, cabling, or something beyond this link causes the symptom; throughput alone does not locate the fault."
+/>
+
+<KnowledgeCheck
+  question="Office Wi-Fi is slow during a busy meeting even though signal strength is good. What should you investigate first?"
+  options={["Shared airtime, channel utilization, and retry evidence", "A broken fibre connector must be the cause", "Signal strength proves the radio connection has spare capacity"]}
+  correctIndex={0}
+  explanation="Good signal strength does not guarantee free airtime. Compare channel utilization, retries, and busy versus quiet periods before attributing the slowdown to congestion or a particular interference source."
+/>
+
+<div className="lesson-table" role="region" aria-label="Connection selection summary table" tabIndex={0}>
+  <table>
+    <caption>Connection selection summary</caption>
+    <thead><tr><th scope="col">Medium</th><th scope="col">Requirement to check</th><th scope="col">Evidence to explain</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Copper</th><td>Fixed device, supported channel length and rate</td><td>Cable path, condition, negotiation and errors</td></tr>
+      <tr><th scope="row">Fibre</th><td>Distance, capacity and compatible components</td><td>Fibre and transceiver specifications, path and link state</td></tr>
+      <tr><th scope="row">Wireless</th><td>Mobility, coverage and shared capacity</td><td>Signal quality, locations, channel use and retries</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<InterviewScenario prompt="A colleague says a lit Ethernet port proves the network is healthy. How would you respond?">
+
+The light is evidence of a physical/link condition, not a completed application exchange.
+I would establish which task fails and its scope, compare negotiated speed and duplex at both
+ends, then test the task again after checking the path. I would report observed results and
+remaining uncertainty, rather than declare the cable or the whole network healthy.
+
+</InterviewScenario>
+
+<InterviewScenario prompt="A user reports that Wi-Fi is slow. Can you conclude there is radio interference?">
+
+No. Slow throughput is a symptom with several possible causes. I would compare signal quality,
+location, busy and quiet periods, and available channel/retry evidence. A weak signal suggests
+a coverage issue to investigate; a strong signal with busy airtime suggests a capacity issue
+to investigate. Neither observation identifies an exact interference source by itself.
+
+</InterviewScenario>
 
 <h2 id="pro-deep-dive">Pro Deep Dive</h2>
 
-Optical power-budget planning compares transmitter output, loss, and receiver sensitivity.
-Future depth also includes wireless channel analysis, advanced troubleshooting, standards checks,
-and interview preparation.
+<PremiumPreview ctaLabel="Join the Pro Member Waitlist" ctaHref="/contact">
 
-[Join the Pro Member Waitlist](/pricing)
+Future Pro lessons will explore optical power budgets and transceiver selection, deeper
+wireless channel analysis, ambiguous designs, advanced troubleshooting evidence, standards-guided
+checks, and certification and interview practice. Optical power-budget planning compares
+transmitter output, loss, and receiver sensitivity.
+
+These advanced lessons are planned and are not available yet. Join the waitlist to express
+interest. The contact page is the temporary destination while the dedicated waitlist form is
+being prepared; joining does not provide immediate Pro access.
+
+</PremiumPreview>

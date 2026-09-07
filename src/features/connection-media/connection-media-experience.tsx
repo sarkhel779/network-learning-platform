@@ -22,7 +22,6 @@ export function ConnectionMediaExperience({ scenarios = accountConnectionScenari
           I know this—proceed to advanced
         </button>
       </div>
-      <h2 id="design-a-connection" tabIndex={-1} aria-describedby="connection-design-context">Design a connection</h2>
       <p id="connection-design-context">
         Practise foundational and intermediate scenarios and troubleshooting. Review the requirements, choose a medium, and check your reasoning.
       </p>
