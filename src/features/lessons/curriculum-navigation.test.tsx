@@ -25,16 +25,25 @@ const pathwayFixture: Pathway = {
           slug: "current-lesson",
           title: "Intro to packets",
           objective: "Explain how packets move between hosts.",
-          access: "free",
+          seo: {
+            title: "Intro to Packets",
+            description: "Learn how packets move between hosts.",
+          },
           published: true,
           estimatedMinutes: 12,
+          sections: [
+            { id: "intro", label: "Introduction", access: "public" },
+          ],
         },
         {
           id: "lesson_future_free",
           slug: "future-free",
           title: "Switching basics",
           objective: "Describe how switches handle frames.",
-          access: "free",
+          seo: {
+            title: "Switching Basics",
+            description: "Learn how switches handle frames.",
+          },
           published: false,
           estimatedMinutes: 10,
         },
@@ -51,7 +60,10 @@ const pathwayFixture: Pathway = {
           slug: "future-premium",
           title: "Premium troubleshooting",
           objective: "Explain premium troubleshooting workflows.",
-          access: "premium",
+          seo: {
+            title: "Troubleshooting Workflows",
+            description: "Learn practical network troubleshooting workflows.",
+          },
           published: false,
           estimatedMinutes: 14,
         },
@@ -61,7 +73,7 @@ const pathwayFixture: Pathway = {
 };
 
 describe("CurriculumNavigation", () => {
-  it("renders a curriculum tree with current published links and upcoming non-links", () => {
+  it("renders published Free links, upcoming non-links, and no legacy access labels", () => {
     render(
       <CurriculumNavigation
         pathway={pathwayFixture}
@@ -80,8 +92,9 @@ describe("CurriculumNavigation", () => {
 
     expect(within(navigation).getByText("Current lesson")).toBeVisible();
     expect(within(navigation).getAllByText("Coming later")).toHaveLength(2);
-    expect(within(navigation).getAllByText("Free")).toHaveLength(2);
-    expect(within(navigation).getByText("Premium")).toBeVisible();
+    expect(within(navigation).getAllByText("Free")).toHaveLength(3);
+    expect(within(navigation).queryByText("Premium")).toBeNull();
+    expect(within(navigation).queryByText("Palo Alto Basics")).toBeNull();
     expect(within(navigation).queryByRole("link", { name: /switching basics/i })).toBeNull();
     expect(within(navigation).queryByRole("link", { name: /premium troubleshooting/i })).toBeNull();
   });
