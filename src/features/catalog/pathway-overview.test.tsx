@@ -14,20 +14,20 @@ describe("PathwayOverview", () => {
       screen.getByRole("heading", { name: "Networking Foundations" }),
     ).toBeVisible();
     expect(screen.getByText(/complete beginners/i)).toBeVisible();
-    expect(screen.getAllByRole("listitem")).toHaveLength(13);
+    expect(screen.getAllByRole("listitem")).toHaveLength(23);
   });
 
   it("links published lessons and marks unpublished lessons as coming later", () => {
     render(<PathwayOverview pathway={getPathway("networking-foundations")} />);
 
     const publishedLesson = screen.getByRole("link", {
-      name: /how networks communicate/i,
+      name: /what is a computer network/i,
     });
     expect(publishedLesson).toHaveAttribute(
       "href",
       "/learn/networking-foundations/how-networks-communicate",
     );
-    expect(screen.getByRole("link", { name: /hosts and network devices/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /hosts, clients, servers and network interfaces/i })).toHaveAttribute(
       "href",
       "/learn/networking-foundations/hosts-and-network-devices",
     );

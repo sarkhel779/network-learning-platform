@@ -11,13 +11,13 @@ export type LessonContentImport = () => Promise<LessonContentModule>;
 export type ViewerAccess = "anonymous" | "account" | "pro";
 
 export type LessonBlockLoaders = Readonly<{
-  public: LessonContentImport;
+  public?: LessonContentImport;
   account?: LessonContentImport;
   pro?: LessonContentImport;
 }>;
 
 export type AuthorizedLessonContent = Readonly<{
-  public: LessonContentModule;
+  public: LessonContentModule | undefined;
   account: LessonContentModule | undefined;
   pro: LessonContentModule | undefined;
 }>;

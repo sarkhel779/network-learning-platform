@@ -23,8 +23,6 @@ const lessonImports = {
       import("@/content/networking-foundations/hosts-and-network-devices.account.mdx"),
   },
   "networking-foundations/osi-and-tcp-ip-models": {
-    public: () =>
-      import("@/content/networking-foundations/osi-and-tcp-ip-models.public.mdx"),
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),
   },
@@ -40,7 +38,7 @@ async function loadFromRegistry(
   if (!blocks) throw new Error("LESSON_CONTENT_NOT_FOUND");
 
   return {
-    public: await blocks.public(),
+    public: blocks.public ? await blocks.public() : undefined,
     account:
       access !== "anonymous" && blocks.account ? await blocks.account() : undefined,
     pro: access === "pro" && blocks.pro ? await blocks.pro() : undefined,

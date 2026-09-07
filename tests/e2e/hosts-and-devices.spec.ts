@@ -5,7 +5,7 @@ const lessonRoute = "/learn/networking-foundations/hosts-and-network-devices";
 test("explores devices and switches between complete packet journeys", async ({ page }) => {
   await page.goto(lessonRoute);
 
-  await expect(page.getByRole("heading", { level: 1, name: "Hosts and Network Devices" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Hosts, Clients, Servers and Network Interfaces" })).toBeVisible();
   await expect(page.getByRole("group", { name: "Choose a packet journey" })).toBeVisible();
   await expect(page.getByRole("radio", { name: "Wired host to local server" })).toBeChecked();
 

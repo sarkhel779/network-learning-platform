@@ -8,18 +8,24 @@ test("shows the networking pathway and its published lesson links", async ({ pag
   ).toBeVisible();
   const moduleHeadings = page.locator(".module-list > .module > h2");
   await expect(moduleHeadings).toHaveText([
-    "Networking Essentials",
-    "Ethernet and Local Networks",
+    "Network and Device Essentials",
+    "Ethernet, Switching and Local Networks",
     "IP Addressing and Routing",
-    "Transport and Network Services",
-    "Network Security Fundamentals",
+    "Transport and Application Services",
+    "NAT and Internet Communication",
     "Packet Analysis and Troubleshooting",
   ]);
+  await expect(page.getByRole("heading", { name: "Network and Device Essentials" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Packet Analysis and Troubleshooting" })).toBeVisible();
+  await expect(page.getByText("What Is a Computer Network?")).toBeVisible();
+  await expect(page.getByText("Systematic Network Troubleshooting Capstone")).toBeVisible();
+  await expect(page.getByRole("link", { name: /systematic network troubleshooting capstone/i }))
+    .toHaveCount(0);
 
   const lessonLinks = page.locator(".lesson-list h3 a");
   await expect(lessonLinks).toHaveCount(3);
-  const publishedLessonLink = lessonLinks.filter({ hasText: "How Networks Communicate" });
-  await expect(lessonLinks.filter({ hasText: "Hosts and Network Devices" })).toHaveAttribute(
+  const publishedLessonLink = lessonLinks.filter({ hasText: "What Is a Computer Network?" });
+  await expect(lessonLinks.filter({ hasText: "Hosts, Clients, Servers and Network Interfaces" })).toHaveAttribute(
     "href",
     "/learn/networking-foundations/hosts-and-network-devices",
   );
@@ -37,21 +43,8 @@ test("shows the networking pathway and its published lesson links", async ({ pag
     "/learn/networking-foundations/how-networks-communicate",
   );
   await expect(
-    page.getByRole("heading", { level: 1, name: "How Networks Communicate" }),
+    page.getByRole("heading", { level: 1, name: "What Is a Computer Network?" }),
   ).toBeVisible();
-});
-
-test("keeps the security lessons in separate curriculum rows", async ({ page }) => {
-  await page.goto("/paths/networking-foundations");
-
-  const securityModule = page
-    .locator(".module-list > .module")
-    .filter({ has: page.getByRole("heading", { name: "Network Security Fundamentals", exact: true }) });
-  await expect(securityModule.locator(".lesson-card h3")).toHaveText([
-    "NAT Fundamentals",
-    "Firewall Fundamentals",
-  ]);
-  await expect(page.getByText("Palo Alto Basics", { exact: true })).toHaveCount(0);
 });
 
 test("does not overflow at mobile width", async ({ page }) => {

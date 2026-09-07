@@ -1,5 +1,17 @@
 import { pathwayCatalogSchema } from "./catalog.schema";
-import type { Pathway } from "./catalog.types";
+import type { LessonSummary, Pathway } from "./catalog.types";
+
+type PlannedLesson = Omit<LessonSummary, "published" | "sections">;
+
+function plannedLesson(lesson: PlannedLesson): LessonSummary {
+  return { ...lesson, published: false };
+}
+
+const stablePublishedSlugs = {
+  whatIsANetwork: "how-networks-communicate",
+  hostsAndInterfaces: "hosts-and-network-devices",
+  osiAndTcpIp: "osi-and-tcp-ip-models",
+} as const;
 
 const curriculum: Pathway[] = [
   {
@@ -10,49 +22,32 @@ const curriculum: Pathway[] = [
     audience: "Complete beginners who want to understand how computer networks work.",
     modules: [
       {
-        id: "module_networking_essentials",
-        slug: "networking-essentials",
-        title: "Networking Essentials",
-        description: "Learn the core concepts behind network communication.",
+        id: "module_network_and_device_essentials",
+        slug: "network-and-device-essentials",
+        title: "Network and Device Essentials",
+        description: "Learn the physical connections, devices, and models behind communication.",
         lessons: [
           {
-            id: "lesson_how_networks_communicate",
-            slug: "how-networks-communicate",
-            title: "How Networks Communicate",
-            objective: "Explain the minimum decisions required to move data between two hosts.",
-            seo: {
-              title: "How Networks Communicate: A Beginner's Guide",
-              description:
-                "Learn the decisions that move data between hosts and trace a packet across a network.",
-            },
-            published: true,
-            estimatedMinutes: 12,
+            id: "lesson_how_networks_communicate", slug: stablePublishedSlugs.whatIsANetwork,
+            title: "What Is a Computer Network?",
+            objective: "Explain why networks exist and identify the ingredients required for communication.",
+            seo: { title: "How Networks Communicate: A Beginner's Guide", description: "Learn the decisions that move data between hosts and trace a packet across a network." },
+            published: true, estimatedMinutes: 12,
             sections: [
               { id: "communication-decisions", label: "Communication decisions", access: "public" },
               { id: "packet-journey", label: "Interactive packet journey", access: "public" },
               { id: "wireshark-check", label: "Basic Wireshark check", access: "account" },
               { id: "knowledge-check", label: "Knowledge check", access: "account" },
               { id: "interview-scenario", label: "Interview scenario", access: "account" },
-              {
-                id: "pro-deep-dive",
-                label: "Pro Deep Dive",
-                access: "pro",
-                preview: "Check the governing RFC and relevant read-only vendor diagnostics.",
-              },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Check the governing RFC and relevant read-only vendor diagnostics." },
             ],
           },
           {
-            id: "lesson_hosts_and_network_devices",
-            slug: "hosts-and-network-devices",
-            title: "Hosts and Network Devices",
-            objective: "Identify the devices in a topology and predict whether a host sends locally or through its default gateway.",
-            seo: {
-              title: "Hosts and Network Devices: Learn the Basics",
-              description:
-                "Identify hosts and network devices, then predict each packet's path through a topology.",
-            },
-            published: true,
-            estimatedMinutes: 20,
+            id: "lesson_hosts_and_network_devices", slug: stablePublishedSlugs.hostsAndInterfaces,
+            title: "Hosts, Clients, Servers and Network Interfaces",
+            objective: "Identify end hosts and interfaces and explain client and server roles.",
+            seo: { title: "Hosts and Network Devices: Learn the Basics", description: "Identify hosts and network devices, then predict each packet's path through a topology." },
+            published: true, estimatedMinutes: 20,
             sections: [
               { id: "what-is-a-host", label: "What is a host?", access: "public" },
               { id: "connecting-devices", label: "Devices that connect hosts", access: "public" },
@@ -62,220 +57,157 @@ const curriculum: Pathway[] = [
               { id: "wireshark-checks", label: "Wireshark checks", access: "account" },
               { id: "test-understanding", label: "Test your understanding", access: "account" },
               { id: "summary", label: "Summary", access: "account" },
-              {
-                id: "pro-deep-dive",
-                label: "Pro Deep Dive",
-                access: "pro",
-                preview: "Check the governing RFC and relevant read-only vendor diagnostics.",
-              },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Check the governing RFC and relevant read-only vendor diagnostics." },
             ],
           },
+          plannedLesson({
+            id: "lesson_cables_fibre_wireless_and_network_connections", slug: "cables-fibre-wireless-and-network-connections", title: "Cables, Fibre, Wireless and Network Connections",
+            objective: "Choose an appropriate connection medium and explain duplex, speed, signal, and link state at a beginner level.",
+            seo: { title: "Network Cables, Fibre and Wireless Basics", description: "Compare copper, fibre, and wireless links to choose suitable connections and recognize beginner-friendly link symptoms." }, estimatedMinutes: 20,
+          }),
+          plannedLesson({
+            id: "lesson_hubs_bridges_and_switches", slug: "hubs-bridges-and-switches", title: "Hubs, Bridges and Switches",
+            objective: "Explain why hubs repeat signals while bridges and switches make link-layer forwarding decisions.",
+            seo: { title: "Hubs, Bridges and Switches Explained", description: "See how hubs repeat traffic while bridges and switches make selective link-layer forwarding choices on a local network." }, estimatedMinutes: 20,
+          }),
+          plannedLesson({
+            id: "lesson_routers_default_gateways_and_network_boundaries", slug: "routers-default-gateways-and-network-boundaries", title: "Routers, Default Gateways and Network Boundaries",
+            objective: "Decide whether a destination is local or remote and identify the first next hop.",
+            seo: { title: "Routers and Default Gateways Basics", description: "Learn how a host decides between local delivery and a default gateway when it needs to reach a remote destination." }, estimatedMinutes: 20,
+          }),
+          plannedLesson({
+            id: "lesson_access_points_modems_onts_and_firewalls", slug: "access-points-modems-onts-and-firewalls", title: "Access Points, Modems, ONTs and Firewalls",
+            objective: "Explain where common edge devices fit and distinguish access, conversion, routing, and security roles.",
+            seo: { title: "Access Points, Modems, ONTs and Firewalls", description: "Place common home and office edge devices in a topology and distinguish their access, conversion, routing, and boundary roles." }, estimatedMinutes: 20,
+          }),
           {
-            id: "lesson_osi_and_tcp_ip_models",
-            slug: "osi-and-tcp-ip-models",
-            title: "OSI and TCP/IP Models",
+            id: "lesson_osi_and_tcp_ip_models", slug: stablePublishedSlugs.osiAndTcpIp, title: "OSI and TCP/IP Models",
             objective: "Relate common network tasks to the OSI and TCP/IP models.",
-            seo: {
-              title: "OSI and TCP/IP Models Explained",
-              description:
-                "Connect the OSI and TCP/IP models to practical network tasks, packet layers, and troubleshooting.",
-            },
-            published: true,
-            estimatedMinutes: 18,
+            seo: { title: "OSI and TCP/IP Models Explained", description: "Connect the OSI and TCP/IP models to practical network tasks, packet layers, and troubleshooting." },
+            published: true, estimatedMinutes: 18,
             sections: [
-              { id: "why-layers", label: "Why layered models exist", access: "public" },
-              { id: "osi-model", label: "The seven OSI layers", access: "public" },
-              { id: "tcp-ip-model", label: "The four-layer TCP/IP model", access: "public" },
-              { id: "model-mapping", label: "OSI-to-TCP/IP mapping", access: "public" },
-              {
-                id: "encapsulation-lab",
-                label: "Interactive encapsulation and decapsulation",
-                access: "public",
-              },
-              {
-                id: "device-layer-scope",
-                label: "What each network device examines",
-                access: "account",
-              },
+              { id: "why-layers", label: "Why layered models exist", access: "account" },
+              { id: "osi-model", label: "The seven OSI layers", access: "account" },
+              { id: "tcp-ip-model", label: "The four-layer TCP/IP model", access: "account" },
+              { id: "model-mapping", label: "OSI-to-TCP/IP mapping", access: "account" },
+              { id: "encapsulation-lab", label: "Interactive encapsulation and decapsulation", access: "account" },
+              { id: "device-layer-scope", label: "What each network device examines", access: "account" },
               { id: "wireshark-layers", label: "Wireshark layer identification", access: "account" },
-              {
-                id: "troubleshooting-interview",
-                label: "Troubleshooting and interview scenarios",
-                access: "account",
-              },
-              {
-                id: "knowledge-summary",
-                label: "Knowledge check and summary",
-                access: "account",
-              },
-              {
-                id: "pro-deep-dive",
-                label: "Pro Deep Dive",
-                access: "pro",
-                preview: "Check the governing RFC and relevant read-only vendor diagnostics.",
-              },
+              { id: "troubleshooting-interview", label: "Troubleshooting and interview scenarios", access: "account" },
+              { id: "knowledge-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Check the governing RFC and relevant read-only vendor diagnostics." },
             ],
           },
+          plannedLesson({
+            id: "lesson_first_packet_journey_through_a_small_network", slug: "first-packet-journey-through-a-small-network", title: "A Packet’s First Journey Through a Small Network",
+            objective: "Narrate an end-to-end exchange using the concepts from Lessons 1–7.",
+            seo: { title: "A Packet's First Journey Through a Network", description: "Follow a first end-to-end packet exchange and connect host, link, switch, router, frame, and response decisions." }, estimatedMinutes: 25,
+          }),
         ],
       },
       {
-        id: "module_ethernet_and_local_networks",
-        slug: "ethernet-and-local-networks",
-        title: "Ethernet and Local Networks",
-        description: "Understand how local networks identify and separate devices.",
+        id: "module_ethernet_switching_and_local_networks", slug: "ethernet-switching-and-local-networks", title: "Ethernet, Switching and Local Networks",
+        description: "Understand frames, local delivery, switching decisions, and broadcast boundaries.",
         lessons: [
-          {
-            id: "lesson_arp_and_mac_learning",
-            slug: "arp-and-mac-learning",
-            title: "ARP and MAC Learning",
-            objective: "Describe how local networks learn device hardware addresses.",
-            seo: {
-              title: "ARP and MAC Learning Fundamentals",
-              description: "Understand how local networks discover and remember hardware addresses.",
-            },
-            published: false,
-            estimatedMinutes: 14,
-          },
-          {
-            id: "lesson_switching_and_vlan_basics",
-            slug: "switching-and-vlan-basics",
-            title: "Switching and VLAN Basics",
-            objective: "Explain how switches forward traffic and VLANs separate networks.",
-            seo: {
-              title: "Switching and VLAN Basics",
-              description: "Learn how switches forward traffic and VLANs segment a local network.",
-            },
-            published: false,
-            estimatedMinutes: 16,
-          },
+          plannedLesson({
+            id: "lesson_ethernet_frames_and_mac_addresses", slug: "ethernet-frames-and-mac-addresses", title: "Ethernet Frames and MAC Addresses",
+            objective: "Read the purpose of core Ethernet fields and distinguish unicast, broadcast, and multicast destinations.",
+            seo: { title: "Ethernet Frames and MAC Addresses", description: "Inspect Ethernet frame fields and learn how unicast, broadcast, and multicast MAC destinations guide local delivery." }, estimatedMinutes: 20,
+          }),
+          plannedLesson({
+            id: "lesson_how_switches_learn_and_forward", slug: "how-switches-learn-and-forward", title: "How Switches Learn and Forward",
+            objective: "Build and use a MAC address table to predict forwarding, filtering, and flooding.",
+            seo: { title: "How Network Switches Learn and Forward", description: "Build a switch MAC table step by step to predict known forwarding, filtering, unknown flooding, and host movement." }, estimatedMinutes: 20,
+          }),
+          plannedLesson({
+            id: "lesson_arp_and_local_delivery", slug: "arp-and-local-delivery", title: "ARP and Local Delivery",
+            objective: "Explain how IPv4 nodes resolve a local next-hop IP address to a MAC address.",
+            seo: { title: "ARP and Local Network Delivery", description: "Learn how an IPv4 host uses ARP to resolve a local destination or gateway IP address into a usable MAC address." }, estimatedMinutes: 20,
+          }),
+          plannedLesson({
+            id: "lesson_vlans_access_ports_and_trunks", slug: "vlans-access-ports-and-trunks", title: "VLANs, Access Ports and Trunks",
+            objective: "Explain why VLANs create separate broadcast domains and how access and trunk links carry them.",
+            seo: { title: "VLANs, Access Ports and Trunks", description: "Discover how VLANs separate broadcast domains and how access and trunk links carry traffic between network devices." }, estimatedMinutes: 20,
+          }),
         ],
       },
       {
-        id: "module_ip_addressing_and_routing",
-        slug: "ip-addressing-and-routing",
-        title: "IP Addressing and Routing",
-        description: "Learn how networks assign addresses and reach remote destinations.",
+        id: "module_ip_addressing_and_routing", slug: "ip-addressing-and-routing", title: "IP Addressing and Routing",
+        description: "Learn addressing, subnetting, routing choices, and network control evidence.",
         lessons: [
-          {
-            id: "lesson_ipv4_addressing",
-            slug: "ipv4-addressing",
-            title: "IPv4 Addressing",
-            objective: "Read the parts of an IPv4 address and its network role.",
-            seo: {
-              title: "IPv4 Addressing for Beginners",
-              description: "Read IPv4 addresses and understand each address's role on a network.",
-            },
-            published: false,
-            estimatedMinutes: 15,
-          },
-          {
-            id: "lesson_subnetting_fundamentals",
-            slug: "subnetting-fundamentals",
-            title: "Subnetting Fundamentals",
-            objective: "Explain why subnets divide an IPv4 network.",
-            seo: {
-              title: "Subnetting Fundamentals Explained",
-              description: "Learn why subnets divide IPv4 networks and how those boundaries work.",
-            },
-            published: false,
-            estimatedMinutes: 18,
-          },
-          {
-            id: "lesson_routing_and_default_gateways",
-            slug: "routing-and-default-gateways",
-            title: "Routing and Default Gateways",
-            objective: "Explain how routers send traffic beyond a local network.",
-            seo: {
-              title: "Routing and Default Gateways",
-              description: "Understand how routers and default gateways move traffic beyond a local network.",
-            },
-            published: false,
-            estimatedMinutes: 16,
-          },
+          plannedLesson({
+            id: "lesson_ipv4_addressing", slug: "ipv4-addressing", title: "IPv4 Addressing",
+            objective: "Read dotted-decimal addresses and prefixes and distinguish network, host, private, public, loopback, link-local, and documentation ranges.",
+            seo: { title: "IPv4 Addressing for Beginners", description: "Read IPv4 addresses and prefixes, then identify network, host, private, public, loopback, link-local, and documentation ranges." }, estimatedMinutes: 20,
+          }),
+          plannedLesson({
+            id: "lesson_subnetting_fundamentals", slug: "subnetting-fundamentals", title: "Subnetting Fundamentals",
+            objective: "Calculate network boundaries, usable ranges, broadcast addresses, and host capacity for common IPv4 prefixes.",
+            seo: { title: "Subnetting Fundamentals for IPv4", description: "Calculate common IPv4 subnet boundaries, usable ranges, broadcast addresses, and host capacity with understandable methods." }, estimatedMinutes: 25,
+          }),
+          plannedLesson({
+            id: "lesson_ipv6_fundamentals", slug: "ipv6-fundamentals", title: "IPv6 Fundamentals",
+            objective: "Read and shorten IPv6 addresses and explain prefixes, link-local/global addresses, multicast, Neighbor Discovery, SLAAC, and default-router discovery.",
+            seo: { title: "IPv6 Fundamentals for Beginners", description: "Read and shorten IPv6 addresses while learning prefixes, link-local and global addresses, multicast, SLAAC, and Neighbor Discovery." }, estimatedMinutes: 25,
+          }),
+          plannedLesson({
+            id: "lesson_routing_tables_and_default_routes", slug: "routing-tables-and-default-routes", title: "Routing, Routing Tables and Default Routes",
+            objective: "Read a basic routing table and choose a route using longest-prefix match and administrative/metric concepts at the appropriate depth.",
+            seo: { title: "Routing Tables and Default Routes", description: "Read a basic routing table and use longest-prefix matching with metrics to choose an interface and next hop." }, estimatedMinutes: 25,
+          }),
+          plannedLesson({
+            id: "lesson_icmp_ping_and_path_discovery", slug: "icmp-ping-and-path-discovery", title: "ICMP, Ping and Path Discovery",
+            objective: "Use ICMP as control/error evidence and explain what ping and traceroute do and do not prove.",
+            seo: { title: "ICMP, Ping and Path Discovery", description: "Use ICMP evidence to understand what ping and traceroute reveal about reachability, failures, and network paths." }, estimatedMinutes: 20,
+          }),
         ],
       },
       {
-        id: "module_transport_and_network_services",
-        slug: "transport-and-network-services",
-        title: "Transport and Network Services",
-        description: "Explore transport protocols and the services applications rely on.",
+        id: "module_transport_and_application_services", slug: "transport-and-application-services", title: "Transport and Application Services",
+        description: "Explore transport behavior and the services applications rely on.",
         lessons: [
-          {
-            id: "lesson_tcp_udp_and_ports",
-            slug: "tcp-udp-and-ports",
-            title: "TCP, UDP, and Ports",
-            objective: "Compare transport protocols and explain the purpose of ports.",
-            seo: {
-              title: "TCP, UDP, and Ports Explained",
-              description: "Compare TCP and UDP, then learn why applications use network ports.",
-            },
-            published: false,
-            estimatedMinutes: 15,
-          },
-          {
-            id: "lesson_dns_dhcp_http_https_and_tls",
-            slug: "dns-dhcp-http-https-and-tls",
-            title: "DNS, DHCP, HTTP, HTTPS, and TLS",
-            objective: "Describe the common services behind everyday network activity.",
-            seo: {
-              title: "DNS, DHCP, HTTP, HTTPS, and TLS",
-              description: "Explore the network services that make everyday browsing and connections work.",
-            },
-            published: false,
-            estimatedMinutes: 20,
-          },
+          plannedLesson({
+            id: "lesson_tcp_udp_and_ports", slug: "tcp-udp-and-ports", title: "TCP, UDP and Ports",
+            objective: "Compare TCP and UDP, explain sockets/ports, and trace connection establishment, reliability, flow, and closure at a foundational level.",
+            seo: { title: "TCP, UDP and Network Ports", description: "Compare TCP and UDP, learn how sockets and ports identify conversations, and trace foundational connection behavior." }, estimatedMinutes: 25,
+          }),
+          plannedLesson({
+            id: "lesson_dhcp_and_automatic_address_configuration", slug: "dhcp-and-automatic-address-configuration", title: "DHCP and Automatic Address Configuration",
+            objective: "Trace address acquisition and identify the supplied address, prefix, gateway, DNS, and lease information.",
+            seo: { title: "DHCP and Automatic Address Configuration", description: "Trace DHCP address configuration and identify the address, prefix, gateway, DNS servers, and lease details it supplies." }, estimatedMinutes: 20,
+          }),
+          plannedLesson({
+            id: "lesson_dns_and_name_resolution", slug: "dns-and-name-resolution", title: "DNS and Name Resolution",
+            objective: "Trace recursive name resolution and distinguish stub resolver, recursive resolver, authoritative server, common records, caching, and response codes.",
+            seo: { title: "DNS and Name Resolution Explained", description: "Follow a DNS query through stub, recursive, and authoritative resolvers while learning records, caching, and response codes." }, estimatedMinutes: 25,
+          }),
+          plannedLesson({
+            id: "lesson_http_https_tls_and_essential_network_services", slug: "http-https-tls-and-essential-network-services", title: "HTTP, HTTPS, TLS and Essential Network Services",
+            objective: "Relate application requests to DNS, transport, TLS, and HTTP and recognize the purposes of SSH, NTP, and common service ports without memorizing an excessive list.",
+            seo: { title: "HTTP, HTTPS, TLS and Network Services", description: "Trace a browser request through DNS, transport, TLS, and HTTP while recognizing the roles of SSH, NTP, and service ports." }, estimatedMinutes: 25,
+          }),
         ],
       },
       {
-        id: "module_network_security_fundamentals",
-        slug: "network-security-fundamentals",
-        title: "Network Security Fundamentals",
-        description: "Learn the essential controls that protect network traffic.",
+        id: "module_nat_and_internet_communication", slug: "nat-and-internet-communication", title: "NAT and Internet Communication",
+        description: "Trace address translation through an end-to-end internet exchange.",
         lessons: [
-          {
-            id: "lesson_nat_fundamentals",
-            slug: "nat-fundamentals",
-            title: "NAT Fundamentals",
-            objective: "Explain why networks translate addresses and ports.",
-            seo: {
-              title: "NAT Fundamentals for Networking",
-              description: "Learn why networks translate addresses and ports as traffic moves between networks.",
-            },
-            published: false,
-            estimatedMinutes: 15,
-          },
-          {
-            id: "lesson_firewall_fundamentals",
-            slug: "firewall-fundamentals",
-            title: "Firewall Fundamentals",
-            objective: "Explain how stateful firewalls permit and deny network traffic.",
-            seo: {
-              title: "Stateful Firewall Fundamentals",
-              description: "Understand how stateful firewalls evaluate and control network traffic.",
-            },
-            published: false,
-            estimatedMinutes: 16,
-          },
+          plannedLesson({
+            id: "lesson_nat_pat_and_the_complete_internet_packet_journey", slug: "nat-pat-and-the-complete-internet-packet-journey", title: "NAT, PAT and the Complete Internet Packet Journey",
+            objective: "Explain address/port translation and trace a browser exchange from a private host to an internet service and back.",
+            seo: { title: "NAT, PAT and the Internet Packet Journey", description: "Trace a browser exchange from a private host to an internet service and see how NAT and PAT translate addresses and ports." }, estimatedMinutes: 25,
+          }),
         ],
       },
       {
-        id: "module_packet_analysis_and_troubleshooting",
-        slug: "packet-analysis-and-troubleshooting",
-        title: "Packet Analysis and Troubleshooting",
-        description: "Trace packets and reason about faults across a network path.",
+        id: "module_packet_analysis_and_troubleshooting", slug: "packet-analysis-and-troubleshooting", title: "Packet Analysis and Troubleshooting",
+        description: "Apply evidence-driven, layer-aware troubleshooting to network faults.",
         lessons: [
-          {
-            id: "lesson_end_to_end_packet_journey",
-            slug: "end-to-end-packet-journey",
-            title: "End-to-End Packet Journey",
-            objective: "Trace a packet from an application to its destination.",
-            seo: {
-              title: "End-to-End Packet Journey",
-              description: "Trace a packet from an application through the network to its destination.",
-            },
-            published: false,
-            estimatedMinutes: 20,
-          },
+          plannedLesson({
+            id: "lesson_systematic_network_troubleshooting_capstone", slug: "systematic-network-troubleshooting-capstone", title: "Systematic Network Troubleshooting Capstone",
+            objective: "Apply a repeatable, layer-aware troubleshooting method and communicate evidence, scope, hypothesis, test, result, and next action.",
+            seo: { title: "Systematic Network Troubleshooting", description: "Practice a repeatable layer-aware troubleshooting method that documents evidence, scope, hypotheses, tests, results, and next actions." }, estimatedMinutes: 25,
+          }),
         ],
       },
     ],

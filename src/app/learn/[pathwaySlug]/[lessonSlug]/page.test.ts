@@ -23,6 +23,9 @@ vi.mock("@/content/networking-foundations/how-networks-communicate.public.mdx", 
 vi.mock("@/content/networking-foundations/how-networks-communicate.account.mdx", () => {
   throw new Error("ACCOUNT_ONLY_SENTINEL: anonymous route imported a protected body");
 });
+vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx", () => {
+  throw new Error("OSI_ACCOUNT_SENTINEL: anonymous route imported a protected body");
+});
 
 import * as contentRepository from "@/features/lessons/lesson-content.repository";
 import { listPublishedLessons } from "@/features/catalog/catalog.repository";
@@ -67,7 +70,7 @@ describe("lesson route generation", () => {
   it.each([
     ["missing", "how-networks-communicate"],
     ["networking-foundations", "missing"],
-    ["networking-foundations", "arp-and-mac-learning"],
+    ["networking-foundations", "arp-and-local-delivery"],
   ])("keeps metadata and content not-found for %s/%s", async (pathwaySlug, lessonSlug) => {
     const props = { params: Promise.resolve({ pathwaySlug, lessonSlug }) };
     await expect(lessonPage.generateMetadata(props)).rejects.toThrow("NEXT_HTTP_ERROR_FALLBACK;404");
@@ -127,6 +130,22 @@ describe("lesson route generation", () => {
     ]);
   });
 
+  it("renders the OSI account boundary without loading or serializing its foundations", async () => {
+    const page = await lessonPage.default({ params: Promise.resolve({
+      pathwaySlug: "networking-foundations", lessonSlug: "osi-and-tcp-ip-models",
+    }) });
+    const { container } = render(page);
+    expect(screen.getByRole("heading", { level: 1, name: "OSI and TCP/IP Models" })).toBeVisible();
+    expect(screen.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
+    expect(screen.getByRole("link", { name: "Continue with Google or email" })).toHaveAttribute(
+      "href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fosi-and-tcp-ip-models",
+    );
+    expect(container.querySelector(".lesson-content")).toBeEmptyDOMElement();
+    expect(container.querySelector(".lesson-byline")).not.toHaveTextContent("Public introduction");
+    expect(screen.queryByRole("button", { name: "Next" })).not.toBeInTheDocument();
+    expect(renderToStaticMarkup(page)).not.toMatch(/OSI_FOUNDATIONS_SENTINEL|OSI_ACCOUNT_SENTINEL/);
+  });
+
   it("rejects lesson slugs outside the generated published catalogue", () => {
     expect(staticLessonPage.dynamicParams).toBe(false);
   });
@@ -142,10 +161,10 @@ describe("lesson route generation", () => {
     );
 
     expect(screen.getByRole("complementary", { name: "Course contents" })).toBeVisible();
-    expect(screen.getAllByText("Networking Essentials")[0]).toBeVisible();
+    expect(screen.getAllByText("Network and Device Essentials")[0]).toBeVisible();
     expect(screen.getByText("Course contents", { selector: "summary" })).toBeVisible();
     expect(
-      screen.getAllByRole("link", { name: /how networks communicate/i })[0],
+      screen.getAllByRole("link", { name: /what is a computer network/i })[0],
     ).toHaveAttribute("aria-current", "page");
   });
 });

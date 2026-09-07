@@ -14,7 +14,7 @@ describe("lesson structured data", () => {
       "@context": "https://schema.org",
       "@type": "LearningResource",
       url: "https://packetsecrets.com/learn/networking-foundations/how-networks-communicate",
-      name: "How Networks Communicate",
+      name: "What Is a Computer Network?",
       description: "Learn the decisions that move data between hosts and trace a packet across a network.",
       provider: { "@type": "Organization", name: "Packetsecrets", url: "https://packetsecrets.com" },
       educationalLevel: pathway.audience,

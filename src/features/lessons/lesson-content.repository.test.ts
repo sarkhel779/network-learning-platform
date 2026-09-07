@@ -9,6 +9,12 @@ vi.mock("server-only", () => ({}));
 vi.mock("@/content/networking-foundations/how-networks-communicate.public.mdx", () => ({
   default: () => null,
 }));
+vi.mock("@/content/networking-foundations/hosts-and-network-devices.public.mdx", () => ({
+  default: () => null,
+}));
+vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx", () => ({
+  default: () => null,
+}));
 
 import {
   createAuthorizedLessonContentLoader,
@@ -46,6 +52,10 @@ function createFixture() {
       public: publicLoader,
       account: accountLoader,
     },
+    "fixtures/account-only": {
+      account: accountLoader,
+      pro: proLoader,
+    },
   } satisfies LessonContentRegistry;
 
   return {
@@ -57,14 +67,30 @@ function createFixture() {
 }
 
 describe("loadAuthorizedLessonContent", () => {
-  it("loads only the public block for an anonymous viewer", async () => {
+  it.each(["how-networks-communicate", "hosts-and-network-devices"])("loads only the public block for an anonymous viewer of %s", async (slug) => {
     const result = await loadAuthorizedLessonContent(
-      "networking-foundations/how-networks-communicate",
+      `networking-foundations/${slug}`,
       "anonymous",
     );
 
     expect(result.public).toBeDefined();
     expect(result.account).toBeUndefined();
+    expect(result.pro).toBeUndefined();
+  });
+
+  it("returns no OSI content to anonymous viewers", async () => {
+    const result = await loadAuthorizedLessonContent(
+      "networking-foundations/osi-and-tcp-ip-models", "anonymous",
+    );
+    expect(Boolean(result.public)).toBe(false);
+    expect(Boolean(result.account)).toBe(false);
+    expect(Boolean(result.pro)).toBe(false);
+  });
+
+  it.each(["account", "pro"] as const)("loads OSI foundations through account access for %s viewers", async (access) => {
+    const result = await loadAuthorizedLessonContent("networking-foundations/osi-and-tcp-ip-models", access);
+    expect(Boolean(result.public)).toBe(false);
+    expect(result.account).toBeDefined();
     expect(result.pro).toBeUndefined();
   });
 
@@ -76,6 +102,14 @@ describe("loadAuthorizedLessonContent", () => {
 });
 
 describe("authorized lesson block loading", () => {
+  it("does not invoke any content import for an anonymous account-only lesson", async () => {
+    const { accountLoader, load, proLoader } = createFixture();
+    const result = await load("fixtures/account-only", "anonymous");
+    expect(accountLoader).not.toHaveBeenCalled();
+    expect(proLoader).not.toHaveBeenCalled();
+    expect(result).toEqual({ public: undefined, account: undefined, pro: undefined });
+  });
+
   it("does not invoke or return protected loaders for an anonymous viewer", async () => {
     const { accountLoader, load, proLoader, publicLoader } = createFixture();
 

@@ -75,11 +75,11 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const { previous, next } = getAdjacentLessons(pathwaySlug, lessonSlug);
   const key: LessonContentKey = `${pathway.slug}/${lesson.slug}`;
 
-  let LessonContent: LessonContentModule["default"];
+  let LessonContent: LessonContentModule["default"] | undefined;
 
   try {
     const content = await loadAuthorizedLessonContent(key, "anonymous");
-    LessonContent = content.public.default;
+    LessonContent = content.public?.default;
   } catch (error) {
     if (error instanceof Error && error.message === "LESSON_CONTENT_NOT_FOUND") {
       notFound();
@@ -99,7 +99,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
         previous={previous}
         next={next}
       >
-        <LessonContent />
+        {LessonContent ? <LessonContent /> : null}
       </LessonShell>
     </>
   );
