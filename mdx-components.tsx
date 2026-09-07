@@ -4,6 +4,7 @@ import { HostsAndDevicesExperience } from "@/features/hosts-and-devices/hosts-an
 import { HostsAndDevicesStaticOverview } from "@/features/hosts-and-devices/hosts-and-devices-static-overview";
 import { InterviewScenario } from "@/features/lessons/interview-scenario";
 import { KnowledgeCheck } from "@/features/lessons/knowledge-check";
+import { LayerModelComparison } from "@/features/layer-models/layer-model-comparison";
 import { LearningObjective } from "@/features/lessons/learning-objective";
 import { PremiumPreview } from "@/features/lessons/premium-preview";
 import { WiresharkCheck } from "@/features/lessons/wireshark-check";
@@ -16,6 +17,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     HostsAndDevicesStaticOverview,
     InterviewScenario,
     KnowledgeCheck,
+    LayerModelComparison,
     LearningObjective,
     NetworkCommunicationPacketFlow,
     NetworkDeviceSymbol,
