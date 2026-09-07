@@ -1,7 +1,9 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("server-only", () => ({}));
 
 import { accountConnectionScenarios } from "./connection-media.account.data";
 import { ConnectionMediaLab } from "./connection-media-lab";
@@ -40,6 +42,7 @@ describe("ConnectionMediaLab", () => {
     await user.click(screen.getByRole("button", { name: "Check my connection choice" }));
     const result = screen.getByRole("region", { name: "Connection choice result" });
     expect(within(result).getByRole("heading", { name: outcome })).toBeVisible();
+    expect(result).toHaveAttribute("data-outcome", outcome.toLowerCase().replaceAll(" ", "-"));
     expect(result).toHaveTextContent(decisive);
     expect(result).toHaveTextContent(explanation);
     expect(result).toHaveTextContent(`Recommended option: ${recommendation}`);

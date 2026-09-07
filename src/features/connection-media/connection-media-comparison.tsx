@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useReducedMotionState } from "../packet-flow/use-reduced-motion";
 
 import { publicConnectionMedia } from "./connection-media.data";
 import type { ComparisonQualityId } from "./connection-media.schema";
@@ -21,6 +22,7 @@ const signalTypeByMediumId = {
 
 export function ConnectionMediaComparison() {
   const [qualityId, setQualityId] = useState<ComparisonQualityId>("distance");
+  const { reducedMotion, isHydrated } = useReducedMotionState();
 
   return (
     <section aria-labelledby="connection-media-comparison-title" className="connection-media-comparison">
@@ -56,17 +58,21 @@ export function ConnectionMediaComparison() {
           const headingId = `connection-media-${medium.id}`;
 
           return (
-            <article aria-labelledby={headingId} className="connection-media-comparison__panel" key={medium.id}>
+            <article aria-labelledby={headingId} className="connection-media-card connection-media-comparison__panel" key={medium.id}>
               <h4 id={headingId}>{medium.name}</h4>
               <p><strong>Signal:</strong> {medium.signalLabel}</p>
               <div
                 aria-label={`${medium.name} signal track: ${medium.signalLabel}`}
-                className="connection-media-comparison__signal-track"
+                className="signal-track connection-media-comparison__signal-track"
+                data-motion={reducedMotion || !isHydrated ? "reduced" : "travel"}
                 data-quality={qualityId}
                 data-signal={signalType}
                 role="img"
               >
-                <span aria-hidden="true" className="connection-media-comparison__signal-pulse" />
+                <span aria-hidden="true" className="signal-track__stages">
+                  <span>Source</span><span>Medium</span><span>Destination</span>
+                </span>
+                <span aria-hidden="true" className="signal-track__pulse connection-media-comparison__signal-pulse" />
               </div>
               <p>{medium.summary}</p>
               <p><strong>Picture it:</strong> {medium.analogy}</p>

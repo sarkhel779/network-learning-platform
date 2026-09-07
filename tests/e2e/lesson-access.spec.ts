@@ -5,11 +5,23 @@ const canonical = `https://packetsecrets.com${lessonPath}`;
 const publishedLessons = [
   { slug: "how-networks-communicate", title: "What Is a Computer Network?" },
   { slug: "hosts-and-network-devices", title: "Hosts, Clients, Servers and Network Interfaces" },
+  { slug: "cables-fibre-wireless-and-network-connections", title: "Cables, Fibre, Wireless and Network Connections" },
   { slug: "osi-and-tcp-ip-models", title: "OSI and TCP/IP Models" },
 ];
 // Actual account-only prose/answers plus the loader's protected fixture markers.
 // No production Pro body exists yet; Pro exclusion is additionally covered by loader tests.
 const protectedSentinels = [
+  "Desktop near a home router",
+  "Laptop used throughout a small office",
+  "Fixed workstation in a noisy workshop",
+  "Two buildings on a campus",
+  "High-capacity data-centre interconnect",
+  "Temporary classroom network",
+  "The recommended connection for a nearby desktop is copper Ethernet.",
+  "Wireless meets the mobility requirement when coverage and airtime capacity are adequate.",
+  "Good signal strength does not guarantee free airtime.",
+  "transmitter output, loss, and receiver sensitivity.",
+  "CONNECTION_MEDIA_ACCOUNT_SENTINEL",
   "Find the ARP request and reply first.",
   "The destination IP remains the remote server so routers can forward the packet toward it.",
   "What happens after a user enters a website address?",
@@ -110,6 +122,11 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
       if (slug === "osi-and-tcp-ip-models") {
         await expect(page.locator(".lesson-content")).toBeEmpty();
         await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
+      } else if (slug === "cables-fibre-wireless-and-network-connections") {
+        await expect(page.getByRole("group", { name: "Compare connection qualities" })).toBeVisible();
+        await expect(page.getByRole("group", { name: "Choose a connection scenario" })).toHaveCount(0);
+        await expect(page.getByRole("button", { name: "I know this—proceed to advanced" })).toHaveCount(0);
+        await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
       } else {
         await expect(page.getByRole("group", { name: "Wired host to local server", exact: true })).toBeVisible();
       }
@@ -148,6 +165,7 @@ test("public tables expose row and column headers and remain keyboard-scrollable
   await page.setViewportSize({ width: 360, height: 800 });
   for (const [slug, caption, columns, rows] of [
     ["hosts-and-network-devices", "Network device roles", 4, 6],
+    ["cables-fibre-wireless-and-network-connections", "Connection media at a glance", 5, 4],
   ] as const) {
     await page.goto(`/learn/networking-foundations/${slug}`);
     const table = page.getByRole("table", { name: caption, exact: true });

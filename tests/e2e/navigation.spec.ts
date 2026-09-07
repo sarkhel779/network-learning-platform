@@ -36,4 +36,17 @@ test("unknown lessons return not found while the published models lesson resolve
     "/learn/networking-foundations/osi-and-tcp-ip-models",
   );
   expect(publishedResponse.ok()).toBe(true);
+  const connectionResponse = await request.get("/learn/networking-foundations/cables-fibre-wireless-and-network-connections");
+  expect(connectionResponse.status()).toBe(200);
+});
+
+test("Hosts advances to connections and the following planned lesson stays non-clickable", async ({ page }) => {
+  await page.goto("/learn/networking-foundations/hosts-and-network-devices");
+  await page.getByRole("link", { name: "Next: Cables, Fibre, Wireless and Network Connections", exact: true }).click();
+  await expect(page).toHaveURL("/learn/networking-foundations/cables-fibre-wireless-and-network-connections");
+  const navigation = page.getByRole("navigation", { name: "Lesson navigation" });
+  await expect(navigation.getByText("Next: Hubs, Bridges and Switches — Coming later", { exact: true })).toBeVisible();
+  await expect(navigation.getByRole("link", { name: /^Next:/ })).toHaveCount(0);
+  await navigation.getByRole("link", { name: "Previous: Hosts, Clients, Servers and Network Interfaces", exact: true }).click();
+  await expect(page).toHaveURL("/learn/networking-foundations/hosts-and-network-devices");
 });

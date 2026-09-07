@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { ConnectionScenario } from "./connection-media.schema";
 
 // Account-only authored input. Runtime consumers must validate at their boundary

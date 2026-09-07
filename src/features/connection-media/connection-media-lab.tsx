@@ -26,7 +26,7 @@ function ScenarioRequirements({ scenario }: { scenario: ConnectionScenario }) {
   ];
 
   return (
-    <dl className="encapsulation-player__layers">
+    <dl className="connection-requirements">
       {requirements.map(([label, value]) => (
         <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
       ))}
@@ -80,11 +80,11 @@ export function ConnectionMediaLab({ scenarios }: { scenarios: readonly Connecti
     : undefined;
 
   return (
-    <div className="encapsulation-player">
+    <div className="connection-media-lab">
       <form onSubmit={checkChoice}>
         <fieldset className="journey-selector">
           <legend>Choose a connection scenario</legend>
-          <div className="journey-selector__choices">
+          <div className="connection-choice-grid">
             {scenarios.map((choice) => (
               <label key={choice.id}>
                 <input
@@ -111,7 +111,7 @@ export function ConnectionMediaLab({ scenarios }: { scenarios: readonly Connecti
 
         <fieldset className="journey-selector">
           <legend>Choose a connection medium</legend>
-          <div className="journey-selector__choices">
+          <div className="connection-choice-grid">
             {publicConnectionMedia.map((medium) => (
               <label key={medium.id}>
                 <input
@@ -137,7 +137,7 @@ export function ConnectionMediaLab({ scenarios }: { scenarios: readonly Connecti
       <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{announcement}</p>
       {unavailable ? <p>Connection choice evaluation unavailable. Review the troubleshooting workflow below.</p> : null}
       {result && recommendedMedium && selectedMedium ? (
-        <section className="encapsulation-player__step" aria-label="Connection choice result">
+        <section className="connection-result" data-outcome={result.outcome} aria-label="Connection choice result">
           <h3>{outcomeLabels[result.outcome]}</h3>
           <p><strong>Your choice:</strong> {selectedMedium.name}</p>
           <p>{result.explanation}</p>

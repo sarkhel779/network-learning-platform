@@ -1,10 +1,11 @@
 import { ConnectionMediaExperience } from "@/features/connection-media/connection-media-experience";
+import { loadAccountConnectionScenarios } from "@/features/connection-media/connection-media.account-loader";
 
 {/* CONNECTION_MEDIA_ACCOUNT_SENTINEL */}
 
 <h2 id="design-a-connection" tabIndex={-1} aria-describedby="connection-design-context">Design a connection</h2>
 
-<ConnectionMediaExperience />
+<ConnectionMediaExperience scenarios={loadAccountConnectionScenarios()} />
 
 Choose a scenario, read every requirement, select a medium, then check your reasoning.
 **Recommended** means the best overall fit for those requirements. **Workable with trade-offs**

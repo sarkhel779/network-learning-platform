@@ -1,14 +1,36 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useMDXComponents } from "../../../mdx-components";
 import { ConnectionMediaComparison } from "./connection-media-comparison";
 
-afterEach(cleanup);
+beforeEach(() => {
+  vi.stubGlobal("matchMedia", () => ({ matches: false, addEventListener() {}, removeEventListener() {} }));
+});
+afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 
 describe("ConnectionMediaComparison", () => {
+  it("keeps discrete signal stages on the server and under reduced motion", () => {
+    const markup = renderToStaticMarkup(<ConnectionMediaComparison />);
+    expect(markup.match(/data-motion="reduced"/g)).toHaveLength(3);
+    vi.stubGlobal("matchMedia", () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+    render(<ConnectionMediaComparison />);
+    for (const track of screen.getAllByRole("img", { name: /signal track/ })) {
+      expect(track).toHaveAttribute("data-motion", "reduced");
+      expect(track).toHaveTextContent("Source");
+      expect(track).toHaveTextContent("Medium");
+      expect(track).toHaveTextContent("Destination");
+    }
+  });
+
+  it("enables decorative signal travel only after hydration with no motion preference", () => {
+    render(<ConnectionMediaComparison />);
+    for (const track of screen.getAllByRole("img", { name: /signal track/ })) {
+      expect(track).toHaveAttribute("data-motion", "travel");
+    }
+  });
   it("server-renders a meaningful default comparison for all three media", () => {
     const markup = renderToStaticMarkup(<ConnectionMediaComparison />);
 

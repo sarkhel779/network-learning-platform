@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("server-only", () => ({}));
 
 import { accountConnectionScenarios } from "@/features/connection-media/connection-media.account.data";
 
@@ -21,7 +23,7 @@ describe("connection media lesson content contract", () => {
     expect(publicSource.match(/<ConnectionMediaComparison\s*\/>/g)).toHaveLength(1);
     expect(publicSource).not.toMatch(/ConnectionMediaExperience|connection-media\.account|accountConnection|<KnowledgeCheck|<InterviewScenario|correctIndex|optical power-budget|Join the Pro Member Waitlist/i);
     expect(accountSource).toContain('import { ConnectionMediaExperience } from "@/features/connection-media/connection-media-experience";');
-    expect(accountSource.match(/<ConnectionMediaExperience\s*\/>/g)).toHaveLength(1);
+    expect(accountSource.match(/<ConnectionMediaExperience\s+scenarios=\{loadAccountConnectionScenarios\(\)\}\s*\/>/g)).toHaveLength(1);
     const registry = readFileSync(join(process.cwd(), "mdx-components.tsx"), "utf8");
     expect(registry).not.toMatch(/ConnectionMediaExperience|connection-media\.account/);
     const normalizedPublic = publicSource.replace(/\s+/g, " ");

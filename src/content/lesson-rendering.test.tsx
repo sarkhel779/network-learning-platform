@@ -7,7 +7,9 @@ import type { MDXComponents } from "mdx/types";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as jsxRuntime from "react/jsx-runtime";
 import { within } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("server-only", () => ({}));
 
 import { useMDXComponents as getMDXComponents } from "../../mdx-components";
 import { getLesson, getPathway } from "@/features/catalog/catalog.repository";
@@ -32,6 +34,9 @@ async function lessonComponent(file: string) {
     importModule: async (specifier: string) => {
       if (specifier === "@/features/connection-media/connection-media-experience") {
         return import("@/features/connection-media/connection-media-experience");
+      }
+      if (specifier === "@/features/connection-media/connection-media.account-loader") {
+        return import("@/features/connection-media/connection-media.account-loader");
       }
       throw new Error(`Unexpected lesson import: ${specifier}`);
     },
@@ -85,6 +90,8 @@ describe("compiled lesson markup", () => {
     const ids = [...container.querySelectorAll("[id]")].map((element) => element.id);
     expect(new Set(ids).size).toBe(ids.length);
     expect(within(container).getByRole("heading", { name: "Design a connection" })).toHaveAttribute("tabindex", "-1");
+    expect(within(container).getByRole("radio", { name: "Desktop near a home router" })).toBeChecked();
+    expect(within(container).getByRole("group", { name: "Choose a connection scenario" }).querySelectorAll('input[type="radio"]')).toHaveLength(6);
     expect(within(container).getAllByRole("group", { name: /^Knowledge check:/ })).toHaveLength(3);
     expect(within(container).getByRole("link", { name: "Join the Pro Member Waitlist" })).toHaveAttribute("href", "/contact");
     expect(container.querySelectorAll("details.interview-scenario, .interview-scenario details")).toHaveLength(2);

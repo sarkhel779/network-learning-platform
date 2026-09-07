@@ -1,7 +1,9 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("server-only", () => ({}));
 
 import { ConnectionMediaExperience } from "./connection-media-experience";
 import { accountConnectionScenarios } from "./connection-media.account.data";
@@ -13,7 +15,7 @@ describe("ConnectionMediaExperience", () => {
     const user = userEvent.setup();
     render(<>
       <h2 id="design-a-connection" tabIndex={-1} aria-describedby="connection-design-context">Design a connection</h2>
-      <ConnectionMediaExperience />
+      <ConnectionMediaExperience scenarios={accountConnectionScenarios} />
     </>);
     await user.tab();
     expect(screen.getByRole("button", { name: "I know this—proceed to advanced" })).toHaveFocus();
@@ -28,6 +30,7 @@ describe("ConnectionMediaExperience", () => {
   });
 
   it.each([
+    { label: "missing input", scenarios: undefined },
     { label: "empty array", scenarios: [] },
     { label: "null", scenarios: null },
     { label: "missing scenario identifier", scenarios: [{ ...accountConnectionScenarios[0], id: "" }] },
@@ -43,7 +46,7 @@ describe("ConnectionMediaExperience", () => {
   });
 
   it("preserves static troubleshooting guidance on the server", () => {
-    const markup = renderToStaticMarkup(<ConnectionMediaExperience />);
+    const markup = renderToStaticMarkup(<ConnectionMediaExperience scenarios={accountConnectionScenarios} />);
     for (const phrase of ["symptom and scope", "power, connection, and link state", "speed and duplex", "distance, cable condition", "signal strength and interference", "Change one variable", "Retest and record"]) {
       expect(markup).toContain(phrase);
     }
