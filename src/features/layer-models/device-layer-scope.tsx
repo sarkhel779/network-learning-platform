@@ -1,4 +1,5 @@
 import { NetworkDeviceSymbol } from "../packet-flow/network-device-symbol";
+import { deviceLayerScopes } from "./device-layer-scopes.data";
 import { layerModelsLab } from "./layer-models.data";
 
 const osiLayerNames = new Map(
@@ -24,7 +25,7 @@ export function DeviceLayerScope() {
       </div>
 
       <ul className="device-layer-scope__list">
-        {layerModelsLab.deviceScopes.map((scope) => (
+        {deviceLayerScopes.map((scope) => (
           <li className="device-layer-scope__card" data-device-scope={scope.id} key={scope.id}>
             <div className="device-layer-scope__heading">
               <svg

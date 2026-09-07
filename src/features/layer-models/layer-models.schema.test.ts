@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { parseLayerModelsLab } from "./layer-models.schema";
+import {
+  parseDeviceLayerScopes,
+  parseLayerModelsLab,
+} from "./layer-models.schema";
 
 const validLab = {
   osiLayers: [
@@ -38,21 +41,32 @@ const validLab = {
       durationMs: 1000,
     },
   ],
-  deviceScopes: [
-    {
-      id: "host",
-      name: "Host",
-      commonlyExamines: "All layers",
-      osiLayers: [7, 6, 5, 4, 3, 2, 1],
-      tcpIpLayers: ["application", "transport", "internet", "network-access"],
-      explanation: "Creates and consumes application data.",
-    },
-  ],
 } as const;
 
+const validDeviceScopes = [
+  {
+    id: "host",
+    name: "Host",
+    commonlyExamines: "All layers",
+    osiLayers: [7, 6, 5, 4, 3, 2, 1],
+    tcpIpLayers: ["application", "transport", "internet", "network-access"],
+    explanation: "Creates and consumes application data.",
+  },
+] as const;
+
 describe("parseLayerModelsLab", () => {
-  it("accepts a complete layer model lab", () => {
+  it("accepts a complete public layer model lab", () => {
     expect(parseLayerModelsLab(validLab)).toEqual(validLab);
+  });
+
+  it("rejects account-only device scopes from the public layer model", () => {
+    expect(() =>
+      parseLayerModelsLab({ ...validLab, deviceScopes: validDeviceScopes }),
+    ).toThrow(/deviceScopes/i);
+  });
+
+  it("accepts device scopes whose references exist in the public layer model", () => {
+    expect(parseDeviceLayerScopes(validDeviceScopes, validLab)).toEqual(validDeviceScopes);
   });
 
   it("requires unique OSI layer numbers in exact descending order", () => {
@@ -94,10 +108,10 @@ describe("parseLayerModelsLab", () => {
   });
 
   it("rejects invalid device-scope OSI and TCP/IP layer references", () => {
-    const unknownOsiLayer = [{ ...validLab.deviceScopes[0], osiLayers: [7, 8] }];
-    expect(() => parseLayerModelsLab({ ...validLab, deviceScopes: unknownOsiLayer })).toThrow(/device scope.*invalid OSI layer reference/i);
+    const unknownOsiLayer = [{ ...validDeviceScopes[0], osiLayers: [7, 8] }];
+    expect(() => parseDeviceLayerScopes(unknownOsiLayer, validLab)).toThrow(/device scope.*invalid OSI layer reference/i);
 
-    const unknownTcpIpLayer = [{ ...validLab.deviceScopes[0], tcpIpLayers: ["application", "link"] }];
-    expect(() => parseLayerModelsLab({ ...validLab, deviceScopes: unknownTcpIpLayer })).toThrow(/device scope.*invalid TCP\/IP layer reference/i);
+    const unknownTcpIpLayer = [{ ...validDeviceScopes[0], tcpIpLayers: ["application", "link"] }];
+    expect(() => parseDeviceLayerScopes(unknownTcpIpLayer, validLab)).toThrow(/device scope.*invalid TCP\/IP layer reference/i);
   });
 });

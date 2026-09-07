@@ -1,8 +1,19 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("./device-layer-scopes.data", () => {
+  throw new Error("PUBLIC_GRAPH_REACHED_PROTECTED_DEVICE_SCOPES");
+});
 
 import { layerModelsLab } from "./layer-models.data";
 
 describe("layerModelsLab", () => {
+  it("does not expose account-only device scope data from the public lab export", () => {
+    expect(layerModelsLab).not.toHaveProperty("deviceScopes");
+    expect(JSON.stringify(layerModelsLab)).not.toContain(
+      "scope depends on its design and enabled features",
+    );
+  });
+
   it("defines the canonical OSI and TCP/IP layer order", () => {
     expect(layerModelsLab.osiLayers.map(({ number }) => number)).toEqual([7, 6, 5, 4, 3, 2, 1]);
     expect(layerModelsLab.tcpIpLayers.map(({ id }) => id)).toEqual([
@@ -47,20 +58,7 @@ describe("layerModelsLab", () => {
     ]);
   });
 
-  it("describes host, switch, router, and firewall scope without fixed-layer claims", () => {
-    expect(layerModelsLab.deviceScopes.map(({ id }) => id)).toEqual(["host", "switch", "router", "firewall"]);
-    for (const device of layerModelsLab.deviceScopes) {
-      expect(device.commonlyExamines).toBeTruthy();
-      expect(device.explanation).toMatch(/commonly|may|can|depends/i);
-    }
-  });
-
-  it("keeps firewall defaults focused on common Network, Transport, and optional Application inspection", () => {
-    const firewall = layerModelsLab.deviceScopes.find(({ id }) => id === "firewall");
-    expect(firewall).toBeDefined();
-    expect(firewall?.osiLayers).toEqual([7, 4, 3]);
-    expect(firewall?.tcpIpLayers).toEqual(["application", "transport", "internet"]);
-    expect(firewall?.commonlyExamines).toMatch(/Network, Transport, and sometimes Application/i);
-    expect(firewall?.explanation).toMatch(/depends on (?:its )?design/i);
+  it("does not reach the protected device-scope module from the public data import graph", () => {
+    expect(layerModelsLab.encapsulationSteps).toHaveLength(9);
   });
 });

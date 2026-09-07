@@ -42,6 +42,8 @@ const deviceScopeSchema = z.object({
   explanation: z.string().min(1),
 });
 
+const deviceLayerScopesSchema = z.array(deviceScopeSchema).min(1);
+
 const EXPECTED_OSI_LAYERS = [7, 6, 5, 4, 3, 2, 1] as const;
 const EXPECTED_TCP_IP_LAYERS = ["application", "transport", "internet", "network-access"] as const;
 
@@ -50,8 +52,7 @@ const layerModelsLabSchema = z.object({
   tcpIpLayers: z.array(tcpIpLayerSchema),
   mapping: z.array(mappingEntrySchema),
   encapsulationSteps: z.array(encapsulationStepSchema).min(1),
-  deviceScopes: z.array(deviceScopeSchema).min(1),
-}).superRefine((lab, context) => {
+}).strict().superRefine((lab, context) => {
   const osiNumbers = lab.osiLayers.map(({ number }) => number);
   if (osiNumbers.length !== EXPECTED_OSI_LAYERS.length ||
       osiNumbers.some((number, index) => number !== EXPECTED_OSI_LAYERS[index])) {
@@ -122,19 +123,43 @@ const layerModelsLabSchema = z.object({
       context.addIssue({ code: "custom", path: ["encapsulationSteps", index, "activeTcpIpLayer"], message: `Invalid TCP/IP layer reference: ${step.activeTcpIpLayer}.` });
     }
   }
-
-  for (const [index, scope] of lab.deviceScopes.entries()) {
-    if (scope.osiLayers.some((number) => !osiNumbers.includes(number))) {
-      context.addIssue({ code: "custom", path: ["deviceScopes", index, "osiLayers"], message: "Device scope has an invalid OSI layer reference." });
-    }
-    if (scope.tcpIpLayers.some((id) => !tcpIpIdSet.has(id))) {
-      context.addIssue({ code: "custom", path: ["deviceScopes", index, "tcpIpLayers"], message: "Device scope has an invalid TCP/IP layer reference." });
-    }
-  }
 });
 
 export type LayerModelsLab = z.infer<typeof layerModelsLabSchema>;
+export type DeviceLayerScopes = z.infer<typeof deviceLayerScopesSchema>;
+
+type LayerReferenceCatalog = Readonly<{
+  osiLayers: ReadonlyArray<Readonly<{ number: number }>>;
+  tcpIpLayers: ReadonlyArray<Readonly<{ id: string }>>;
+}>;
 
 export function parseLayerModelsLab(input: unknown): LayerModelsLab {
   return layerModelsLabSchema.parse(input);
+}
+
+export function parseDeviceLayerScopes(
+  input: unknown,
+  lab: LayerReferenceCatalog,
+): DeviceLayerScopes {
+  const osiNumbers = new Set(lab.osiLayers.map(({ number }) => number));
+  const tcpIpIds = new Set(lab.tcpIpLayers.map(({ id }) => id));
+
+  return deviceLayerScopesSchema.superRefine((scopes, context) => {
+    for (const [index, scope] of scopes.entries()) {
+      if (scope.osiLayers.some((number) => !osiNumbers.has(number))) {
+        context.addIssue({
+          code: "custom",
+          path: [index, "osiLayers"],
+          message: "Device scope has an invalid OSI layer reference.",
+        });
+      }
+      if (scope.tcpIpLayers.some((id) => !tcpIpIds.has(id))) {
+        context.addIssue({
+          code: "custom",
+          path: [index, "tcpIpLayers"],
+          message: "Device scope has an invalid TCP/IP layer reference.",
+        });
+      }
+    }
+  }).parse(input);
 }
