@@ -32,7 +32,7 @@ describe("compiled lesson markup", () => {
     ["hosts-and-network-devices.public.mdx", "Network device roles", 4, 6],
     ["hosts-and-network-devices.account.mdx", "Hosts Wireshark display filters", 3, 6],
     ["hosts-and-network-devices.account.mdx", "Hosts and network devices summary", 2, 7],
-    ["osi-and-tcp-ip-models.public.mdx", "The seven OSI layers", 3, 8],
+    ["osi-and-tcp-ip-models.account.mdx", "The seven OSI layers", 3, 8],
     ["osi-and-tcp-ip-models.account.mdx", "Wireshark layer identification filters", 2, 8],
   ] as const)("renders %s / %s as an accessible table", async (file, caption, columns, rows) => {
     const Content = await lessonComponent(file);
@@ -51,7 +51,7 @@ describe("compiled lesson markup", () => {
   });
 
   it.each(["how-networks-communicate", "hosts-and-network-devices", "osi-and-tcp-ip-models"])("integrates %s with exactly one lesson H1", async (slug) => {
-    const Content = await lessonComponent(`${slug}.public.mdx`);
+    const Content = await lessonComponent(`${slug}.${slug === "osi-and-tcp-ip-models" ? "account" : "public"}.mdx`);
     const pathway = getPathway("networking-foundations");
     const lesson = getLesson(pathway.slug, slug);
     const container = document.body.appendChild(document.createElement("div"));

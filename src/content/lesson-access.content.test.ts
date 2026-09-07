@@ -5,9 +5,20 @@ import { describe, expect, it } from "vitest";
 
 const contentRoot = join(process.cwd(), "src/content");
 const publicFiles = readdirSync(contentRoot, { recursive: true })
-  .map(String).filter((file) => file.endsWith(".public.mdx"));
+  .map((file) => String(file).replaceAll("\\", "/")).filter((file) => file.endsWith(".public.mdx"));
 
 describe("public lesson source boundaries", () => {
+  it("keeps every OSI foundation and interactive experience in the account block", () => {
+    expect(publicFiles).not.toContain("networking-foundations/osi-and-tcp-ip-models.public.mdx");
+    const source = readFileSync(join(contentRoot, "networking-foundations/osi-and-tcp-ip-models.account.mdx"), "utf8");
+    expect(source).toContain("Layered models help teams describe one browser-to-server exchange");
+    for (const id of ["why-layers", "osi-model", "tcp-ip-model", "model-mapping", "encapsulation-lab"]) {
+      expect(source).toContain(`id="${id}"`);
+    }
+    expect(source).toContain("<LayerModelComparison />");
+    expect(source).toContain("<EncapsulationExperience />");
+  });
+
   it.each(publicFiles)("excludes account practice and answers from %s", (file) => {
     const source = readFileSync(join(contentRoot, file), "utf8");
     expect(source).not.toMatch(/<(?:KnowledgeCheck|InterviewScenario|WiresharkCheck)\b/);

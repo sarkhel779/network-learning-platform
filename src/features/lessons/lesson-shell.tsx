@@ -57,7 +57,9 @@ export function LessonShell({
           <p className="eyebrow">Lesson</p>
           <h1>{lesson.title}</h1>
           <p className="lesson-byline">
-            {lesson.estimatedMinutes} minutes · Public introduction · Free account to continue
+            {lesson.estimatedMinutes} minutes · {lesson.sections?.some(({ access }) => access === "public")
+              ? "Public introduction · Free account to continue"
+              : "Free account required"}
           </p>
         </header>
 

@@ -3,17 +3,10 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-const lesson = ["public", "account"]
-  .map((access) =>
-    readFileSync(
-      join(
-        process.cwd(),
-        `src/content/networking-foundations/osi-and-tcp-ip-models.${access}.mdx`,
-      ),
-      "utf8",
-    ),
-  )
-  .join("\n");
+const lesson = readFileSync(
+  join(process.cwd(), "src/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),
+  "utf8",
+);
 
 describe("OSI and TCP/IP Models lesson content", () => {
   it("keeps the approved nine-section navigation structure", () => {

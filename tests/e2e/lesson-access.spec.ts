@@ -24,6 +24,9 @@ const protectedSentinels = [
   "Investigate the wireless association first",
   "Which item is the best example of Internet or OSI Network-layer information?",
   "How would you explain encapsulation and compare OSI with TCP/IP in an interview?",
+  "Layered models help teams describe one browser-to-server exchange",
+  "A laptop can move from Ethernet to Wi-Fi while its browser",
+  "A UDP exchange can use the same",
   "ACCOUNT_ONLY_SENTINEL",
   "PRO_ONLY_SENTINEL",
 ];
@@ -45,6 +48,24 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
         return { url: response.url(), text: "" };
       }));
     }
+  });
+
+  // Intercept before the first visit so both prefetch and navigation RSC bodies
+  // are captured, even if a visible curriculum link was prefetched early.
+  const navigationRscPayloads: Array<{ url: string; text: string }> = [];
+  const destinationPaths = publishedLessons.slice(1).map(({ slug }) => `/learn/networking-foundations/${slug}`);
+  await page.route((url) => (
+    destinationPaths.includes(url.pathname)
+      && url.searchParams.has("_rsc")
+  ), async (route) => {
+    if (route.request().resourceType() === "document") {
+      await route.continue();
+      return;
+    }
+    const navigationResponse = await route.fetch();
+    const body = await navigationResponse.body();
+    navigationRscPayloads.push({ url: route.request().url(), text: body.toString("utf8") });
+    await route.fulfill({ response: navigationResponse, body });
   });
 
   const response = await page.goto(lessonPath);
@@ -75,27 +96,23 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
   expect(data.hasPart.map((part: { isAccessibleForFree: boolean }) => part.isAccessibleForFree)).toEqual([true, true, false, false, false, false]);
   expect(data.hasPart.at(-1)).toMatchObject({ name: "Pro Deep Dive", description: "Requires Packetsecrets Pro access." });
 
-  // Save the RSC bytes before fulfillment so navigation cannot invalidate the body.
-  const navigationRscPayloads: Array<{ url: string; text: string }> = [];
-  const destinationPaths = publishedLessons.slice(1).map(({ slug }) => `/learn/networking-foundations/${slug}`);
-  await page.route((url) => (
-    destinationPaths.includes(url.pathname)
-      && url.searchParams.has("_rsc")
-  ), async (route) => {
-    if (route.request().resourceType() === "document") {
-      await route.continue();
-      return;
-    }
-    const navigationResponse = await route.fetch();
-    const body = await navigationResponse.body();
-    navigationRscPayloads.push({ url: route.request().url(), text: body.toString("utf8") });
-    await route.fulfill({ response: navigationResponse, body });
-  });
   try {
     for (const { slug, title } of publishedLessons.slice(1)) {
-      await page.getByRole("link", { name: `Next: ${title}` }).click();
+      const desktop = page.locator(".lesson-curriculum--desktop");
+      const curriculum = await desktop.isVisible()
+        ? desktop : page.locator("details.lesson-curriculum--mobile");
+      const link = curriculum.getByRole("link", { name: new RegExp(title) });
+      if (!await link.isVisible()) await curriculum.locator("summary").click();
+      await expect(link).toBeVisible();
+      await link.click();
       await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
       await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+      if (slug === "osi-and-tcp-ip-models") {
+        await expect(page.locator(".lesson-content")).toBeEmpty();
+        await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
+      } else {
+        await expect(page.getByRole("group", { name: "Wired host to local server", exact: true })).toBeVisible();
+      }
       await page.waitForLoadState("networkidle");
       expect(navigationRscPayloads.some(({ url }) => new URL(url).pathname === `/learn/networking-foundations/${slug}`), `${slug} must yield an intercepted RSC payload`).toBe(true);
     }
@@ -105,12 +122,19 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
   }
   for (const { url, text } of navigationRscPayloads) {
     expect(text.trim(), `${url} must contain an RSC body`).not.toBe("");
+    if (new URL(url).pathname.endsWith("/osi-and-tcp-ip-models")) {
+      expect(text).not.toMatch(/data-layer-model-comparison|encapsulation-player|data-current-pdu/);
+    }
   }
   const documents = await Promise.all(publishedLessons.map(async ({ slug }) => {
     const url = `/learn/networking-foundations/${slug}`;
     const response = await request.get(url);
     expect(response.status(), url).toBe(200);
-    return { url, text: await response.text() };
+    const text = await response.text();
+    if (slug === "osi-and-tcp-ip-models") {
+      expect(text).not.toMatch(/data-layer-model-comparison|encapsulation-player|data-current-pdu/);
+    }
+    return { url, text };
   }));
   const responses = await Promise.all(payloads);
   expect(responses.some(({ url }) => url.includes("_next/static"))).toBe(true);
@@ -124,7 +148,6 @@ test("public tables expose row and column headers and remain keyboard-scrollable
   await page.setViewportSize({ width: 360, height: 800 });
   for (const [slug, caption, columns, rows] of [
     ["hosts-and-network-devices", "Network device roles", 4, 6],
-    ["osi-and-tcp-ip-models", "The seven OSI layers", 3, 8],
   ] as const) {
     await page.goto(`/learn/networking-foundations/${slug}`);
     const table = page.getByRole("table", { name: caption, exact: true });
