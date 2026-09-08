@@ -34,6 +34,12 @@ const lessonImports = {
     account: () =>
       import("@/content/networking-foundations/hubs-bridges-and-switches.account.mdx"),
   },
+  "networking-foundations/unicast-broadcast-and-multicast-communication": {
+    public: () =>
+      import("@/content/networking-foundations/unicast-broadcast-and-multicast-communication.public.mdx"),
+    account: () =>
+      import("@/content/networking-foundations/unicast-broadcast-and-multicast-communication.account.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),

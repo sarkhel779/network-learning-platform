@@ -1,0 +1,27 @@
+## Why delivery scope matters {#why-delivery-scope-matters}
+
+Delivery scope answers a practical question: which interfaces receive a transmission, and which hosts actually accept and process it?
+
+## Unicast: one intended destination {#unicast-one-destination}
+
+Unicast identifies one intended destination. A switch may forward an unknown unicast through several ports while it learns, but the destination remains unicast.
+
+## Broadcast: the local broadcast domain {#broadcast-local-domain}
+
+A broadcast is delivered throughout its local broadcast domain. A router can receive it on a local interface, but does not ordinarily forward it into another network.
+
+## Multicast: an interested receiver group {#multicast-receiver-group}
+
+Multicast addresses a receiver group. Hosts accept the traffic only when they have joined that group, while efficient forwarding depends on group-aware network state.
+
+## Unknown unicast is not broadcast {#unknown-unicast-is-not-broadcast}
+
+Flooding describes a switch action. It does not rewrite the original unicast destination into a broadcast address.
+
+## Compare delivery types {#compare-delivery-types}
+
+Compare who the sender intends to reach, what the switch forwards, what each interface physically receives, and what each host accepts.
+
+## Interactive delivery-scope player {#delivery-scope-player}
+
+<DeliveryScopePlayer />
