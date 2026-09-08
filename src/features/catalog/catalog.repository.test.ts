@@ -82,6 +82,7 @@ describe("catalog repository", () => {
       "first-packet-journey-through-a-small-network",
       "hosts-and-network-devices",
       "how-networks-communicate",
+      "how-switches-learn-and-forward",
       "hubs-bridges-and-switches",
       "osi-and-tcp-ip-models",
       "routers-default-gateways-and-network-boundaries",
@@ -119,7 +120,32 @@ describe("catalog repository", () => {
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
       previous: { slug: "first-packet-journey-through-a-small-network", published: true },
-      next: { slug: "how-switches-learn-and-forward", published: false },
+      next: { slug: "how-switches-learn-and-forward", published: true },
+    });
+  });
+
+  it("publishes switch learning after Ethernet frames with progressive access", () => {
+    const lesson = getLesson("networking-foundations", "how-switches-learn-and-forward");
+
+    expect(lesson).toMatchObject({
+      title: "How Switches Learn and Forward",
+      estimatedMinutes: 24,
+      published: true,
+    });
+    expect(lesson.sections?.map(({ id, access }) => [id, access])).toEqual([
+      ["the-switch-decision-cycle", "public"],
+      ["learn-the-source-address", "public"],
+      ["look-up-the-destination", "public"],
+      ["forward-filter-or-flood", "public"],
+      ["interactive-switch-learning", "public"],
+      ["read-mac-table-evidence", "account"],
+      ["diagnose-switching-behaviour", "account"],
+      ["knowledge-check-summary", "account"],
+      ["pro-deep-dive", "pro"],
+    ]);
+    expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
+      previous: { slug: "ethernet-frames-and-mac-addresses", published: true },
+      next: { slug: "arp-and-local-delivery", published: false },
     });
   });
 
@@ -257,6 +283,7 @@ describe("catalog repository", () => {
       "osi-and-tcp-ip-models",
       "first-packet-journey-through-a-small-network",
       "ethernet-frames-and-mac-addresses",
+      "how-switches-learn-and-forward",
     ]);
     expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
       title: "Cables, Fibre, Wireless and Network Connections",
@@ -317,7 +344,7 @@ describe("catalog repository", () => {
   it("keeps public foundations limited to published beginner lessons", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[6], lessons[7], lessons[8], lessons[9]];
+    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[6], lessons[7], lessons[8], lessons[9], lessons[10]];
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
@@ -328,12 +355,13 @@ describe("catalog repository", () => {
     expect(edgeDevices.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(packetJourney.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(ethernetFrames.sections?.some(({ access }) => access === "public")).toBe(true);
+    expect(switchLearning.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(
-      lessons.slice(10).some(({ sections }) =>
+      lessons.slice(11).some(({ sections }) =>
         sections?.some(({ access }) => access === "public"),
       ),
     ).toBe(false);
-    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames]) {
+    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning]) {
       expect(lesson.sections?.at(-1)).toEqual(expect.objectContaining({
         id: "pro-deep-dive",
         label: "Pro Deep Dive",

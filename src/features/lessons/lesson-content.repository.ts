@@ -62,6 +62,10 @@ const lessonImports = {
     public: () => import("@/content/networking-foundations/ethernet-frames-and-mac-addresses.public.mdx"),
     account: () => import("@/content/networking-foundations/ethernet-frames-and-mac-addresses.account.mdx"),
   },
+  "networking-foundations/how-switches-learn-and-forward": {
+    public: () => import("@/content/networking-foundations/how-switches-learn-and-forward.public.mdx"),
+    account: () => import("@/content/networking-foundations/how-switches-learn-and-forward.account.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),

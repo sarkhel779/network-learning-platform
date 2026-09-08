@@ -20,6 +20,7 @@ import { RouteDecisionExperience } from "@/features/route-decision/route-decisio
 import { EdgeDevicePlayer } from "@/features/edge-devices/edge-device-player";
 import { FirstPacketJourneyPlayer } from "@/features/packet-flow/first-packet-journey-player";
 import { EthernetFrameExplorer } from "@/features/ethernet/ethernet-frame-explorer";
+import { SwitchLearningPlayer } from "@/features/switch-learning/switch-learning-player";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -42,6 +43,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     RouteDecisionPlayer,
     RouteDecisionExperience,
     SwitchingComparison,
+    SwitchLearningPlayer,
     WiresharkCheck,
     ...components,
   };

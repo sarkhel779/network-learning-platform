@@ -38,4 +38,10 @@ describe("system theme and table styles", () => {
     expect(region).toMatch(/overflow-x:\s*auto\s*;/);
     expect(region).toMatch(/max-width:\s*100%\s*;/);
   });
+
+  it("uses pure black text in the animated packet marker", () => {
+    const markerText = css.match(/\.network-topology__packet-marker text\s*\{([^}]+)\}/)?.[1];
+    expect(markerText).toMatch(/fill:\s*#000\s*;/);
+    expect(markerText).toMatch(/stroke:\s*none\s*;/);
+  });
 });

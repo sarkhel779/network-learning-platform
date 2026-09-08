@@ -9,8 +9,11 @@ const publishedLessons = [
   { slug: "osi-and-tcp-ip-models", title: "OSI and TCP/IP Models" },
   { slug: "hubs-bridges-and-switches", title: "Hubs, Bridges and Switches" },
   { slug: "unicast-broadcast-and-multicast-communication", title: "Unicast, Broadcast and Multicast Communication" },
+  { slug: "routers-default-gateways-and-network-boundaries", title: "Routers, Default Gateways and Network Boundaries" },
   { slug: "access-points-modems-onts-and-firewalls", title: "Access Points, Modems, ONTs and Firewalls" },
   { slug: "first-packet-journey-through-a-small-network", title: "A Packet’s First Journey Through a Small Network" },
+  { slug: "ethernet-frames-and-mac-addresses", title: "Ethernet Frames and MAC Addresses" },
+  { slug: "how-switches-learn-and-forward", title: "How Switches Learn and Forward" },
 ];
 // Actual account-only prose/answers plus the loader's protected fixture markers.
 // No production Pro body exists yet; Pro exclusion is additionally covered by loader tests.
@@ -61,9 +64,12 @@ const protectedSentinels = [
   "bridge-mode-double-router",
   "The failure is still on the local next-hop resolution path",
   "ip route get 198.51.100.20",
+  "SWITCH_ACCOUNT_SENTINEL",
+  "The first frame to a server is seen on three access ports",
 ];
 
 test("anonymous direct lesson exposes public learning, canonical metadata, and safe network payloads", async ({ page, request }) => {
+  test.setTimeout(90_000);
   const errors: string[] = [];
   const payloads: Array<Promise<{ url: string; text: string }>> = [];
   page.on("pageerror", (error) => errors.push(error.message));
@@ -135,7 +141,7 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
       const link = curriculum.getByRole("link", { name: new RegExp(title) });
       await expect(link).toBeVisible();
       await link.click();
-      await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
+      await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible({ timeout: 10_000 });
       await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
       if (slug === "osi-and-tcp-ip-models") {
         await expect(page.locator(".lesson-content")).toBeEmpty();
@@ -149,6 +155,10 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
         await expect(page.getByRole("heading", { name: "Predict traffic delivery" })).toHaveCount(0);
         await expect(page.getByRole("button", { name: "I know this—proceed to advanced" })).toHaveCount(0);
         await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
+      } else if (slug === "routers-default-gateways-and-network-boundaries") {
+        await expect(page.getByRole("group", { name: "Choose a route decision scenario" })).toBeVisible();
+        await expect(page.getByRole("heading", { name: "Read routing evidence" })).toHaveCount(0);
+        await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
       } else if (slug === "access-points-modems-onts-and-firewalls") {
         await expect(page.getByRole("region", { name: "Edge device packet journey: Home fibre" })).toBeVisible();
         await expect(page.getByRole("heading", { name: "Identify device roles" })).toHaveCount(0);
@@ -161,6 +171,14 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
       } else if (slug === "first-packet-journey-through-a-small-network") {
         await expect(page.getByRole("group", { name: "Choose packet inspection depth" })).toBeVisible();
         await expect(page.getByRole("heading", { name: "Match evidence to the journey" })).toHaveCount(0);
+        await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
+      } else if (slug === "ethernet-frames-and-mac-addresses") {
+        await expect(page.getByRole("group", { name: "Choose a delivery address" })).toBeVisible();
+        await expect(page.getByRole("heading", { name: "Inspect frame evidence" })).toHaveCount(0);
+        await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
+      } else if (slug === "how-switches-learn-and-forward") {
+        await expect(page.getByRole("group", { name: "Choose the forwarding evidence" })).toBeVisible();
+        await expect(page.getByRole("heading", { name: "Read MAC-table evidence" })).toHaveCount(0);
         await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
       } else {
         await expect(page.getByRole("group", { name: "Wired host to local server", exact: true })).toBeVisible();
@@ -203,6 +221,7 @@ test("public tables expose row and column headers and remain keyboard-scrollable
     ["cables-fibre-wireless-and-network-connections", "Connection media at a glance", 5, 4],
     ["hubs-bridges-and-switches", "Hub, bridge and switch at a glance", 5, 4],
     ["unicast-broadcast-and-multicast-communication", "Delivery type comparison", 4, 5],
+    ["how-switches-learn-and-forward", "Switch forwarding decisions", 4, 5],
   ] as const) {
     await page.goto(`/learn/networking-foundations/${slug}`);
     const table = page.getByRole("table", { name: caption, exact: true });

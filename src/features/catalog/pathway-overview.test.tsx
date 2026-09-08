@@ -56,7 +56,10 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /ethernet frames and mac addresses/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/ethernet-frames-and-mac-addresses",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(10);
-    expect(screen.getAllByText("Coming later")).toHaveLength(14);
+    expect(screen.getByRole("link", { name: /how switches learn and forward/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/how-switches-learn-and-forward",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(11);
+    expect(screen.getAllByText("Coming later")).toHaveLength(13);
   });
 });

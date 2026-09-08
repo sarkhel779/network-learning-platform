@@ -23,7 +23,10 @@ function EvidenceWorkflow() {
   );
 }
 
-export function FrameForwardingExperience({ scenarios }: { scenarios: unknown }) {
+export function FrameForwardingExperience({ scenarios, showAdvancedShortcut = true }: {
+  scenarios: unknown;
+  showAdvancedShortcut?: boolean;
+}) {
   const catalog = useMemo(
     () => safeParseSwitchingCatalog({ comparison: publicSwitchingComparison, scenarios }),
     [scenarios],
@@ -32,7 +35,7 @@ export function FrameForwardingExperience({ scenarios }: { scenarios: unknown })
   return (
     <section aria-labelledby="forward-the-frame">
       {catalog.success ? (
-        <FrameForwardingLab scenarios={catalog.data.scenarios} showAdvancedShortcut />
+        <FrameForwardingLab scenarios={catalog.data.scenarios} showAdvancedShortcut={showAdvancedShortcut} />
       ) : (
         <div>
           <h3>Frame-forwarding lab unavailable</h3>

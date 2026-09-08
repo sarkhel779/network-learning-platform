@@ -211,6 +211,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "ethernet-frames-and-mac-addresses",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "how-switches-learn-and-forward",
+      },
     ]);
   });
 
