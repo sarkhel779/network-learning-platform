@@ -15,6 +15,7 @@ const publishedLessons = [
   { slug: "ethernet-frames-and-mac-addresses", title: "Ethernet Frames and MAC Addresses" },
   { slug: "how-switches-learn-and-forward", title: "How Switches Learn and Forward" },
   { slug: "arp-and-local-delivery", title: "ARP and Local Delivery" },
+  { slug: "vlans-access-ports-and-trunks", title: "VLANs, Access Ports and Trunks" },
 ];
 // Actual account-only prose/answers plus the loader's protected fixture markers.
 // No production Pro body exists yet; Pro exclusion is additionally covered by loader tests.
@@ -68,6 +69,7 @@ const protectedSentinels = [
   "SWITCH_ACCOUNT_SENTINEL",
   "The first frame to a server is seen on three access ports",
   "ARP_ACCOUNT_SENTINEL",
+  "VLAN_ACCOUNT_SENTINEL",
   "Get-NetNeighbor -AddressFamily IPv4",
 ];
 
@@ -186,6 +188,10 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
       } else if (slug === "arp-and-local-delivery") {
         await expect(page.getByRole("group", { name: "Choose an ARP situation" })).toBeVisible();
         await expect(page.getByRole("heading", { name: "Inspect neighbour evidence" })).toHaveCount(0);
+        await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
+      } else if (slug === "vlans-access-ports-and-trunks") {
+        await expect(page.getByRole("group", { name: "Choose a VLAN journey" })).toBeVisible();
+        await expect(page.getByRole("heading", { name: "Read port and capture evidence" })).toHaveCount(0);
         await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
       } else {
         await expect(page.getByRole("group", { name: "Wired host to local server", exact: true })).toBeVisible();
