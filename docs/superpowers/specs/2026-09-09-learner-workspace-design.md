@@ -1,6 +1,6 @@
 # Learner Workspace Design
 
-**Status:** Approved design, awaiting written-spec review  
+**Status:** Approved specification
 **Date:** 2026-09-09  
 **Scope:** Signed-in learner toolbar, drawers, progress, notes, saved items, practice history, glossary, feedback, account access, and Pro discovery
 
