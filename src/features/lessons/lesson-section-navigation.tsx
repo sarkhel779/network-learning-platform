@@ -18,7 +18,7 @@ export function LessonSectionNavigation({ sections }: LessonSectionNavigationPro
             ) : (
               <div className="lesson-section-navigation__locked">
                 <span>{label}</span>
-                <span className="access-label">{access === "pro" ? "Pro" : "Free account"}</span>
+                {access === "pro" ? <span className="access-label">Pro</span> : null}
                 <span className="lesson-section-navigation__status">Locked</span>
                 {access === "pro" && preview ? <p>{preview}</p> : null}
               </div>
