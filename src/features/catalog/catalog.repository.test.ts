@@ -76,6 +76,7 @@ describe("catalog repository", () => {
     const lessons = pathway.modules.flatMap(({ lessons }) => lessons);
 
     expect(listPublishedLessons(pathway.slug).map(({ slug }) => slug).sort()).toEqual([
+      "access-points-modems-onts-and-firewalls",
       "cables-fibre-wireless-and-network-connections",
       "hosts-and-network-devices",
       "how-networks-communicate",
@@ -156,7 +157,36 @@ describe("catalog repository", () => {
     ]);
     expect(getAdjacentLessons(pathwaySlug, lessonSlug)).toMatchObject({
       previous: { slug: "unicast-broadcast-and-multicast-communication", published: true },
-      next: { slug: "access-points-modems-onts-and-firewalls", published: false },
+      next: { slug: "access-points-modems-onts-and-firewalls", published: true },
+    });
+  });
+
+  it("publishes edge devices after routers with a progressive access contract", () => {
+    const pathwaySlug = "networking-foundations";
+    const lessonSlug = "access-points-modems-onts-and-firewalls";
+    const lesson = getLesson(pathwaySlug, lessonSlug);
+
+    expect(lesson).toMatchObject({
+      title: "Access Points, Modems, ONTs and Firewalls",
+      objective: "Explain where common edge devices fit and distinguish access, conversion, routing, and security roles.",
+      estimatedMinutes: 20,
+      published: true,
+    });
+    expect(lesson.sections?.map(({ id, access }) => [id, access])).toEqual([
+      ["one-box-many-jobs", "public"],
+      ["access-points-bridge-wireless", "public"],
+      ["modems-and-onts-convert-signals", "public"],
+      ["routers-and-firewalls-set-boundaries", "public"],
+      ["compare-edge-devices", "public"],
+      ["interactive-edge-journey", "public"],
+      ["identify-device-roles", "account"],
+      ["diagnose-edge-failures", "account"],
+      ["knowledge-check-summary", "account"],
+      ["pro-deep-dive", "pro"],
+    ]);
+    expect(getAdjacentLessons(pathwaySlug, lessonSlug)).toMatchObject({
+      previous: { slug: "routers-default-gateways-and-network-boundaries", published: true },
+      next: { slug: "osi-and-tcp-ip-models", published: true },
     });
   });
 
@@ -171,6 +201,7 @@ describe("catalog repository", () => {
       "hubs-bridges-and-switches",
       "unicast-broadcast-and-multicast-communication",
       "routers-default-gateways-and-network-boundaries",
+      "access-points-modems-onts-and-firewalls",
       "osi-and-tcp-ip-models",
     ]);
     expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
@@ -232,7 +263,7 @@ describe("catalog repository", () => {
   it("keeps public foundations limited to published beginner lessons", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, connectionMedia, switching, deliveryScope, routers, osi] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[7]];
+    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[6], lessons[7]];
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
@@ -240,12 +271,13 @@ describe("catalog repository", () => {
     expect(switching.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(deliveryScope.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(routers.sections?.some(({ access }) => access === "public")).toBe(true);
+    expect(edgeDevices.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(
-      lessons.slice(6).some(({ sections }) =>
+      lessons.slice(7).some(({ sections }) =>
         sections?.some(({ access }) => access === "public"),
       ),
     ).toBe(false);
-    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, osi]) {
+    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi]) {
       expect(lesson.sections?.at(-1)).toEqual(expect.objectContaining({
         id: "pro-deep-dive",
         label: "Pro Deep Dive",

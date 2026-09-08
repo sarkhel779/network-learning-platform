@@ -69,6 +69,16 @@ vi.mock("@/content/networking-foundations/routers-default-gateways-and-network-b
 vi.mock("@/content/networking-foundations/routers-default-gateways-and-network-boundaries.account.mdx", () => {
   throw new Error("ROUTE_DECISION_ACCOUNT_SENTINEL: anonymous route imported a protected body");
 });
+vi.mock("@/content/networking-foundations/access-points-modems-onts-and-firewalls.public.mdx", async () => {
+  const { createElement, Fragment } = await import("react");
+  return { default: () => createElement(Fragment, null,
+    createElement("p", null, "Public edge-device explanation."),
+    createElement("h2", { id: "interactive-edge-journey" }, "Interactive edge-device journey"),
+  ) };
+});
+vi.mock("@/content/networking-foundations/access-points-modems-onts-and-firewalls.account.mdx", () => {
+  throw new Error("EDGE_DEVICE_ACCOUNT_SENTINEL: anonymous route imported a protected body");
+});
 vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx", () => {
   throw new Error("OSI_ACCOUNT_SENTINEL: anonymous route imported a protected body");
 });
@@ -187,9 +197,29 @@ describe("lesson route generation", () => {
       },
       {
         pathwaySlug: "networking-foundations",
+        lessonSlug: "access-points-modems-onts-and-firewalls",
+      },
+      {
+        pathwaySlug: "networking-foundations",
         lessonSlug: "osi-and-tcp-ip-models",
       },
     ]);
+  });
+
+  it("renders only the edge-device public body for anonymous visitors", async () => {
+    const loader = vi.spyOn(contentRepository, "loadAuthorizedLessonContent");
+    const page = await lessonPage.default({ params: Promise.resolve({
+      pathwaySlug: "networking-foundations",
+      lessonSlug: "access-points-modems-onts-and-firewalls",
+    }) });
+    const { container } = render(page);
+
+    expect(screen.getByText("Public edge-device explanation.")).toBeVisible();
+    expect(loader).toHaveBeenCalledWith(
+      "networking-foundations/access-points-modems-onts-and-firewalls",
+      "anonymous",
+    );
+    expect(container.innerHTML).not.toContain("EDGE_DEVICE_ACCOUNT_SENTINEL");
   });
 
   it("renders only the delivery-scope public body for anonymous visitors", async () => {

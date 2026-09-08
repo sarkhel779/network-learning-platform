@@ -603,3 +603,27 @@ h1 {
 @keyframes packet-journey-travel-direct { from { transform: translateX(0); } to { transform: translateX(450px); } }
 @media (min-width: 48rem) { .packet-journey-stage { grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.8fr); align-items: start; } }
 @media (prefers-reduced-motion: reduce) { .packet-journey-stage .packet-journey-marker { animation: none; } }
+
+.edge-device-player { min-width: 0; margin: 2rem 0; padding: clamp(0.8rem, 2.5vw, 1.4rem); border: 1px solid var(--border); border-radius: 0.75rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); }
+.edge-device-player > h3 { margin-top: 0; }
+.edge-device-player fieldset { display: flex; flex-wrap: wrap; gap: 0.5rem; min-width: 0; margin: 1rem 0; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; }
+.edge-device-player legend { font-weight: 800; }
+.edge-device-player label { display: flex; align-items: center; gap: 0.55rem; min-block-size: 44px; padding: 0.55rem 0.7rem; border: 1px solid var(--border); border-radius: 0.45rem; background: var(--background); cursor: pointer; }
+.edge-device-player label:has(input:checked) { border-color: var(--accent); border-inline-start-width: 0.35rem; background: color-mix(in srgb, var(--accent) 10%, var(--background)); }
+.edge-device-topology { display: grid; grid-template-columns: repeat(5, minmax(7rem, 1fr)); gap: 0.5rem; min-width: 38rem; margin: 0; padding: 1rem; list-style: none; }
+.edge-device-journey { min-width: 0; overflow-x: auto; border: 2px dashed var(--accent); border-radius: 0.65rem; background: var(--background); }
+.edge-device-topology li { position: relative; display: grid; justify-items: center; gap: 0.35rem; min-width: 0; padding: 0.6rem; text-align: center; border: 2px solid transparent; border-radius: 0.6rem; }
+.edge-device-topology li[data-active] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--background)); }
+.edge-device-topology svg { width: 4.5rem; height: 4.5rem; }
+.edge-device-topology li > span { font-size: 0.82rem; overflow-wrap: anywhere; }
+.edge-device-topology__link { position: absolute; inset-inline-end: -0.75rem; inset-block-start: 2.5rem; color: var(--accent); font-size: 1.5rem !important; font-weight: 900; }
+.edge-device-topology__packet-marker { position: absolute; inset-block-start: -0.7rem; padding: 0.2rem 0.45rem; border: 2px solid var(--background); border-radius: 999px; background: var(--focus-ring); color: var(--background); font-size: 0.72rem !important; font-weight: 900; animation: edge-device-packet-arrival 650ms ease-out both; }
+.edge-device-packet { margin: 0 1rem 1rem; padding: 0.45rem; border: 2px solid var(--focus-ring); border-radius: 0.55rem; background: color-mix(in srgb, var(--focus-ring) 7%, var(--background)); animation: edge-device-unfold 500ms ease-out both; }
+.edge-device-packet div { min-width: 0; padding: 0.45rem; border: 1px solid var(--border); border-radius: 0.35rem; }
+.edge-device-packet div div { margin-top: 0.35rem; background: color-mix(in srgb, var(--accent) 6%, var(--background)); }
+.edge-device-progress, .edge-device-role-card { margin: 1rem; padding: 1rem; border: 1px solid var(--border); border-radius: 0.55rem; }
+.edge-device-progress > :first-child, .edge-device-progress h3, .edge-device-role-card h3 { margin-top: 0; }
+@keyframes edge-device-packet-arrival { from { opacity: 0; transform: translateX(-1.5rem); } to { opacity: 1; transform: translateX(0); } }
+@keyframes edge-device-unfold { from { opacity: 0.5; transform: scaleY(0.92); } to { opacity: 1; transform: scaleY(1); } }
+@media (max-width: 35rem) { .edge-device-player label { width: 100%; } .edge-device-topology { grid-template-columns: minmax(0, 1fr); min-width: 0; } .edge-device-topology__link { inset-inline-end: auto; inset-block-start: auto; inset-block-end: -1rem; transform: rotate(90deg); } }
+@media (prefers-reduced-motion: reduce) { .edge-device-player * { animation: none !important; transition: none !important; } }

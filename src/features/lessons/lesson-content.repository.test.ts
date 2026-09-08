@@ -36,6 +36,12 @@ vi.mock("@/content/networking-foundations/routers-default-gateways-and-network-b
 vi.mock("@/content/networking-foundations/routers-default-gateways-and-network-boundaries.account.mdx", () => ({
   default: () => null,
 }));
+vi.mock("@/content/networking-foundations/access-points-modems-onts-and-firewalls.public.mdx", () => ({
+  default: () => null,
+}));
+vi.mock("@/content/networking-foundations/access-points-modems-onts-and-firewalls.account.mdx", () => ({
+  default: () => null,
+}));
 vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx", () => ({
   default: () => null,
 }));
@@ -143,6 +149,19 @@ describe("loadAuthorizedLessonContent", () => {
 
   it("keeps route-decision practice protected while serving its public lesson anonymously", async () => {
     const key = "networking-foundations/routers-default-gateways-and-network-boundaries";
+    const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
+    expect(anonymous.public).toBeDefined();
+    expect(anonymous.account).toBeUndefined();
+    expect(anonymous.pro).toBeUndefined();
+
+    const account = await loadAuthorizedLessonContent(key, "account");
+    expect(account.public).toBeDefined();
+    expect(account.account).toBeDefined();
+    expect(account.pro).toBeUndefined();
+  });
+
+  it("keeps edge-device practice protected while serving its public lesson anonymously", async () => {
+    const key = "networking-foundations/access-points-modems-onts-and-firewalls";
     const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
     expect(anonymous.public).toBeDefined();
     expect(anonymous.account).toBeUndefined();

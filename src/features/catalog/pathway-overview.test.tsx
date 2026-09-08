@@ -50,7 +50,10 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /routers, default gateways and network boundaries/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/routers-default-gateways-and-network-boundaries",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(7);
-    expect(screen.getAllByText("Coming later")).toHaveLength(17);
+    expect(screen.getByRole("link", { name: /access points, modems, onts and firewalls/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/access-points-modems-onts-and-firewalls",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(8);
+    expect(screen.getAllByText("Coming later")).toHaveLength(16);
   });
 });

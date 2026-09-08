@@ -1,0 +1,51 @@
+The edge of a network often looks like one plastic box, but that box may perform several independent jobs. A useful troubleshooting habit is to name the **role** that should act before blaming the physical device.
+
+<h2 id="one-box-many-jobs">One box, many jobs</h2>
+
+A home gateway may contain a wireless access point, Ethernet switch, router, firewall, DHCP service, and sometimes a modem or optical-network terminal. These roles can share one enclosure, but they answer different questions.
+
+Think of a railway station containing platforms, ticket checks, route signs, and a connection to another railway company. Sharing one building does not make every job the same. The analogy stops at the fact that packets are processed electronically rather than carried by people.
+
+<h2 id="access-points-bridge-wireless">Access points bridge wireless</h2>
+
+An access point gives Wi-Fi clients access to a local network. In its basic role it bridges wireless traffic to a wired LAN. It handles wireless association and link-layer delivery; it does not automatically become the Internet router or security policy boundary.
+
+The client interface might be labelled `Wi-Fi`, while the access point's wired side might be `LAN`, `Ethernet`, or an uplink port. Both sides can belong to the same IP network.
+
+<h2 id="modems-and-onts-convert-signals">Modems and ONTs convert signals</h2>
+
+A cable or DSL modem adapts customer network data to the provider's access technology. An ONT terminates the optical access link and presents a customer-facing handoff, commonly Ethernet. Their essential lesson role is conversion and provider termination—not choosing a destination route or applying user security policy.
+
+Bridge mode exposes that separation clearly: the modem or ONT supplies the handoff while another device performs routing and firewall functions.
+
+<h2 id="routers-and-firewalls-set-boundaries">Routers and firewalls set boundaries</h2>
+
+A router selects paths between IP networks. A firewall evaluates traffic crossing a security boundary and may permit or deny it using configured policy and session information. One home gateway often performs both roles, but routing and security remain different decisions.
+
+This lesson does not teach firewall rule design, state tables, NAT, or VPN configuration. Those belong to later service and Network Security pathways.
+
+<h2 id="compare-edge-devices">Compare edge devices</h2>
+
+<div className="lesson-table" role="region" aria-label="Edge device role comparison" tabIndex={0}>
+  <table>
+    <caption>What each edge role contributes</caption>
+    <thead><tr><th scope="col">Role</th><th scope="col">Main decision</th><th scope="col">Typical interfaces</th><th scope="col">Not automatically responsible for</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Access point</th><td>Bridge a wireless client onto the LAN</td><td>Wi-Fi radio and wired uplink</td><td>Internet routing</td></tr>
+      <tr><th scope="row">Modem</th><td>Adapt data to cable or DSL access signalling</td><td>Customer Ethernet and provider medium</td><td>Firewall policy</td></tr>
+      <tr><th scope="row">ONT</th><td>Terminate the optical access link</td><td>Fibre and customer Ethernet</td><td>Choosing the host's route</td></tr>
+      <tr><th scope="row">Router</th><td>Select the next IP network</td><td>LAN and WAN</td><td>Wireless association</td></tr>
+      <tr><th scope="row">Firewall</th><td>Permit or deny boundary-crossing traffic</td><td>Trusted and untrusted boundaries</td><td>Converting optical signals</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="interactive-edge-journey">Interactive edge-device journey</h2>
+
+Choose a common layout and follow the packet through every interface. At each stage, the highlighted device explains what it does and the packet opens to show what remains inside.
+
+<EdgeDevicePlayer />
+
+<noscript>
+  <p><strong>Static journey:</strong> Laptop creates data → access point bridges the wireless link → router selects the WAN → firewall evaluates policy → modem or ONT converts the access signal → ISP receives the handoff.</p>
+</noscript>

@@ -9,6 +9,7 @@ const publishedLessons = [
   { slug: "osi-and-tcp-ip-models", title: "OSI and TCP/IP Models" },
   { slug: "hubs-bridges-and-switches", title: "Hubs, Bridges and Switches" },
   { slug: "unicast-broadcast-and-multicast-communication", title: "Unicast, Broadcast and Multicast Communication" },
+  { slug: "access-points-modems-onts-and-firewalls", title: "Access Points, Modems, ONTs and Firewalls" },
 ];
 // Actual account-only prose/answers plus the loader's protected fixture markers.
 // No production Pro body exists yet; Pro exclusion is additionally covered by loader tests.
@@ -54,6 +55,9 @@ const protectedSentinels = [
   "VLAN-aware forwarding",
   "advanced Wireshark analysis",
   "first-frame-unknown-destination",
+  "EDGE_DEVICE_ACCOUNT_SENTINEL",
+  "optical-los",
+  "bridge-mode-double-router",
 ];
 
 test("anonymous direct lesson exposes public learning, canonical metadata, and safe network payloads", async ({ page, request }) => {
@@ -142,6 +146,10 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
         await expect(page.getByRole("heading", { name: "Predict traffic delivery" })).toHaveCount(0);
         await expect(page.getByRole("button", { name: "I know this—proceed to advanced" })).toHaveCount(0);
         await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
+      } else if (slug === "access-points-modems-onts-and-firewalls") {
+        await expect(page.getByRole("region", { name: "Edge device packet journey: Home fibre" })).toBeVisible();
+        await expect(page.getByRole("heading", { name: "Identify device roles" })).toHaveCount(0);
+        await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
       } else if (slug === "cables-fibre-wireless-and-network-connections") {
         await expect(page.getByRole("group", { name: "Compare connection qualities" })).toBeVisible();
         await expect(page.getByRole("group", { name: "Choose a connection scenario" })).toHaveCount(0);
@@ -217,6 +225,22 @@ test("interactive topology exposes device controls and returns focus after closi
   await expect(close).toHaveCount(0);
   await expect(device).toBeFocused();
   await expect(device).toHaveAttribute("aria-pressed", "false");
+});
+
+test("edge-device journey labels interfaces, unfolds the packet, and fits mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/learn/networking-foundations/access-points-modems-onts-and-firewalls");
+
+  const journey = page.getByRole("region", { name: "Edge device packet journey: Home fibre" });
+  await expect(journey.getByText("Client Wi-Fi", { exact: true })).toBeVisible();
+  await expect(journey.getByText("LAN ↔ WAN boundary", { exact: true })).toBeVisible();
+  await expect(journey.getByRole("img", { name: "Packet contents at the current hop" })).toContainText(
+    "Local-link frameIP packetApplication data",
+  );
+  await expect.poll(() => page.evaluate(
+    () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+  )).toBe(true);
 });
 
 test("system dark preference applies the native dark color scheme with a working light override", async ({ page }) => {
