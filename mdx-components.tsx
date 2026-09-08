@@ -13,6 +13,7 @@ import { PremiumPreview } from "@/features/lessons/premium-preview";
 import { WiresharkCheck } from "@/features/lessons/wireshark-check";
 import { NetworkCommunicationPacketFlow } from "@/features/packet-flow/packet-flow-experience";
 import { NetworkDeviceSymbol } from "@/features/packet-flow/network-device-symbol";
+import { SwitchingComparison } from "@/features/switching/switching-comparison";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -28,6 +29,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     NetworkCommunicationPacketFlow,
     NetworkDeviceSymbol,
     PremiumPreview,
+    SwitchingComparison,
     WiresharkCheck,
     ...components,
   };
