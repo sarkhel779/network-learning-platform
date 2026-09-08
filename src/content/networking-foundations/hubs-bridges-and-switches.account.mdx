@@ -1,10 +1,15 @@
+import { FrameForwardingExperience } from "@/features/switching/frame-forwarding-experience";
+import { loadAccountSwitchingScenarios } from "@/features/switching/switching.account-loader";
+
 {/* SWITCHING_ACCOUNT_SENTINEL */}
 
 <h2 id="forward-the-frame">Forward the frame</h2>
 
-The guided lab will begin with `first-frame-unknown-destination` and progress through source
+The guided lab begins with `first-frame-unknown-destination` and progresses through source
 learning, known forwarding, `same-segment-filtering`, broadcast flooding, and an aged-out
-destination. It will ask for a prediction before revealing the forwarding evidence.
+destination. Predict the decision before revealing the forwarding evidence.
+
+<FrameForwardingExperience scenarios={loadAccountSwitchingScenarios()} />
 
 <h2 id="diagnose-local-switching-symptoms">Diagnose local switching symptoms</h2>
 
@@ -12,14 +17,87 @@ Use an evidence-first sequence: define the affected hosts and direction, verify 
 and port state, identify ingress and expected egress ports, read the source and destination MAC
 addresses, inspect the forwarding table and entry freshness, then change one condition and retest.
 
-A foundational moved-host case records: **Host moved from port 2 to port 4**. That observation
-requires checking the newest source-learning evidence; it does not prove a loop or switch failure.
+### MAC learned on an unexpected port
+
+Confirm the host identity and physical path before changing anything. A source entry on an
+unexpected port may show that the host moved, that another device is forwarding its frames,
+or that the assumed cabling record is wrong. Record the newest source frame and ingress port;
+the table entry alone does not prove a loop.
+
+### Missing or aged destination entry
+
+A missing entry makes a unicast destination unknown, so temporary flooding is expected. Check
+whether a frame from that destination refreshes the table. Absence is not proof that the switch
+is broken, and the aging interval depends on the implementation.
+
+### Broadcast seen on several ports
+
+An Ethernet broadcast is meant to reach eligible ports in the same Layer 2 domain except its
+ingress port. Seeing it on several ports is not automatically a loop. First verify its broadcast
+destination and whether repeated copies continue beyond one expected forwarding event.
+
+### Same-port filtering
+
+When a classic bridge learns both source and destination behind one segment, it filters the
+frame instead of sending it to other segments. Confirm the ingress port and destination entry;
+zero egress ports can be the correct decision rather than a loss.
+
+### Host moved between switch ports
+
+A foundational moved-host case records: **Host moved from port 2 to port 4**. Send or observe a
+new frame sourced by that host and confirm that source learning refreshes the entry to port 4.
+The old entry can explain misdelivery, but IP settings and application state still require
+separate evidence.
+
+### Physical-link failure
+
+If a required link is down, editing or clearing the forwarding table cannot restore the signal.
+Verify power, cable or radio path, interface state, and link evidence at both ends first. Repair
+the physical condition, then observe new source learning and repeat the original traffic test.
 
 <h2 id="knowledge-check-summary">Knowledge check and summary</h2>
 
 Account practice will check whether the learner can distinguish known-unicast forwarding,
 same-port filtering, unknown-unicast flooding, and broadcast flooding without confusing a
 switching decision with routing or application reachability.
+
+<KnowledgeCheck
+  question="A switch receives a frame from source 02:00:00:00:00:01 on port 1. What does it learn?"
+  options={["The source MAC is reachable through port 1", "The destination MAC is reachable through port 1", "Every MAC address is reachable through port 1"]}
+  correctIndex={0}
+  explanation="The ingress frame proves where its source is reachable. The destination is looked up for forwarding; it is not learned from that lookup."
+/>
+
+<KnowledgeCheck
+  question="A unicast destination is absent from the forwarding table. What should the switch do?"
+  options={["Route it through the default gateway", "Flood eligible ports except ingress", "Return it through the ingress port"]}
+  correctIndex={1}
+  explanation="An unknown unicast is flooded only within its eligible Layer 2 scope and never back through ingress. This is not an IP routing decision."
+/>
+
+<KnowledgeCheck
+  question="The destination is learned on the same bridge port where the frame arrived. What is the correct action?"
+  options={["Filter it from the other ports", "Broadcast it to every port including ingress", "Delete every forwarding entry"]}
+  correctIndex={0}
+  explanation="The destination is already behind the ingress segment, so forwarding to other segments would be unnecessary."
+/>
+
+<div className="lesson-table" role="region" aria-label="Switch forwarding decision summary table" tabIndex={0}>
+  <table>
+    <caption>Switch forwarding decisions</caption>
+    <thead><tr><th scope="col">Destination evidence</th><th scope="col">Decision</th><th scope="col">Egress</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Known on another port</th><td>Known-unicast forwarding</td><td>The learned destination port</td></tr>
+      <tr><th scope="row">Known on ingress</th><td>Filtering</td><td>No other port</td></tr>
+      <tr><th scope="row">Unknown unicast</th><td>Flooding</td><td>Every eligible port except ingress</td></tr>
+      <tr><th scope="row">Broadcast</th><td>Broadcast flooding</td><td>Every eligible port except ingress</td></tr>
+    </tbody>
+  </table>
+</div>
+
+Remember the order: learn the source on ingress, classify and look up the destination, then
+forward, filter, or flood. A populated forwarding table proves only learned Layer 2 locations;
+it does not prove correct IP configuration or a working destination application.
 
 <h2 id="pro-deep-dive">Pro Deep Dive</h2>
 
