@@ -14,6 +14,7 @@ const publishedLessons = [
   { slug: "first-packet-journey-through-a-small-network", title: "A Packet’s First Journey Through a Small Network" },
   { slug: "ethernet-frames-and-mac-addresses", title: "Ethernet Frames and MAC Addresses" },
   { slug: "how-switches-learn-and-forward", title: "How Switches Learn and Forward" },
+  { slug: "arp-and-local-delivery", title: "ARP and Local Delivery" },
 ];
 // Actual account-only prose/answers plus the loader's protected fixture markers.
 // No production Pro body exists yet; Pro exclusion is additionally covered by loader tests.
@@ -66,6 +67,8 @@ const protectedSentinels = [
   "ip route get 198.51.100.20",
   "SWITCH_ACCOUNT_SENTINEL",
   "The first frame to a server is seen on three access ports",
+  "ARP_ACCOUNT_SENTINEL",
+  "Get-NetNeighbor -AddressFamily IPv4",
 ];
 
 test("anonymous direct lesson exposes public learning, canonical metadata, and safe network payloads", async ({ page, request }) => {
@@ -180,6 +183,10 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
         await expect(page.getByRole("group", { name: "Choose the forwarding evidence" })).toBeVisible();
         await expect(page.getByRole("heading", { name: "Read MAC-table evidence" })).toHaveCount(0);
         await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
+      } else if (slug === "arp-and-local-delivery") {
+        await expect(page.getByRole("group", { name: "Choose an ARP situation" })).toBeVisible();
+        await expect(page.getByRole("heading", { name: "Inspect neighbour evidence" })).toHaveCount(0);
+        await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
       } else {
         await expect(page.getByRole("group", { name: "Wired host to local server", exact: true })).toBeVisible();
       }
@@ -222,6 +229,7 @@ test("public tables expose row and column headers and remain keyboard-scrollable
     ["hubs-bridges-and-switches", "Hub, bridge and switch at a glance", 5, 4],
     ["unicast-broadcast-and-multicast-communication", "Delivery type comparison", 4, 5],
     ["how-switches-learn-and-forward", "Switch forwarding decisions", 4, 5],
+    ["arp-and-local-delivery", "ARP variants and boundaries", 3, 6],
   ] as const) {
     await page.goto(`/learn/networking-foundations/${slug}`);
     const table = page.getByRole("table", { name: caption, exact: true });

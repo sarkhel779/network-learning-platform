@@ -17,19 +17,21 @@ describe("ModuleList publication labels", () => {
     expect(link).toHaveAttribute("href", "/learn/networking-foundations/how-networks-communicate");
   });
 
-  it("links the published delivery-scope and router lessons", () => {
+  it("links the published delivery-scope, router, and ARP lessons", () => {
     const pathway = getPathway("networking-foundations");
     render(<ModuleList modules={pathway.modules} pathwaySlug={pathway.slug} />);
     expect(screen.getByRole("link", { name: "Unicast, Broadcast and Multicast Communication" }))
       .toHaveAttribute("href", "/learn/networking-foundations/unicast-broadcast-and-multicast-communication");
     expect(screen.getByRole("link", { name: "Routers, Default Gateways and Network Boundaries" }))
       .toHaveAttribute("href", "/learn/networking-foundations/routers-default-gateways-and-network-boundaries");
+    expect(screen.getByRole("link", { name: "ARP and Local Delivery" }))
+      .toHaveAttribute("href", "/learn/networking-foundations/arp-and-local-delivery");
   });
 
   it("describes unpublished lessons as Coming later without Free or Premium access claims", () => {
     const pathway = getPathway("networking-foundations");
     render(<ModuleList modules={pathway.modules} pathwaySlug={pathway.slug} />);
-    const card = screen.getByRole("heading", { name: "ARP and Local Delivery" }).closest("li")!;
+    const card = screen.getByRole("heading", { name: "VLANs, Access Ports and Trunks" }).closest("li")!;
     expect(within(card).getByText("Coming later")).toBeVisible();
     expect(within(card).queryByText(/^(Free|Premium)$/)).toBeNull();
     expect(within(card).queryByRole("link")).toBeNull();

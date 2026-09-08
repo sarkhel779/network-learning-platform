@@ -1,0 +1,73 @@
+{/* ARP_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-neighbour-evidence" tabIndex={-1}>Inspect neighbour evidence</h2>
+
+<a className="primary-link" href="#troubleshoot-arp-methodically">I know this—proceed to advanced</a>
+
+Use the operating system's neighbour table and a capture together. A cache entry reports local state;
+it does not prove that the application works or that the mapping is legitimate.
+
+- Windows legacy view: `arp -a`
+- Windows PowerShell: `Get-NetNeighbor -AddressFamily IPv4`
+- Linux: `ip neigh show`
+
+Common states include reachable/validated, stale, probe or delay transitions, and incomplete/failed.
+Names and timers vary by operating system, so interpret the state with recent traffic and capture evidence.
+
+<WiresharkCheck
+  filter="arp"
+  fields={["frame.number", "eth.src", "eth.dst", "arp.opcode", "arp.src.proto_ipv4", "arp.src.hw_mac", "arp.dst.proto_ipv4", "arp.dst.hw_mac"]}
+  normalEvidence="A request uses Ethernet broadcast and asks for one target IPv4 address. A normal owner reply associates that IPv4 address with its MAC and is usually unicast to the requester."
+  exercise="Clear only the relevant dynamic neighbour entry in a safe lab, generate one ping, and correlate the cache miss, request, reply, cache update and first data frame."
+/>
+
+<h2 id="troubleshoot-arp-methodically">Troubleshoot ARP methodically</h2>
+
+1. Record the source address, prefix, destination and selected route.
+2. Decide whether the intended next hop is the destination or a gateway.
+3. Inspect the relevant neighbour entry without clearing unrelated evidence.
+4. Capture on the correct local interface and verify the request leaves.
+5. Confirm the switch floods within the correct VLAN and excludes ingress.
+6. Check whether an owner or configured proxy replies with the expected mapping.
+7. Compare the reply with the cache and then test the original traffic in both directions.
+
+If no request appears, investigate route selection, interface state and an already-usable cache entry.
+If requests appear without replies, verify VLAN membership, target availability, duplicate addressing,
+host filtering and whether the target IP is actually local. Repeated incomplete entries show failed
+resolution; they do not by themselves identify which device or link caused the failure.
+
+Proxy ARP deserves special suspicion when an incorrectly masked host still reaches another subnet.
+Compare the host's prefix and intended gateway with the router's proxy configuration before accepting
+reachability as proof that addressing is correct.
+
+<InterviewScenario prompt="A host can reach a remote server, but its neighbour table contains only the gateway and not the server. Is that a fault?">
+No. The IP destination is remote, so the host resolves only the local next hop—the gateway. The router
+uses separate Layer 2 delivery on later links. Confirm the route, gateway mapping and packet's unchanged
+remote IP destination rather than expecting a remote-server MAC in the local cache.
+</InterviewScenario>
+
+<InterviewScenario prompt="Two devices report the same IPv4 address after a failover. What ARP evidence would you collect?">
+Capture gratuitous announcements and ordinary requests/replies, compare sender MACs and timing, inspect
+neighbour-cache changes, and identify the intended owner. A failover announcement can legitimately
+refresh a shared address, while alternating or conflicting replies may indicate duplicate ownership.
+</InterviewScenario>
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck question="A host is sending to a remote IPv4 destination. Which address does it normally resolve with ARP?" options={["The selected local gateway IPv4 address", "The remote server IPv4 address", "Every router on the path"]} correctIndex={0} explanation="ARP resolves the next hop on the current local link. For remote traffic that next hop is normally the selected gateway." />
+
+<KnowledgeCheck question="Why does the switch send an ARP request through multiple eligible interfaces?" options={["Its Ethernet destination is broadcast", "ARP is always unknown unicast", "The router requested a copy"]} correctIndex={0} explanation="The request is enclosed in a frame addressed to FF:FF:FF:FF:FF:FF, so the switch floods it within the Layer 2 domain except through ingress." />
+
+<KnowledgeCheck question="What can Proxy ARP conceal?" options={["An incorrect host prefix or gateway design", "A broken physical cable", "An expired DNS record"]} correctIndex={0} explanation="A router can answer on behalf of another IP and restore reachability even though the host's on-link decision is based on incorrect addressing." />
+
+Remember: **choose the next hop, inspect the cache, resolve only when necessary, then build the frame**.
+Always distinguish the ARP target IP from the final packet destination and the Ethernet broadcast field.
+
+<h2 id="pro-deep-dive">Pro Deep Dive</h2>
+
+<PremiumPreview ctaLabel="Join the Pro Member Waitlist" ctaHref="/contact">
+Future Pro depth will cover RFC-guided cache behavior, platform-specific neighbour-state machines,
+advanced Wireshark timing and display filters, ARP spoofing and poisoning evidence, Dynamic ARP
+Inspection boundaries, high-availability gratuitous ARP behavior, difficult production incidents,
+and advanced interview preparation.
+</PremiumPreview>
