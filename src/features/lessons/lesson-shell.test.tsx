@@ -92,18 +92,18 @@ describe("LessonShell", () => {
     expect(within(navigation).queryByRole("link", { name: /next: switches/i })).not.toBeInTheDocument();
   });
 
-  it("renders the pathway in desktop and mobile course navigation", () => {
+  it("does not reserve a permanent sidebar for the course navigation", () => {
     render(
       <LessonShell pathway={pathway} lesson={pathway.modules[0].lessons[0]}>
         <p>Lesson content</p>
       </LessonShell>,
     );
 
-    expect(screen.getByRole("complementary", { name: "Course contents" })).toBeVisible();
-    expect(screen.getAllByText("Network and Device Essentials")[0]).toBeVisible();
+    expect(screen.queryByRole("complementary", { name: "Course contents" })).not.toBeInTheDocument();
+    expect(screen.getByText("Network and Device Essentials")).toBeInTheDocument();
     expect(screen.getByText("Course contents", { selector: "summary" })).toBeVisible();
     expect(
-      screen.getAllByRole("link", { name: /what is a computer network/i })[0],
+      screen.getByRole("link", { name: /what is a computer network/i }),
     ).toHaveAttribute("aria-current", "page");
   });
 

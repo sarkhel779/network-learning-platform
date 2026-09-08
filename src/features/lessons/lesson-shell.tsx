@@ -45,9 +45,6 @@ export function LessonShell({
 }: LessonShellProps) {
   return (
     <main className="lesson-page" id="main-content">
-      <aside aria-label="Course contents" className="lesson-curriculum lesson-curriculum--desktop">
-        <CurriculumNavigation pathway={pathway} currentLessonSlug={lesson.slug} />
-      </aside>
       <article className="lesson-shell">
         <details className="lesson-curriculum lesson-curriculum--mobile">
           <summary>Course contents</summary>
