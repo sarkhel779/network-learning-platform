@@ -62,4 +62,19 @@ describe("SwitchingComparison", () => {
     expect(components.SwitchingComparison).toBe(SwitchingComparison);
     expect(components).not.toHaveProperty("FrameForwardingExperience");
   });
+
+  it("gives comparison controls accessible touch targets", () => {
+    const stylesheet = document.head.appendChild(document.createElement("style"));
+    stylesheet.textContent = readFileSync(join(process.cwd(), "src", "app", "globals.css"), "utf8");
+    try {
+      render(<SwitchingComparison />);
+      for (const control of screen.getAllByRole("radio")) {
+        expect(Number.parseFloat(getComputedStyle(control.closest("label")!).minBlockSize)).toBeGreaterThanOrEqual(44);
+      }
+    } finally {
+      stylesheet.remove();
+    }
+  });
 });
+import { readFileSync } from "node:fs";
+import { join } from "node:path";

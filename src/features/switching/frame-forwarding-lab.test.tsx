@@ -80,4 +80,20 @@ describe("FrameForwardingLab", () => {
     const region = screen.getByRole("region", { name: "Current forwarding table; scroll horizontally if needed" });
     expect(region).toHaveAttribute("tabindex", "0");
   });
+
+  it("gives lab choices accessible touch targets and confines wide tables locally", () => {
+    const stylesheet = document.head.appendChild(document.createElement("style"));
+    stylesheet.textContent = readFileSync(join(process.cwd(), "src", "app", "globals.css"), "utf8");
+    try {
+      render(<FrameForwardingLab scenarios={scenarios} />);
+      for (const control of [...screen.getAllByRole("radio"), ...screen.getAllByRole("checkbox")]) {
+        expect(Number.parseFloat(getComputedStyle(control.closest("label")!).minBlockSize)).toBeGreaterThanOrEqual(44);
+      }
+      expect(getComputedStyle(screen.getByRole("region", { name: "Current forwarding table; scroll horizontally if needed" })).overflowX).toBe("auto");
+    } finally {
+      stylesheet.remove();
+    }
+  });
 });
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
