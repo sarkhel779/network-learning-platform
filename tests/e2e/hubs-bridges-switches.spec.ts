@@ -34,7 +34,10 @@ test("supports keyboard comparison and reduced motion without mobile overflow", 
   await page.keyboard.press("ArrowRight");
   await expect(radios.nth(1)).toBeChecked();
   await expect(radios.nth(1)).toBeFocused();
-  await expect(page.locator(".switching-traffic-path")).toHaveAttribute("data-motion", "reduced");
+  const trafficPaths = page.locator(".switching-traffic-path");
+  await expect(trafficPaths).toHaveCount(3);
+  expect(await trafficPaths.evaluateAll((paths) => paths.map((path) => path.getAttribute("data-motion"))))
+    .toEqual(["reduced", "reduced", "reduced"]);
   await expect.poll(() => page.evaluate(
     () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
   )).toBe(true);
