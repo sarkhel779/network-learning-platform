@@ -28,6 +28,12 @@ const lessonImports = {
     account: () =>
       import("@/content/networking-foundations/cables-fibre-wireless-and-network-connections.account.mdx"),
   },
+  "networking-foundations/hubs-bridges-and-switches": {
+    public: () =>
+      import("@/content/networking-foundations/hubs-bridges-and-switches.public.mdx"),
+    account: () =>
+      import("@/content/networking-foundations/hubs-bridges-and-switches.account.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),

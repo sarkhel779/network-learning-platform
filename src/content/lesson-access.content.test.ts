@@ -75,6 +75,44 @@ describe("public lesson source boundaries", () => {
     expect(publicSource).not.toContain("Join the Pro Member Waitlist");
   });
 
+  it("keeps switching scenarios, answers, and Pro details out of the public module", () => {
+    const publicSource = readFileSync(
+      join(contentRoot, "networking-foundations/hubs-bridges-and-switches.public.mdx"),
+      "utf8",
+    );
+    const accountSource = readFileSync(
+      join(contentRoot, "networking-foundations/hubs-bridges-and-switches.account.mdx"),
+      "utf8",
+    );
+    const publicHeadingIds = [...publicSource.matchAll(/<h2 id="([^"]+)">/g)].map((match) => match[1]);
+    const accountHeadingIds = [...accountSource.matchAll(/<h2 id="([^"]+)"[^>]*>/g)].map((match) => match[1]);
+    const protectedStrings = [
+      "same-segment-filtering",
+      "Host moved from port 2 to port 4",
+      "VLAN-aware forwarding",
+    ];
+
+    expect(publicHeadingIds).toEqual([
+      "one-local-ethernet-conversation",
+      "what-a-hub-does",
+      "why-bridges-changed-ethernet",
+      "how-a-switch-learns",
+      "how-a-switch-forwards",
+      "compare-hub-bridge-switch",
+    ]);
+    expect(accountHeadingIds).toEqual([
+      "forward-the-frame",
+      "diagnose-local-switching-symptoms",
+      "knowledge-check-summary",
+      "pro-deep-dive",
+    ]);
+    for (const value of protectedStrings) {
+      expect(normalizeWhitespace(accountSource)).toContain(normalizeWhitespace(value));
+      expect(normalizeWhitespace(publicSource)).not.toContain(normalizeWhitespace(value));
+    }
+    expect(publicSource).not.toContain("Join the Pro Member Waitlist");
+  });
+
   it("keeps both Hosts knowledge checks and all five interview answers in the account block", () => {
     const source = readFileSync(join(contentRoot, "networking-foundations/hosts-and-network-devices.account.mdx"), "utf8");
     expect(source.match(/<KnowledgeCheck\b/g)).toHaveLength(2);

@@ -1,0 +1,35 @@
+{/* SWITCHING_ACCOUNT_SENTINEL */}
+
+<h2 id="forward-the-frame">Forward the frame</h2>
+
+The guided lab will begin with `first-frame-unknown-destination` and progress through source
+learning, known forwarding, `same-segment-filtering`, broadcast flooding, and an aged-out
+destination. It will ask for a prediction before revealing the forwarding evidence.
+
+<h2 id="diagnose-local-switching-symptoms">Diagnose local switching symptoms</h2>
+
+Use an evidence-first sequence: define the affected hosts and direction, verify physical link
+and port state, identify ingress and expected egress ports, read the source and destination MAC
+addresses, inspect the forwarding table and entry freshness, then change one condition and retest.
+
+A foundational moved-host case records: **Host moved from port 2 to port 4**. That observation
+requires checking the newest source-learning evidence; it does not prove a loop or switch failure.
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+Account practice will check whether the learner can distinguish known-unicast forwarding,
+same-port filtering, unknown-unicast flooding, and broadcast flooding without confusing a
+switching decision with routing or application reachability.
+
+<h2 id="pro-deep-dive">Pro Deep Dive</h2>
+
+<PremiumPreview ctaLabel="Join the Pro Member Waitlist" ctaHref="/contact">
+
+Future Pro lessons will explore VLAN-aware forwarding, STP reasoning, link aggregation,
+managed-switch evidence, standards-guided checks, advanced Wireshark analysis, ambiguous
+campus and data-centre cases, and interview preparation.
+
+These lessons are planned and are not available yet. Joining the waitlist records interest;
+it does not provide immediate Pro access.
+
+</PremiumPreview>

@@ -79,11 +79,24 @@ const curriculum: Pathway[] = [
               { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore optical budgets, wireless channel analysis, advanced troubleshooting, standards checks, and interview preparation." },
             ],
           },
-          plannedLesson({
+          {
             id: "lesson_hubs_bridges_and_switches", slug: "hubs-bridges-and-switches", title: "Hubs, Bridges and Switches",
             objective: "Explain why hubs repeat signals while bridges and switches make link-layer forwarding decisions.",
-            seo: { title: "Hubs, Bridges and Switches Explained", description: "See how hubs repeat traffic while bridges and switches make selective link-layer forwarding choices on a local network." }, estimatedMinutes: 20,
-          }),
+            seo: { title: "Hubs, Bridges and Switches Explained", description: "See how hubs repeat traffic while bridges and switches make selective link-layer forwarding choices on a local network." },
+            published: true, estimatedMinutes: 20,
+            sections: [
+              { id: "one-local-ethernet-conversation", label: "One local Ethernet conversation", access: "public" },
+              { id: "what-a-hub-does", label: "What a hub does", access: "public" },
+              { id: "why-bridges-changed-ethernet", label: "Why bridges changed Ethernet", access: "public" },
+              { id: "how-a-switch-learns", label: "How a switch learns", access: "public" },
+              { id: "how-a-switch-forwards", label: "How a switch forwards", access: "public" },
+              { id: "compare-hub-bridge-switch", label: "Compare hub, bridge and switch", access: "public" },
+              { id: "forward-the-frame", label: "Forward the frame", access: "account" },
+              { id: "diagnose-local-switching-symptoms", label: "Diagnose local switching symptoms", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore VLAN-aware forwarding, STP reasoning, link aggregation, managed-switch evidence, standards-guided checks, advanced Wireshark analysis, and interview preparation." },
+            ],
+          },
           plannedLesson({
             id: "lesson_routers_default_gateways_and_network_boundaries", slug: "routers-default-gateways-and-network-boundaries", title: "Routers, Default Gateways and Network Boundaries",
             objective: "Decide whether a destination is local or remote and identify the first next hop.",

@@ -35,12 +35,16 @@ describe("PathwayOverview", () => {
       "href",
       "/learn/networking-foundations/cables-fibre-wireless-and-network-connections",
     );
+    expect(screen.getByRole("link", { name: /hubs, bridges and switches/i })).toHaveAttribute(
+      "href",
+      "/learn/networking-foundations/hubs-bridges-and-switches",
+    );
     const osiLesson = screen.getByRole("link", { name: /osi and tcp\/ip models/i });
     expect(osiLesson).toHaveAttribute(
       "href",
       "/learn/networking-foundations/osi-and-tcp-ip-models",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(4);
-    expect(screen.getAllByText("Coming later")).toHaveLength(19);
+    expect(screen.getAllByRole("link")).toHaveLength(5);
+    expect(screen.getAllByText("Coming later")).toHaveLength(18);
   });
 });

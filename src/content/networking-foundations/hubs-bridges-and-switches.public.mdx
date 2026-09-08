@@ -1,0 +1,78 @@
+When several Ethernet hosts share a local network, the device between them determines who
+receives each signal or frame. A hub repeats physical signals. Bridges and switches examine
+link-layer addresses and make selective forwarding decisions.
+
+<h2 id="one-local-ethernet-conversation">One local Ethernet conversation</h2>
+
+Picture a workstation sending an Ethernet frame to a local server. The workstation's network
+interface places a source MAC address and a destination MAC address in the frame. The source
+identifies the sender interface; the destination identifies the intended local recipient.
+
+The frame enters an intermediary through an **ingress port**. Any port selected to carry it
+onward is an **egress port**. A hub, bridge, and switch do not make that selection in the same
+way. This lesson keeps one small topology stable so each behavioral difference is visible.
+
+<h2 id="what-a-hub-does">What a hub does</h2>
+
+A hub is a physical-layer repeater with several ports. When a signal enters one port, the hub
+regenerates that signal toward its other ports. It does not inspect source or destination MAC
+addresses and it cannot build a forwarding table.
+
+Every attached device shares the available bandwidth and the same collision domain. Historic
+hub-based Ethernet commonly used half duplex, so devices had to take turns and simultaneous
+transmissions could collide. A receiving interface still decides whether a repeated frame is
+addressed to it, but the hub has already sent the signal throughout the shared segment.
+
+<h2 id="why-bridges-changed-ethernet">Why bridges changed Ethernet</h2>
+
+A bridge connects Ethernet segments while examining frame addresses. Instead of repeating
+every signal everywhere, it can learn which source MAC addresses are reachable through each
+bridge port and avoid forwarding a frame to a segment that does not need it.
+
+This divides the network into smaller collision domains. A classic bridge often had only a
+few ports and performed more work in software. A modern switch applies the same learning-bridge
+idea across more ports at higher speed. Neither device becomes a router merely because it
+forwards selectively.
+
+<h2 id="how-a-switch-learns">How a switch learns</h2>
+
+When a frame arrives, a switch records the frame's **source MAC address** against the ingress
+port. The arriving frame is evidence that the sender can be reached through that port. If the
+same source appears on another port later, the switch refreshes the entry to the new location.
+
+The switch does not learn a destination merely by reading the destination field. It looks up
+that address to make a forwarding decision. Dynamic entries eventually age out after an
+implementation-dependent period unless traffic refreshes them; there is no universal timer.
+
+<h2 id="how-a-switch-forwards">How a switch forwards</h2>
+
+After learning the source, the switch examines the destination:
+
+- **Known unicast:** if the destination is learned on another port, forward only through that port.
+- **Filtering:** if the destination is learned on the ingress port, do not forward it to other ports.
+- **Unknown unicast:** if the destination is not learned, flood eligible ports except the ingress port.
+- **Broadcast:** flood eligible ports except the ingress port.
+- **Reply learning:** a reply teaches the switch where the replying source is located.
+
+Each full-duplex switch port normally forms a separate collision domain with dedicated link
+capacity. The switch does not automatically split the broadcast domain, route IP packets,
+authorize users, or encrypt their traffic.
+
+<h2 id="compare-hub-bridge-switch">Compare hub, bridge and switch</h2>
+
+The important improvement is a change in decision-making, not simply a faster box.
+
+<div className="lesson-table" role="region" aria-label="Hub, bridge and switch at a glance table" tabIndex={0}>
+  <table>
+    <caption>Hub, bridge and switch at a glance</caption>
+    <thead><tr><th scope="col">Device</th><th scope="col">What it examines</th><th scope="col">Delivery behavior</th><th scope="col">Collision scope</th><th scope="col">What it does not do</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Hub</th><td>Physical signal</td><td>Repeats toward all other ports</td><td>One shared collision domain</td><td>No MAC learning or filtering</td></tr>
+      <tr><th scope="row">Bridge</th><td>Source and destination MAC addresses</td><td>Learns and filters between segments</td><td>One collision domain per segment</td><td>Does not route between IP networks</td></tr>
+      <tr><th scope="row">Switch</th><td>Source and destination MAC addresses</td><td>Forwards, filters, or floods per frame</td><td>Normally one per full-duplex port</td><td>Does not create a security boundary by itself</td></tr>
+    </tbody>
+  </table>
+</div>
+
+The interactive comparison will build on this table. The table preserves the complete public
+conclusion when JavaScript or motion is unavailable.
