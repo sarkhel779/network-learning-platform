@@ -36,7 +36,7 @@ describe("evaluateDelivery", () => {
   });
 
   it("floods unknown unicast without turning it into broadcast acceptance", () => {
-    const input = makeScenario({ deliveryKind: "unknown-unicast", learnedDestinationPortId: undefined, expectedEgressPortIds: ["p2", "p3", "p4"], expectedReceivingNodeIds: ["host-b", "host-c", "router"], expectedAcceptingNodeIds: ["host-b"], routerAction: "route-unicast" });
+    const input = makeScenario({ deliveryKind: "unknown-unicast", learnedDestinationPortId: undefined, expectedEgressPortIds: ["p2", "p3", "p4"], expectedReceivingNodeIds: ["host-b", "host-c", "router"], expectedAcceptingNodeIds: ["host-b"], routerAction: "receive-local-only" });
     expect(evaluateDelivery(input)).toMatchObject({ egressPortIds: ["p2", "p3", "p4"], receivingNodeIds: ["host-b", "host-c", "router"], acceptingNodeIds: ["host-b"] });
   });
 

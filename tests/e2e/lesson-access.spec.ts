@@ -13,6 +13,12 @@ const publishedLessons = [
 // Actual account-only prose/answers plus the loader's protected fixture markers.
 // No production Pro body exists yet; Pro exclusion is additionally covered by loader tests.
 const protectedSentinels = [
+  "dhcp-relay-boundary",
+  "multicast-without-group-state",
+  "wrong-default-gateway",
+  "IGMP querier election",
+  "PIM rendezvous point",
+  "DELIVERY_SCOPE_ACCOUNT_SENTINEL",
   "Desktop near a home router",
   "Laptop used throughout a small office",
   "Fixed workstation in a noisy workshop",

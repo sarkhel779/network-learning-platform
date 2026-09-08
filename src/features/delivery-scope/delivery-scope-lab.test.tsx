@@ -43,6 +43,15 @@ describe("DeliveryScopeLab", () => {
     expect(screen.queryByText(/Check 2:/)).toBeNull();
   });
 
+  it("gives targeted coaching for every incorrect prediction dimension", async () => {
+    const user = userEvent.setup();
+    render(<DeliveryScopeLab scenarios={accountDeliveryScenarios} showAdvancedShortcut />);
+    await user.click(screen.getByRole("button", { name: "Check prediction" }));
+    expect(screen.getByText(/Recheck the switch table/)).toBeVisible();
+    expect(screen.getByText(/An interface receives only/)).toBeVisible();
+    expect(screen.getByText(/Receipt does not guarantee acceptance/)).toBeVisible();
+  });
+
   it("provides accessible touch targets through scoped styles", () => {
     const style = document.head.appendChild(document.createElement("style"));
     style.textContent = readFileSync(join(process.cwd(), "src", "app", "globals.css"), "utf8");

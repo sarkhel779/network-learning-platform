@@ -41,6 +41,8 @@ describe("delivery scope schema", () => {
       { id: "p3", label: "Port 3", connectedNodeId: "router", eligible: true },
     ] }],
     ["known unicast without a learned port", { learnedDestinationPortId: undefined }],
+    ["known unicast learned on ingress", { learnedDestinationPortId: "p1", expectedEgressPortIds: [], expectedReceivingNodeIds: [], expectedAcceptingNodeIds: [] }],
+    ["known unicast learned toward another node", { learnedDestinationPortId: "p3", expectedEgressPortIds: ["p3"], expectedReceivingNodeIds: ["router"], expectedAcceptingNodeIds: [] , routerAction: "receive-local-only"}],
     ["broadcast with a learned unicast port", { deliveryKind: "broadcast", destinationNodeId: undefined }],
     ["multicast without a group", { deliveryKind: "multicast", destinationNodeId: undefined, learnedDestinationPortId: undefined }],
     ["receivers inconsistent with egress ports", { expectedReceivingNodeIds: ["router"] }],
@@ -55,5 +57,9 @@ describe("delivery scope schema", () => {
 
   it("requires receive-local-only routers to receive the frame", () => {
     expect(safeParseDeliveryCatalog([scenario({ routerAction: "receive-local-only" })])).toBeUndefined();
+  });
+
+  it("rejects routing merely because a router receives a flooded unknown unicast", () => {
+    expect(safeParseDeliveryCatalog([scenario({ deliveryKind: "unknown-unicast", learnedDestinationPortId: undefined, expectedEgressPortIds: ["p2", "p3"], expectedReceivingNodeIds: ["host-b", "router"], routerAction: "route-unicast" })])).toBeUndefined();
   });
 });

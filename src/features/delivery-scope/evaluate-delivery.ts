@@ -36,12 +36,18 @@ export function evaluateDelivery(scenario: DeliveryScenario): DeliveryOutcome {
     }
     return node.id === scenario.destinationNodeId && node.acceptsUnicast;
   }).map(({ id }) => id);
+  const receivingRouter = receivingNodes.find(({ kind }) => kind === "router");
+  const routerAction = !receivingRouter ? "not-in-path"
+    : scenario.deliveryKind === "multicast" ? "multicast-disabled"
+    : (scenario.deliveryKind === "known-unicast" || scenario.deliveryKind === "unknown-unicast") &&
+      receivingRouter.id === scenario.destinationNodeId && acceptingNodeIds.includes(receivingRouter.id)
+      ? "route-unicast" : "receive-local-only";
 
   return {
     egressPortIds: egressPorts.map(({ id }) => id),
     receivingNodeIds,
     acceptingNodeIds,
-    routerAction: scenario.routerAction,
+    routerAction,
     explanation: scenario.explanation,
   };
 }

@@ -24,8 +24,8 @@ export function DeliveryScopeLab({ scenarios, showAdvancedShortcut = false }: { 
 
   return <section aria-labelledby="delivery-lab-title" className="delivery-scope-lab">
     <h3 id="delivery-lab-title">Predict traffic delivery</h3>
-    <fieldset className="delivery-scope-lab__scenarios"><legend>Practice scenario</legend>{scenarios.map((item) => <label key={item.id}><input checked={item.id === scenarioId} name="delivery-practice" onChange={() => resetFor(item.id)} ref={(node) => { radios.current[item.id] = node; }} type="radio" />{item.title}</label>)}</fieldset>
     {showAdvancedShortcut && <button type="button" onClick={() => { const advanced = scenarios.find(({ difficulty }) => difficulty === "intermediate"); if (advanced) { resetFor(advanced.id); radios.current[advanced.id]?.focus(); } }}>I know this—proceed to advanced</button>}
+    <fieldset className="delivery-scope-lab__scenarios"><legend>Practice scenario</legend>{scenarios.map((item) => <label key={item.id}><input checked={item.id === scenarioId} name="delivery-practice" onChange={() => resetFor(item.id)} ref={(node) => { radios.current[item.id] = node; }} type="radio" />{item.title}</label>)}</fieldset>
     <p><strong>Destination:</strong> {scenario.destinationLabel}</p>
     <div className="delivery-scope-lab__predictions">
       <fieldset><legend>Forwarding decision</legend>{scenario.ports.filter(({ id }) => id !== scenario.ingressPortId).map((port) => <label key={port.id}><input checked={egress.includes(port.id)} onChange={() => setEgress(toggle(egress, port.id))} type="checkbox" />Forward through {port.label}</label>)}</fieldset>
@@ -41,6 +41,10 @@ export function DeliveryScopeLab({ scenarios, showAdvancedShortcut = false }: { 
       <section><h4>Hosts that accept</h4><p>{labelNodes(result.outcome.acceptingNodeIds)}</p></section>
       <section><h4>Router boundary</h4><p>{result.outcome.routerAction.replaceAll("-", " ")}</p></section>
       <p>{result.outcome.explanation}</p>
+      {!result.forwardedCorrect && <p><strong>Forwarding:</strong> {scenario.wrongAnswerExplanations.forwarded}</p>}
+      {!result.receivedCorrect && <p><strong>Receipt:</strong> {scenario.wrongAnswerExplanations.received}</p>}
+      {!result.acceptedCorrect && <p><strong>Acceptance:</strong> {scenario.wrongAnswerExplanations.accepted}</p>}
+      {!result.routerCorrect && <p><strong>Router:</strong> {scenario.wrongAnswerExplanations.router}</p>}
     </div>}
   </section>;
 }

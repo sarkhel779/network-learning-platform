@@ -73,6 +73,11 @@ export const deliveryScenarioSchema = z.object({
   if (value.destinationNodeId && !nodeById.has(value.destinationNodeId)) issue("Destination node must exist");
   if (value.deliveryKind === "known-unicast" && !value.learnedDestinationPortId) issue("Known unicast requires a learned destination port");
   if (value.learnedDestinationPortId && !portById.has(value.learnedDestinationPortId)) issue("Learned destination port must exist");
+  if (value.deliveryKind === "known-unicast" && value.learnedDestinationPortId) {
+    const learned = portById.get(value.learnedDestinationPortId);
+    if (!learned?.eligible || learned.id === value.ingressPortId) issue("Known-unicast learned port must be an eligible non-ingress port");
+    if (learned?.connectedNodeId !== value.destinationNodeId) issue("Known-unicast learned port must connect to its destination node");
+  }
   if (!isUnicast && value.learnedDestinationPortId) issue("Only unicast may specify a learned destination port");
   if (value.deliveryKind === "multicast" && !value.multicastGroup) issue("Multicast requires a receiver group");
 
@@ -84,10 +89,12 @@ export const deliveryScenarioSchema = z.object({
   if (value.expectedReceivingNodeIds.some((nodeId) => !nodeById.has(nodeId)) || value.expectedAcceptingNodeIds.some((nodeId) => !nodeById.has(nodeId))) issue("Expected nodes must exist");
 
   const receivingRouters = value.expectedReceivingNodeIds.filter((nodeId) => nodeById.get(nodeId)?.kind === "router");
-  if (value.routerAction === "not-in-path" && receivingRouters.length) issue("A router marked not-in-path cannot receive the transmission");
-  if (value.routerAction !== "not-in-path" && !receivingRouters.length) issue("The selected router action requires a receiving router");
-  if (value.routerAction === "route-unicast" && !isUnicast) issue("Only unicast can use route-unicast");
-  if (value.routerAction === "multicast-disabled" && value.deliveryKind !== "multicast") issue("multicast-disabled requires multicast traffic");
+  const routerIsUnicastDestination = value.nodes.some((node) => node.kind === "router" && node.id === value.destinationNodeId && value.expectedAcceptingNodeIds.includes(node.id));
+  const derivedRouterAction = !receivingRouters.length ? "not-in-path"
+    : value.deliveryKind === "multicast" ? "multicast-disabled"
+    : isUnicast && routerIsUnicastDestination ? "route-unicast"
+    : "receive-local-only";
+  if (value.routerAction !== derivedRouterAction) issue(`Router action must be ${derivedRouterAction}`);
 });
 
 export const deliveryCatalogSchema = z.array(deliveryScenarioSchema).min(1).superRefine((scenarios, context) => {
