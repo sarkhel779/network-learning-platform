@@ -1,4 +1,5 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { getPathway } from "@/features/catalog/catalog.repository";
@@ -92,7 +93,7 @@ describe("LessonShell", () => {
     expect(within(navigation).queryByRole("link", { name: /next: switches/i })).not.toBeInTheDocument();
   });
 
-  it("does not reserve a permanent sidebar for the course navigation", () => {
+  it("offers course navigation from a collapsed floating drawer", () => {
     render(
       <LessonShell pathway={pathway} lesson={pathway.modules[0].lessons[0]}>
         <p>Lesson content</p>
@@ -100,14 +101,12 @@ describe("LessonShell", () => {
     );
 
     expect(screen.queryByRole("complementary", { name: "Course contents" })).not.toBeInTheDocument();
-    expect(screen.getByText("Network and Device Essentials")).toBeInTheDocument();
-    expect(screen.getByText("Course contents", { selector: "summary" })).toBeVisible();
-    expect(
-      screen.getByRole("link", { name: /what is a computer network/i }),
-    ).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("button", { name: "Course contents" })).toBeVisible();
+    expect(screen.queryByRole("dialog", { name: "Course contents" })).not.toBeInTheDocument();
   });
 
-  it("renders section navigation separately from the course curriculum", () => {
+  it("renders section navigation separately from the course curriculum", async () => {
+    const user = userEvent.setup();
     render(
       <LessonShell
         pathway={pathway}
@@ -121,7 +120,8 @@ describe("LessonShell", () => {
     );
 
     const sectionNavigation = screen.getByRole("navigation", { name: "On this page" });
-    const curriculumNavigation = screen.getAllByRole("navigation", { name: "Course curriculum" })[0];
+    await user.click(screen.getByRole("button", { name: "Course contents" }));
+    const curriculumNavigation = screen.getByRole("navigation", { name: "Course curriculum" });
 
     expect(
       within(sectionNavigation).getByRole("link", { name: "Communication decisions" }),
