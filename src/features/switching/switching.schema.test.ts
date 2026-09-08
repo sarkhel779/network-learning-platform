@@ -97,6 +97,16 @@ describe("switching catalog schema", () => {
     expect(safeParseSwitchingCatalog(duplicateMac).success).toBe(false);
   });
 
+  it("requires eligible egress identifiers to match eligible non-ingress ports", () => {
+    const omittedEligiblePort = validCatalog();
+    omittedEligiblePort.scenarios[0].eligibleEgressPortIds = ["p2"];
+    expect(safeParseSwitchingCatalog(omittedEligiblePort).success).toBe(false);
+
+    const ineligiblePort = validCatalog();
+    ineligiblePort.scenarios[0].ports[2].eligible = false;
+    expect(safeParseSwitchingCatalog(ineligiblePort).success).toBe(false);
+  });
+
   it("requires the Ethernet broadcast address for a broadcast destination", () => {
     const catalog = validCatalog();
     Object.assign(catalog.scenarios[0], {

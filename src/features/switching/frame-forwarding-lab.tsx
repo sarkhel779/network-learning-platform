@@ -46,6 +46,7 @@ export function FrameForwardingLab({ scenarios, showAdvancedShortcut = false }: 
   const [announcement, setAnnouncement] = useState("");
   const [unavailable, setUnavailable] = useState(false);
   const scenario = scenarios.find(({ id: candidate }) => candidate === scenarioId);
+  const advancedScenario = scenarios.find(({ difficulty }) => difficulty === "intermediate");
 
   function resetPrediction() {
     setDecision(undefined);
@@ -82,9 +83,9 @@ export function FrameForwardingLab({ scenarios, showAdvancedShortcut = false }: 
 
   return (
     <div className="frame-forwarding-lab">
-      {showAdvancedShortcut && scenarios.some(({ id: candidate }) => candidate === "same-segment-filtering") ? (
+      {showAdvancedShortcut && advancedScenario ? (
         <button type="button" onClick={() => {
-          selectScenario("same-segment-filtering");
+          selectScenario(advancedScenario.id);
           intermediateScenarioInput.current?.focus();
         }}>I know this—proceed to advanced</button>
       ) : null}
@@ -96,13 +97,13 @@ export function FrameForwardingLab({ scenarios, showAdvancedShortcut = false }: 
             {scenarios.map((choice) => (
               <label key={choice.id}>
                 <input
-                  ref={choice.id === "same-segment-filtering" ? intermediateScenarioInput : undefined}
+                  ref={choice.id === advancedScenario?.id ? intermediateScenarioInput : undefined}
                   type="radio"
                   name={`${id}-scenario`}
                   checked={scenarioId === choice.id}
                   onChange={() => selectScenario(choice.id)}
                   onKeyDown={(event) => {
-                    if (choice.id === "same-segment-filtering" && event.key === "Tab" && !event.shiftKey) {
+                    if (choice.id === advancedScenario?.id && event.key === "Tab" && !event.shiftKey) {
                       event.preventDefault();
                       firstDecisionInput.current?.focus();
                     }
@@ -147,7 +148,7 @@ export function FrameForwardingLab({ scenarios, showAdvancedShortcut = false }: 
           <legend>Predict the egress ports</legend>
           <p>Select no ports when you predict filtering.</p>
           <div className="switching-choice-grid">
-            {scenario.ports.filter(({ id: portId }) => portId !== scenario.ingressPortId).map((port) => (
+            {scenario.ports.filter(({ id: portId }) => scenario.eligibleEgressPortIds.includes(portId)).map((port) => (
               <label key={port.id}>
                 <input
                   type="checkbox"

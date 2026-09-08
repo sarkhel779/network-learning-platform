@@ -30,5 +30,7 @@ describe("protected switching scenarios", () => {
     }
     expect(JSON.stringify(accountSwitchingScenarioInput)).not.toMatch(/300 seconds|five minutes/i);
     expect(accountSwitchingScenarioInput[3]).toMatchObject({ id: "same-segment-filtering", difficulty: "intermediate" });
+    expect(accountSwitchingScenarioInput[3].ports[0].label).toContain("shared segment for Hosts A and B");
+    expect(accountSwitchingScenarioInput[3].ports[1].label).not.toContain("Host B");
   });
 });

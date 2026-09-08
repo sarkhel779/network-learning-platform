@@ -85,7 +85,12 @@ export const accountSwitchingScenarioInput: SwitchingCatalogInput["scenarios"] =
     id: "same-segment-filtering",
     difficulty: "intermediate",
     title: "Same-segment filtering",
-    ports,
+    ports: [
+      { id: "p1", label: "Port 1 — shared segment for Hosts A and B", eligible: true },
+      { id: "p2", label: "Port 2 — Host C", eligible: true },
+      { id: "p3", label: "Port 3 — Host D", eligible: true },
+      { id: "p4", label: "Port 4 — uplink", eligible: true },
+    ],
     initialTable: [{ mac: "02:00:00:00:00:02", portId: "p1" }],
     ingressPortId: "p1",
     sourceMac: "02:00:00:00:00:01",

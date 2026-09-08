@@ -94,7 +94,7 @@ const curriculum: Pathway[] = [
               { id: "forward-the-frame", label: "Forward the frame", access: "account" },
               { id: "diagnose-local-switching-symptoms", label: "Diagnose local switching symptoms", access: "account" },
               { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
-              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore VLAN-aware forwarding, STP reasoning, link aggregation, managed-switch evidence, standards-guided checks, advanced Wireshark analysis, and interview preparation." },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Discover future advanced switching practice and career preparation." },
             ],
           },
           plannedLesson({

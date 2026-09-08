@@ -111,6 +111,12 @@ describe("public lesson source boundaries", () => {
       expect(normalizeWhitespace(publicSource)).not.toContain(normalizeWhitespace(value));
     }
     expect(publicSource).not.toContain("Join the Pro Member Waitlist");
+
+    const clientLabSource = readFileSync(
+      join(contentRoot, "../features/switching/frame-forwarding-lab.tsx"),
+      "utf8",
+    );
+    expect(clientLabSource).not.toContain("same-segment-filtering");
   });
 
   it("keeps both Hosts knowledge checks and all five interview answers in the account block", () => {

@@ -87,6 +87,9 @@ function sameMembers(left: readonly string[], right: readonly string[]) {
 
 export const switchingScenarioSchema = scenarioShape.superRefine((scenario, context) => {
   const portIds = scenario.ports.map(({ id }) => id);
+  const eligibleNonIngressPortIds = scenario.ports
+    .filter(({ id, eligible }) => eligible && id !== scenario.ingressPortId)
+    .map(({ id }) => id);
   const tableMacs = scenario.initialTable.map(({ mac }) => mac);
   const destinationEntry = scenario.initialTable.find(({ mac }) => mac === scenario.destinationMac);
 
@@ -117,6 +120,13 @@ export const switchingScenarioSchema = scenarioShape.superRefine((scenario, cont
   }
   if (scenario.eligibleEgressPortIds.includes(scenario.ingressPortId)) {
     context.addIssue({ code: "custom", path: ["eligibleEgressPortIds"], message: "Ingress cannot be an eligible egress" });
+  }
+  if (!sameMembers(scenario.eligibleEgressPortIds, eligibleNonIngressPortIds)) {
+    context.addIssue({
+      code: "custom",
+      path: ["eligibleEgressPortIds"],
+      message: "Eligible egress identifiers must match every eligible non-ingress port",
+    });
   }
   if (scenario.expectedEgressPortIds.some((id) => !scenario.eligibleEgressPortIds.includes(id))) {
     context.addIssue({ code: "custom", path: ["expectedEgressPortIds"], message: "Expected egress must be eligible" });
