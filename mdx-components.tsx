@@ -14,12 +14,14 @@ import { WiresharkCheck } from "@/features/lessons/wireshark-check";
 import { NetworkCommunicationPacketFlow } from "@/features/packet-flow/packet-flow-experience";
 import { NetworkDeviceSymbol } from "@/features/packet-flow/network-device-symbol";
 import { SwitchingComparison } from "@/features/switching/switching-comparison";
+import { DeliveryScopePlayer } from "@/features/delivery-scope/delivery-scope-player";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ConnectionMediaComparison,
     EncapsulationExperience,
     DeviceLayerScope,
+    DeliveryScopePlayer,
     HostsAndDevicesExperience,
     HostsAndDevicesStaticOverview,
     InterviewScenario,

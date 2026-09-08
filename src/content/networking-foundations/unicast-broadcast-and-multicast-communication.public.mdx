@@ -1,26 +1,33 @@
 ## Why delivery scope matters {#why-delivery-scope-matters}
 
-Delivery scope answers a practical question: which interfaces receive a transmission, and which hosts actually accept and process it?
+Delivery scope answers a practical question: which interfaces receive a transmission, and which hosts actually accept and process it? These are separate events. A switch forwards through ports, interfaces receive bits, and a host decides whether the destination is relevant.
 
 ## Unicast: one intended destination {#unicast-one-destination}
 
-Unicast identifies one intended destination. A switch may forward an unknown unicast through several ports while it learns, but the destination remains unicast.
+Unicast identifies one intended destination, such as your laptop sending an HTTPS request to a web server. When the destination MAC address is already learned, a switch selects one egress port. A switch may forward an unknown unicast through several ports while it learns, but the destination remains unicast.
 
 ## Broadcast: the local broadcast domain {#broadcast-local-domain}
 
-A broadcast is delivered throughout its local broadcast domain. A router can receive it on a local interface, but does not ordinarily forward it into another network.
+A broadcast is delivered throughout its local broadcast domain. An ARP request is a familiar example: every local interface receives it, but only the device owning the requested address replies. A router can receive the frame on a local interface, but does not ordinarily forward it into another network. A DHCP relay is a configured agent that creates or forwards a new request toward a server; it is not an ordinary broadcast crossing the router unchanged.
 
 ## Multicast: an interested receiver group {#multicast-receiver-group}
 
-Multicast addresses a receiver group. Hosts accept the traffic only when they have joined that group, while efficient forwarding depends on group-aware network state.
+Multicast addresses a receiver group, such as viewers subscribed to the same live video stream. Hosts accept the traffic only when they have joined that group, while efficient forwarding depends on group-aware network state. Without that state, local flooding can make a non-subscriber interface receive a frame that its host then rejects.
 
 ## Unknown unicast is not broadcast {#unknown-unicast-is-not-broadcast}
 
-Flooding describes a switch action. It does not rewrite the original unicast destination into a broadcast address.
+Flooding describes a switch action. Unicast, broadcast, and multicast describe destination scope. Flooding does not rewrite the original unicast destination into a broadcast address.
 
 ## Compare delivery types {#compare-delivery-types}
 
 Compare who the sender intends to reach, what the switch forwards, what each interface physically receives, and what each host accepts.
+
+| Delivery type | Intended destination | Typical local forwarding | Host acceptance |
+| --- | --- | --- | --- |
+| Known unicast | One host | One learned port | The matching destination |
+| Unknown unicast | One host | Eligible ports except ingress | Still only the matching destination |
+| Broadcast | Local broadcast domain | Eligible ports except ingress | Local participants inspect it |
+| Multicast | Interested receiver group | Subscriber ports when group state is known; otherwise it may flood locally | Joined receivers |
 
 ## Interactive delivery-scope player {#delivery-scope-player}
 
