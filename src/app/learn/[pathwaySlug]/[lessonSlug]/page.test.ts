@@ -203,6 +203,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "osi-and-tcp-ip-models",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "first-packet-journey-through-a-small-network",
+      },
     ]);
   });
 

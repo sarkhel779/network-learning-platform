@@ -53,7 +53,7 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /access points, modems, onts and firewalls/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/access-points-modems-onts-and-firewalls",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(8);
-    expect(screen.getAllByText("Coming later")).toHaveLength(16);
+    expect(screen.getAllByRole("link")).toHaveLength(9);
+    expect(screen.getAllByText("Coming later")).toHaveLength(15);
   });
 });

@@ -178,11 +178,23 @@ const curriculum: Pathway[] = [
               { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Check the governing RFC and relevant read-only vendor diagnostics." },
             ],
           },
-          plannedLesson({
+          {
             id: "lesson_first_packet_journey_through_a_small_network", slug: "first-packet-journey-through-a-small-network", title: "A Packet’s First Journey Through a Small Network",
-            objective: "Narrate an end-to-end exchange using the concepts from Lessons 1–7.",
+            objective: "Narrate an end-to-end exchange using the concepts from Lessons 1–8.",
             seo: { title: "A Packet's First Journey Through a Network", description: "Follow a first end-to-end packet exchange and connect host, link, switch, router, frame, and response decisions." }, estimatedMinutes: 25,
-          }),
+            published: true,
+            sections: [
+              { id: "before-the-first-frame", label: "Before the first frame", access: "public" },
+              { id: "resolve-the-next-hop", label: "Resolve the next hop", access: "public" },
+              { id: "switch-and-route-the-request", label: "Switch and route the request", access: "public" },
+              { id: "return-traffic", label: "Return traffic", access: "public" },
+              { id: "complete-packet-journey", label: "Complete packet journey", access: "public" },
+              { id: "match-evidence-to-the-journey", label: "Match evidence to the journey", access: "account" },
+              { id: "troubleshoot-the-first-failed-hop", label: "Troubleshoot the first failed hop", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore capture-position blind spots, advanced Wireshark checks, standards evidence, and interview scenarios." },
+            ],
+          },
         ],
       },
       {

@@ -16,6 +16,7 @@ type PacketFlowPlayerProps = Readonly<{
   selectedDeviceId?: string;
   onDeviceSelect?: (deviceId: string) => void;
   autoplay?: boolean;
+  inspectionDepthControl?: boolean;
 }>;
 
 export function PacketFlowPlayer({
@@ -25,6 +26,7 @@ export function PacketFlowPlayer({
   selectedDeviceId,
   onDeviceSelect,
   autoplay = true,
+  inspectionDepthControl = false,
 }: PacketFlowPlayerProps) {
   const { reducedMotion, isHydrated } = useReducedMotionState();
   const preferenceResolved = useRef(false);
@@ -88,7 +90,7 @@ export function PacketFlowPlayer({
           <p>{currentStep.explanation}</p>
           {currentStep.stateNote ? <p>{currentStep.stateNote}</p> : null}
         </section>
-        <PacketInspector step={currentStep} />
+        <PacketInspector allowDepthSelection={inspectionDepthControl} step={currentStep} />
       </div>
     </section>
   );

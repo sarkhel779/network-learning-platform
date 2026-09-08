@@ -14,6 +14,7 @@ type PacketFlowExperienceProps = Readonly<{
   selectedDeviceId?: string;
   onDeviceSelect?: (deviceId: string) => void;
   autoplay?: boolean;
+  inspectionDepthControl?: boolean;
 }>;
 
 function subscribeToClientRender() {
@@ -27,6 +28,7 @@ function ClientOnlyPacketFlowPlayer({
   selectedDeviceId,
   onDeviceSelect,
   autoplay,
+  inspectionDepthControl,
 }: {
   scenario: Parameters<typeof PacketFlowPlayer>[0]["scenario"];
   headingId?: string;
@@ -34,6 +36,7 @@ function ClientOnlyPacketFlowPlayer({
   selectedDeviceId?: string;
   onDeviceSelect?: (deviceId: string) => void;
   autoplay?: boolean;
+  inspectionDepthControl?: boolean;
 }) {
   const canRenderInteractively = useSyncExternalStore(
     subscribeToClientRender,
@@ -49,6 +52,7 @@ function ClientOnlyPacketFlowPlayer({
       selectedDeviceId={selectedDeviceId}
       onDeviceSelect={onDeviceSelect}
       autoplay={autoplay}
+      inspectionDepthControl={inspectionDepthControl}
     />
   ) : (
     <PacketFlowFallback />
@@ -62,6 +66,7 @@ export function PacketFlowExperience({
   selectedDeviceId,
   onDeviceSelect,
   autoplay,
+  inspectionDepthControl,
 }: PacketFlowExperienceProps) {
   const parsedScenario = safeParsePacketFlowScenario(scenario);
 
@@ -76,6 +81,7 @@ export function PacketFlowExperience({
         selectedDeviceId={selectedDeviceId}
         onDeviceSelect={onDeviceSelect}
         autoplay={autoplay}
+        inspectionDepthControl={inspectionDepthControl}
       />
     </PacketFlowErrorBoundary>
   );

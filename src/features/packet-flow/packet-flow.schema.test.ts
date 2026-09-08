@@ -33,6 +33,24 @@ const validScenario = {
 } satisfies PacketFlowScenario;
 
 describe("packet flow scenario schema", () => {
+  it("accepts labelled link interfaces and layer-aware packet fields", () => {
+    const result = safeParsePacketFlowScenario({
+      ...validScenario,
+      links: [{ ...validScenario.links[0], fromInterface: "eth0", toInterface: "Gi0/1" }],
+      steps: [{
+        ...validScenario.steps[0],
+        summaryFields: [{ label: "Destination MAC", value: "00:11:22:33:44:01", layer: "ethernet" }],
+        detailFields: [{ label: "TTL", value: "64", layer: "ip" }],
+      }],
+    });
+
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.links[0]).toMatchObject({ fromInterface: "eth0", toInterface: "Gi0/1" });
+    expect(result.data.steps[0].summaryFields[0]).toMatchObject({ layer: "ethernet" });
+    expect(result.data.steps[0].detailFields[0]).toMatchObject({ layer: "ip" });
+  });
+
   it("accepts a valid scenario and exposes a strict parser", () => {
     const parsed = parsePacketFlowScenario(validScenario);
 
