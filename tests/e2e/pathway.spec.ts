@@ -23,8 +23,8 @@ test("shows the networking pathway and its published lesson links", async ({ pag
     .toHaveCount(0);
 
   const lessonLinks = page.locator(".lesson-list h3 a");
-  await expect(lessonLinks).toHaveCount(4);
-  await expect(page.locator(".lesson-list").getByText("Coming later", { exact: true })).toHaveCount(19);
+  await expect(lessonLinks).toHaveCount(5);
+  await expect(page.locator(".lesson-list").getByText("Coming later", { exact: true })).toHaveCount(18);
   await expect(lessonLinks.filter({ hasText: "Cables, Fibre, Wireless and Network Connections" })).toHaveAttribute(
     "href", "/learn/networking-foundations/cables-fibre-wireless-and-network-connections",
   );
@@ -36,6 +36,10 @@ test("shows the networking pathway and its published lesson links", async ({ pag
   await expect(lessonLinks.filter({ hasText: "OSI and TCP/IP Models" })).toHaveAttribute(
     "href",
     "/learn/networking-foundations/osi-and-tcp-ip-models",
+  );
+  await expect(lessonLinks.filter({ hasText: "Hubs, Bridges and Switches" })).toHaveAttribute(
+    "href",
+    "/learn/networking-foundations/hubs-bridges-and-switches",
   );
 
   await expect(publishedLessonLink).toHaveAttribute(

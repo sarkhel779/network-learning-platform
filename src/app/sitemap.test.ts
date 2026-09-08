@@ -13,6 +13,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/networking-foundations/how-networks-communicate" },
       { url: "https://packetsecrets.com/learn/networking-foundations/hosts-and-network-devices" },
       { url: "https://packetsecrets.com/learn/networking-foundations/cables-fibre-wireless-and-network-connections" },
+      { url: "https://packetsecrets.com/learn/networking-foundations/hubs-bridges-and-switches" },
       { url: "https://packetsecrets.com/learn/networking-foundations/osi-and-tcp-ip-models" },
     ]);
     const urls = entries.map(({ url }) => url);
@@ -33,6 +34,6 @@ describe("public sitemap", () => {
     for (const unpublishedUrl of unpublishedSlugs) {
       expect(urls).not.toContain(unpublishedUrl);
     }
-    expect(unpublishedSlugs).toHaveLength(19);
+    expect(unpublishedSlugs).toHaveLength(18);
   });
 });

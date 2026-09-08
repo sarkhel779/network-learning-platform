@@ -18,6 +18,12 @@ vi.mock("@/content/networking-foundations/cables-fibre-wireless-and-network-conn
 vi.mock("@/content/networking-foundations/cables-fibre-wireless-and-network-connections.account.mdx", () => ({
   default: () => null,
 }));
+vi.mock("@/content/networking-foundations/hubs-bridges-and-switches.public.mdx", () => ({
+  default: () => null,
+}));
+vi.mock("@/content/networking-foundations/hubs-bridges-and-switches.account.mdx", () => ({
+  default: () => null,
+}));
 vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx", () => ({
   default: () => null,
 }));
@@ -88,6 +94,19 @@ describe("loadAuthorizedLessonContent", () => {
     const key = "networking-foundations/cables-fibre-wireless-and-network-connections";
     const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
 
+    expect(anonymous.public).toBeDefined();
+    expect(anonymous.account).toBeUndefined();
+    expect(anonymous.pro).toBeUndefined();
+
+    const account = await loadAuthorizedLessonContent(key, "account");
+    expect(account.public).toBeDefined();
+    expect(account.account).toBeDefined();
+    expect(account.pro).toBeUndefined();
+  });
+
+  it("loads switching public content anonymously and its account body only for a member", async () => {
+    const key = "networking-foundations/hubs-bridges-and-switches";
+    const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
     expect(anonymous.public).toBeDefined();
     expect(anonymous.account).toBeUndefined();
     expect(anonymous.pro).toBeUndefined();

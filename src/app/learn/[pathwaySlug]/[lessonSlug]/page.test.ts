@@ -35,6 +35,18 @@ vi.mock("@/content/networking-foundations/cables-fibre-wireless-and-network-conn
 vi.mock("@/content/networking-foundations/cables-fibre-wireless-and-network-connections.account.mdx", () => {
   throw new Error("CONNECTION_MEDIA_ACCOUNT_SENTINEL: anonymous route imported a protected body");
 });
+vi.mock("@/content/networking-foundations/hubs-bridges-and-switches.public.mdx", async () => {
+  const { createElement, Fragment } = await import("react");
+  return {
+    default: () => createElement(Fragment, null,
+      createElement("p", null, "Public switching comparison."),
+      createElement("h2", { id: "compare-hub-bridge-switch" }, "Compare hub, bridge and switch"),
+    ),
+  };
+});
+vi.mock("@/content/networking-foundations/hubs-bridges-and-switches.account.mdx", () => {
+  throw new Error("SWITCHING_ACCOUNT_SENTINEL: anonymous route imported a protected body");
+});
 vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx", () => {
   throw new Error("OSI_ACCOUNT_SENTINEL: anonymous route imported a protected body");
 });
@@ -141,9 +153,28 @@ describe("lesson route generation", () => {
       },
       {
         pathwaySlug: "networking-foundations",
+        lessonSlug: "hubs-bridges-and-switches",
+      },
+      {
+        pathwaySlug: "networking-foundations",
         lessonSlug: "osi-and-tcp-ip-models",
       },
     ]);
+  });
+
+  it("renders only the switching public body for anonymous visitors", async () => {
+    const loader = vi.spyOn(contentRepository, "loadAuthorizedLessonContent");
+    const page = await lessonPage.default({ params: Promise.resolve({
+      pathwaySlug: "networking-foundations",
+      lessonSlug: "hubs-bridges-and-switches",
+    }) });
+    const { container } = render(page);
+
+    expect(screen.getByText("Public switching comparison.")).toBeVisible();
+    expect(screen.getByRole("heading", { level: 2, name: "Compare hub, bridge and switch" })).toBeVisible();
+    expect(loader).toHaveBeenCalledWith("networking-foundations/hubs-bridges-and-switches", "anonymous");
+    expect(container.innerHTML).not.toContain("SWITCHING_ACCOUNT_SENTINEL");
+    expect(renderToStaticMarkup(page)).not.toContain("SWITCHING_ACCOUNT_SENTINEL");
   });
 
   it("renders only the connection-media public body for anonymous visitors", async () => {
