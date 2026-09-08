@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const ipv4Schema = z.string().refine((value) => {
+export const ipv4Schema = z.string().refine((value) => {
   const parts = value.split(".");
   return parts.length === 4 && parts.every((part) => /^\d{1,3}$/.test(part) && Number(part) <= 255);
 }, "Invalid IPv4 address");
