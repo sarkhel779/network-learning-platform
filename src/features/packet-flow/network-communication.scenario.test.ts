@@ -22,6 +22,11 @@ describe("network communication scenario", () => {
     expect(networkCommunicationScenario.devices.map((device) => device.label)).toEqual(["PC", "Switch", "Router", "Server"]);
     expect(networkCommunicationScenario.devices.map(({ x, y }) => [x, y])).toEqual([[80, 120], [280, 120], [520, 120], [720, 120]]);
     expect(networkCommunicationScenario.links.map((link) => link.id)).toEqual(["pc-switch", "switch-router", "router-server"]);
+    expect(networkCommunicationScenario.links.map(({ fromInterface, toInterface }) => [fromInterface, toInterface])).toEqual([
+      ["eth0", "Gi0/1"],
+      ["Gi0/24", "Gi0/0"],
+      ["Gi0/1", "eth0"],
+    ]);
   });
 
   it("represents the approved learning stages in order", () => {

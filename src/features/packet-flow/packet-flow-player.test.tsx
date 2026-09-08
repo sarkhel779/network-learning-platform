@@ -86,6 +86,33 @@ afterEach(() => {
 });
 
 describe("PacketFlowPlayer", () => {
+  it("lets learners switch between plain-language and technical packet inspection", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<PacketFlowPlayer scenario={scenario} autoplay={false} inspectionDepthControl />);
+
+    expect(screen.getByRole("group", { name: "Choose packet inspection depth" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Inside the packet" })).toBeVisible();
+    expect(screen.queryByRole("heading", { name: "Technical packet fields" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("radio", { name: "Technical inspection" }));
+    expect(screen.getByRole("heading", { name: "Technical packet fields" })).toBeVisible();
+    expect(screen.getByText("TTL")).toBeVisible();
+  });
+
+  it("unfolds ARP without an IP layer and ICMP as Ethernet containing IP", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<PacketFlowPlayer scenario={scenario} autoplay={false} />);
+
+    expect(screen.getByRole("heading", { name: "Ethernet frame" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "ARP message" })).toBeVisible();
+    expect(screen.queryByRole("heading", { name: "IP packet" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    expect(screen.getByRole("heading", { name: "Ethernet frame" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "IP packet" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "ICMP message" })).toBeVisible();
+  });
+
   it("renders the initial step, its fields, and autoplay controls", () => {
     render(<PacketFlowPlayer scenario={scenario} />);
 

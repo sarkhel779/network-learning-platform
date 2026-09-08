@@ -182,6 +182,10 @@ a { color: inherit; }
 .packet-flow-topology, .network-topology svg { display: block; width: 100%; height: auto; overflow: visible; border: 1px solid var(--border); border-radius: 0.5rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
 .network-topology__links { stroke: var(--muted); stroke-width: 3; }
 .network-topology__link[data-active="true"] { stroke: var(--accent); stroke-width: 6; stroke-dasharray: 10 6; }
+.network-topology__interfaces { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 0.5rem; margin: 0.75rem 0 0; padding: 0; list-style: none; }
+.network-topology__interfaces li { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.35rem; min-width: 0; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.45rem; color: var(--muted); font-size: 0.8rem; }
+.network-topology__interfaces li[data-active] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, var(--background)); color: var(--foreground); }
+.network-topology__interfaces span { min-width: 0; overflow-wrap: break-word; }
 .network-topology__device-symbol { fill: none; stroke: var(--muted); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .network-topology__device-surface { fill: var(--background); }
 .network-topology__device[data-active="true"] .network-topology__device-symbol { stroke: var(--accent); stroke-width: 5; }
@@ -211,6 +215,14 @@ a { color: inherit; }
 .packet-inspector dd { min-width: 0; margin: 0; overflow-wrap: anywhere; }
 .packet-inspector [data-changed="true"] { border-left: 0.25rem solid var(--accent); padding-left: 0.65rem; color: var(--accent); font-weight: 700; }
 .packet-inspector [data-changed="true"] span { display: block; margin-top: 0.2rem; color: var(--foreground); font-size: 0.875rem; }
+.packet-inspector__depth { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0 0 1rem; padding: 0; border: 0; }
+.packet-inspector__depth legend { width: 100%; margin-bottom: 0.35rem; font-weight: 800; }
+.packet-inspector__depth label { display: flex; align-items: center; gap: 0.4rem; padding: 0.55rem 0.7rem; border: 1px solid var(--border); border-radius: 0.45rem; cursor: pointer; }
+.packet-inspector__depth label:has(input:checked) { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--background)); }
+.packet-inspector__layers { margin-bottom: 1rem; }
+.packet-inspector__layers section { min-width: 0; padding: 0.65rem; border: 2px solid var(--accent); border-radius: 0.5rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
+.packet-inspector__layers section section { margin-top: 0.55rem; border-color: var(--focus-ring); background: var(--background); }
+.packet-inspector__layers h4 { margin: 0; font-size: 0.9rem; }
 
 .hosts-devices-experience { margin: 2rem 0; }
 .static-topology-guide { margin: 1.5rem 0; padding: clamp(1rem, 4vw, 1.5rem); border: 1px solid var(--border); border-radius: 0.75rem; background: color-mix(in srgb, var(--accent) 3%, var(--background)); }

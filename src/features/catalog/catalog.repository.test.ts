@@ -78,6 +78,7 @@ describe("catalog repository", () => {
     expect(listPublishedLessons(pathway.slug).map(({ slug }) => slug).sort()).toEqual([
       "access-points-modems-onts-and-firewalls",
       "cables-fibre-wireless-and-network-connections",
+      "first-packet-journey-through-a-small-network",
       "hosts-and-network-devices",
       "how-networks-communicate",
       "hubs-bridges-and-switches",
@@ -190,6 +191,31 @@ describe("catalog repository", () => {
     });
   });
 
+  it("publishes the packet journey capstone with progressive lesson sections", () => {
+    const lesson = getLesson("networking-foundations", "first-packet-journey-through-a-small-network");
+    expect(lesson).toMatchObject({
+      title: "A Packet’s First Journey Through a Small Network",
+      objective: "Narrate an end-to-end exchange using the concepts from Lessons 1–8.",
+      estimatedMinutes: 25,
+      published: true,
+    });
+    expect(lesson.sections?.map(({ id, access }) => [id, access])).toEqual([
+      ["before-the-first-frame", "public"],
+      ["resolve-the-next-hop", "public"],
+      ["switch-and-route-the-request", "public"],
+      ["return-traffic", "public"],
+      ["complete-packet-journey", "public"],
+      ["match-evidence-to-the-journey", "account"],
+      ["troubleshoot-the-first-failed-hop", "account"],
+      ["knowledge-check-summary", "account"],
+      ["pro-deep-dive", "pro"],
+    ]);
+    expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
+      previous: { slug: "osi-and-tcp-ip-models", published: true },
+      next: { slug: "ethernet-frames-and-mac-addresses", published: false },
+    });
+  });
+
   it("publishes connection media with its approved order and access sections", () => {
     const pathwaySlug = "networking-foundations";
     const lessonSlug = "cables-fibre-wireless-and-network-connections";
@@ -203,6 +229,7 @@ describe("catalog repository", () => {
       "routers-default-gateways-and-network-boundaries",
       "access-points-modems-onts-and-firewalls",
       "osi-and-tcp-ip-models",
+      "first-packet-journey-through-a-small-network",
     ]);
     expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
       title: "Cables, Fibre, Wireless and Network Connections",
@@ -263,7 +290,7 @@ describe("catalog repository", () => {
   it("keeps public foundations limited to published beginner lessons", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[6], lessons[7]];
+    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[6], lessons[7], lessons[8]];
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
@@ -272,12 +299,13 @@ describe("catalog repository", () => {
     expect(deliveryScope.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(routers.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(edgeDevices.sections?.some(({ access }) => access === "public")).toBe(true);
+    expect(packetJourney.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(
-      lessons.slice(7).some(({ sections }) =>
+      lessons.slice(9).some(({ sections }) =>
         sections?.some(({ access }) => access === "public"),
       ),
     ).toBe(false);
-    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi]) {
+    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney]) {
       expect(lesson.sections?.at(-1)).toEqual(expect.objectContaining({
         id: "pro-deep-dive",
         label: "Pro Deep Dive",

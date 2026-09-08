@@ -52,6 +52,12 @@ const lessonImports = {
     account: () =>
       import("@/content/networking-foundations/access-points-modems-onts-and-firewalls.account.mdx"),
   },
+  "networking-foundations/first-packet-journey-through-a-small-network": {
+    public: () =>
+      import("@/content/networking-foundations/first-packet-journey-through-a-small-network.public.mdx"),
+    account: () =>
+      import("@/content/networking-foundations/first-packet-journey-through-a-small-network.account.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),

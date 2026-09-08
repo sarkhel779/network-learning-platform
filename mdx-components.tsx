@@ -18,6 +18,7 @@ import { DeliveryScopePlayer } from "@/features/delivery-scope/delivery-scope-pl
 import { RouteDecisionPlayer } from "@/features/route-decision/route-decision-player";
 import { RouteDecisionExperience } from "@/features/route-decision/route-decision-experience";
 import { EdgeDevicePlayer } from "@/features/edge-devices/edge-device-player";
+import { FirstPacketJourneyPlayer } from "@/features/packet-flow/first-packet-journey-player";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -25,6 +26,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     EncapsulationExperience,
     DeviceLayerScope,
     EdgeDevicePlayer,
+    FirstPacketJourneyPlayer,
     DeliveryScopePlayer,
     HostsAndDevicesExperience,
     HostsAndDevicesStaticOverview,

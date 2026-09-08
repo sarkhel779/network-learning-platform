@@ -45,6 +45,12 @@ vi.mock("@/content/networking-foundations/access-points-modems-onts-and-firewall
 vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx", () => ({
   default: () => null,
 }));
+vi.mock("@/content/networking-foundations/first-packet-journey-through-a-small-network.public.mdx", () => ({
+  default: () => null,
+}));
+vi.mock("@/content/networking-foundations/first-packet-journey-through-a-small-network.account.mdx", () => ({
+  default: () => null,
+}));
 
 import {
   createAuthorizedLessonContentLoader,
@@ -166,6 +172,18 @@ describe("loadAuthorizedLessonContent", () => {
     expect(anonymous.public).toBeDefined();
     expect(anonymous.account).toBeUndefined();
     expect(anonymous.pro).toBeUndefined();
+
+    const account = await loadAuthorizedLessonContent(key, "account");
+    expect(account.public).toBeDefined();
+    expect(account.account).toBeDefined();
+    expect(account.pro).toBeUndefined();
+  });
+
+  it("keeps packet-journey practice protected while serving its guided journey anonymously", async () => {
+    const key = "networking-foundations/first-packet-journey-through-a-small-network";
+    const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
+    expect(anonymous.public).toBeDefined();
+    expect(anonymous.account).toBeUndefined();
 
     const account = await loadAuthorizedLessonContent(key, "account");
     expect(account.public).toBeDefined();

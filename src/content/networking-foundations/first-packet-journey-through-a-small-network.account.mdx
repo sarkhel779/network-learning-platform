@@ -1,0 +1,56 @@
+<h2 id="match-evidence-to-the-journey" tabIndex={-1}>Match evidence to the journey</h2>
+
+<a className="primary-link" href="#troubleshoot-the-first-failed-hop">I know this—proceed to advanced</a>
+
+Match each observation to the decision it proves:
+
+<div className="lesson-table" role="region" aria-label="Packet journey evidence table" tabIndex={0}>
+  <table>
+    <caption>Packet journey evidence</caption>
+    <thead><tr><th scope="col">Evidence</th><th scope="col">Journey step</th><th scope="col">What it proves</th></tr></thead>
+    <tbody>
+      <tr><th scope="row"><code>ip route get 198.51.100.20</code></th><td>Before the frame</td><td>The host selected a route, next hop and outgoing interface.</td></tr>
+      <tr><th scope="row"><code>arp.opcode == 1</code></th><td>Resolve the next hop</td><td>An ARP request asked for a local IPv4-to-MAC mapping.</td></tr>
+      <tr><th scope="row"><code>eth.dst == 00:11:22:33:44:01</code></th><td>First request frame</td><td>The local frame targets the gateway rather than the remote server's MAC.</td></tr>
+      <tr><th scope="row"><code>icmp.type == 0</code></th><td>Return traffic</td><td>The capture contains an ICMP echo reply.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<WiresharkCheck
+  filter="arp or icmp"
+  fields={["eth.src", "eth.dst", "arp.opcode", "ip.src", "ip.dst", "ip.ttl", "icmp.type"]}
+  normalEvidence="An ARP request and reply precede the ICMP request when the gateway mapping is absent. IP endpoints remain end to end while Ethernet addresses differ across routed links."
+  exercise="Compare the Ethernet addresses before and after the router, then compare the IP endpoints. Record where the capture was taken because one observation point cannot expose every link."
+/>
+
+<h2 id="troubleshoot-the-first-failed-hop">Troubleshoot the first failed hop</h2>
+
+Work from the source outward and record evidence instead of restarting every device:
+
+1. Confirm the host has an address, prefix, gateway and usable interface.
+2. Confirm the host selects the expected route.
+3. Check whether ARP resolves the gateway.
+4. Verify the request leaves the host and reaches the switch/router boundary.
+5. Verify the router has a route and creates the next-link frame.
+6. Look for the request at the server and then follow the reply in reverse.
+
+<InterviewScenario prompt="The PC repeatedly broadcasts ARP for its gateway but receives no reply. What has failed, and what has not yet been tested?">
+The failure is still on the local next-hop resolution path. Check the PC interface and VLAN, switch forwarding, the gateway interface state and address, and whether the devices share the intended broadcast domain. Remote routing, the server, and the return path have not yet been tested because the first unicast frame was never created.
+</InterviewScenario>
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck question="For a remote server, which destination MAC does the PC use in its first Ethernet frame?" options={["The default gateway's LAN-interface MAC", "The remote server's MAC", "The Ethernet broadcast MAC for the entire conversation"]} correctIndex={0} explanation="The IP destination remains the server, but the first local frame is addressed to the next hop: the default gateway." />
+
+<KnowledgeCheck question="What does the router replace when forwarding the request onto another Ethernet network?" options={["The link-layer frame", "The end-to-end source and destination IP addresses", "The application request"]} correctIndex={0} explanation="The incoming frame ends at the router. The router forwards the IP packet inside a new frame for the outgoing link." />
+
+<KnowledgeCheck question="Why might a capture show the PC-side frame but not the router-to-server frame?" options={["A capture sees traffic only at its observation point", "Routers never create outgoing frames", "ICMP hides every Ethernet header"]} correctIndex={0} explanation="Packet evidence is limited by capture position; absence at one observation point is not proof that no later link carried traffic." />
+
+Remember: the host chooses a next hop, ARP supplies a local MAC, switches forward frames, routers replace link framing, and the response repeats the decisions in reverse.
+
+<h2 id="pro-deep-dive">Pro Deep Dive</h2>
+
+<PremiumPreview ctaLabel="Join the Pro Member Waitlist" ctaHref="/contact">
+Future Pro material will examine capture-position blind spots, incomplete observability, advanced Wireshark analysis, standards-guided validation, difficult production scenarios, and interview preparation.
+</PremiumPreview>

@@ -82,16 +82,17 @@ export function NetworkTopology({
             const active = isLinkActive(link.id, step);
 
             return (
-              <line
-                key={link.id}
-                className={`network-topology__link${active ? " network-topology__link--active" : ""}`}
-                data-active={active ? "true" : undefined}
-                data-link-id={link.id}
-                x1={from.x}
-                y1={from.y}
-                x2={to.x}
-                y2={to.y}
-              />
+              <g key={link.id}>
+                <line
+                  className={`network-topology__link${active ? " network-topology__link--active" : ""}`}
+                  data-active={active ? "true" : undefined}
+                  data-link-id={link.id}
+                  x1={from.x}
+                  y1={from.y}
+                  x2={to.x}
+                  y2={to.y}
+                />
+              </g>
             );
           })}
         </g>
@@ -156,6 +157,21 @@ export function NetworkTopology({
           })}
         </g>
       </svg>
+      {scenario.links.some(({ fromInterface, toInterface }) => fromInterface || toInterface) ? (
+        <ul aria-label="Link interfaces" className="network-topology__interfaces">
+          {scenario.links.map((link) => {
+            const from = devicesById.get(link.from);
+            const to = devicesById.get(link.to);
+            return (
+              <li data-active={step.activeLinkIds.includes(link.id) || undefined} key={link.id}>
+                <span>{from?.label}: <strong>{link.fromInterface ?? "interface not labelled"}</strong></span>
+                <span aria-hidden="true">↔</span>
+                <span>{to?.label}: <strong>{link.toInterface ?? "interface not labelled"}</strong></span>
+              </li>
+            );
+          })}
+        </ul>
+      ) : null}
       <p className="network-topology__active-text">{getActiveText(scenario, step)}</p>
     </div>
   );

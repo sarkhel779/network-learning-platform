@@ -10,6 +10,7 @@ const publishedLessons = [
   { slug: "hubs-bridges-and-switches", title: "Hubs, Bridges and Switches" },
   { slug: "unicast-broadcast-and-multicast-communication", title: "Unicast, Broadcast and Multicast Communication" },
   { slug: "access-points-modems-onts-and-firewalls", title: "Access Points, Modems, ONTs and Firewalls" },
+  { slug: "first-packet-journey-through-a-small-network", title: "A Packet’s First Journey Through a Small Network" },
 ];
 // Actual account-only prose/answers plus the loader's protected fixture markers.
 // No production Pro body exists yet; Pro exclusion is additionally covered by loader tests.
@@ -58,6 +59,8 @@ const protectedSentinels = [
   "EDGE_DEVICE_ACCOUNT_SENTINEL",
   "optical-los",
   "bridge-mode-double-router",
+  "The failure is still on the local next-hop resolution path",
+  "ip route get 198.51.100.20",
 ];
 
 test("anonymous direct lesson exposes public learning, canonical metadata, and safe network payloads", async ({ page, request }) => {
@@ -154,6 +157,10 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
         await expect(page.getByRole("group", { name: "Compare connection qualities" })).toBeVisible();
         await expect(page.getByRole("group", { name: "Choose a connection scenario" })).toHaveCount(0);
         await expect(page.getByRole("button", { name: "I know this—proceed to advanced" })).toHaveCount(0);
+        await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
+      } else if (slug === "first-packet-journey-through-a-small-network") {
+        await expect(page.getByRole("group", { name: "Choose packet inspection depth" })).toBeVisible();
+        await expect(page.getByRole("heading", { name: "Match evidence to the journey" })).toHaveCount(0);
         await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
       } else {
         await expect(page.getByRole("group", { name: "Wired host to local server", exact: true })).toBeVisible();

@@ -18,6 +18,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/networking-foundations/routers-default-gateways-and-network-boundaries" },
       { url: "https://packetsecrets.com/learn/networking-foundations/access-points-modems-onts-and-firewalls" },
       { url: "https://packetsecrets.com/learn/networking-foundations/osi-and-tcp-ip-models" },
+      { url: "https://packetsecrets.com/learn/networking-foundations/first-packet-journey-through-a-small-network" },
     ]);
     const urls = entries.map(({ url }) => url);
     for (const pathway of listPathways()) {
@@ -37,6 +38,6 @@ describe("public sitemap", () => {
     for (const unpublishedUrl of unpublishedSlugs) {
       expect(urls).not.toContain(unpublishedUrl);
     }
-    expect(unpublishedSlugs).toHaveLength(16);
+    expect(unpublishedSlugs).toHaveLength(15);
   });
 });

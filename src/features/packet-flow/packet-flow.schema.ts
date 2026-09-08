@@ -6,6 +6,7 @@ const nonEmptyString = z.string().min(1);
 const fieldSchema = z.object({
   label: nonEmptyString,
   value: nonEmptyString,
+  layer: z.enum(["application", "ip", "ethernet", "context"]).optional(),
   changed: z.boolean().optional(),
 }).readonly();
 
@@ -21,6 +22,8 @@ const linkSchema = z.object({
   id: nonEmptyString,
   from: nonEmptyString,
   to: nonEmptyString,
+  fromInterface: nonEmptyString.optional(),
+  toInterface: nonEmptyString.optional(),
 }).readonly();
 
 const packetSchema = z.object({

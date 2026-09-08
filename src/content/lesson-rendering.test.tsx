@@ -53,6 +53,7 @@ describe("compiled lesson markup", () => {
     ["osi-and-tcp-ip-models.account.mdx", "Wireshark layer identification filters", 2, 8],
     ["cables-fibre-wireless-and-network-connections.public.mdx", "Connection media at a glance", 5, 4],
     ["cables-fibre-wireless-and-network-connections.account.mdx", "Connection selection summary", 3, 4],
+    ["first-packet-journey-through-a-small-network.account.mdx", "Packet journey evidence", 3, 5],
   ] as const)("renders %s / %s as an accessible table", async (file, caption, columns, rows) => {
     const Content = await lessonComponent(file);
     // ID-based accessible names need a Document root, not a detached element.
@@ -69,7 +70,7 @@ describe("compiled lesson markup", () => {
     expect(container.textContent).not.toMatch(/\|\s*---/);
   });
 
-  it.each(["how-networks-communicate", "hosts-and-network-devices", "osi-and-tcp-ip-models", "cables-fibre-wireless-and-network-connections"])("integrates %s with exactly one lesson H1", async (slug) => {
+  it.each(["how-networks-communicate", "hosts-and-network-devices", "osi-and-tcp-ip-models", "cables-fibre-wireless-and-network-connections", "first-packet-journey-through-a-small-network"])("integrates %s with exactly one lesson H1", async (slug) => {
     const Content = await lessonComponent(`${slug}.${slug === "osi-and-tcp-ip-models" ? "account" : "public"}.mdx`);
     const pathway = getPathway("networking-foundations");
     const lesson = getLesson(pathway.slug, slug);

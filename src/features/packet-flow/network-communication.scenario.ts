@@ -12,9 +12,9 @@ export const networkCommunicationScenario: PacketFlowScenario = parsePacketFlowS
     { id: "server", label: "Server", role: "remote host", x: 720, y: 120 },
   ],
   links: [
-    { id: "pc-switch", from: "pc", to: "switch" },
-    { id: "switch-router", from: "switch", to: "router" },
-    { id: "router-server", from: "router", to: "server" },
+    { id: "pc-switch", from: "pc", to: "switch", fromInterface: "eth0", toInterface: "Gi0/1" },
+    { id: "switch-router", from: "switch", to: "router", fromInterface: "Gi0/24", toInterface: "Gi0/0" },
+    { id: "router-server", from: "router", to: "server", fromInterface: "Gi0/1", toInterface: "eth0" },
   ],
   steps: [
     {
