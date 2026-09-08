@@ -1,21 +1,57 @@
-## Predict traffic delivery {#predict-delivery}
+import { loadAccountDeliveryScenarios } from "@/features/delivery-scope/delivery-scope.account-loader";
+import { DeliveryScopeExperience } from "@/features/delivery-scope/delivery-scope-experience";
 
-Use the protected practice lab to predict forwarding, receipt, and host acceptance before revealing the explanation.
+{/* DELIVERY_SCOPE_ACCOUNT_SENTINEL */}
 
-## Diagnose delivery-scope scenarios {#diagnose-delivery-scope}
+<h2 id="predict-delivery">Predict traffic delivery</h2>
 
-Work from the destination type, switch knowledge, receiver membership, and router boundary instead of guessing from packet volume.
+Predict the switch egress ports, interfaces that physically receive the frame, hosts that accept it, and the router-boundary action. Use **I know this—proceed to advanced** when the foundational cases are already familiar.
 
-## Packet evidence {#packet-evidence}
+<DeliveryScopeExperience scenarios={loadAccountDeliveryScenarios()} />
 
-Relate each prediction to evidence that can be observed at the sender, switch-facing links, and receiving interfaces.
+<h2 id="diagnose-delivery-scope">Diagnose delivery-scope scenarios</h2>
 
-## Knowledge check and summary {#knowledge-check-summary}
+Use evidence in order: classify the destination, identify ingress, check learned MAC or receiver-group state, trace eligible egress ports, then separate receipt from acceptance.
 
-Confirm that forwarding, physical receipt, and host acceptance are different events.
+### Unexpected flooding
 
-## Pro Deep Dive {#pro-deep-dive}
+A missing or aged MAC entry can temporarily flood a unicast frame; it does not turn the destination into broadcast.
 
-<PremiumPreview
-  description="Discover future multicast operations, advanced packet analysis, and production troubleshooting."
-/>
+### Broadcast and relay boundaries
+
+An ordinary Layer 2 broadcast stops at a router. For DHCP, verify whether a configured relay received the local request and generated a separate forwarded request toward the server.
+
+### Multicast symptoms
+
+An unsubscribed host may capture multicast when the switch lacks receiver-group state, then reject it. For another network, verify that multicast routing is explicitly enabled; addressing alone does not create routed distribution.
+
+<h2 id="packet-evidence">Packet evidence</h2>
+
+Capture at more than one observation point when possible. Record destination addressing, ingress and egress links, interface receipt, and host processing. A capture proves receipt at that point—not application acceptance.
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck question="A switch floods a frame whose destination MAC is unknown. What is its delivery type?" options={["Unknown unicast", "Broadcast", "Multicast"]} correctIndex={0} explanation="Flooding is the switch action. The destination remains one unicast address." />
+
+<KnowledgeCheck question="A non-subscriber captures a multicast frame but its application receives nothing. Which statement fits?" options={["The interface received it but the host did not accept it", "The frame must be unicast", "The router converted it to broadcast"]} correctIndex={0} explanation="Physical receipt and host acceptance are different; missing group-aware switching can expose the frame to non-subscribers." />
+
+<KnowledgeCheck question="How does a DHCP request reach a server in another subnet?" options={["The broadcast crosses every router unchanged", "A configured relay forwards a separate request", "The switch changes it to HTTPS"]} correctIndex={1} explanation="The local broadcast stops at the router boundary. A configured relay performs explicit forwarding." />
+
+<div className="lesson-table" role="region" aria-label="Delivery scope summary table" tabIndex={0}>
+  <table><caption>Forwarding, receipt, and acceptance</caption><thead><tr><th scope="col">Scope</th><th scope="col">Switch behavior</th><th scope="col">Acceptance</th></tr></thead><tbody>
+    <tr><th scope="row">Known unicast</th><td>Learned port</td><td>One destination</td></tr>
+    <tr><th scope="row">Unknown unicast</th><td>Eligible non-ingress ports</td><td>One destination</td></tr>
+    <tr><th scope="row">Broadcast</th><td>Local eligible ports</td><td>Local participants inspect it</td></tr>
+    <tr><th scope="row">Multicast</th><td>Subscriber ports when state is known; otherwise local flooding may occur</td><td>Joined receivers</td></tr>
+  </tbody></table>
+</div>
+
+Interview scenario: explain why seeing a frame in a capture does not prove an application accepted it. Separate switch forwarding, interface receipt, operating-system filtering, and application processing.
+
+<h2 id="pro-deep-dive">Pro Deep Dive</h2>
+
+<PremiumPreview ctaLabel="Join the Pro Member Waitlist" ctaHref="/contact">
+
+Future Pro lessons will cover multicast operations, advanced Wireshark workflows, RFC-guided verification, production troubleshooting, and interview preparation. Joining the waitlist does not unlock immediate paid access.
+
+</PremiumPreview>
