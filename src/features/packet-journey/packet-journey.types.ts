@@ -2,6 +2,8 @@ export const PACKET_JOURNEY_LINK_IDS = [
   "source-router",
   "router-destination",
   "source-destination",
+  "source-intermediary",
+  "intermediary-destination",
 ] as const;
 
 export type PacketJourneyLinkId = (typeof PACKET_JOURNEY_LINK_IDS)[number];

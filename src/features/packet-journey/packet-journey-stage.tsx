@@ -44,8 +44,8 @@ export function PacketJourneyStageView({ journey, stage }: { journey: PacketJour
     <div className="packet-journey-stage" data-position={stage.position}>
       <div aria-label={journey.accessibleName} className="packet-journey-topology" role="img">
         <svg aria-hidden="true" viewBox="0 0 600 145">
-          <path className="packet-journey-link" d="M105 70 H270" data-active-link={stage.activeLinkId === "source-router" || stage.activeLinkId === "source-destination" ? stage.activeLinkId : undefined} />
-          <path className="packet-journey-link" d="M330 70 H495" data-active-link={stage.activeLinkId === "router-destination" ? stage.activeLinkId : undefined} />
+          <path className="packet-journey-link" d="M105 70 H270" data-active-link={["source-router", "source-destination", "source-intermediary"].includes(stage.activeLinkId ?? "") ? stage.activeLinkId : undefined} />
+          <path className="packet-journey-link" d="M330 70 H495" data-active-link={["router-destination", "intermediary-destination"].includes(stage.activeLinkId ?? "") ? stage.activeLinkId : undefined} />
           {journey.devices.map((device) => {
             const position = positions[device.id] ?? positions.intermediary;
             return (
@@ -55,7 +55,7 @@ export function PacketJourneyStageView({ journey, stage }: { journey: PacketJour
               </g>
             );
           })}
-          <circle aria-hidden="true" className="packet-journey-marker" cx={activePosition.x} cy={activePosition.y} data-packet-marker="true" r="8" />
+          <circle aria-hidden="true" className="packet-journey-marker" cx={activePosition.x} cy={activePosition.y} data-active-link={stage.activeLinkId} data-packet-marker="true" r="8" />
         </svg>
         <ul className="packet-journey-interfaces">
           {journey.devices.flatMap((device) => device.interfaces.map((label) => <li data-active={label === stage.activeInterfaceId || undefined} key={label}>{label}</li>))}

@@ -30,6 +30,14 @@ describe("PacketJourneyStageView", () => {
     expect(screen.getAllByText("Changed at this hop").length).toBeGreaterThan(0);
   });
 
+  it("identifies the link that the packet marker travels across", () => {
+    const stage = journey.stages.find(({ activeLinkId }) => activeLinkId === "source-router")!;
+    const { container } = render(<PacketJourneyStageView journey={journey} stage={stage} />);
+
+    expect(container.querySelector("[data-packet-marker]"))
+      .toHaveAttribute("data-active-link", "source-router");
+  });
+
   it("renders a complete ordered static explanation", () => {
     render(<StaticPacketJourney journey={journey} />);
     expect(screen.getByRole("heading", { name: "Packet journey: step by step" })).toBeVisible();

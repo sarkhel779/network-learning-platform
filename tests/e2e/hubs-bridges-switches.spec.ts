@@ -19,7 +19,14 @@ test("teaches hub, bridge, and switch behavior through an accessible comparison"
 
   const comparison = page.getByRole("group", { name: "Compare intermediary behavior" });
   await expect(comparison.getByRole("radio")).toHaveCount(5);
-  await expect(page.locator(".switching-device-card")).toHaveCount(3);
+  const devices = page.getByRole("group", { name: "Choose intermediary" });
+  await expect(devices.getByRole("radio")).toHaveCount(3);
+  await expect(page.locator(".switching-device-card")).toHaveCount(1);
+  await devices.getByRole("radio", { name: "Switch" }).click();
+  await comparison.getByRole("radio", { name: "Delivery scope" }).click();
+  await expect(page.getByRole("article", { name: "Switch" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "What changed?" })).toContainText("What entered?");
+  await expect(page.getByRole("img", { name: /switch delivery scope packet journey/i })).toBeVisible();
   await expect(page.getByRole("group", { name: "Choose a forwarding scenario" })).toHaveCount(0);
   await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
 });
@@ -34,10 +41,12 @@ test("supports keyboard comparison and reduced motion without mobile overflow", 
   await page.keyboard.press("ArrowRight");
   await expect(radios.nth(1)).toBeChecked();
   await expect(radios.nth(1)).toBeFocused();
-  const trafficPaths = page.locator(".switching-traffic-path");
-  await expect(trafficPaths).toHaveCount(3);
-  expect(await trafficPaths.evaluateAll((paths) => paths.map((path) => path.getAttribute("data-motion"))))
-    .toEqual(["reduced", "reduced", "reduced"]);
+  const journey = page.locator(".packet-journey-player");
+  await expect(journey.getByRole("button", { name: "Play" })).toBeEnabled();
+  await page.waitForTimeout(1600);
+  await expect(journey.getByText("Stage 1 of 3")).toBeVisible();
+  const tableWrapper = page.getByRole("table", { name: "Hub, bridge and switch at a glance" }).locator("..");
+  expect(await tableWrapper.evaluate((node) => node.scrollWidth > node.clientWidth)).toBe(true);
   await expect.poll(() => page.evaluate(
     () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
   )).toBe(true);

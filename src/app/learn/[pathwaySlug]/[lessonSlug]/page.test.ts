@@ -287,9 +287,11 @@ describe("lesson route generation", () => {
       }),
     );
 
-    expect(screen.getByRole("complementary", { name: "Course contents" })).toBeVisible();
-    expect(screen.getAllByText("Network and Device Essentials")[0]).toBeVisible();
-    expect(screen.getByText("Course contents", { selector: "summary" })).toBeVisible();
+    const trigger = screen.getByRole("button", { name: "Course contents" });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(trigger);
+    expect(screen.getByRole("dialog", { name: "Course contents" })).toBeVisible();
+    expect(screen.getByText("Network and Device Essentials")).toBeVisible();
     expect(
       screen.getAllByRole("link", { name: /what is a computer network/i })[0],
     ).toHaveAttribute("aria-current", "page");
