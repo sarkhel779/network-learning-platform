@@ -72,7 +72,12 @@ export function PacketFlowPlayer({
   }, [atFinalStep, currentStep.durationMs, reducedMotion, state.playing, state.speed, state.stepIndex]);
 
   return (
-    <section className="packet-flow" aria-labelledby={resolvedHeadingId}>
+    <section
+      className="packet-flow"
+      {...(suppressHeading && !headingId
+        ? { "aria-label": scenario.title }
+        : { "aria-labelledby": resolvedHeadingId })}
+    >
       {suppressHeading ? null : <h2 id={resolvedHeadingId}>Interactive packet journey</h2>}
       <p>{scenario.description}</p>
       <NetworkTopology

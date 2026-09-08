@@ -86,6 +86,12 @@ afterEach(() => {
 });
 
 describe("PacketFlowPlayer", () => {
+  it("uses the scenario title as its accessible name when its visual heading is suppressed", () => {
+    const { container } = render(<PacketFlowPlayer scenario={scenario} suppressHeading />);
+
+    expect(container.querySelector(".packet-flow")).toHaveAttribute("aria-label", scenario.title);
+    expect(container.querySelector(".packet-flow")).not.toHaveAttribute("aria-labelledby");
+  });
   it("lets learners switch between plain-language and technical packet inspection", async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<PacketFlowPlayer scenario={scenario} autoplay={false} inspectionDepthControl />);

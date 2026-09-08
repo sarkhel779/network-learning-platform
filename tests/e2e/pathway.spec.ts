@@ -23,8 +23,8 @@ test("shows the networking pathway and its published lesson links", async ({ pag
     .toHaveCount(0);
 
   const lessonLinks = page.locator(".lesson-list h3 a");
-  await expect(lessonLinks).toHaveCount(11);
-  await expect(page.locator(".lesson-list").getByText("Coming later", { exact: true })).toHaveCount(13);
+  await expect(lessonLinks).toHaveCount(12);
+  await expect(page.locator(".lesson-list").getByText("Coming later", { exact: true })).toHaveCount(12);
   await expect(lessonLinks.filter({ hasText: "Cables, Fibre, Wireless and Network Connections" })).toHaveAttribute(
     "href", "/learn/networking-foundations/cables-fibre-wireless-and-network-connections",
   );
@@ -49,6 +49,9 @@ test("shows the networking pathway and its published lesson links", async ({ pag
   );
   await expect(lessonLinks.filter({ hasText: "Access Points, Modems, ONTs and Firewalls" })).toHaveAttribute(
     "href", "/learn/networking-foundations/access-points-modems-onts-and-firewalls",
+  );
+  await expect(lessonLinks.filter({ hasText: "ARP and Local Delivery" })).toHaveAttribute(
+    "href", "/learn/networking-foundations/arp-and-local-delivery",
   );
 
   await expect(publishedLessonLink).toHaveAttribute(

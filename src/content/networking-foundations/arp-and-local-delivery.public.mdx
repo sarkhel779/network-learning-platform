@@ -1,0 +1,144 @@
+<h2 id="why-arp-exists">Why ARP exists</h2>
+
+An IPv4 application may know a destination IP address, but Ethernet needs a destination MAC address
+for the next local link. The **Address Resolution Protocol (ARP)** supplies that missing association:
+it asks which local interface owns a next-hop IPv4 address and learns the MAC address in the reply.
+
+Think of the IP address as the destination written on a journey plan and the MAC address as the
+delivery label needed for the next room. The analogy has a limit: ARP is a local evidence exchange,
+not a trusted identity check and not a way to discover every router on the end-to-end path.
+
+ARP is carried directly inside an Ethernet frame with EtherType `0x0806`; it is not carried inside
+an IPv4 packet. ARP resolves IPv4 next hops. IPv6 uses Neighbor Discovery instead.
+
+<h2 id="choose-the-next-hop-first">Choose the next hop first</h2>
+
+Before sending ARP, a host applies its interface prefix and routing table:
+
+- If the destination is **on-link**, the host resolves the destination host's IPv4 address.
+- If the destination is **remote**, the host resolves the selected gateway's local IPv4 address.
+- The final IP destination remains unchanged when the Ethernet destination becomes the gateway MAC.
+
+For example, `192.0.2.10/24` treats `192.0.2.20` as local, so it asks for `192.0.2.20`. To reach
+`198.51.100.50`, it instead asks for its gateway such as `192.0.2.1`. A host does **not** ARP for a
+remote server across a router.
+
+<h2 id="request-reply-and-cache">Request, reply and cache</h2>
+
+When no usable neighbour entry exists, the normal exchange is:
+
+1. The sender creates an ARP request: “Who has the next-hop IP? Tell the sender.”
+2. Ethernet carries it to `FF:FF:FF:FF:FF:FF`, so the switch floods eligible interfaces except ingress.
+3. Every local receiver can inspect the request, but normally only the owner answers.
+4. The owner returns an ARP reply, normally by unicast, containing its IPv4-to-MAC mapping.
+5. The sender caches the mapping and can finally build the data frame.
+
+The ARP message includes hardware and protocol types, address lengths, an operation, and sender and
+target hardware/protocol addresses. In a request the target MAC is unknown inside the ARP message,
+while the enclosing Ethernet destination is broadcast. These two fields must not be confused.
+
+Cache entries age because local evidence can change. A usable cached mapping avoids a fresh broadcast;
+an unanswered request can leave an incomplete entry and prevents the original frame from being built.
+
+<h2 id="interactive-arp-journey">Interactive ARP journey</h2>
+
+Follow the next-hop decision, open the Ethernet and ARP information at each stage, and watch the
+broadcast request fan out before the unicast reply returns. The player starts automatically unless
+reduced motion is enabled, and every stage remains available through manual controls.
+
+<ArpLocalDeliveryPlayer />
+
+<noscript><p><strong>Static journey:</strong> choose the local next-hop IP, check the neighbour cache, broadcast an ARP request when necessary, accept the owner's reply, cache the mapping, and use that MAC as the Ethernet destination. For a remote IP, resolve the gateway—not the remote server.</p></noscript>
+
+<h2 id="arp-variants-and-boundaries">ARP variants and boundaries</h2>
+
+<div className="lesson-table" role="region" aria-label="ARP variants and boundaries table" tabIndex={0}>
+  <table>
+    <caption>ARP variants and boundaries</caption>
+    <thead><tr><th scope="col">Term</th><th scope="col">Purpose</th><th scope="col">Important boundary</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Standard ARP</th><td>Resolve a local IPv4 next hop to a MAC address</td><td>Request is broadcast; reply is normally unicast</td></tr>
+      <tr><th scope="row">Proxy ARP</th><td>A router answers for another IPv4 destination using its own local MAC</td><td>Can provide reachability while hiding an addressing mistake</td></tr>
+      <tr><th scope="row">Gratuitous ARP</th><td>Announce or probe the sender's own mapping</td><td>Used for conflict detection, cache updates and failover; acceptance is implementation-dependent</td></tr>
+      <tr><th scope="row">RARP</th><td>Historically asked for an IPv4 address using a known hardware address</td><td>Obsolete predecessor displaced by BOOTP and DHCP</td></tr>
+      <tr><th scope="row">Inverse ARP</th><td>Historically learned a protocol address from a known virtual-circuit identifier</td><td>Not ordinary Ethernet ARP; revisited with legacy Frame Relay</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<ArpVariantPlayer />
+
+<noscript><p><strong>Static variant summary:</strong> Standard ARP resolves a local IPv4 next hop; Proxy ARP lets a router answer for another destination; Gratuitous ARP announces the sender's own mapping; RARP historically requested an IPv4 address from a known MAC; and Inverse ARP historically discovered a protocol address across a known virtual circuit.</p></noscript>
+
+<h3 id="standard-arp">Standard ARP: resolve the next local hop</h3>
+
+**Scenario: Host A wants to send to Host B** on the same subnet, but it knows only Host B's IPv4
+address. Host A first checks its neighbour cache. If no usable mapping exists, it sends an ARP request
+inside an Ethernet broadcast frame. The switch floods a copy through every eligible port except the
+ingress port. Host B recognizes its own IPv4 address and normally sends a unicast ARP reply containing
+its MAC address. Host A caches the mapping and can then send the original data frame.
+
+The important sequence is **choose next hop → resolve its MAC → send the data**. ARP does not find an
+end-to-end route, test whether an application is listening, or prove that the reply is trustworthy.
+For a remote destination, standard ARP resolves the gateway's local address rather than the remote
+server's address.
+
+<h3 id="proxy-arp">Proxy ARP: a router answers for another address</h3>
+
+**Scenario: a host treats a destination as local** because of its subnet mask, even though reaching that
+destination actually requires a router. When Proxy ARP is enabled and the router has a suitable route,
+the router can answer the host's ARP request using the router interface's own MAC address. The host then
+sends the frame to the router, which routes the enclosed IP packet onward.
+
+Proxy ARP can preserve connectivity for legacy systems or during a migration, but it can also conceal
+an incorrect mask, missing gateway, or poor network design. It increases ARP dependence and makes the
+Layer 3 boundary less obvious during troubleshooting. **Do not confuse Proxy ARP with forwarding an ARP broadcast through a router**:
+the request remains local; the router deliberately generates an answer.
+
+<h3 id="gratuitous-arp">Gratuitous ARP: announce your own mapping</h3>
+
+**Scenario: an active gateway takes over** a shared virtual IP after the previous gateway fails. The new
+active device sends a Gratuitous ARP so nearby hosts and switches can learn that the IP-to-MAC ownership
+has changed. A device may also use this form of ARP while checking for a duplicate IPv4 address or
+refreshing neighbour caches after an interface change.
+
+Unlike a normal resolution exchange, the sender announces or probes its own address without first
+receiving a matching request. The message is commonly broadcast so the local domain can inspect it, but
+whether a receiver updates its cache is implementation- and policy-dependent. Gratuitous ARP is useful
+operational evidence, not authenticated ownership; attackers can forge it, which we will examine in the
+later security pathway.
+
+<h3 id="reverse-arp">RARP: historical address discovery</h3>
+
+Reverse ARP (RARP) was designed for a device that knew its hardware address but did not yet know its own
+IPv4 address. A diskless workstation could broadcast a request and depend on a RARP server to return a
+configured IPv4 address. The exchange was tied to the local link and provided far less configuration
+than modern bootstrapping requires.
+
+**RARP does not perform ordinary next-hop resolution.** Its direction and purpose are different: it asks
+“Which IP address belongs to my known MAC?” rather than “Which MAC should receive traffic for this known
+next-hop IP?” BOOTP and then DHCP replaced RARP because they can provide addressing plus gateway, DNS,
+lease, and other configuration information.
+
+<h3 id="inverse-arp">Inverse ARP: discover an address across a virtual circuit</h3>
+
+**Inverse ARP starts with a known virtual circuit**—such as a Frame Relay DLCI—and asks which network-layer
+address is reachable across it. That is the inverse of the information problem solved by ordinary ARP:
+the link or circuit identifier is already known, while the peer's protocol address must be learned.
+
+Inverse ARP is not part of a normal switched-Ethernet host exchange and should not be used to explain
+today's Ethernet neighbour cache. It appears here so learners can recognize the term and its relationship
+to legacy non-broadcast multi-access networks. **The full Frame Relay packet journey belongs in the later WAN lesson**,
+where DLCIs, virtual circuits, mappings, and hub-and-spoke behavior can be shown accurately.
+
+<h3 id="compare-arp-variants">Compare the variants</h3>
+
+- **Standard ARP:** “I know the next-hop IPv4 address; which local MAC should receive the frame?”
+- **Proxy ARP:** “A router is answering locally on behalf of another IPv4 destination.”
+- **Gratuitous ARP:** “I am announcing or probing my own IPv4-to-MAC mapping.”
+- **RARP:** “I know my MAC but historically need a server to tell me my own IPv4 address.”
+- **Inverse ARP:** “I know a virtual-circuit identifier but need to learn the peer's protocol address.”
+
+Across these cases, keep the boundary visible: ARP broadcasts remain inside their Layer 2 broadcast
+domain; routers do not ordinarily forward them. A reply or announcement is local evidence and must not
+be treated as proof of identity.

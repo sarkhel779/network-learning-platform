@@ -67,16 +67,17 @@ export function NetworkTopology({
   onDeviceSelect,
 }: NetworkTopologyProps) {
   const devicesById = new Map(scenario.devices.map((device) => [device.id, device]));
-  const packetTravels = step.packet
+  const packet = step.packet;
+  const packetTravels = packet
     ? scenario.links.flatMap((link) => {
         if (!step.activeLinkIds.includes(link.id)) return [];
-        const otherId = link.from === step.packet!.from
+        const otherId = link.from === packet.from
           ? link.to
-          : link.to === step.packet!.from
+          : link.to === packet.from
             ? link.from
             : undefined;
-        if (!otherId || (!step.packet!.fanOut && otherId !== step.packet!.to)) return [];
-        const from = devicesById.get(step.packet!.from);
+        if (!otherId || (!packet.fanOut && otherId !== packet.to)) return [];
+        const from = devicesById.get(packet.from);
         const to = devicesById.get(otherId);
         if (!from || !to) return [];
         return [{ link, start: insetLinkPoint(from, to, false), end: insetLinkPoint(from, to, true) }];
@@ -115,11 +116,11 @@ export function NetworkTopology({
             );
           })}
         </g>
-        {step.packet ? packetTravels.map(({ link, start, end }) => (
+        {packet ? packetTravels.map(({ link, start, end }) => (
           <g
             key={`${step.id}-${link.id}`}
-            className={`network-topology__packet-marker${step.packet.broadcast ? " network-topology__packet-marker--broadcast" : ""}${reducedMotion ? " network-topology__packet-marker--discrete" : ""}`}
-            data-broadcast={step.packet.broadcast ? "true" : undefined}
+            className={`network-topology__packet-marker${packet.broadcast ? " network-topology__packet-marker--broadcast" : ""}${reducedMotion ? " network-topology__packet-marker--discrete" : ""}`}
+            data-broadcast={packet.broadcast ? "true" : undefined}
             data-packet-marker="true"
             data-link-id={link.id}
             data-step-id={step.id}
@@ -137,7 +138,7 @@ export function NetworkTopology({
               />
             ) : null}
             <rect x="-44" y="-19" width="88" height="38" rx="9" />
-            <text textAnchor="middle" dy="0.35em">{packetKindLabel(step.packet.label)}</text>
+            <text textAnchor="middle" dy="0.35em">{packetKindLabel(packet.label)}</text>
           </g>
         )) : null}
         <g className="network-topology__devices">

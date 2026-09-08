@@ -408,13 +408,14 @@ a { color: inherit; }
   .connection-requirements, .connection-choice-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
-.switching-comparison, .frame-forwarding-lab, .switch-learning-player { min-width: 0; max-width: 100%; margin: 2rem 0; padding: clamp(0.8rem, 2.5vw, 1.4rem); overflow-wrap: break-word; word-break: normal; hyphens: none; border: 1px solid var(--border); border-radius: 0.75rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); }
-.switch-learning-player > h3 { margin-top: 0; }
-.switch-learning-player__choices { display: flex; flex-wrap: wrap; gap: 0.5rem; min-width: 0; margin: 1rem 0; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; }
-.switch-learning-player__choices legend { margin-bottom: 0.6rem; font-weight: 800; }
-.switch-learning-player__choices label { display: flex; min-width: 0; min-block-size: 44px; align-items: center; gap: 0.55rem; padding: 0.6rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: var(--background); cursor: pointer; }
-.switch-learning-player__choices label:has(input:checked) { border-color: var(--accent); border-inline-start-width: 0.35rem; background: color-mix(in srgb, var(--accent) 10%, var(--background)); }
-.switch-learning-player__choices input { flex: 0 0 auto; accent-color: var(--accent); }
+.switching-comparison, .frame-forwarding-lab, .switch-learning-player, .arp-local-delivery-player, .arp-variant-player { min-width: 0; max-width: 100%; margin: 2rem 0; padding: clamp(0.8rem, 2.5vw, 1.4rem); overflow-wrap: break-word; word-break: normal; hyphens: none; border: 1px solid var(--border); border-radius: 0.75rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); }
+.switch-learning-player > h3, .arp-local-delivery-player > h3, .arp-variant-player > h3 { margin-top: 0; }
+.switch-learning-player__choices, .arp-local-delivery-player__choices, .arp-variant-player__choices { display: flex; flex-wrap: wrap; gap: 0.5rem; min-width: 0; margin: 1rem 0; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; }
+.switch-learning-player__choices legend, .arp-local-delivery-player__choices legend, .arp-variant-player__choices legend { margin-bottom: 0.6rem; font-weight: 800; }
+.switch-learning-player__choices label, .arp-local-delivery-player__choices label, .arp-variant-player__choices label { display: flex; min-width: 0; min-block-size: 44px; align-items: center; gap: 0.55rem; padding: 0.6rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: var(--background); cursor: pointer; }
+.switch-learning-player__choices label:has(input:checked), .arp-local-delivery-player__choices label:has(input:checked), .arp-variant-player__choices label:has(input:checked) { border-color: var(--accent); border-inline-start-width: 0.35rem; background: color-mix(in srgb, var(--accent) 10%, var(--background)); }
+.switch-learning-player__choices input, .arp-local-delivery-player__choices input, .arp-variant-player__choices input { flex: 0 0 auto; accent-color: var(--accent); }
+@media (max-width: 35rem) { .arp-local-delivery-player__choices label, .arp-variant-player__choices label { width: 100%; } }
 .switching-comparison > h3 { margin-top: 0; }
 .switching-comparison__dimensions, .switching-comparison__devices { display: flex; flex-wrap: wrap; gap: 0.5rem; min-width: 0; margin: 1.25rem 0; padding: 0; border: 0; }
 .switching-comparison__dimensions legend, .switching-comparison__devices legend, .frame-forwarding-lab legend { margin-bottom: 0.65rem; font-weight: 800; }

@@ -57,6 +57,18 @@ vi.mock("@/content/networking-foundations/ethernet-frames-and-mac-addresses.publ
 vi.mock("@/content/networking-foundations/ethernet-frames-and-mac-addresses.account.mdx", () => ({
   default: () => null,
 }));
+vi.mock("@/content/networking-foundations/how-switches-learn-and-forward.public.mdx", () => ({
+  default: () => null,
+}));
+vi.mock("@/content/networking-foundations/how-switches-learn-and-forward.account.mdx", () => ({
+  default: () => null,
+}));
+vi.mock("@/content/networking-foundations/arp-and-local-delivery.public.mdx", () => ({
+  default: () => null,
+}));
+vi.mock("@/content/networking-foundations/arp-and-local-delivery.account.mdx", () => ({
+  default: () => null,
+}));
 
 import {
   createAuthorizedLessonContentLoader,
@@ -199,6 +211,19 @@ describe("loadAuthorizedLessonContent", () => {
 
   it("keeps Ethernet analysis protected while serving frame fundamentals anonymously", async () => {
     const key = "networking-foundations/ethernet-frames-and-mac-addresses";
+    const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
+    expect(anonymous.public).toBeDefined();
+    expect(anonymous.account).toBeUndefined();
+    expect(anonymous.pro).toBeUndefined();
+
+    const account = await loadAuthorizedLessonContent(key, "account");
+    expect(account.public).toBeDefined();
+    expect(account.account).toBeDefined();
+    expect(account.pro).toBeUndefined();
+  });
+
+  it("keeps ARP evidence practice protected while serving local-delivery fundamentals anonymously", async () => {
+    const key = "networking-foundations/arp-and-local-delivery";
     const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
     expect(anonymous.public).toBeDefined();
     expect(anonymous.account).toBeUndefined();

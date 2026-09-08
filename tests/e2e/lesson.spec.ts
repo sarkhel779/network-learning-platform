@@ -78,9 +78,9 @@ test("shows the complete curriculum in an overlay drawer on desktop", async ({ p
     "/learn/networking-foundations/hosts-and-network-devices",
   );
 
-  await expect(drawer.locator(".curriculum-navigation__lesson > a")).toHaveCount(11);
-  await expect(drawer.locator(".curriculum-navigation__lesson > div")).toHaveCount(13);
-  await expect(drawer.getByText("Coming later", { exact: true })).toHaveCount(13);
+  await expect(drawer.locator(".curriculum-navigation__lesson > a")).toHaveCount(12);
+  await expect(drawer.locator(".curriculum-navigation__lesson > div")).toHaveCount(12);
+  await expect(drawer.getByText("Coming later", { exact: true })).toHaveCount(12);
 });
 
 test("reveals the mobile curriculum drawer without horizontal overflow", async ({ page }) => {

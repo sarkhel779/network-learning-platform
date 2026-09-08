@@ -126,7 +126,6 @@ describe("lesson route generation", () => {
   it.each([
     ["missing", "how-networks-communicate"],
     ["networking-foundations", "missing"],
-    ["networking-foundations", "arp-and-local-delivery"],
   ])("keeps metadata and content not-found for %s/%s", async (pathwaySlug, lessonSlug) => {
     const props = { params: Promise.resolve({ pathwaySlug, lessonSlug }) };
     await expect(lessonPage.generateMetadata(props)).rejects.toThrow("NEXT_HTTP_ERROR_FALLBACK;404");
@@ -214,6 +213,10 @@ describe("lesson route generation", () => {
       {
         pathwaySlug: "networking-foundations",
         lessonSlug: "how-switches-learn-and-forward",
+      },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "arp-and-local-delivery",
       },
     ]);
   });

@@ -59,7 +59,10 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /how switches learn and forward/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/how-switches-learn-and-forward",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(11);
-    expect(screen.getAllByText("Coming later")).toHaveLength(13);
+    expect(screen.getByRole("link", { name: /arp and local delivery/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/arp-and-local-delivery",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(12);
+    expect(screen.getAllByText("Coming later")).toHaveLength(12);
   });
 });

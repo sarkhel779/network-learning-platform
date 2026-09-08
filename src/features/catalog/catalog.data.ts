@@ -235,11 +235,23 @@ const curriculum: Pathway[] = [
               { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore VLAN-aware tables, managed-switch evidence, packet captures, standards checks, and advanced interview scenarios." },
             ],
           },
-          plannedLesson({
+          {
             id: "lesson_arp_and_local_delivery", slug: "arp-and-local-delivery", title: "ARP and Local Delivery",
             objective: "Explain how IPv4 nodes resolve a local next-hop IP address to a MAC address.",
-            seo: { title: "ARP and Local Network Delivery", description: "Learn how an IPv4 host uses ARP to resolve a local destination or gateway IP address into a usable MAC address." }, estimatedMinutes: 20,
-          }),
+            seo: { title: "ARP and Local Network Delivery", description: "Learn how an IPv4 host uses ARP to resolve a local destination or gateway IP address into a usable MAC address." }, estimatedMinutes: 24,
+            published: true,
+            sections: [
+              { id: "why-arp-exists", label: "Why ARP exists", access: "public" },
+              { id: "choose-the-next-hop-first", label: "Choose the next hop first", access: "public" },
+              { id: "request-reply-and-cache", label: "Request, reply and cache", access: "public" },
+              { id: "interactive-arp-journey", label: "Interactive ARP journey", access: "public" },
+              { id: "arp-variants-and-boundaries", label: "ARP variants and boundaries", access: "public" },
+              { id: "inspect-neighbour-evidence", label: "Inspect neighbour evidence", access: "account" },
+              { id: "troubleshoot-arp-methodically", label: "Troubleshoot ARP methodically", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore RFC-guided cache behavior, ARP security evidence, advanced captures, production troubleshooting, and interview preparation." },
+            ],
+          },
           plannedLesson({
             id: "lesson_vlans_access_ports_and_trunks", slug: "vlans-access-ports-and-trunks", title: "VLANs, Access Ports and Trunks",
             objective: "Explain why VLANs create separate broadcast domains and how access and trunk links carry them.",
