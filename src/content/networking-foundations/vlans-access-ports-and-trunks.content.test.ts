@@ -10,6 +10,10 @@ describe("VLAN lesson content contract", () => {
     expect(publicLesson).toContain("<VlanMembershipPlayer />");
   });
 
+  it("places the 802.1Q tag journey player in the public lesson", () => {
+    expect(publicLesson).toContain("<VlanTagJourneyPlayer />");
+  });
+
   it("keeps account evidence in the protected block", () => {
     expect(accountLesson).toContain("VLAN_ACCOUNT_SENTINEL");
     expect(publicLesson).not.toContain("VLAN_ACCOUNT_SENTINEL");

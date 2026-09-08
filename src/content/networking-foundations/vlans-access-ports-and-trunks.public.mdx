@@ -20,7 +20,11 @@ A trunk preserves VLAN identity while carrying multiple VLANs between network de
 
 <h2 id="interactive-tag-journey">Interactive tag journey</h2>
 
-The second player will follow a frame as its VLAN tag is added and removed.
+Follow the same frame from an access link, across a shared trunk, and back onto an access link. Open technical inspection when the tag is visible to unfold its individual fields.
+
+<VlanTagJourneyPlayer />
+
+Without JavaScript, the journey is: endpoint sends an ordinarily untagged frame → the ingress access port classifies it → the switch inserts an 802.1Q tag → the tagged frame crosses the trunk → the receiving switch reads the VLAN ID → the tag is removed for the destination access link → the endpoint receives the frame.
 
 <h2 id="allowed-vlans-and-routing-boundary">Allowed VLANs and routing boundary</h2>
 

@@ -416,6 +416,21 @@ a { color: inherit; }
 .switch-learning-player__choices label:has(input:checked), .arp-local-delivery-player__choices label:has(input:checked), .arp-variant-player__choices label:has(input:checked), .vlan-membership-player__choices label:has(input:checked), .vlan-membership-player__move:has(input:checked) { border-color: var(--accent); border-inline-start-width: 0.35rem; background: color-mix(in srgb, var(--accent) 10%, var(--background)); }
 .switch-learning-player__choices input, .arp-local-delivery-player__choices input, .arp-variant-player__choices input, .vlan-membership-player input { flex: 0 0 auto; accent-color: var(--accent); }
 @media (max-width: 35rem) { .arp-local-delivery-player__choices label, .arp-variant-player__choices label, .vlan-membership-player__choices label, .vlan-membership-player__move { width: 100%; } }
+.vlan-tag-journey-player { min-width: 0; max-width: 100%; margin: 2rem 0; padding: clamp(0.8rem, 2.5vw, 1.4rem); overflow: hidden; border: 1px solid var(--border); border-radius: 0.75rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); }
+.vlan-tag-journey-player > h3 { margin-top: 0; }
+.vlan-tag-journey-player__choices, .vlan-tag-journey-player__inspection { display: flex; flex-wrap: wrap; gap: 0.5rem; min-width: 0; margin: 1rem 0; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; }
+.vlan-tag-journey-player__choices legend, .vlan-tag-journey-player__inspection legend { margin-bottom: 0.6rem; font-weight: 800; }
+.vlan-tag-journey-player__choices label, .vlan-tag-journey-player__inspection label { display: flex; min-block-size: 44px; align-items: center; gap: 0.55rem; padding: 0.6rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: var(--background); cursor: pointer; }
+.vlan-tag-journey-player__choices label:has(input:checked), .vlan-tag-journey-player__inspection label:has(input:checked) { border-color: var(--accent); border-inline-start-width: 0.35rem; background: color-mix(in srgb, var(--accent) 10%, var(--background)); }
+.vlan-tag-journey-player__details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
+.vlan-frame-stage__fields { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0; padding: 0; list-style: none; }
+.vlan-frame-stage__field { flex: 1 1 7rem; padding: 0.65rem; border: 2px solid var(--accent); border-radius: 0.35rem; background: var(--background); font-weight: 800; text-align: center; }
+.vlan-frame-stage__tag-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: 0.5rem; margin-top: 0.75rem; }
+.vlan-frame-stage__tag-details div { padding: 0.55rem; border: 1px solid var(--border); border-radius: 0.35rem; }
+.vlan-frame-stage__tag-details dt { font-weight: 800; }
+.vlan-frame-stage__tag-details dd { margin: 0.25rem 0 0; }
+@media (max-width: 48rem) { .vlan-tag-journey-player__details { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 35rem) { .vlan-tag-journey-player__choices label, .vlan-tag-journey-player__inspection label { width: 100%; } .vlan-frame-stage__field { flex-basis: 100%; } }
 .switching-comparison > h3 { margin-top: 0; }
 .switching-comparison__dimensions, .switching-comparison__devices { display: flex; flex-wrap: wrap; gap: 0.5rem; min-width: 0; margin: 1.25rem 0; padding: 0; border: 0; }
 .switching-comparison__dimensions legend, .switching-comparison__devices legend, .frame-forwarding-lab legend { margin-bottom: 0.65rem; font-weight: 800; }
