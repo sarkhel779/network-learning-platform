@@ -1,34 +1,40 @@
-## Why delivery scope matters {#why-delivery-scope-matters}
+<h2 id="why-delivery-scope-matters">Why delivery scope matters</h2>
 
 Delivery scope answers a practical question: which interfaces receive a transmission, and which hosts actually accept and process it? These are separate events. A switch forwards through ports, interfaces receive bits, and a host decides whether the destination is relevant.
 
-## Unicast: one intended destination {#unicast-one-destination}
+<h2 id="unicast-one-destination">Unicast: one intended destination</h2>
 
 Unicast identifies one intended destination, such as your laptop sending an HTTPS request to a web server. When the destination MAC address is already learned, a switch selects one egress port. A switch may forward an unknown unicast through several ports while it learns, but the destination remains unicast.
 
-## Broadcast: the local broadcast domain {#broadcast-local-domain}
+<h2 id="broadcast-local-domain">Broadcast: the local broadcast domain</h2>
 
 A broadcast is delivered throughout its local broadcast domain. An ARP request is a familiar example: every local interface receives it, but only the device owning the requested address replies. A router can receive the frame on a local interface, but does not ordinarily forward it into another network. A DHCP relay is a configured agent that creates or forwards a new request toward a server; it is not an ordinary broadcast crossing the router unchanged.
 
-## Multicast: an interested receiver group {#multicast-receiver-group}
+<h2 id="multicast-receiver-group">Multicast: an interested receiver group</h2>
 
 Multicast addresses a receiver group, such as viewers subscribed to the same live video stream. Hosts accept the traffic only when they have joined that group, while efficient forwarding depends on group-aware network state. Without that state, local flooding can make a non-subscriber interface receive a frame that its host then rejects.
 
-## Unknown unicast is not broadcast {#unknown-unicast-is-not-broadcast}
+<h2 id="unknown-unicast-is-not-broadcast">Unknown unicast is not broadcast</h2>
 
 Flooding describes a switch action. Unicast, broadcast, and multicast describe destination scope. Flooding does not rewrite the original unicast destination into a broadcast address.
 
-## Compare delivery types {#compare-delivery-types}
+<h2 id="compare-delivery-types">Compare delivery types</h2>
 
 Compare who the sender intends to reach, what the switch forwards, what each interface physically receives, and what each host accepts.
 
-| Delivery type | Intended destination | Typical local forwarding | Host acceptance |
-| --- | --- | --- | --- |
-| Known unicast | One host | One learned port | The matching destination |
-| Unknown unicast | One host | Eligible ports except ingress | Still only the matching destination |
-| Broadcast | Local broadcast domain | Eligible ports except ingress | Local participants inspect it |
-| Multicast | Interested receiver group | Subscriber ports when group state is known; otherwise it may flood locally | Joined receivers |
+<div className="lesson-table" role="region" aria-label="Delivery type comparison table" tabIndex={0}>
+  <table>
+    <caption>Delivery type comparison</caption>
+    <thead><tr><th scope="col">Delivery type</th><th scope="col">Intended destination</th><th scope="col">Typical local forwarding</th><th scope="col">Host acceptance</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Known unicast</th><td>One host</td><td>One learned port</td><td>The matching destination</td></tr>
+      <tr><th scope="row">Unknown unicast</th><td>One host</td><td>Eligible ports except ingress</td><td>Still only the matching destination</td></tr>
+      <tr><th scope="row">Broadcast</th><td>Local broadcast domain</td><td>Eligible ports except ingress</td><td>Local participants inspect it</td></tr>
+      <tr><th scope="row">Multicast</th><td>Interested receiver group</td><td>Subscriber ports when state is known; otherwise it may flood locally</td><td>Joined receivers</td></tr>
+    </tbody>
+  </table>
+</div>
 
-## Interactive delivery-scope player {#delivery-scope-player}
+<h2 id="delivery-scope-player">Interactive delivery-scope player</h2>
 
 <DeliveryScopePlayer />

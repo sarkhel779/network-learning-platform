@@ -14,7 +14,7 @@ describe("PathwayOverview", () => {
       screen.getByRole("heading", { name: "Networking Foundations" }),
     ).toBeVisible();
     expect(screen.getByText(/complete beginners/i)).toBeVisible();
-    expect(screen.getAllByRole("listitem")).toHaveLength(23);
+    expect(screen.getAllByRole("listitem")).toHaveLength(24);
   });
 
   it("links published lessons and marks unpublished lessons as coming later", () => {
@@ -44,7 +44,10 @@ describe("PathwayOverview", () => {
       "href",
       "/learn/networking-foundations/osi-and-tcp-ip-models",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(5);
+    expect(screen.getByRole("link", { name: /unicast, broadcast and multicast communication/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/unicast-broadcast-and-multicast-communication",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(6);
     expect(screen.getAllByText("Coming later")).toHaveLength(18);
   });
 });
