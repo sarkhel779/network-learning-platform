@@ -17,6 +17,15 @@ describe("ModuleList publication labels", () => {
     expect(link).toHaveAttribute("href", "/learn/networking-foundations/how-networks-communicate");
   });
 
+  it("links the published delivery-scope lesson and leaves the following router lesson planned", () => {
+    const pathway = getPathway("networking-foundations");
+    render(<ModuleList modules={pathway.modules} pathwaySlug={pathway.slug} />);
+    expect(screen.getByRole("link", { name: "Unicast, Broadcast and Multicast Communication" }))
+      .toHaveAttribute("href", "/learn/networking-foundations/unicast-broadcast-and-multicast-communication");
+    const routerCard = screen.getByRole("heading", { name: "Routers, Default Gateways and Network Boundaries" }).closest("li")!;
+    expect(within(routerCard).getByText("Coming later")).toBeVisible();
+  });
+
   it("describes unpublished lessons as Coming later without Free or Premium access claims", () => {
     const pathway = getPathway("networking-foundations");
     render(<ModuleList modules={pathway.modules} pathwaySlug={pathway.slug} />);

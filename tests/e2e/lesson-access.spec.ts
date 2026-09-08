@@ -8,10 +8,17 @@ const publishedLessons = [
   { slug: "cables-fibre-wireless-and-network-connections", title: "Cables, Fibre, Wireless and Network Connections" },
   { slug: "osi-and-tcp-ip-models", title: "OSI and TCP/IP Models" },
   { slug: "hubs-bridges-and-switches", title: "Hubs, Bridges and Switches" },
+  { slug: "unicast-broadcast-and-multicast-communication", title: "Unicast, Broadcast and Multicast Communication" },
 ];
 // Actual account-only prose/answers plus the loader's protected fixture markers.
 // No production Pro body exists yet; Pro exclusion is additionally covered by loader tests.
 const protectedSentinels = [
+  "dhcp-relay-boundary",
+  "multicast-without-group-state",
+  "wrong-default-gateway",
+  "IGMP querier election",
+  "PIM rendezvous point",
+  "DELIVERY_SCOPE_ACCOUNT_SENTINEL",
   "Desktop near a home router",
   "Laptop used throughout a small office",
   "Fixed workstation in a noisy workshop",
@@ -132,6 +139,10 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
         await expect(page.getByRole("group", { name: "Compare intermediary behavior" })).toBeVisible();
         await expect(page.getByRole("group", { name: "Choose a forwarding scenario" })).toHaveCount(0);
         await expect(page.getByRole("button", { name: "I know this—proceed to advanced" })).toHaveCount(0);
+      } else if (slug === "unicast-broadcast-and-multicast-communication") {
+        await expect(page.getByRole("group", { name: "Choose a delivery scenario" })).toBeVisible();
+        await expect(page.getByRole("heading", { name: "Predict traffic delivery" })).toHaveCount(0);
+        await expect(page.getByRole("button", { name: "I know this—proceed to advanced" })).toHaveCount(0);
         await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
       } else if (slug === "cables-fibre-wireless-and-network-connections") {
         await expect(page.getByRole("group", { name: "Compare connection qualities" })).toBeVisible();
@@ -178,6 +189,7 @@ test("public tables expose row and column headers and remain keyboard-scrollable
     ["hosts-and-network-devices", "Network device roles", 4, 6],
     ["cables-fibre-wireless-and-network-connections", "Connection media at a glance", 5, 4],
     ["hubs-bridges-and-switches", "Hub, bridge and switch at a glance", 5, 4],
+    ["unicast-broadcast-and-multicast-communication", "Delivery type comparison", 4, 5],
   ] as const) {
     await page.goto(`/learn/networking-foundations/${slug}`);
     const table = page.getByRole("table", { name: caption, exact: true });

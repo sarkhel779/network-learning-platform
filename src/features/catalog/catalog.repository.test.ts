@@ -16,6 +16,7 @@ describe("catalog repository", () => {
         "Hosts, Clients, Servers and Network Interfaces",
         "Cables, Fibre, Wireless and Network Connections",
         "Hubs, Bridges and Switches",
+        "Unicast, Broadcast and Multicast Communication",
         "Routers, Default Gateways and Network Boundaries",
         "Access Points, Modems, ONTs and Firewalls",
         "OSI and TCP/IP Models",
@@ -67,7 +68,7 @@ describe("catalog repository", () => {
       title,
       lessons: lessons.map((lesson) => lesson.title),
     }))).toEqual(approvedCurriculum);
-    expect(pathway.modules.flatMap(({ lessons }) => lessons)).toHaveLength(23);
+    expect(pathway.modules.flatMap(({ lessons }) => lessons)).toHaveLength(24);
   });
 
   it("preserves implemented routes and removes security lessons", () => {
@@ -80,6 +81,7 @@ describe("catalog repository", () => {
       "how-networks-communicate",
       "hubs-bridges-and-switches",
       "osi-and-tcp-ip-models",
+      "unicast-broadcast-and-multicast-communication",
     ]);
     expect(getLesson(pathway.slug, "how-networks-communicate").title)
       .toBe("What Is a Computer Network?");
@@ -92,6 +94,41 @@ describe("catalog repository", () => {
     );
   });
 
+  it("publishes delivery scope immediately after switching with its approved access contract", () => {
+    const pathwaySlug = "networking-foundations";
+    const lessonSlug = "unicast-broadcast-and-multicast-communication";
+    const lesson = getLesson(pathwaySlug, lessonSlug);
+
+    expect(lesson).toMatchObject({
+      title: "Unicast, Broadcast and Multicast Communication",
+      objective: "Identify a transmission's delivery scope and predict which interfaces receive, accept, or forward it.",
+      seo: {
+        title: "Unicast, Broadcast and Multicast Explained",
+        description: "Compare unicast, broadcast, and multicast traffic and predict how switches, hosts, and routers handle each delivery type.",
+      },
+      estimatedMinutes: 22,
+      published: true,
+    });
+    expect(lesson.sections).toEqual([
+      { id: "why-delivery-scope-matters", label: "Why delivery scope matters", access: "public" },
+      { id: "unicast-one-destination", label: "Unicast: one intended destination", access: "public" },
+      { id: "broadcast-local-domain", label: "Broadcast: the local broadcast domain", access: "public" },
+      { id: "multicast-receiver-group", label: "Multicast: an interested receiver group", access: "public" },
+      { id: "unknown-unicast-is-not-broadcast", label: "Unknown unicast is not broadcast", access: "public" },
+      { id: "compare-delivery-types", label: "Compare delivery types", access: "public" },
+      { id: "delivery-scope-player", label: "Interactive delivery-scope player", access: "public" },
+      { id: "predict-delivery", label: "Predict traffic delivery", access: "account" },
+      { id: "diagnose-delivery-scope", label: "Diagnose delivery-scope scenarios", access: "account" },
+      { id: "packet-evidence", label: "Packet evidence", access: "account" },
+      { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+      { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Discover future multicast operations, advanced packet analysis, and production troubleshooting." },
+    ]);
+    expect(getAdjacentLessons(pathwaySlug, lessonSlug)).toMatchObject({
+      previous: { slug: "hubs-bridges-and-switches", published: true },
+      next: { slug: "routers-default-gateways-and-network-boundaries", published: false },
+    });
+  });
+
   it("publishes connection media with its approved order and access sections", () => {
     const pathwaySlug = "networking-foundations";
     const lessonSlug = "cables-fibre-wireless-and-network-connections";
@@ -101,6 +138,7 @@ describe("catalog repository", () => {
       "hosts-and-network-devices",
       "cables-fibre-wireless-and-network-connections",
       "hubs-bridges-and-switches",
+      "unicast-broadcast-and-multicast-communication",
       "osi-and-tcp-ip-models",
     ]);
     expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
@@ -155,25 +193,26 @@ describe("catalog repository", () => {
     ]);
     expect(getAdjacentLessons(pathwaySlug, lessonSlug)).toMatchObject({
       previous: { slug: "cables-fibre-wireless-and-network-connections" },
-      next: { slug: "routers-default-gateways-and-network-boundaries", published: false },
+      next: { slug: "unicast-broadcast-and-multicast-communication", published: true },
     });
   });
 
   it("keeps only the first four lesson foundations public", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, connectionMedia, switching, osi] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[6]];
+    const [first, second, connectionMedia, switching, deliveryScope, osi] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[7]];
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(connectionMedia.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(switching.sections?.some(({ access }) => access === "public")).toBe(true);
+    expect(deliveryScope.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(
-      lessons.slice(4).some(({ sections }) =>
+      lessons.slice(5).some(({ sections }) =>
         sections?.some(({ access }) => access === "public"),
       ),
     ).toBe(false);
-    for (const lesson of [first, second, connectionMedia, switching, osi]) {
+    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, osi]) {
       expect(lesson.sections?.at(-1)).toEqual(expect.objectContaining({
         id: "pro-deep-dive",
         label: "Pro Deep Dive",

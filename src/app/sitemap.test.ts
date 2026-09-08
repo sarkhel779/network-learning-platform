@@ -14,6 +14,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/networking-foundations/hosts-and-network-devices" },
       { url: "https://packetsecrets.com/learn/networking-foundations/cables-fibre-wireless-and-network-connections" },
       { url: "https://packetsecrets.com/learn/networking-foundations/hubs-bridges-and-switches" },
+      { url: "https://packetsecrets.com/learn/networking-foundations/unicast-broadcast-and-multicast-communication" },
       { url: "https://packetsecrets.com/learn/networking-foundations/osi-and-tcp-ip-models" },
     ]);
     const urls = entries.map(({ url }) => url);

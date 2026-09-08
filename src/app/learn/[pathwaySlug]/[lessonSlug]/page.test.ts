@@ -47,6 +47,18 @@ vi.mock("@/content/networking-foundations/hubs-bridges-and-switches.public.mdx",
 vi.mock("@/content/networking-foundations/hubs-bridges-and-switches.account.mdx", () => {
   throw new Error("SWITCHING_ACCOUNT_SENTINEL: anonymous route imported a protected body");
 });
+vi.mock("@/content/networking-foundations/unicast-broadcast-and-multicast-communication.public.mdx", async () => {
+  const { createElement, Fragment } = await import("react");
+  return {
+    default: () => createElement(Fragment, null,
+      createElement("p", null, "Public delivery-scope explanation."),
+      createElement("h2", { id: "delivery-scope-player" }, "Interactive delivery-scope player"),
+    ),
+  };
+});
+vi.mock("@/content/networking-foundations/unicast-broadcast-and-multicast-communication.account.mdx", () => {
+  throw new Error("DELIVERY_SCOPE_ACCOUNT_SENTINEL: anonymous route imported a protected body");
+});
 vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx", () => {
   throw new Error("OSI_ACCOUNT_SENTINEL: anonymous route imported a protected body");
 });
@@ -157,9 +169,29 @@ describe("lesson route generation", () => {
       },
       {
         pathwaySlug: "networking-foundations",
+        lessonSlug: "unicast-broadcast-and-multicast-communication",
+      },
+      {
+        pathwaySlug: "networking-foundations",
         lessonSlug: "osi-and-tcp-ip-models",
       },
     ]);
+  });
+
+  it("renders only the delivery-scope public body for anonymous visitors", async () => {
+    const loader = vi.spyOn(contentRepository, "loadAuthorizedLessonContent");
+    const page = await lessonPage.default({ params: Promise.resolve({
+      pathwaySlug: "networking-foundations",
+      lessonSlug: "unicast-broadcast-and-multicast-communication",
+    }) });
+    const { container } = render(page);
+
+    expect(screen.getByText("Public delivery-scope explanation.")).toBeVisible();
+    expect(loader).toHaveBeenCalledWith(
+      "networking-foundations/unicast-broadcast-and-multicast-communication",
+      "anonymous",
+    );
+    expect(container.innerHTML).not.toContain("DELIVERY_SCOPE_ACCOUNT_SENTINEL");
   });
 
   it("renders only the switching public body for anonymous visitors", async () => {
