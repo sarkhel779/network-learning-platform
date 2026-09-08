@@ -12,15 +12,19 @@ describe("RouteDecisionPlayer", () => {
   it("server-renders a useful first scenario in reduced-motion mode", () => {
     const markup = renderToStaticMarkup(<RouteDecisionPlayer />);
     expect(markup).toContain("A neighbour on the local subnet");
-    expect(markup).toContain("data-motion=\"reduced\"");
+    expect(markup).toContain("Packet journey: step by step");
     expect(markup).toContain("On-link");
     expect(markup).not.toMatch(/off-link-gateway|wrong-prefix|router-no-onward-route/);
   });
 
-  it("shows an accessible topology and coordinated decision regions", () => {
+  it("shows a labelled packet journey and coordinated decision regions", () => {
     render(<RouteDecisionPlayer />);
     expect(screen.getByRole("group", { name: "Choose a route decision scenario" })).toBeVisible();
-    expect(screen.getByRole("img", { name: /source host.*router.*destination/i })).toBeVisible();
+    expect(screen.getByRole("img", { name: /packet journey for a neighbour/i })).toBeVisible();
+    expect(screen.getByText("Stage 1 of 3")).toBeVisible();
+    expect(screen.getByText("Host eth0", { exact: true })).toBeVisible();
+    expect(screen.getByText("Router LAN", { exact: true })).toBeVisible();
+    expect(screen.getByText("Router WAN", { exact: true })).toBeVisible();
     expect(within(screen.getByRole("region", { name: "Decision" })).getByText("On-link")).toBeVisible();
     expect(within(screen.getByRole("region", { name: "First frame" })).getByText("Destination host")).toBeVisible();
   });
@@ -29,6 +33,7 @@ describe("RouteDecisionPlayer", () => {
     const user = userEvent.setup();
     render(<RouteDecisionPlayer />);
     await user.click(screen.getByRole("radio", { name: "A server beyond the local network" }));
+    expect(screen.getByText("Stage 1 of 6")).toBeVisible();
     expect(screen.getByRole("region", { name: "Decision" })).toHaveTextContent("Remote via gateway");
     expect(screen.getByRole("region", { name: "Next hop" })).toHaveTextContent("192.0.2.1");
     expect(screen.getByRole("region", { name: "First frame" })).toHaveTextContent("Gateway interface");

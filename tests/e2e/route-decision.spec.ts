@@ -12,6 +12,15 @@ test("teaches route boundaries through five coordinated public scenarios", async
   await page.getByRole("radio", { name: "A server beyond the local network" }).click();
   await expect(page.getByRole("region", { name: "Decision", exact: true })).toContainText("Remote via gateway");
   await expect(page.getByRole("region", { name: "First frame", exact: true })).toContainText("Gateway interface");
+  const journey = page.locator(".packet-journey-player");
+  await expect(journey.getByText("Host eth0", { exact: true })).toBeVisible();
+  await expect(journey.getByText("Router LAN", { exact: true })).toBeVisible();
+  await expect(journey.getByText("Router WAN", { exact: true })).toBeVisible();
+  await journey.getByRole("button", { name: "Pause" }).click();
+  for (let step = 0; step < 4; step += 1) await journey.getByRole("button", { name: "Next" }).click();
+  await expect(journey.getByText("Stage 5 of 6")).toBeVisible();
+  await expect(journey.getByText("63", { exact: true })).toBeVisible();
+  await expect(journey.getByText(/IP addresses stay the same/i)).toBeVisible();
   await expect(page.getByRole("group", { name: "Choose a practice scenario" })).toHaveCount(0);
 });
 
@@ -24,7 +33,10 @@ test("supports keyboard use, technical explanations, reduced motion, and 360px",
   await expect(choices.nth(1)).toBeChecked(); await expect(choices.nth(1)).toBeFocused();
   await page.getByRole("radio", { name: "Technical reasoning" }).click();
   await expect(page.getByText(/The default route matches/)).toBeVisible();
-  await expect(page.locator(".route-decision-player")).toHaveAttribute("data-motion", "reduced");
+  const journey = page.locator(".packet-journey-player");
+  await expect(journey.getByRole("button", { name: "Play" })).toBeEnabled();
+  await page.waitForTimeout(1600);
+  await expect(journey.getByText("Stage 1 of 6")).toBeVisible();
   expect(await choices.first().evaluate((node) => node.closest("label")!.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
@@ -37,6 +49,8 @@ test("keeps the complete boundary explanation available without JavaScript", asy
     await expect(page.locator(".lesson-content > h2")).toHaveCount(7);
     await expect(page.getByRole("table", { name: "How a host prepares its first transmission" })).toBeVisible();
     await expect(page.getByText("Ordinary Layer 2 broadcasts stop at the router boundary.")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Packet journey: step by step" })).toBeVisible();
+    await expect(page.getByText(/router is bypassed/i)).toBeVisible();
     await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
   } finally { await context.close(); }
 });

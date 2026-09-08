@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { NetworkDeviceSymbol } from "@/features/packet-flow/network-device-symbol";
-import { useReducedMotionState } from "@/features/packet-flow/use-reduced-motion";
+import { PacketJourneyPlayer } from "@/features/packet-journey/packet-journey-player";
+import { StaticPacketJourney } from "@/features/packet-journey/static-packet-journey";
+import { createRouteJourney } from "./create-route-journey";
 import { evaluateRouteDecision } from "./evaluate-route-decision";
 import { publicRouteDecisionScenarios } from "./route-decision.data";
 
@@ -13,13 +14,13 @@ const actionLabels = { "direct-delivery": "Direct delivery", "route-unicast": "R
 export function RouteDecisionPlayer() {
   const [selectedId, setSelectedId] = useState(publicRouteDecisionScenarios[0].id);
   const [explanationMode, setExplanationMode] = useState<"plain" | "technical">("plain");
-  const { reducedMotion, isHydrated } = useReducedMotionState();
   const scenario = publicRouteDecisionScenarios.find(({ id }) => id === selectedId)!;
   const outcome = evaluateRouteDecision(scenario);
+  const journey = createRouteJourney(scenario, outcome);
   const interfaceLabel = scenario.interfaces.find(({ id }) => id === outcome.interfaceId)?.label ?? "None";
 
   return (
-    <section aria-labelledby="route-decision-title" className="route-decision-player" data-motion={reducedMotion || !isHydrated ? "reduced" : "travel"}>
+    <section aria-labelledby="route-decision-title" className="route-decision-player">
       <h3 id="route-decision-title">Make the host&apos;s route decision</h3>
       <p>Change the destination and watch the route, next hop, first frame, and boundary action update together.</p>
 
@@ -33,18 +34,8 @@ export function RouteDecisionPlayer() {
         ))}
       </fieldset>
 
-      <div className="route-decision-topology" role="img" aria-label="Source host through a local link and router toward the destination">
-        <svg aria-hidden="true" viewBox="0 0 520 130">
-          <path className="route-decision-topology__link" d="M88 58 H224 M296 58 H432" />
-          <NetworkDeviceSymbol kind="host" transform="translate(60 58)" />
-          <NetworkDeviceSymbol kind="router" transform="translate(260 58)" />
-          <NetworkDeviceSymbol kind="server" transform="translate(460 58)" />
-          <text x="60" y="112" textAnchor="middle">Source</text>
-          <text x="260" y="112" textAnchor="middle">Router</text>
-          <text x="460" y="112" textAnchor="middle">Destination</text>
-        </svg>
-        <p><strong>{scenario.sourceIp}/{scenario.sourcePrefixLength}</strong> → <strong>{scenario.destinationIp}</strong></p>
-      </div>
+      <PacketJourneyPlayer journey={journey} />
+      <noscript><StaticPacketJourney journey={journey} /></noscript>
 
       <div className="route-decision-results" aria-live="polite">
         <section aria-labelledby="route-result-decision"><h4 id="route-result-decision">Decision</h4><p>{scopeLabels[outcome.scope]}</p></section>
