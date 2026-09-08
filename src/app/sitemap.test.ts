@@ -15,6 +15,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/networking-foundations/cables-fibre-wireless-and-network-connections" },
       { url: "https://packetsecrets.com/learn/networking-foundations/hubs-bridges-and-switches" },
       { url: "https://packetsecrets.com/learn/networking-foundations/unicast-broadcast-and-multicast-communication" },
+      { url: "https://packetsecrets.com/learn/networking-foundations/routers-default-gateways-and-network-boundaries" },
       { url: "https://packetsecrets.com/learn/networking-foundations/osi-and-tcp-ip-models" },
     ]);
     const urls = entries.map(({ url }) => url);
@@ -35,6 +36,6 @@ describe("public sitemap", () => {
     for (const unpublishedUrl of unpublishedSlugs) {
       expect(urls).not.toContain(unpublishedUrl);
     }
-    expect(unpublishedSlugs).toHaveLength(18);
+    expect(unpublishedSlugs).toHaveLength(17);
   });
 });

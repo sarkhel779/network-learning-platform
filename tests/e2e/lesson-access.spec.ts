@@ -123,11 +123,9 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
 
   try {
     for (const { slug, title } of publishedLessons.slice(1)) {
-      const desktop = page.locator(".lesson-curriculum--desktop");
-      const curriculum = await desktop.isVisible()
-        ? desktop : page.locator("details.lesson-curriculum--mobile");
+      await page.getByRole("button", { name: "Course contents" }).click();
+      const curriculum = page.getByRole("dialog", { name: "Course contents" });
       const link = curriculum.getByRole("link", { name: new RegExp(title) });
-      if (!await link.isVisible()) await curriculum.locator("summary").click();
       await expect(link).toBeVisible();
       await link.click();
       await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();

@@ -7,13 +7,14 @@ type PlaybackControlsProps = Readonly<{
   state: PlaybackState;
   dispatch: Dispatch<PlaybackAction>;
   reducedMotion: boolean;
+  restartLabel?: "Restart" | "Replay";
 }>;
 
 function speedLabel(speed: PlaybackSpeed): string {
   return `${speed}×`;
 }
 
-export function PlaybackControls({ state, dispatch, reducedMotion }: PlaybackControlsProps) {
+export function PlaybackControls({ state, dispatch, reducedMotion, restartLabel = "Restart" }: PlaybackControlsProps) {
   const atFinalStep = state.stepIndex === state.stepCount - 1;
 
   return (
@@ -28,7 +29,7 @@ export function PlaybackControls({ state, dispatch, reducedMotion }: PlaybackCon
         Next
       </button>
       <button type="button" onClick={() => dispatch({ type: "restart", autoplay: !reducedMotion })}>
-        Restart
+        {restartLabel}
       </button>
       <label>
         Playback speed

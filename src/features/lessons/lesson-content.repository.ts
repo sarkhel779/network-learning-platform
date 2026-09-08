@@ -40,6 +40,12 @@ const lessonImports = {
     account: () =>
       import("@/content/networking-foundations/unicast-broadcast-and-multicast-communication.account.mdx"),
   },
+  "networking-foundations/routers-default-gateways-and-network-boundaries": {
+    public: () =>
+      import("@/content/networking-foundations/routers-default-gateways-and-network-boundaries.public.mdx"),
+    account: () =>
+      import("@/content/networking-foundations/routers-default-gateways-and-network-boundaries.account.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),

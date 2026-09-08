@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import type { LessonSummary, Pathway } from "@/features/catalog/catalog.types";
 
+import { CourseContentsDrawer } from "./course-contents-drawer";
 import { CurriculumNavigation } from "./curriculum-navigation";
 import { LearningObjective } from "./learning-objective";
 import { LessonSectionNavigation } from "./lesson-section-navigation";
@@ -45,14 +46,14 @@ export function LessonShell({
 }: LessonShellProps) {
   return (
     <main className="lesson-page" id="main-content">
-      <aside aria-label="Course contents" className="lesson-curriculum lesson-curriculum--desktop">
-        <CurriculumNavigation pathway={pathway} currentLessonSlug={lesson.slug} />
-      </aside>
+      <CourseContentsDrawer pathway={pathway} currentLessonSlug={lesson.slug} />
       <article className="lesson-shell">
-        <details className="lesson-curriculum lesson-curriculum--mobile">
-          <summary>Course contents</summary>
-          <CurriculumNavigation pathway={pathway} currentLessonSlug={lesson.slug} />
-        </details>
+        <noscript>
+          <details className="lesson-curriculum lesson-curriculum--fallback">
+            <summary>Course contents</summary>
+            <CurriculumNavigation pathway={pathway} currentLessonSlug={lesson.slug} />
+          </details>
+        </noscript>
         <header className="lesson-header">
           <p className="eyebrow">Lesson</p>
           <h1>{lesson.title}</h1>

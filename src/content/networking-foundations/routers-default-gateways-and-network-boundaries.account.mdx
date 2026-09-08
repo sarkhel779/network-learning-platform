@@ -1,0 +1,75 @@
+import { RouteDecisionExperience } from "@/features/route-decision/route-decision-experience";
+import { loadAccountRouteDecisionScenarios } from "@/features/route-decision/route-decision.account-loader";
+
+{/* ROUTE_DECISION_ACCOUNT_SENTINEL: gateway-not-on-link router-onward-no-route */}
+
+<h2 id="read-a-basic-routing-table">Read a basic routing table</h2>
+
+A useful beginner view has four fields. Read the destination and prefix first, then the next hop
+and interface. The default route is a fallback; it does not automatically beat a more-specific route.
+
+<div className="lesson-table" role="region" aria-label="Basic routing table evidence" tabIndex={0}>
+  <table>
+    <caption>Normalized host routing evidence</caption>
+    <thead><tr><th scope="col">Destination/prefix</th><th scope="col">Next hop</th><th scope="col">Interface</th><th scope="col">Purpose</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">192.0.2.0/24</th><td>On-link</td><td>Ethernet 0</td><td>Directly connected network</td></tr>
+      <tr><th scope="row">198.51.100.0/24</th><td>192.0.2.2</td><td>Ethernet 0</td><td>More-specific office route</td></tr>
+      <tr><th scope="row">0.0.0.0/0</th><td>192.0.2.1</td><td>Ethernet 0</td><td>Default fallback</td></tr>
+    </tbody>
+  </table>
+</div>
+
+Windows exposes related read-only evidence with `route print`. Linux commonly uses `ip route`.
+Field names and formatting vary, so normalize what you see into the four columns above before
+drawing a conclusion. These examples are static; the site does not inspect your device.
+
+```text
+Windows route print: 0.0.0.0  0.0.0.0  192.0.2.1  192.0.2.10
+Linux ip route: default via 192.0.2.1 dev eth0
+```
+
+Use **I know this—proceed to advanced** to jump directly to the first intermediate scenario.
+
+<RouteDecisionExperience scenarios={loadAccountRouteDecisionScenarios()} />
+
+<h2 id="diagnose-gateway-boundary-problems">Diagnose gateway and boundary problems</h2>
+
+Use one evidence-first sequence:
+
+1. Define the source, destination, direction, and exact symptom.
+2. Confirm the host address and configured prefix instead of assuming `/24`.
+3. Decide whether the destination should be on-link or remote.
+4. Find the most-specific matching route and outgoing interface.
+5. Confirm that the selected gateway is reachable on that local interface.
+6. Test the local next hop separately from the remote destination.
+7. If the gateway is reachable, inspect the next router or return path with appropriately scoped evidence.
+
+No matching route is a host routing failure. A matching route with an unreachable gateway is a
+local next-hop problem. A packet that reaches the gateway but meets no onward route is a router-side
+forwarding problem. These symptoms need different fixes.
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck question="A remote packet leaves an Ethernet host without NAT. Which destination addresses are used first?" options={["Remote IP and gateway MAC", "Gateway IP and remote MAC", "Gateway IP and gateway MAC"]} correctIndex={0} explanation="The remote destination remains in the IP packet, while the local frame targets the selected gateway interface." />
+
+<KnowledgeCheck question="Both a specific network route and a default route match. Which is selected?" options={["The more-specific prefix", "Always the default", "Whichever appears last on screen"]} correctIndex={0} explanation="Longest-prefix matching selects the more-specific route before the default fallback." />
+
+<KnowledgeCheck question="What normally happens to an ordinary Ethernet broadcast at a router boundary?" options={["It stops at that Layer 2 boundary", "It is repeated into every subnet", "It becomes a remote unicast automatically"]} correctIndex={0} explanation="Routers do not bridge ordinary Layer 2 broadcasts into another subnet by default." />
+
+<InterviewScenario prompt="A host can reach its default gateway but cannot reach a remote server. How would you narrow the fault domain?">
+First verify the destination and selected route, then separate forward-path evidence from the return
+path. Since the gateway is reachable, do not begin by changing the host's ARP cache. Inspect whether
+the gateway has an onward route, whether later hops respond, and whether the return path is valid.
+</InterviewScenario>
+
+Remember: apply the configured prefix, select the most-specific route, resolve only the local next
+hop, and distinguish end-to-end IP addressing from hop-by-hop Layer 2 framing.
+
+<h2 id="pro-deep-dive">Pro Deep Dive</h2>
+
+<PremiumPreview ctaLabel="Join the Pro Member Waitlist" ctaHref="/contact">
+Future Pro material will cover advanced route selection, packet captures, RFC-guided checks,
+production troubleshooting, complex scenarios, and interview preparation. Joining the waitlist
+records interest and does not unlock immediate access.
+</PremiumPreview>

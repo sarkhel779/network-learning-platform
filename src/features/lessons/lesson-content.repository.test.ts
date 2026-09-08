@@ -30,6 +30,12 @@ vi.mock("@/content/networking-foundations/unicast-broadcast-and-multicast-commun
 vi.mock("@/content/networking-foundations/unicast-broadcast-and-multicast-communication.account.mdx", () => ({
   default: () => null,
 }));
+vi.mock("@/content/networking-foundations/routers-default-gateways-and-network-boundaries.public.mdx", () => ({
+  default: () => null,
+}));
+vi.mock("@/content/networking-foundations/routers-default-gateways-and-network-boundaries.account.mdx", () => ({
+  default: () => null,
+}));
 vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx", () => ({
   default: () => null,
 }));
@@ -128,6 +134,19 @@ describe("loadAuthorizedLessonContent", () => {
     const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
     expect(anonymous.public).toBeDefined();
     expect(anonymous.account).toBeUndefined();
+
+    const account = await loadAuthorizedLessonContent(key, "account");
+    expect(account.public).toBeDefined();
+    expect(account.account).toBeDefined();
+    expect(account.pro).toBeUndefined();
+  });
+
+  it("keeps route-decision practice protected while serving its public lesson anonymously", async () => {
+    const key = "networking-foundations/routers-default-gateways-and-network-boundaries";
+    const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
+    expect(anonymous.public).toBeDefined();
+    expect(anonymous.account).toBeUndefined();
+    expect(anonymous.pro).toBeUndefined();
 
     const account = await loadAuthorizedLessonContent(key, "account");
     expect(account.public).toBeDefined();

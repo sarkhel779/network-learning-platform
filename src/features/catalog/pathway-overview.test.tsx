@@ -47,7 +47,10 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /unicast, broadcast and multicast communication/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/unicast-broadcast-and-multicast-communication",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(6);
-    expect(screen.getAllByText("Coming later")).toHaveLength(18);
+    expect(screen.getByRole("link", { name: /routers, default gateways and network boundaries/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/routers-default-gateways-and-network-boundaries",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(7);
+    expect(screen.getAllByText("Coming later")).toHaveLength(17);
   });
 });

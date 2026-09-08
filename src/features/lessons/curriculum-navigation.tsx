@@ -5,11 +5,13 @@ import type { Pathway } from "@/features/catalog/catalog.types";
 type CurriculumNavigationProps = {
   pathway: Pathway;
   currentLessonSlug: string;
+  onLessonSelect?: () => void;
 };
 
 export function CurriculumNavigation({
   pathway,
   currentLessonSlug,
+  onLessonSelect,
 }: CurriculumNavigationProps) {
   return (
     <nav aria-label="Course curriculum" className="curriculum-navigation">
@@ -35,6 +37,7 @@ export function CurriculumNavigation({
                       <Link
                         aria-current={isCurrent ? "page" : undefined}
                         href={`/learn/${pathway.slug}/${lesson.slug}`}
+                        onClick={onLessonSelect}
                       >
                         {lessonMeta}
                       </Link>

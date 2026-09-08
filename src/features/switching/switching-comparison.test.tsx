@@ -1,4 +1,4 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -12,49 +12,37 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 
 describe("SwitchingComparison", () => {
-  it("server-renders three meaningful panels in a safe reduced-motion state", () => {
+  it("server-renders one beginner-focused device panel and all three selectors", () => {
     const markup = renderToStaticMarkup(<SwitchingComparison />);
     expect(markup).toContain("Hub");
     expect(markup).toContain("Bridge");
     expect(markup).toContain("Switch");
-    expect(markup.match(/data-motion="reduced"/g)).toHaveLength(3);
+    expect(markup.match(/class="switching-device-card"/g)).toHaveLength(1);
     expect(markup).toContain("Hub repeats the incoming physical signal");
   });
 
-  it("changes meaningful explanations and non-color behaviors for every dimension", async () => {
+  it("shows one selected device and answers the three beginner questions", async () => {
     const user = userEvent.setup();
-    const { container } = render(<SwitchingComparison />);
-    expect(screen.getAllByRole("article")).toHaveLength(3);
-    expect(screen.getByRole("img", { name: "Three hosts connected through the selected Ethernet intermediary" })).toBeVisible();
-
-    const expected = {
-      "Signal handling": ["repeat", "segment", "forward"],
-      "Collision scope": ["repeat", "segment", "segment"],
-      "Bandwidth sharing": ["repeat", "segment", "forward"],
-      "Address awareness": ["repeat", "learn", "learn"],
-      "Delivery scope": ["flood", "filter", "forward"],
-    } as const;
-
-    for (const [dimension, behaviors] of Object.entries(expected)) {
-      await user.click(screen.getByRole("radio", { name: dimension }));
-      const cards = screen.getAllByRole("article");
-      behaviors.forEach((behavior, index) => {
-        expect(cards[index]).toHaveAttribute("data-behavior", behavior);
-        expect(within(cards[index]).getByText(/Behavior:/)).toBeVisible();
-      });
+    render(<SwitchingComparison />);
+    expect(screen.getAllByRole("article")).toHaveLength(1);
+    expect(screen.getByRole("heading", { name: "Hub" })).toBeVisible();
+    for (const question of ["What entered?", "Where did it leave?", "What did it inspect or learn?"]) {
+      expect(screen.getByText(question)).toBeVisible();
     }
-    expect(container.querySelectorAll("[data-port]")).toHaveLength(3);
+
+    await user.click(screen.getByRole("radio", { name: "Switch" }));
+    await user.click(screen.getByRole("radio", { name: "Delivery scope" }));
+    expect(screen.getAllByRole("article")).toHaveLength(1);
+    expect(screen.getByRole("heading", { name: "Switch" })).toBeVisible();
+    expect(screen.queryByRole("heading", { name: "Hub" })).not.toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /switch.*delivery scope/i })).toBeVisible();
   });
 
   it("preserves discrete ingress, action, and egress labels under reduced motion", () => {
     vi.stubGlobal("matchMedia", () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
     render(<SwitchingComparison />);
-    for (const path of screen.getAllByRole("img", { name: /traffic path/i })) {
-      expect(path).toHaveAttribute("data-motion", "reduced");
-      expect(path).toHaveTextContent("Ingress");
-      expect(path).toHaveTextContent("Action");
-      expect(path).toHaveTextContent("Egress");
-    }
+    expect(screen.getByRole("button", { name: "Play" })).toBeEnabled();
+    expect(screen.getByText("Stage 1 of 3")).toBeVisible();
   });
 
   it("registers only the public switching comparison in the shared MDX map", () => {

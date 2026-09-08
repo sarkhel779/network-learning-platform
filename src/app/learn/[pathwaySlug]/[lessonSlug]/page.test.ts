@@ -59,6 +59,16 @@ vi.mock("@/content/networking-foundations/unicast-broadcast-and-multicast-commun
 vi.mock("@/content/networking-foundations/unicast-broadcast-and-multicast-communication.account.mdx", () => {
   throw new Error("DELIVERY_SCOPE_ACCOUNT_SENTINEL: anonymous route imported a protected body");
 });
+vi.mock("@/content/networking-foundations/routers-default-gateways-and-network-boundaries.public.mdx", async () => {
+  const { createElement, Fragment } = await import("react");
+  return { default: () => createElement(Fragment, null,
+    createElement("p", null, "Public route-decision explanation."),
+    createElement("h2", { id: "route-decision-player" }, "Interactive route-decision player"),
+  ) };
+});
+vi.mock("@/content/networking-foundations/routers-default-gateways-and-network-boundaries.account.mdx", () => {
+  throw new Error("ROUTE_DECISION_ACCOUNT_SENTINEL: anonymous route imported a protected body");
+});
 vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx", () => {
   throw new Error("OSI_ACCOUNT_SENTINEL: anonymous route imported a protected body");
 });
@@ -173,6 +183,10 @@ describe("lesson route generation", () => {
       },
       {
         pathwaySlug: "networking-foundations",
+        lessonSlug: "routers-default-gateways-and-network-boundaries",
+      },
+      {
+        pathwaySlug: "networking-foundations",
         lessonSlug: "osi-and-tcp-ip-models",
       },
     ]);
@@ -192,6 +206,22 @@ describe("lesson route generation", () => {
       "anonymous",
     );
     expect(container.innerHTML).not.toContain("DELIVERY_SCOPE_ACCOUNT_SENTINEL");
+  });
+
+  it("renders only the route-decision public body for anonymous visitors", async () => {
+    const loader = vi.spyOn(contentRepository, "loadAuthorizedLessonContent");
+    const page = await lessonPage.default({ params: Promise.resolve({
+      pathwaySlug: "networking-foundations",
+      lessonSlug: "routers-default-gateways-and-network-boundaries",
+    }) });
+    const { container } = render(page);
+
+    expect(screen.getByText("Public route-decision explanation.")).toBeVisible();
+    expect(loader).toHaveBeenCalledWith(
+      "networking-foundations/routers-default-gateways-and-network-boundaries",
+      "anonymous",
+    );
+    expect(container.innerHTML).not.toContain("ROUTE_DECISION_ACCOUNT_SENTINEL");
   });
 
   it("renders only the switching public body for anonymous visitors", async () => {
@@ -257,9 +287,11 @@ describe("lesson route generation", () => {
       }),
     );
 
-    expect(screen.getByRole("complementary", { name: "Course contents" })).toBeVisible();
-    expect(screen.getAllByText("Network and Device Essentials")[0]).toBeVisible();
-    expect(screen.getByText("Course contents", { selector: "summary" })).toBeVisible();
+    const trigger = screen.getByRole("button", { name: "Course contents" });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(trigger);
+    expect(screen.getByRole("dialog", { name: "Course contents" })).toBeVisible();
+    expect(screen.getByText("Network and Device Essentials")).toBeVisible();
     expect(
       screen.getAllByRole("link", { name: /what is a computer network/i })[0],
     ).toHaveAttribute("aria-current", "page");

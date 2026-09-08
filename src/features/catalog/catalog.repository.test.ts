@@ -81,6 +81,7 @@ describe("catalog repository", () => {
       "how-networks-communicate",
       "hubs-bridges-and-switches",
       "osi-and-tcp-ip-models",
+      "routers-default-gateways-and-network-boundaries",
       "unicast-broadcast-and-multicast-communication",
     ]);
     expect(getLesson(pathway.slug, "how-networks-communicate").title)
@@ -125,7 +126,37 @@ describe("catalog repository", () => {
     ]);
     expect(getAdjacentLessons(pathwaySlug, lessonSlug)).toMatchObject({
       previous: { slug: "hubs-bridges-and-switches", published: true },
-      next: { slug: "routers-default-gateways-and-network-boundaries", published: false },
+      next: { slug: "routers-default-gateways-and-network-boundaries", published: true },
+    });
+  });
+
+  it("publishes routers and default gateways after delivery scope with its approved access contract", () => {
+    const pathwaySlug = "networking-foundations";
+    const lessonSlug = "routers-default-gateways-and-network-boundaries";
+    const lesson = getLesson(pathwaySlug, lessonSlug);
+
+    expect(lesson).toMatchObject({
+      title: "Routers, Default Gateways and Network Boundaries",
+      objective: "Decide whether a destination is local or remote and identify the first next hop.",
+      estimatedMinutes: 20,
+      published: true,
+    });
+    expect(lesson.sections?.map(({ id, access }) => [id, access])).toEqual([
+      ["why-network-boundaries-matter", "public"],
+      ["what-a-router-does", "public"],
+      ["local-or-remote", "public"],
+      ["default-gateway", "public"],
+      ["direct-and-routed-delivery", "public"],
+      ["what-changes-at-each-hop", "public"],
+      ["route-decision-player", "public"],
+      ["read-a-basic-routing-table", "account"],
+      ["diagnose-gateway-boundary-problems", "account"],
+      ["knowledge-check-summary", "account"],
+      ["pro-deep-dive", "pro"],
+    ]);
+    expect(getAdjacentLessons(pathwaySlug, lessonSlug)).toMatchObject({
+      previous: { slug: "unicast-broadcast-and-multicast-communication", published: true },
+      next: { slug: "access-points-modems-onts-and-firewalls", published: false },
     });
   });
 
@@ -139,6 +170,7 @@ describe("catalog repository", () => {
       "cables-fibre-wireless-and-network-connections",
       "hubs-bridges-and-switches",
       "unicast-broadcast-and-multicast-communication",
+      "routers-default-gateways-and-network-boundaries",
       "osi-and-tcp-ip-models",
     ]);
     expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
@@ -197,22 +229,23 @@ describe("catalog repository", () => {
     });
   });
 
-  it("keeps only the first four lesson foundations public", () => {
+  it("keeps public foundations limited to published beginner lessons", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, connectionMedia, switching, deliveryScope, osi] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[7]];
+    const [first, second, connectionMedia, switching, deliveryScope, routers, osi] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[7]];
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(connectionMedia.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(switching.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(deliveryScope.sections?.some(({ access }) => access === "public")).toBe(true);
+    expect(routers.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(
-      lessons.slice(5).some(({ sections }) =>
+      lessons.slice(6).some(({ sections }) =>
         sections?.some(({ access }) => access === "public"),
       ),
     ).toBe(false);
-    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, osi]) {
+    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, osi]) {
       expect(lesson.sections?.at(-1)).toEqual(expect.objectContaining({
         id: "pro-deep-dive",
         label: "Pro Deep Dive",

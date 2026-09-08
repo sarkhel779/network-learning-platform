@@ -46,13 +46,15 @@ test("presents an accessible static network journey and packet evidence", async 
   }
 });
 
-test("shows the complete curriculum and current lesson on desktop", async ({ page }) => {
+test("shows the complete curriculum in an overlay drawer on desktop", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/learn/networking-foundations/how-networks-communicate");
 
-  const desktop = page.locator(".lesson-curriculum--desktop");
-  await expect(desktop).toBeVisible();
-  await expect(desktop.locator(".curriculum-navigation__module > h2")).toHaveText([
+  await expect(page.locator("aside[aria-label='Course contents']")).toHaveCount(0);
+  await page.getByRole("button", { name: "Course contents" }).click();
+  const drawer = page.getByRole("dialog", { name: "Course contents" });
+  await expect(drawer).toBeVisible();
+  await expect(drawer.locator(".curriculum-navigation__module > h2")).toHaveText([
     "Network and Device Essentials",
     "Ethernet, Switching and Local Networks",
     "IP Addressing and Routing",
@@ -61,12 +63,12 @@ test("shows the complete curriculum and current lesson on desktop", async ({ pag
     "Packet Analysis and Troubleshooting",
   ]);
 
-  const currentLesson = desktop.getByRole("link", { name: /what is a computer network/i });
+  const currentLesson = drawer.getByRole("link", { name: /what is a computer network/i });
   await expect(currentLesson).toHaveAttribute("aria-current", "page");
   await expect(currentLesson).toContainText("Free");
   await expect(currentLesson).toContainText("Current lesson");
 
-  const nextLesson = desktop
+  const nextLesson = drawer
     .locator(".curriculum-navigation__lesson")
     .filter({ hasText: "Hosts, Clients, Servers and Network Interfaces" });
   await expect(nextLesson.getByText("Hosts, Clients, Servers and Network Interfaces", { exact: true })).toBeVisible();
@@ -76,18 +78,17 @@ test("shows the complete curriculum and current lesson on desktop", async ({ pag
     "/learn/networking-foundations/hosts-and-network-devices",
   );
 
-  await expect(desktop.locator(".curriculum-navigation__lesson > a")).toHaveCount(6);
-  await expect(desktop.locator(".curriculum-navigation__lesson > div")).toHaveCount(18);
-  await expect(desktop.getByText("Coming later", { exact: true })).toHaveCount(18);
+  await expect(drawer.locator(".curriculum-navigation__lesson > a")).toHaveCount(7);
+  await expect(drawer.locator(".curriculum-navigation__lesson > div")).toHaveCount(17);
+  await expect(drawer.getByText("Coming later", { exact: true })).toHaveCount(17);
 });
 
-test("reveals the mobile curriculum without horizontal overflow", async ({ page }) => {
+test("reveals the mobile curriculum drawer without horizontal overflow", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/learn/networking-foundations/how-networks-communicate");
 
-  const contents = page.locator("details.lesson-curriculum--mobile");
-  await expect(contents.locator("summary")).toHaveText("Course contents");
-  await contents.locator("summary").click();
+  await page.getByRole("button", { name: "Course contents" }).click();
+  const contents = page.getByRole("dialog", { name: "Course contents" });
   await expect(contents.getByRole("navigation", { name: "Course curriculum" })).toBeVisible();
 
   const overflow = await page.evaluate(
@@ -105,8 +106,8 @@ test("keeps the public lesson readable without JavaScript", async ({ browser }) 
     const page = await context.newPage();
 
     await page.goto("/learn/networking-foundations/how-networks-communicate");
-    const contents = page.locator("details.lesson-curriculum--mobile");
-    await contents.evaluate((element) => element.setAttribute("open", ""));
+    const contents = page.locator("details.lesson-curriculum--fallback");
+    await contents.locator("summary").click();
     const curriculum = contents.getByRole("navigation", { name: "Course curriculum" });
     await expect(curriculum).toBeVisible();
     await expect(
