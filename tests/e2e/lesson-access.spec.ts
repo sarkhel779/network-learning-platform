@@ -7,6 +7,7 @@ const publishedLessons = [
   { slug: "hosts-and-network-devices", title: "Hosts, Clients, Servers and Network Interfaces" },
   { slug: "cables-fibre-wireless-and-network-connections", title: "Cables, Fibre, Wireless and Network Connections" },
   { slug: "osi-and-tcp-ip-models", title: "OSI and TCP/IP Models" },
+  { slug: "hubs-bridges-and-switches", title: "Hubs, Bridges and Switches" },
 ];
 // Actual account-only prose/answers plus the loader's protected fixture markers.
 // No production Pro body exists yet; Pro exclusion is additionally covered by loader tests.
@@ -41,6 +42,11 @@ const protectedSentinels = [
   "A UDP exchange can use the same",
   "ACCOUNT_ONLY_SENTINEL",
   "PRO_ONLY_SENTINEL",
+  "same-segment-filtering",
+  "Host moved from port 2 to port 4",
+  "VLAN-aware forwarding",
+  "advanced Wireshark analysis",
+  "first-frame-unknown-destination",
 ];
 
 test("anonymous direct lesson exposes public learning, canonical metadata, and safe network payloads", async ({ page, request }) => {
@@ -122,6 +128,11 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
       if (slug === "osi-and-tcp-ip-models") {
         await expect(page.locator(".lesson-content")).toBeEmpty();
         await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
+      } else if (slug === "hubs-bridges-and-switches") {
+        await expect(page.getByRole("group", { name: "Compare intermediary behavior" })).toBeVisible();
+        await expect(page.getByRole("group", { name: "Choose a forwarding scenario" })).toHaveCount(0);
+        await expect(page.getByRole("button", { name: "I know this—proceed to advanced" })).toHaveCount(0);
+        await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
       } else if (slug === "cables-fibre-wireless-and-network-connections") {
         await expect(page.getByRole("group", { name: "Compare connection qualities" })).toBeVisible();
         await expect(page.getByRole("group", { name: "Choose a connection scenario" })).toHaveCount(0);
@@ -166,6 +177,7 @@ test("public tables expose row and column headers and remain keyboard-scrollable
   for (const [slug, caption, columns, rows] of [
     ["hosts-and-network-devices", "Network device roles", 4, 6],
     ["cables-fibre-wireless-and-network-connections", "Connection media at a glance", 5, 4],
+    ["hubs-bridges-and-switches", "Hub, bridge and switch at a glance", 5, 4],
   ] as const) {
     await page.goto(`/learn/networking-foundations/${slug}`);
     const table = page.getByRole("table", { name: caption, exact: true });
