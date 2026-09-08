@@ -58,6 +58,10 @@ const lessonImports = {
     account: () =>
       import("@/content/networking-foundations/first-packet-journey-through-a-small-network.account.mdx"),
   },
+  "networking-foundations/ethernet-frames-and-mac-addresses": {
+    public: () => import("@/content/networking-foundations/ethernet-frames-and-mac-addresses.public.mdx"),
+    account: () => import("@/content/networking-foundations/ethernet-frames-and-mac-addresses.account.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),

@@ -201,11 +201,23 @@ const curriculum: Pathway[] = [
         id: "module_ethernet_switching_and_local_networks", slug: "ethernet-switching-and-local-networks", title: "Ethernet, Switching and Local Networks",
         description: "Understand frames, local delivery, switching decisions, and broadcast boundaries.",
         lessons: [
-          plannedLesson({
+          {
             id: "lesson_ethernet_frames_and_mac_addresses", slug: "ethernet-frames-and-mac-addresses", title: "Ethernet Frames and MAC Addresses",
             objective: "Read the purpose of core Ethernet fields and distinguish unicast, broadcast, and multicast destinations.",
-            seo: { title: "Ethernet Frames and MAC Addresses", description: "Inspect Ethernet frame fields and learn how unicast, broadcast, and multicast MAC destinations guide local delivery." }, estimatedMinutes: 20,
-          }),
+            seo: { title: "Ethernet Frames and MAC Addresses", description: "Inspect Ethernet frame fields and learn how unicast, broadcast, and multicast MAC destinations guide local delivery." }, estimatedMinutes: 24,
+            published: true,
+            sections: [
+              { id: "ethernet-delivers-on-the-local-link", label: "Ethernet delivers on the local link", access: "public" },
+              { id: "read-an-ethernet-frame", label: "Read an Ethernet frame", access: "public" },
+              { id: "understand-mac-addresses", label: "Understand MAC addresses", access: "public" },
+              { id: "delivery-addresses", label: "Unicast, broadcast, multicast and unknown unicast", access: "public" },
+              { id: "interactive-frame-delivery", label: "Interactive frame delivery", access: "public" },
+              { id: "inspect-frame-evidence", label: "Inspect frame evidence", access: "account" },
+              { id: "diagnose-frame-problems", label: "Diagnose frame problems", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore standards validation, unusual frames, capture limitations, and difficult interview scenarios." },
+            ],
+          },
           plannedLesson({
             id: "lesson_how_switches_learn_and_forward", slug: "how-switches-learn-and-forward", title: "How Switches Learn and Forward",
             objective: "Build and use a MAC address table to predict forwarding, filtering, and flooding.",

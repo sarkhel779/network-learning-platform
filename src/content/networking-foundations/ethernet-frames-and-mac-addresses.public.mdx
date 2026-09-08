@@ -1,0 +1,42 @@
+<h2 id="ethernet-delivers-on-the-local-link">Ethernet delivers on the local link</h2>
+
+Ethernet moves data across one local link or switched LAN. A host places an upper-layer packet inside a **frame**, sends that frame from its network interface, and identifies the next local receiver with a MAC address. A router ends one Ethernet frame and creates another for the next link; Ethernet addresses are not end-to-end Internet addresses.
+
+Think of an IP address as the final street address and a MAC address as the label for the next local delivery. The labels solve different problems, and neither replaces the other.
+
+<h2 id="read-an-ethernet-frame">Read an Ethernet frame</h2>
+
+An Ethernet transmission begins with synchronization information, followed by destination and source MAC addresses. The type/length field explains what follows, the payload carries upper-layer data, optional padding satisfies the minimum frame size, and the frame check sequence helps detect corruption.
+
+In common Ethernet II captures, `0x0800` means IPv4, `0x0806` means ARP, and `0x86DD` means IPv6. A normal packet capture often omits the preamble, start-frame delimiter, and FCS because the network adapter processes them before software sees the frame.
+
+<h2 id="understand-mac-addresses">Understand MAC addresses</h2>
+
+A MAC address is normally written as six hexadecimal octets, such as `02:00:00:00:00:0A`. It identifies an interface for link-layer delivery. The first octet also carries individual/group and universal/local bits. An OUI can identify an assigned vendor block, but modern devices can use locally administered or randomized addresses.
+
+A MAC address is useful forwarding information—not a trustworthy username, permanent identity, or security boundary.
+
+<h2 id="delivery-addresses">Unicast, broadcast, multicast and unknown unicast</h2>
+
+<div className="lesson-table" role="region" aria-label="Ethernet delivery address comparison" tabIndex={0}>
+  <table>
+    <caption>Ethernet delivery address comparison</caption>
+    <thead><tr><th scope="col">Addressing case</th><th scope="col">Destination meaning</th><th scope="col">Typical switch action</th><th scope="col">Example</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Known unicast</th><td>One interface whose port is known</td><td>Forward one copy to that port</td><td>Ordinary traffic to a learned host</td></tr>
+      <tr><th scope="row">Broadcast</th><td>Every receiver in the VLAN</td><td>Flood except the ingress port</td><td>ARP request using <code>FF:FF:FF:FF:FF:FF</code></td></tr>
+      <tr><th scope="row">Multicast</th><td>A receiver group</td><td>Forward according to multicast knowledge, or flood where necessary</td><td>IPv4 mDNS using <code>01:00:5E:00:00:FB</code></td></tr>
+      <tr><th scope="row">Unknown unicast</th><td>One interface, but its port is unknown</td><td>Flood within the VLAN except the ingress port</td><td>First frame before the destination is learned</td></tr>
+    </tbody>
+  </table>
+</div>
+
+Unknown unicast is **not** broadcast. Its destination bit pattern still names one interface; flooding is the switch's temporary forwarding action.
+
+<h2 id="interactive-frame-delivery">Interactive frame delivery</h2>
+
+Choose each address type and follow the frame. The player starts automatically unless your device requests reduced motion. Pause it, move one step at a time, or open the technical packet fields.
+
+<EthernetFrameExplorer />
+
+<noscript><p><strong>Static comparison:</strong> known unicast uses one learned port; broadcast is delivered across the VLAN; multicast targets a receiver group; unknown unicast is flooded only because the destination port is not yet known.</p></noscript>

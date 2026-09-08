@@ -1,0 +1,40 @@
+<h2 id="inspect-frame-evidence" tabIndex={-1}>Inspect frame evidence</h2>
+
+<a className="primary-link" href="#diagnose-frame-problems">I know this—proceed to advanced</a>
+
+<WiresharkCheck
+  filter="eth"
+  fields={["eth.dst", "eth.src", "eth.type", "frame.len", "eth.fcs.status"]}
+  normalEvidence="The destination and source MAC addresses identify local-link endpoints. EtherType identifies the carried protocol. FCS may be absent because many adapters remove it before capture."
+  exercise="Capture an ARP request and a later unicast frame. Compare their destination MAC addresses and record the capture point before drawing conclusions about switch forwarding."
+/>
+
+<h2 id="diagnose-frame-problems">Diagnose frame problems</h2>
+
+Use evidence from the nearest observable layer:
+
+1. Confirm the interface is up and has negotiated a usable link.
+2. Check whether the expected frame leaves the source interface.
+3. Read source, destination, EtherType and frame length.
+4. Decide whether the switch should forward one copy or flood within the VLAN.
+5. Check the receiving NIC and VLAN before blaming an upper-layer protocol.
+
+<InterviewScenario prompt="A switch floods a frame whose destination is 02:00:00:00:00:99. Does this prove the sender used broadcast?">
+No. The individual/group bit indicates a unicast destination. Flooding can occur because the switch does not yet have that destination in its MAC table. Verify the table and VLAN, then observe whether later frames become known unicast.
+</InterviewScenario>
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck question="Which Ethernet field tells a receiver that the payload is IPv4 in an Ethernet II frame?" options={["EtherType", "Source MAC", "Frame check sequence"]} correctIndex={0} explanation="EtherType 0x0800 identifies IPv4 as the payload protocol." />
+
+<KnowledgeCheck question="Why can an unknown-unicast frame appear on several switch ports?" options={["The switch has not learned the destination port", "The destination is the broadcast MAC", "Every unicast frame must reach every host"]} correctIndex={0} explanation="The address remains unicast; the switch floods because its forwarding table lacks the destination location." />
+
+<KnowledgeCheck question="Why might Wireshark not display a frame check sequence?" options={["The adapter may remove it before capture", "Ethernet never uses error detection", "Only routers can read it"]} correctIndex={0} explanation="Many network adapters validate and strip the FCS before captured data reaches Wireshark." />
+
+Remember: Ethernet frames serve one local link, MAC addresses guide local delivery, and switch behavior depends on both the destination address type and learned forwarding state.
+
+<h2 id="pro-deep-dive">Pro Deep Dive</h2>
+
+<PremiumPreview ctaLabel="Join the Pro Member Waitlist" ctaHref="/contact">
+Future Pro material will examine IEEE frame formats, VLAN tags, malformed and giant/runt frames, capture-offload limitations, advanced Wireshark checks, production troubleshooting, and interview preparation.
+</PremiumPreview>

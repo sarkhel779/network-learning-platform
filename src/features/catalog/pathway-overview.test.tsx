@@ -53,7 +53,10 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /access points, modems, onts and firewalls/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/access-points-modems-onts-and-firewalls",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(9);
-    expect(screen.getAllByText("Coming later")).toHaveLength(15);
+    expect(screen.getByRole("link", { name: /ethernet frames and mac addresses/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/ethernet-frames-and-mac-addresses",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(10);
+    expect(screen.getAllByText("Coming later")).toHaveLength(14);
   });
 });

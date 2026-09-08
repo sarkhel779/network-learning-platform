@@ -207,6 +207,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "first-packet-journey-through-a-small-network",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "ethernet-frames-and-mac-addresses",
+      },
     ]);
   });
 
