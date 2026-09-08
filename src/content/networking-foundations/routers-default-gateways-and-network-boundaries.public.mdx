@@ -1,27 +1,80 @@
-## Why network boundaries matter
+A host does not send every packet in the same way. Before any frame leaves its interface, the
+host must decide whether the destination is reachable on the local link or whether a router must
+carry the packet across a network boundary.
 
-Networks use boundaries to decide when traffic must leave the local link.
+<h2 id="why-network-boundaries-matter">Why network boundaries matter</h2>
 
-## What a router does
+A subnet boundary separates one IP network from another. Hosts within the same local network can
+exchange frames directly. A destination outside that network needs a router. This choice affects
+the route, outgoing interface, next IP hop, and MAC address used in the first frame.
 
-A router connects IP networks and selects a path for eligible packets.
+Think of an apartment building: a message for another apartment stays inside the building, while
+a parcel for another street first goes to the building's exit. The exit matters, but it is not the
+parcel's final destination.
 
-## Local or remote?
+<h2 id="what-a-router-does">What a router does</h2>
 
-The host applies its configured prefix before making this decision.
+A router connects IP networks. It receives an eligible packet, consults its routing information,
+decreases the packet's TTL, and sends a newly framed copy through another interface. It does not
+simply repeat the incoming Ethernet frame.
 
-## The default gateway
+Ordinary Layer 2 broadcasts stop at the router boundary. Specially configured relay functions are
+different from forwarding every local broadcast by default.
 
-The gateway is the local next hop for a remote destination.
+<h2 id="local-or-remote">Local or remote?</h2>
 
-## Direct delivery and routed delivery
+The host compares the destination with its own address using the prefix configured on its interface.
+The host applies its configured prefix; matching the first three octets is not a general subnet rule.
+For example, a `/20` can include addresses whose third octets differ.
 
-Direct delivery reaches a local peer; routed delivery first reaches a router.
+1. Read the source IP address and its configured prefix.
+2. Apply that prefix to the destination address.
+3. If the network portions match, use direct delivery.
+4. Otherwise, find the most specific matching route, often the default route.
+5. Select that route's outgoing interface and local next hop.
 
-## What changes at each hop
+ARP answers only the local IPv4 next-hop question. It does not discover a remote host through a
+router and it does not replace a missing route.
 
-Link-layer framing changes while end-to-end IP addressing stays stable when NAT is absent.
+<h2 id="default-gateway">The default gateway</h2>
 
-## Interactive route-decision player
+The default gateway is normally a router interface that the host can reach on its local link. A
+default route is used only when no more-specific route matches. The gateway becomes the first IP
+next hop for remote traffic—not the packet's final destination.
 
-The interactive player will appear here.
+If the configured gateway is outside every usable on-link network, the host cannot normally reach
+it. A gateway setting alone does not make that address local.
+
+<h2 id="direct-and-routed-delivery">Direct delivery and routed delivery</h2>
+
+<div className="lesson-table" role="region" aria-label="Direct, routed and unavailable delivery comparison" tabIndex={0}>
+  <table>
+    <caption>How a host prepares its first transmission</caption>
+    <thead><tr><th scope="col">Question</th><th scope="col">Direct delivery</th><th scope="col">Routed delivery</th><th scope="col">No route</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Where is the destination?</th><td>On the local network</td><td>Beyond the local network</td><td>Beyond every known route</td></tr>
+      <tr><th scope="row">First IP next hop</th><td>The destination itself</td><td>The selected gateway</td><td>None</td></tr>
+      <tr><th scope="row">First frame targets</th><td>Destination interface MAC</td><td>Gateway interface MAC</td><td>No frame can be prepared</td></tr>
+      <tr><th scope="row">Packet destination IP</th><td>Destination host</td><td>Remote destination host</td><td>Known, but unreachable</td></tr>
+    </tbody>
+  </table>
+</div>
+
+For a remote destination, the packet keeps the remote destination IP address while the first Ethernet
+frame targets the gateway's MAC address. This example does not use NAT.
+
+<h2 id="what-changes-at-each-hop">What changes at each hop</h2>
+
+At a router, the incoming Layer 2 frame ends. The router processes the IP packet, decreases TTL,
+selects an outgoing route, and creates a new Layer 2 frame for the next link. MAC addresses change
+hop by hop. Without NAT, the source and destination IP addresses identify the same endpoints.
+
+The gateway's MAC address can therefore be the first frame's destination even though the gateway's
+IP address is not the packet's final destination.
+
+<h2 id="route-decision-player">Interactive route-decision player</h2>
+
+Choose a scenario and predict whether the host sends directly, uses its gateway, has no route, or
+stops a local broadcast at the router boundary.
+
+<RouteDecisionPlayer />
