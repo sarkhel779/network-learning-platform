@@ -1,7 +1,7 @@
 # Hubs, Bridges and Switches Lesson Design
 
 **Date:** 2026-09-08
-**Status:** Approved for specification review
+**Status:** Approved
 **Scope:** Publish one quality-first Networking Foundations lesson that teaches shared Ethernet, collision domains, bridge/switch learning, forwarding, filtering, flooding, and aging through accurate beginner explanations and an evidence-led frame-forwarding experience.
 
 ## Purpose
