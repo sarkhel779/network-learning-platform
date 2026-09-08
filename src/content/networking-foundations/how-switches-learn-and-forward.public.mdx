@@ -1,0 +1,67 @@
+<h2 id="the-switch-decision-cycle">The switch decision cycle</h2>
+
+A switch connects devices inside a Layer 2 network and decides where each Ethernet frame should
+leave. It does not begin by asking for the sender's IP route or application. It works with the
+frame arriving on a physical or logical switch interface.
+
+For every ordinary frame, remember this order:
+
+1. **Receive** the frame on an ingress interface.
+2. **Learn** the source MAC address on that ingress interface.
+3. **Look up** or classify the destination MAC address.
+4. **Forward, filter or flood** through eligible interfaces—never back through ingress.
+
+Think of a receptionist recording the door through which a person entered, then consulting a
+directory for the recipient. The analogy stops at one important limit: a switch learns from
+observed source frames, not from a trusted identity system, and an entry can age or move.
+
+<h2 id="learn-the-source-address">Learn the source address</h2>
+
+When a frame from `02:00:00:00:00:0A` arrives on `Gi0/1`, the switch records or refreshes
+`02:00:00:00:00:0A → Gi0/1`. That evidence answers one narrow question: **where was this source
+most recently observed in this Layer 2 scope?**
+
+The switch does not learn the destination from this frame. If the same source later arrives on
+`Gi0/3`, source learning refreshes the entry to `Gi0/3`. This is how normal host movement is
+learned; the table is dynamic rather than a permanent cabling inventory.
+
+<h2 id="look-up-the-destination">Look up the destination</h2>
+
+After source learning, the switch examines the destination MAC:
+
+- A current unicast entry on another interface identifies one egress interface.
+- A current unicast entry on the ingress interface means no other interface is required.
+- A missing unicast entry remains **unicast**, but its location is unknown.
+- `FF:FF:FF:FF:FF:FF` is explicitly broadcast and is not narrowed by a unicast table entry.
+
+The source and destination fields have different jobs: the source teaches the switch; the
+destination guides the forwarding decision.
+
+<h2 id="forward-filter-or-flood">Forward, filter or flood</h2>
+
+<div className="lesson-table" role="region" aria-label="Switch forwarding decisions table" tabIndex={0}>
+  <table>
+    <caption>Switch forwarding decisions</caption>
+    <thead><tr><th scope="col">Destination evidence</th><th scope="col">Decision</th><th scope="col">Eligible egress</th><th scope="col">What it means</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Known on another interface</th><td>Forward</td><td>That learned interface</td><td>Known unicast</td></tr>
+      <tr><th scope="row">Known on ingress</th><td>Filter</td><td>None</td><td>The destination is already behind the arriving segment</td></tr>
+      <tr><th scope="row">Unknown unicast</th><td>Flood</td><td>All eligible interfaces except ingress</td><td>One destination, temporarily unknown location</td></tr>
+      <tr><th scope="row">Broadcast</th><td>Flood</td><td>All eligible interfaces except ingress</td><td>Every receiver in the Layer 2 broadcast domain examines it</td></tr>
+    </tbody>
+  </table>
+</div>
+
+Flooding describes a switch action, not automatic acceptance by every endpoint. A network
+interface can receive a copy and discard it because the destination does not apply: **receipt is not acceptance**.
+The switch also stays within its current Layer 2 scope; routing and VLAN boundaries are separate decisions.
+
+<h2 id="interactive-switch-learning">Interactive switch learning</h2>
+
+Watch the frame enter a labelled interface, open its Ethernet fields, and follow the MAC table
+through source learning, destination lookup, egress selection and transmission. The player starts
+automatically unless reduced motion is enabled; all stages remain available through manual controls.
+
+<SwitchLearningPlayer />
+
+<noscript><p><strong>Static decision:</strong> receive on ingress, learn the source there, look up the destination, then forward one known unicast, filter a same-interface destination, or flood an unknown unicast or broadcast through eligible interfaces except ingress.</p></noscript>

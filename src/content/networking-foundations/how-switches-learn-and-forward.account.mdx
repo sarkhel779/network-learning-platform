@@ -1,0 +1,68 @@
+import { FrameForwardingExperience } from "@/features/switching/frame-forwarding-experience";
+import { loadAccountSwitchingScenarios } from "@/features/switching/switching.account-loader";
+
+{/* SWITCH_ACCOUNT_SENTINEL */}
+
+<h2 id="read-mac-table-evidence" tabIndex={-1}>Read MAC-table evidence</h2>
+
+<a className="primary-link" href="#diagnose-switching-behaviour">I know this—proceed to advanced</a>
+
+A MAC table is evidence about learned Layer 2 locations. Read the VLAN or forwarding context,
+MAC address, learned interface and entry freshness together. A single entry does not prove that
+the endpoint has a correct IP address, that return traffic works, or that its application is healthy.
+
+<WiresharkCheck
+  filter="eth.addr == 02:00:00:00:00:0A"
+  fields={["frame.number", "eth.src", "eth.dst", "eth.type", "frame.time_relative"]}
+  normalEvidence="Repeated source frames establish where and when the endpoint was observed. Compare the capture point with the switch's learned interface before claiming movement or flooding."
+  exercise="Send traffic in both directions. Record the first unknown-unicast observation, the reply that teaches the second source, and a later known-unicast exchange."
+/>
+
+<FrameForwardingExperience scenarios={loadAccountSwitchingScenarios()} showAdvancedShortcut={true} />
+
+<h2 id="diagnose-switching-behaviour">Diagnose switching behaviour</h2>
+
+Use the same evidence sequence every time:
+
+1. Define the affected source, destination, direction and Layer 2 scope.
+2. Verify link and interface state before interpreting the MAC table.
+3. Identify ingress and read the frame's source and destination MAC addresses.
+4. Confirm whether the source entry was learned or refreshed.
+5. Classify the destination as known unicast, unknown unicast or broadcast.
+6. Predict eligible egress interfaces, excluding ingress.
+7. Repeat the same traffic and compare the new table and forwarding result.
+
+Common mistakes include clearing the entire table before collecting evidence, calling every flooded
+frame a broadcast, assuming an aged entry proves failure, and treating a learned MAC as proof that
+the application works. A physical link failure must be repaired before MAC-table changes can help.
+
+<InterviewScenario prompt="The first frame to a server is seen on three access ports, but later frames use only one. Is the switch malfunctioning?">
+Not necessarily. The first destination may have been unknown, so the switch flooded eligible ports.
+A reply taught the server's source location, allowing later known-unicast forwarding. Verify the
+destination bit pattern, table timestamps, VLAN and capture position before concluding there is a loop.
+</InterviewScenario>
+
+<InterviewScenario prompt="A user's MAC address changes from Gi0/2 to Gi0/3. What would you verify before treating it as an attack?">
+Confirm the endpoint identity, recent physical move, wireless or downstream bridging path, timestamps,
+VLAN context and repeated source frames. Source learning refreshes a legitimate moved host. Rapid
+alternation between distant interfaces can be suspicious, but one updated entry is not sufficient proof.
+</InterviewScenario>
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck question="Which field teaches a switch where an endpoint is located?" options={["Source MAC address", "Destination MAC address", "EtherType"]} correctIndex={0} explanation="The arriving source proves which ingress interface currently reaches that MAC address." />
+
+<KnowledgeCheck question="A unicast destination has no current MAC-table entry. What is the foundational switch action?" options={["Flood eligible interfaces except ingress", "Send it to the default gateway", "Change it to the broadcast MAC"]} correctIndex={0} explanation="The frame remains unicast. The switch floods temporarily because it does not know the destination interface." />
+
+<KnowledgeCheck question="Why might a switch forward no copy when the destination is learned on ingress?" options={["It filters an unnecessary return to the same segment", "It always drops known unicast", "The frame automatically becomes multicast"]} correctIndex={0} explanation="A bridge does not forward a frame back toward the segment where the destination is already learned." />
+
+Remember: **learn the source first, inspect the destination second, then forward, filter or flood**.
+Always separate receipt, forwarding and endpoint acceptance when explaining the outcome.
+
+<h2 id="pro-deep-dive">Pro Deep Dive</h2>
+
+<PremiumPreview ctaLabel="Join the Pro Member Waitlist" ctaHref="/contact">
+Future Pro depth will cover VLAN-aware MAC tables, static and secure entries, platform-specific
+show commands, multicast-aware forwarding, loop and MAC-flap evidence, capture-position limitations,
+advanced Wireshark checks, IEEE-guided validation, production troubleshooting and interview preparation.
+</PremiumPreview>

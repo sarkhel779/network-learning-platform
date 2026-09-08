@@ -289,7 +289,7 @@ describe("PacketFlowPlayer", () => {
     expect(screen.getByText(/Active: Client, Gateway; link Client to Gateway/)).toBeVisible();
   });
 
-  it("travels between step endpoints and remounts the marker when direction reverses", () => {
+  it("travels between visible link endpoints and remounts the marker when direction reverses", () => {
     const { container, rerender } = render(
       <NetworkTopology scenario={scenario} step={scenario.steps[0]} reducedMotion={false} />,
     );
@@ -297,8 +297,8 @@ describe("PacketFlowPlayer", () => {
     const requestAnimation = requestMarker?.querySelector("animateTransform");
 
     expect(requestMarker).toHaveAttribute("data-step-id", "request");
-    expect(requestAnimation).toHaveAttribute("from", "80 120");
-    expect(requestAnimation).toHaveAttribute("to", "720 120");
+    expect(requestAnimation).toHaveAttribute("from", "152 120");
+    expect(requestAnimation).toHaveAttribute("to", "648 120");
 
     rerender(<NetworkTopology scenario={scenario} step={reverseTravelStep} reducedMotion={false} />);
     const replyMarker = container.querySelector("[data-packet-marker]");
@@ -306,8 +306,8 @@ describe("PacketFlowPlayer", () => {
 
     expect(replyMarker).not.toBe(requestMarker);
     expect(replyMarker).toHaveAttribute("data-step-id", "reply-on-same-link");
-    expect(replyAnimation).toHaveAttribute("from", "720 120");
-    expect(replyAnimation).toHaveAttribute("to", "80 120");
+    expect(replyAnimation).toHaveAttribute("from", "648 120");
+    expect(replyAnimation).toHaveAttribute("to", "152 120");
   });
 
   it("renders a reduced-motion packet directly at the destination", () => {
@@ -316,7 +316,7 @@ describe("PacketFlowPlayer", () => {
     );
     const marker = container.querySelector("[data-packet-marker]");
 
-    expect(marker).toHaveAttribute("transform", "translate(720 120)");
+    expect(marker).toHaveAttribute("transform", "translate(648 120)");
     expect(marker?.querySelector("animateTransform")).not.toBeInTheDocument();
   });
 

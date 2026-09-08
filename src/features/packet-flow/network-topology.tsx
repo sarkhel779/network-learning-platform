@@ -32,7 +32,21 @@ function getActiveText(scenario: PacketFlowScenario, step: PacketFlowStep): stri
 function packetKindLabel(label: string): string {
   if (label.startsWith("ARP")) return "ARP";
   if (label.startsWith("ICMP")) return "ICMP";
-  return label;
+  return "FRAME";
+}
+
+function insetLinkPoint(
+  from: { x: number; y: number },
+  to: { x: number; y: number },
+  fromEnd: boolean,
+): { x: number; y: number } {
+  const distance = Math.hypot(to.x - from.x, to.y - from.y);
+  if (!distance) return from;
+  const inset = Math.min(72, distance / 3);
+  const ratio = inset / distance;
+  return fromEnd
+    ? { x: to.x - (to.x - from.x) * ratio, y: to.y - (to.y - from.y) * ratio }
+    : { x: from.x + (to.x - from.x) * ratio, y: from.y + (to.y - from.y) * ratio };
 }
 
 function deviceSymbolKind(device: PacketFlowScenario["devices"][number]): NetworkDeviceSymbolKind {
@@ -53,16 +67,21 @@ export function NetworkTopology({
   onDeviceSelect,
 }: NetworkTopologyProps) {
   const devicesById = new Map(scenario.devices.map((device) => [device.id, device]));
-  const packetLink = step.packet
-    ? scenario.links.find(
-        (link) =>
-          step.activeLinkIds.includes(link.id) &&
-          ((link.from === step.packet!.from && link.to === step.packet!.to) ||
-            (link.from === step.packet!.to && link.to === step.packet!.from)),
-      )
-    : undefined;
-  const packetFrom = step.packet ? devicesById.get(step.packet.from) : undefined;
-  const packetTo = step.packet ? devicesById.get(step.packet.to) : undefined;
+  const packetTravels = step.packet
+    ? scenario.links.flatMap((link) => {
+        if (!step.activeLinkIds.includes(link.id)) return [];
+        const otherId = link.from === step.packet!.from
+          ? link.to
+          : link.to === step.packet!.from
+            ? link.from
+            : undefined;
+        if (!otherId || (!step.packet!.fanOut && otherId !== step.packet!.to)) return [];
+        const from = devicesById.get(step.packet!.from);
+        const to = devicesById.get(otherId);
+        if (!from || !to) return [];
+        return [{ link, start: insetLinkPoint(from, to, false), end: insetLinkPoint(from, to, true) }];
+      })
+    : [];
   const titleId = `${scenario.id}-topology-title`;
   const descriptionId = `${scenario.id}-topology-description`;
 
@@ -96,31 +115,31 @@ export function NetworkTopology({
             );
           })}
         </g>
-        {packetLink && packetFrom && packetTo && step.packet ? (
+        {step.packet ? packetTravels.map(({ link, start, end }) => (
           <g
-            key={step.id}
+            key={`${step.id}-${link.id}`}
             className={`network-topology__packet-marker${step.packet.broadcast ? " network-topology__packet-marker--broadcast" : ""}${reducedMotion ? " network-topology__packet-marker--discrete" : ""}`}
             data-broadcast={step.packet.broadcast ? "true" : undefined}
             data-packet-marker="true"
-            data-link-id={packetLink.id}
+            data-link-id={link.id}
             data-step-id={step.id}
             aria-hidden="true"
-            transform={`translate(${packetTo.x} ${packetTo.y})`}
+            transform={`translate(${end.x} ${end.y})`}
           >
             {!reducedMotion ? (
               <animateTransform
                 attributeName="transform"
                 type="translate"
-                from={`${packetFrom.x} ${packetFrom.y}`}
-                to={`${packetTo.x} ${packetTo.y}`}
+                from={`${start.x} ${start.y}`}
+                to={`${end.x} ${end.y}`}
                 dur="600ms"
                 fill="freeze"
               />
             ) : null}
-            <circle r="18" />
+            <rect x="-44" y="-19" width="88" height="38" rx="9" />
             <text textAnchor="middle" dy="0.35em">{packetKindLabel(step.packet.label)}</text>
           </g>
-        ) : null}
+        )) : null}
         <g className="network-topology__devices">
           {scenario.devices.map((device) => {
             const active = step.activeDeviceIds.includes(device.id);

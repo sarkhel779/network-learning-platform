@@ -218,11 +218,23 @@ const curriculum: Pathway[] = [
               { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore standards validation, unusual frames, capture limitations, and difficult interview scenarios." },
             ],
           },
-          plannedLesson({
+          {
             id: "lesson_how_switches_learn_and_forward", slug: "how-switches-learn-and-forward", title: "How Switches Learn and Forward",
             objective: "Build and use a MAC address table to predict forwarding, filtering, and flooding.",
-            seo: { title: "How Network Switches Learn and Forward", description: "Build a switch MAC table step by step to predict known forwarding, filtering, unknown flooding, and host movement." }, estimatedMinutes: 20,
-          }),
+            seo: { title: "How Network Switches Learn and Forward", description: "Build a switch MAC table step by step to predict known forwarding, filtering, unknown flooding, and host movement." }, estimatedMinutes: 24,
+            published: true,
+            sections: [
+              { id: "the-switch-decision-cycle", label: "The switch decision cycle", access: "public" },
+              { id: "learn-the-source-address", label: "Learn the source address", access: "public" },
+              { id: "look-up-the-destination", label: "Look up the destination", access: "public" },
+              { id: "forward-filter-or-flood", label: "Forward, filter or flood", access: "public" },
+              { id: "interactive-switch-learning", label: "Interactive switch learning", access: "public" },
+              { id: "read-mac-table-evidence", label: "Read MAC-table evidence", access: "account" },
+              { id: "diagnose-switching-behaviour", label: "Diagnose switching behaviour", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore VLAN-aware tables, managed-switch evidence, packet captures, standards checks, and advanced interview scenarios." },
+            ],
+          },
           plannedLesson({
             id: "lesson_arp_and_local_delivery", slug: "arp-and-local-delivery", title: "ARP and Local Delivery",
             objective: "Explain how IPv4 nodes resolve a local next-hop IP address to a MAC address.",
