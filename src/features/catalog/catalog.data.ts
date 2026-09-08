@@ -123,11 +123,25 @@ const curriculum: Pathway[] = [
               { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Discover future multicast operations, advanced packet analysis, and production troubleshooting." },
             ],
           },
-          plannedLesson({
+          {
             id: "lesson_routers_default_gateways_and_network_boundaries", slug: "routers-default-gateways-and-network-boundaries", title: "Routers, Default Gateways and Network Boundaries",
             objective: "Decide whether a destination is local or remote and identify the first next hop.",
-            seo: { title: "Routers and Default Gateways Basics", description: "Learn how a host decides between local delivery and a default gateway when it needs to reach a remote destination." }, estimatedMinutes: 20,
-          }),
+            seo: { title: "Routers and Default Gateways Basics", description: "Learn how a host decides between local delivery and a default gateway when it needs to reach a remote destination." },
+            published: true, estimatedMinutes: 20,
+            sections: [
+              { id: "why-network-boundaries-matter", label: "Why network boundaries matter", access: "public" },
+              { id: "what-a-router-does", label: "What a router does", access: "public" },
+              { id: "local-or-remote", label: "Local or remote?", access: "public" },
+              { id: "default-gateway", label: "The default gateway", access: "public" },
+              { id: "direct-and-routed-delivery", label: "Direct delivery and routed delivery", access: "public" },
+              { id: "what-changes-at-each-hop", label: "What changes at each hop", access: "public" },
+              { id: "route-decision-player", label: "Interactive route-decision player", access: "public" },
+              { id: "read-a-basic-routing-table", label: "Read a basic routing table", access: "account" },
+              { id: "diagnose-gateway-boundary-problems", label: "Diagnose gateway and boundary problems", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore advanced route selection, packet analysis, standards checks, production troubleshooting, and interview preparation." },
+            ],
+          },
           plannedLesson({
             id: "lesson_access_points_modems_onts_and_firewalls", slug: "access-points-modems-onts-and-firewalls", title: "Access Points, Modems, ONTs and Firewalls",
             objective: "Explain where common edge devices fit and distinguish access, conversion, routing, and security roles.",
