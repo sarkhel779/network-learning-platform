@@ -20,7 +20,7 @@ export function RouteDecisionPlayer() {
 
   return (
     <section aria-labelledby="route-decision-title" className="route-decision-player" data-motion={reducedMotion || !isHydrated ? "reduced" : "travel"}>
-      <h3 id="route-decision-title">Make the host's route decision</h3>
+      <h3 id="route-decision-title">Make the host&apos;s route decision</h3>
       <p>Change the destination and watch the route, next hop, first frame, and boundary action update together.</p>
 
       <fieldset className="route-decision-player__choices">
