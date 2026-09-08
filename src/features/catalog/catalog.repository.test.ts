@@ -78,6 +78,7 @@ describe("catalog repository", () => {
     expect(listPublishedLessons(pathway.slug).map(({ slug }) => slug).sort()).toEqual([
       "access-points-modems-onts-and-firewalls",
       "cables-fibre-wireless-and-network-connections",
+      "ethernet-frames-and-mac-addresses",
       "first-packet-journey-through-a-small-network",
       "hosts-and-network-devices",
       "how-networks-communicate",
@@ -95,6 +96,31 @@ describe("catalog repository", () => {
     expect(lessons.map(({ title }) => title).join(" ")).not.toMatch(
       /Firewall Fundamentals|Palo Alto|IPsec|VPN/i,
     );
+  });
+
+  it("publishes Ethernet frames after the packet-journey capstone with progressive access", () => {
+    const lesson = getLesson("networking-foundations", "ethernet-frames-and-mac-addresses");
+
+    expect(lesson).toMatchObject({
+      title: "Ethernet Frames and MAC Addresses",
+      estimatedMinutes: 24,
+      published: true,
+    });
+    expect(lesson.sections?.map(({ id, access }) => [id, access])).toEqual([
+      ["ethernet-delivers-on-the-local-link", "public"],
+      ["read-an-ethernet-frame", "public"],
+      ["understand-mac-addresses", "public"],
+      ["delivery-addresses", "public"],
+      ["interactive-frame-delivery", "public"],
+      ["inspect-frame-evidence", "account"],
+      ["diagnose-frame-problems", "account"],
+      ["knowledge-check-summary", "account"],
+      ["pro-deep-dive", "pro"],
+    ]);
+    expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
+      previous: { slug: "first-packet-journey-through-a-small-network", published: true },
+      next: { slug: "how-switches-learn-and-forward", published: false },
+    });
   });
 
   it("publishes delivery scope immediately after switching with its approved access contract", () => {
@@ -212,7 +238,7 @@ describe("catalog repository", () => {
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
       previous: { slug: "osi-and-tcp-ip-models", published: true },
-      next: { slug: "ethernet-frames-and-mac-addresses", published: false },
+      next: { slug: "ethernet-frames-and-mac-addresses", published: true },
     });
   });
 
@@ -230,6 +256,7 @@ describe("catalog repository", () => {
       "access-points-modems-onts-and-firewalls",
       "osi-and-tcp-ip-models",
       "first-packet-journey-through-a-small-network",
+      "ethernet-frames-and-mac-addresses",
     ]);
     expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
       title: "Cables, Fibre, Wireless and Network Connections",
@@ -290,7 +317,7 @@ describe("catalog repository", () => {
   it("keeps public foundations limited to published beginner lessons", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[6], lessons[7], lessons[8]];
+    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[6], lessons[7], lessons[8], lessons[9]];
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
@@ -300,12 +327,13 @@ describe("catalog repository", () => {
     expect(routers.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(edgeDevices.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(packetJourney.sections?.some(({ access }) => access === "public")).toBe(true);
+    expect(ethernetFrames.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(
-      lessons.slice(9).some(({ sections }) =>
+      lessons.slice(10).some(({ sections }) =>
         sections?.some(({ access }) => access === "public"),
       ),
     ).toBe(false);
-    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney]) {
+    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames]) {
       expect(lesson.sections?.at(-1)).toEqual(expect.objectContaining({
         id: "pro-deep-dive",
         label: "Pro Deep Dive",

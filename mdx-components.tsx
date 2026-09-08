@@ -19,6 +19,7 @@ import { RouteDecisionPlayer } from "@/features/route-decision/route-decision-pl
 import { RouteDecisionExperience } from "@/features/route-decision/route-decision-experience";
 import { EdgeDevicePlayer } from "@/features/edge-devices/edge-device-player";
 import { FirstPacketJourneyPlayer } from "@/features/packet-flow/first-packet-journey-player";
+import { EthernetFrameExplorer } from "@/features/ethernet/ethernet-frame-explorer";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -26,6 +27,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     EncapsulationExperience,
     DeviceLayerScope,
     EdgeDevicePlayer,
+    EthernetFrameExplorer,
     FirstPacketJourneyPlayer,
     DeliveryScopePlayer,
     HostsAndDevicesExperience,
