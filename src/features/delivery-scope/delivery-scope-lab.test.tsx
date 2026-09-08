@@ -1,4 +1,6 @@
 import { cleanup, render, screen } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 vi.mock("server-only", () => ({}));
@@ -39,5 +41,14 @@ describe("DeliveryScopeLab", () => {
     expect(screen.getByText(/Check 2:/)).toBeVisible();
     await user.click(screen.getByRole("radio", { name: "ARP request in one LAN" }));
     expect(screen.queryByText(/Check 2:/)).toBeNull();
+  });
+
+  it("provides accessible touch targets through scoped styles", () => {
+    const style = document.head.appendChild(document.createElement("style"));
+    style.textContent = readFileSync(join(process.cwd(), "src", "app", "globals.css"), "utf8");
+    try {
+      render(<DeliveryScopeLab scenarios={accountDeliveryScenarios} showAdvancedShortcut />);
+      expect(Number.parseFloat(getComputedStyle(screen.getAllByRole("radio")[0].closest("label")!).minBlockSize)).toBeGreaterThanOrEqual(44);
+    } finally { style.remove(); }
   });
 });

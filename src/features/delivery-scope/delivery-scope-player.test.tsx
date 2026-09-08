@@ -1,4 +1,6 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import userEvent from "@testing-library/user-event";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -49,5 +51,15 @@ describe("DeliveryScopePlayer", () => {
     const components = useMDXComponents({});
     expect(components.DeliveryScopePlayer).toBe(DeliveryScopePlayer);
     expect(components).not.toHaveProperty("DeliveryScopeLab");
+  });
+
+  it("provides 44px controls and scoped non-colour state styling", () => {
+    const style = document.head.appendChild(document.createElement("style"));
+    style.textContent = readFileSync(join(process.cwd(), "src", "app", "globals.css"), "utf8");
+    try {
+      render(<DeliveryScopePlayer />);
+      for (const radio of screen.getAllByRole("radio")) expect(Number.parseFloat(getComputedStyle(radio.closest("label")!).minBlockSize)).toBeGreaterThanOrEqual(44);
+      expect(style.textContent).toMatch(/\.delivery-scope-results/);
+    } finally { style.remove(); }
   });
 });
