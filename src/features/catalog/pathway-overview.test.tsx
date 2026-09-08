@@ -62,7 +62,10 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /arp and local delivery/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/arp-and-local-delivery",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(12);
-    expect(screen.getAllByText("Coming later")).toHaveLength(12);
+    expect(screen.getByRole("link", { name: /vlans, access ports and trunks/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/vlans-access-ports-and-trunks",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(13);
+    expect(screen.getAllByText("Coming later")).toHaveLength(11);
   });
 });

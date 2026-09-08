@@ -69,6 +69,12 @@ vi.mock("@/content/networking-foundations/arp-and-local-delivery.public.mdx", ()
 vi.mock("@/content/networking-foundations/arp-and-local-delivery.account.mdx", () => ({
   default: () => null,
 }));
+vi.mock("@/content/networking-foundations/vlans-access-ports-and-trunks.public.mdx", () => ({
+  default: () => null,
+}));
+vi.mock("@/content/networking-foundations/vlans-access-ports-and-trunks.account.mdx", () => ({
+  default: () => null,
+}));
 
 import {
   createAuthorizedLessonContentLoader,
@@ -228,6 +234,18 @@ describe("loadAuthorizedLessonContent", () => {
     expect(anonymous.public).toBeDefined();
     expect(anonymous.account).toBeUndefined();
     expect(anonymous.pro).toBeUndefined();
+
+    const account = await loadAuthorizedLessonContent(key, "account");
+    expect(account.public).toBeDefined();
+    expect(account.account).toBeDefined();
+    expect(account.pro).toBeUndefined();
+  });
+
+  it("keeps VLAN evidence practice protected while serving VLAN fundamentals anonymously", async () => {
+    const key = "networking-foundations/vlans-access-ports-and-trunks";
+    const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
+    expect(anonymous.public).toBeDefined();
+    expect(anonymous.account).toBeUndefined();
 
     const account = await loadAuthorizedLessonContent(key, "account");
     expect(account.public).toBeDefined();

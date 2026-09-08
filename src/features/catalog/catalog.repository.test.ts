@@ -88,6 +88,7 @@ describe("catalog repository", () => {
       "osi-and-tcp-ip-models",
       "routers-default-gateways-and-network-boundaries",
       "unicast-broadcast-and-multicast-communication",
+      "vlans-access-ports-and-trunks",
     ]);
     expect(getLesson(pathway.slug, "how-networks-communicate").title)
       .toBe("What Is a Computer Network?");
@@ -172,7 +173,29 @@ describe("catalog repository", () => {
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
       previous: { slug: "how-switches-learn-and-forward", published: true },
-      next: { slug: "vlans-access-ports-and-trunks", published: false },
+      next: { slug: "vlans-access-ports-and-trunks", published: true },
+    });
+  });
+
+  it("publishes VLANs after ARP with progressive access", () => {
+    const lesson = getLesson("networking-foundations", "vlans-access-ports-and-trunks");
+
+    expect(lesson).toMatchObject({ estimatedMinutes: 24, published: true });
+    expect(lesson.sections?.map(({ id, access }) => [id, access])).toEqual([
+      ["why-vlans-exist", "public"],
+      ["access-ports-and-membership", "public"],
+      ["interactive-vlan-membership", "public"],
+      ["trunks-and-802-1q", "public"],
+      ["interactive-tag-journey", "public"],
+      ["allowed-vlans-and-routing-boundary", "public"],
+      ["read-port-and-capture-evidence", "account"],
+      ["solve-vlan-reachability", "account"],
+      ["knowledge-check-summary", "account"],
+      ["pro-deep-dive", "pro"],
+    ]);
+    expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
+      previous: { slug: "arp-and-local-delivery", published: true },
+      next: { slug: "ipv4-addressing", published: false },
     });
   });
 
@@ -312,6 +335,7 @@ describe("catalog repository", () => {
       "ethernet-frames-and-mac-addresses",
       "how-switches-learn-and-forward",
       "arp-and-local-delivery",
+      "vlans-access-ports-and-trunks",
     ]);
     expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
       title: "Cables, Fibre, Wireless and Network Connections",
@@ -372,7 +396,7 @@ describe("catalog repository", () => {
   it("keeps public foundations limited to published beginner lessons", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[6], lessons[7], lessons[8], lessons[9], lessons[10], lessons[11]];
+    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[6], lessons[7], lessons[8], lessons[9], lessons[10], lessons[11], lessons[12]];
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
@@ -385,12 +409,13 @@ describe("catalog repository", () => {
     expect(ethernetFrames.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(switchLearning.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(arp.sections?.some(({ access }) => access === "public")).toBe(true);
+    expect(vlans.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(
-      lessons.slice(12).some(({ sections }) =>
+      lessons.slice(13).some(({ sections }) =>
         sections?.some(({ access }) => access === "public"),
       ),
     ).toBe(false);
-    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp]) {
+    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans]) {
       expect(lesson.sections?.at(-1)).toEqual(expect.objectContaining({
         id: "pro-deep-dive",
         label: "Pro Deep Dive",

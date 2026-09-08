@@ -252,11 +252,24 @@ const curriculum: Pathway[] = [
               { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore RFC-guided cache behavior, ARP security evidence, advanced captures, production troubleshooting, and interview preparation." },
             ],
           },
-          plannedLesson({
+          {
             id: "lesson_vlans_access_ports_and_trunks", slug: "vlans-access-ports-and-trunks", title: "VLANs, Access Ports and Trunks",
             objective: "Explain why VLANs create separate broadcast domains and how access and trunk links carry them.",
-            seo: { title: "VLANs, Access Ports and Trunks", description: "Discover how VLANs separate broadcast domains and how access and trunk links carry traffic between network devices." }, estimatedMinutes: 20,
-          }),
+            seo: { title: "VLANs, Access Ports and Trunks", description: "Discover how VLANs separate broadcast domains and how access and trunk links carry traffic between network devices." }, estimatedMinutes: 24,
+            published: true,
+            sections: [
+              { id: "why-vlans-exist", label: "Why VLANs exist", access: "public" },
+              { id: "access-ports-and-membership", label: "Access ports and membership", access: "public" },
+              { id: "interactive-vlan-membership", label: "Interactive VLAN membership", access: "public" },
+              { id: "trunks-and-802-1q", label: "Trunks and 802.1Q", access: "public" },
+              { id: "interactive-tag-journey", label: "Interactive tag journey", access: "public" },
+              { id: "allowed-vlans-and-routing-boundary", label: "Allowed VLANs and routing boundary", access: "public" },
+              { id: "read-port-and-capture-evidence", label: "Read port and capture evidence", access: "account" },
+              { id: "solve-vlan-reachability", label: "Solve VLAN reachability", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Diagnose native and allowed VLAN mismatches, trace advanced inter-VLAN paths, inspect standards-guided captures, and prepare for production and interview scenarios." },
+            ],
+          },
         ],
       },
       {

@@ -218,6 +218,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "arp-and-local-delivery",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "vlans-access-ports-and-trunks",
+      },
     ]);
   });
 
