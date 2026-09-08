@@ -15,6 +15,7 @@ import { NetworkCommunicationPacketFlow } from "@/features/packet-flow/packet-fl
 import { NetworkDeviceSymbol } from "@/features/packet-flow/network-device-symbol";
 import { SwitchingComparison } from "@/features/switching/switching-comparison";
 import { DeliveryScopePlayer } from "@/features/delivery-scope/delivery-scope-player";
+import { RouteDecisionPlayer } from "@/features/route-decision/route-decision-player";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -31,6 +32,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     NetworkCommunicationPacketFlow,
     NetworkDeviceSymbol,
     PremiumPreview,
+    RouteDecisionPlayer,
     SwitchingComparison,
     WiresharkCheck,
     ...components,

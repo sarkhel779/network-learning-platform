@@ -525,3 +525,24 @@ h1 {
 @media (min-width: 56rem) { .delivery-scope-results { grid-template-columns: repeat(4, minmax(0, 1fr)); } .delivery-scope-lab__predictions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 35rem) { .delivery-scope-topology { flex-direction: column; } }
 @media (prefers-reduced-motion: reduce) { .delivery-scope-player *, .delivery-scope-lab * { animation: none !important; transition: none !important; } }
+
+.route-decision-player { min-width: 0; max-width: 100%; margin: 2rem 0; padding: clamp(0.8rem, 2.5vw, 1.4rem); overflow-wrap: anywhere; border: 1px solid var(--border); border-radius: 0.75rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); }
+.route-decision-player > h3 { margin-top: 0; }
+.route-decision-player fieldset { min-width: 0; margin: 1rem 0; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; }
+.route-decision-player legend { font-weight: 800; }
+.route-decision-player__choices, .route-decision-player__explanation-mode { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.route-decision-player label { display: flex; align-items: center; gap: 0.55rem; min-block-size: 44px; padding: 0.55rem 0.7rem; border: 1px solid var(--border); border-radius: 0.45rem; background: var(--background); cursor: pointer; }
+.route-decision-player label:has(input:checked) { border-color: var(--accent); border-inline-start-width: 0.35rem; background: color-mix(in srgb, var(--accent) 10%, var(--background)); }
+.route-decision-player input { accent-color: var(--accent); }
+.route-decision-topology { min-width: 0; margin: 1rem 0; padding: 0.8rem; border: 2px dashed var(--accent); border-radius: 0.55rem; background: var(--background); text-align: center; }
+.route-decision-topology svg { display: block; width: 100%; max-width: 42rem; height: auto; margin: auto; overflow: visible; }
+.route-decision-topology__link { fill: none; stroke: var(--accent); stroke-width: 4; stroke-dasharray: 10 7; }
+.route-decision-player[data-motion="travel"] .route-decision-topology__link { animation: route-link-flow 1.5s linear infinite; }
+@keyframes route-link-flow { to { stroke-dashoffset: -34; } }
+.route-decision-results { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
+.route-decision-results section { min-width: 0; padding: 0.8rem; border: 1px solid var(--border); border-inline-start: 0.35rem solid var(--accent); border-radius: 0.45rem; background: var(--background); }
+.route-decision-results h4 { margin-top: 0; }
+.route-decision-player__explanation { padding: 0.9rem; border-inline-start: 0.35rem solid var(--accent); background: var(--background); }
+@media (min-width: 56rem) { .route-decision-results { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+@media (max-width: 35rem) { .route-decision-player__choices label { width: 100%; } }
+@media (prefers-reduced-motion: reduce) { .route-decision-player * { animation: none !important; transition: none !important; } }
