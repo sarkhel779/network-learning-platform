@@ -23,8 +23,8 @@ test("shows the networking pathway and its published lesson links", async ({ pag
     .toHaveCount(0);
 
   const lessonLinks = page.locator(".lesson-list h3 a");
-  await expect(lessonLinks).toHaveCount(7);
-  await expect(page.locator(".lesson-list").getByText("Coming later", { exact: true })).toHaveCount(17);
+  await expect(lessonLinks).toHaveCount(8);
+  await expect(page.locator(".lesson-list").getByText("Coming later", { exact: true })).toHaveCount(16);
   await expect(lessonLinks.filter({ hasText: "Cables, Fibre, Wireless and Network Connections" })).toHaveAttribute(
     "href", "/learn/networking-foundations/cables-fibre-wireless-and-network-connections",
   );
@@ -46,6 +46,9 @@ test("shows the networking pathway and its published lesson links", async ({ pag
   );
   await expect(lessonLinks.filter({ hasText: "Routers, Default Gateways and Network Boundaries" })).toHaveAttribute(
     "href", "/learn/networking-foundations/routers-default-gateways-and-network-boundaries",
+  );
+  await expect(lessonLinks.filter({ hasText: "Access Points, Modems, ONTs and Firewalls" })).toHaveAttribute(
+    "href", "/learn/networking-foundations/access-points-modems-onts-and-firewalls",
   );
 
   await expect(publishedLessonLink).toHaveAttribute(

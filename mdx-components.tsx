@@ -17,12 +17,14 @@ import { SwitchingComparison } from "@/features/switching/switching-comparison";
 import { DeliveryScopePlayer } from "@/features/delivery-scope/delivery-scope-player";
 import { RouteDecisionPlayer } from "@/features/route-decision/route-decision-player";
 import { RouteDecisionExperience } from "@/features/route-decision/route-decision-experience";
+import { EdgeDevicePlayer } from "@/features/edge-devices/edge-device-player";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ConnectionMediaComparison,
     EncapsulationExperience,
     DeviceLayerScope,
+    EdgeDevicePlayer,
     DeliveryScopePlayer,
     HostsAndDevicesExperience,
     HostsAndDevicesStaticOverview,

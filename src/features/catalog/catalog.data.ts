@@ -142,11 +142,24 @@ const curriculum: Pathway[] = [
               { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore advanced route selection, packet analysis, standards checks, production troubleshooting, and interview preparation." },
             ],
           },
-          plannedLesson({
+          {
             id: "lesson_access_points_modems_onts_and_firewalls", slug: "access-points-modems-onts-and-firewalls", title: "Access Points, Modems, ONTs and Firewalls",
             objective: "Explain where common edge devices fit and distinguish access, conversion, routing, and security roles.",
             seo: { title: "Access Points, Modems, ONTs and Firewalls", description: "Place common home and office edge devices in a topology and distinguish their access, conversion, routing, and boundary roles." }, estimatedMinutes: 20,
-          }),
+            published: true,
+            sections: [
+              { id: "one-box-many-jobs", label: "One box, many jobs", access: "public" },
+              { id: "access-points-bridge-wireless", label: "Access points bridge wireless", access: "public" },
+              { id: "modems-and-onts-convert-signals", label: "Modems and ONTs convert signals", access: "public" },
+              { id: "routers-and-firewalls-set-boundaries", label: "Routers and firewalls set boundaries", access: "public" },
+              { id: "compare-edge-devices", label: "Compare edge devices", access: "public" },
+              { id: "interactive-edge-journey", label: "Interactive edge-device journey", access: "public" },
+              { id: "identify-device-roles", label: "Identify device roles", access: "account" },
+              { id: "diagnose-edge-failures", label: "Diagnose edge failures", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore firewall state and policy, advanced packet evidence, standards checks, NAT, VPNs, and vendor diagnostics." },
+            ],
+          },
           {
             id: "lesson_osi_and_tcp_ip_models", slug: stablePublishedSlugs.osiAndTcpIp, title: "OSI and TCP/IP Models",
             objective: "Relate common network tasks to the OSI and TCP/IP models.",

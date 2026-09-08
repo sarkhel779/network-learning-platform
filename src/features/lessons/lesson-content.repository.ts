@@ -46,6 +46,12 @@ const lessonImports = {
     account: () =>
       import("@/content/networking-foundations/routers-default-gateways-and-network-boundaries.account.mdx"),
   },
+  "networking-foundations/access-points-modems-onts-and-firewalls": {
+    public: () =>
+      import("@/content/networking-foundations/access-points-modems-onts-and-firewalls.public.mdx"),
+    account: () =>
+      import("@/content/networking-foundations/access-points-modems-onts-and-firewalls.account.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),
