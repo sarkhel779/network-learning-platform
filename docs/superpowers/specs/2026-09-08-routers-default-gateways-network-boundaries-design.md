@@ -1,7 +1,7 @@
 # Routers, Default Gateways and Network Boundaries Lesson Design
 
 **Date:** 2026-09-08
-**Status:** Proposed
+**Status:** Approved
 **Scope:** Publish the sixth Networking Foundations lesson with a focused route-decision player, free-account diagnostic practice, and explicit public, account, and Pro boundaries.
 
 ## Purpose
