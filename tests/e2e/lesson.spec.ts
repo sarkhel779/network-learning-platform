@@ -76,9 +76,9 @@ test("shows the complete curriculum and current lesson on desktop", async ({ pag
     "/learn/networking-foundations/hosts-and-network-devices",
   );
 
-  await expect(desktop.locator(".curriculum-navigation__lesson > a")).toHaveCount(6);
-  await expect(desktop.locator(".curriculum-navigation__lesson > div")).toHaveCount(18);
-  await expect(desktop.getByText("Coming later", { exact: true })).toHaveCount(18);
+  await expect(desktop.locator(".curriculum-navigation__lesson > a")).toHaveCount(7);
+  await expect(desktop.locator(".curriculum-navigation__lesson > div")).toHaveCount(17);
+  await expect(desktop.getByText("Coming later", { exact: true })).toHaveCount(17);
 });
 
 test("reveals the mobile curriculum without horizontal overflow", async ({ page }) => {
