@@ -23,6 +23,8 @@ import { EthernetFrameExplorer } from "@/features/ethernet/ethernet-frame-explor
 import { SwitchLearningPlayer } from "@/features/switch-learning/switch-learning-player";
 import { ArpLocalDeliveryPlayer } from "@/features/arp/arp-local-delivery-player";
 import { ArpVariantPlayer } from "@/features/arp/arp-variant-player";
+import { VlanMembershipPlayer } from "@/features/vlans/vlan-membership-player";
+import { VlanTagJourneyPlayer } from "@/features/vlans/vlan-tag-journey-player";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -49,6 +51,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     SwitchingComparison,
     SwitchLearningPlayer,
     WiresharkCheck,
+    VlanMembershipPlayer,
+    VlanTagJourneyPlayer,
     ...components,
   };
 }

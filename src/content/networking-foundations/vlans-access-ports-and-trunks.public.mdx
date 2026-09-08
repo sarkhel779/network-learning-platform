@@ -1,0 +1,52 @@
+<h2 id="why-vlans-exist">Why VLANs exist</h2>
+
+Imagine one office floor where engineering, finance and support share the same physical switches. VLANs let us group those **office teams** into separate logical Layer 2 broadcast domains without buying a separate switch for every team. A broadcast in VLAN 10 stays in VLAN 10; devices assigned to VLAN 20 do not receive it.
+
+That separation reduces unnecessary broadcast delivery and makes the network easier to organize. It is **not a security boundary** by itself: policy enforcement still belongs to a router, firewall or another Layer 3 control point.
+
+> **VLAN is not a subnet.** A VLAN is a Layer 2 forwarding domain; a subnet is a Layer 3 IP-address range. Designs commonly map one subnet to one VLAN because it is clear and predictable, but the two terms describe different layers.
+
+<h2 id="access-ports-and-membership">Access ports and membership</h2>
+
+An access port places ordinary endpoint traffic into one operational VLAN. A laptop usually sends and receives **normally untagged** Ethernet frames on that access link. The switch knows that frames entering Gi0/1 belong to VLAN 10 because of the port's configuration—not because the laptop wrote VLAN 10 into every frame.
+
+For a frame entering an access port, the switch:
+
+1. identifies the ingress interface;
+2. associates the frame with that port's VLAN;
+3. learns and looks up MAC addresses within that VLAN's forwarding context; and
+4. forwards, filters or floods only through eligible interfaces in the same VLAN.
+
+Moving a cable to a differently configured access port can therefore change the host's Layer 2 membership even when the host itself has not changed.
+
+<h2 id="interactive-vlan-membership">Interactive VLAN membership</h2>
+
+Choose a broadcast or unicast journey. The switch classifies the incoming frame by its access-port membership, then exposes every eligible egress interface.
+
+<VlanMembershipPlayer />
+
+Without JavaScript, remember the same rule: a frame entering an access port joins that port's VLAN. A broadcast is copied only to other eligible ports in that VLAN, never back through the ingress port. Same-VLAN unicast can be switched directly; a different-VLAN destination stops at the Layer 2 boundary.
+
+<h2 id="trunks-and-802-1q">Trunks and 802.1Q</h2>
+
+One inter-switch link may need to carry VLAN 10, VLAN 20 and many other VLANs. A trunk does this while preserving each frame's VLAN identity. IEEE 802.1Q inserts a four-byte tag between the source MAC address and the original EtherType. The tag protocol identifier, or TPID, is commonly `0x8100`.
+
+The tag also carries priority (PCP), drop eligibility (DEI) and a 12-bit VLAN identifier. The original payload protocol remains identifiable by the encapsulated EtherType—for example `0x0800` for IPv4. Because inserting or removing a tag changes the transmitted frame, the switch generates a **new FCS** for the outgoing frame.
+
+Endpoint-facing access links and network-device trunks describe roles, not connector types. An access-link frame is normally untagged at the endpoint, while a trunk commonly carries tagged frames for multiple VLANs. Special designs can differ, so avoid treating “untagged” as a universal law.
+
+<h2 id="interactive-tag-journey">Interactive tag journey</h2>
+
+Follow the same frame from an access link, across a shared trunk, and back onto an access link. Open technical inspection when the tag is visible to unfold its individual fields.
+
+<VlanTagJourneyPlayer />
+
+Without JavaScript, the journey is: endpoint sends an ordinarily untagged frame → the ingress access port classifies it → the switch inserts an 802.1Q tag → the tagged frame crosses the trunk → the receiving switch reads the VLAN ID → the tag is removed for the destination access link → the endpoint receives the frame.
+
+<h2 id="allowed-vlans-and-routing-boundary">Allowed VLANs and routing boundary</h2>
+
+A trunk's **allowed VLAN** set controls which VLAN identities may use that link. Allowing a VLAN does not create it, assign access ports to it or provide routing; it only makes that VLAN eligible on the trunk.
+
+Switching inside one VLAN and routing between VLANs are separate decisions. Hosts in VLAN 10 and VLAN 20 need a **Layer 3 device**—such as a router or multilayer switch—to exchange IP packets. Each host sends the local frame toward its default gateway; the Layer 3 device routes the packet and builds a new Layer 2 frame for the destination VLAN.
+
+This lesson establishes the forwarding foundation. Later lessons will explain **Spanning Tree Protocol** for loop prevention and **link aggregation** for combining compatible physical links. Their control decisions affect which links can carry VLAN traffic, but they do not change the basic meaning of access membership or an 802.1Q VLAN ID.

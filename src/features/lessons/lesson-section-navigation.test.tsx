@@ -28,8 +28,8 @@ describe("LessonSectionNavigation", () => {
     expect(within(navigation).queryByRole("button")).not.toBeInTheDocument();
     const accountItem = screen.getByText("Wireshark check").closest("li")!;
     const proItem = screen.getByText("Pro Deep Dive").closest("li")!;
-    expect(accountItem).toHaveTextContent("Free account");
     expect(accountItem).toHaveTextContent("Locked");
+    expect(accountItem).not.toHaveTextContent("Free account");
     expect(proItem).toHaveTextContent("Pro");
     expect(proItem).toHaveTextContent("Locked");
     expect(proItem).toHaveTextContent("Explore standards and diagnostic checks.");
