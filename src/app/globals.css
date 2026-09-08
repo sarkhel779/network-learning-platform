@@ -562,3 +562,30 @@ h1 {
 .route-decision-lab button { background: var(--accent); color: var(--accent-foreground); font-weight: 800; cursor: pointer; }
 .route-decision-lab__evidence, .route-decision-lab__result { padding: 0.9rem; border: 1px solid var(--border); border-inline-start: 0.35rem solid var(--accent); border-radius: 0.45rem; background: var(--background); }
 @media (min-width: 56rem) { .route-decision-lab__choices, .route-decision-lab__predictions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.packet-journey-player, .static-packet-journey { min-width: 0; margin: 1.5rem 0; }
+.packet-journey-stage { display: grid; gap: 1rem; }
+.packet-journey-topology { min-width: 0; overflow: hidden; border: 2px dashed var(--accent); border-radius: 0.65rem; background: var(--background); }
+.packet-journey-topology svg { display: block; width: 100%; height: auto; min-height: 10rem; }
+.packet-journey-link { fill: none; stroke: var(--border); stroke-width: 5; stroke-dasharray: 10 8; }
+.packet-journey-link[data-active-link] { stroke: var(--accent); }
+.packet-journey-topology [data-active-device] .network-topology__device-surface { fill: color-mix(in srgb, var(--accent) 24%, var(--background)); }
+.packet-journey-marker { fill: var(--focus-ring); stroke: var(--background); stroke-width: 3; animation: packet-journey-pulse 900ms ease-in-out infinite alternate; }
+.packet-journey-interfaces { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.45rem; margin: 0; padding: 0.75rem; border-top: 1px solid var(--border); list-style: none; }
+.packet-journey-interfaces li { padding: 0.25rem 0.5rem; border: 1px solid var(--border); border-radius: 999px; font-size: 0.85rem; font-weight: 700; }
+.packet-journey-interfaces li[data-active] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--background)); }
+.packet-journey-envelope { min-width: 0; }
+.packet-journey-layer { min-width: 0; padding: 0.8rem; border: 2px solid var(--accent); border-radius: 0.6rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
+.packet-journey-layer + .packet-journey-layer, .packet-journey-layer > .packet-journey-layer { margin-top: 0.75rem; }
+.packet-journey-layer h4 { margin: 0 0 0.5rem; }
+.packet-journey-layer dl { display: grid; gap: 0.35rem; margin: 0; }
+.packet-journey-layer dl > div { display: grid; grid-template-columns: minmax(7rem, 0.35fr) minmax(0, 1fr); gap: 0.25rem 0.75rem; min-width: 0; }
+.packet-journey-layer dt { font-weight: 800; }
+.packet-journey-layer dd { min-width: 0; margin: 0; overflow-wrap: break-word; }
+.packet-journey-layer [data-changed] { padding-inline-start: 0.5rem; border-inline-start: 0.3rem solid var(--focus-ring); }
+.packet-journey-layer [data-changed] span { grid-column: 1 / -1; color: var(--accent); font-size: 0.8rem; font-weight: 800; }
+.packet-journey-progress { margin-top: 1rem; padding: 1rem; border: 1px solid var(--border); border-radius: 0.5rem; }
+.packet-journey-progress > :first-child, .packet-journey-progress h3 { margin-top: 0; }
+@keyframes packet-journey-pulse { to { transform: scale(1.2); transform-origin: center; } }
+@media (min-width: 48rem) { .packet-journey-stage { grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.8fr); align-items: start; } }
+@media (prefers-reduced-motion: reduce) { .packet-journey-marker { animation: none; } }
