@@ -18,4 +18,25 @@ describe("VLAN lesson content contract", () => {
     expect(accountLesson).toContain("VLAN_ACCOUNT_SENTINEL");
     expect(publicLesson).not.toContain("VLAN_ACCOUNT_SENTINEL");
   });
+
+  it("protects the essential public explanations and static fallback", () => {
+    for (const phrase of ["office teams", "not a security boundary", "VLAN is not a subnet", "normally untagged", "0x8100", "new FCS", "allowed VLAN", "Layer 3 device", "Spanning Tree Protocol", "link aggregation"]) {
+      expect(publicLesson).toContain(phrase);
+    }
+    expect(publicLesson).toContain("endpoint sends an ordinarily untagged frame");
+  });
+
+  it("includes protected evidence, scenarios, checks, interview practice and Pro preview", () => {
+    for (const phrase of ["Port evidence table", "Sanitized tagged-frame evidence", "Scenario 1", "Scenario 2", "Scenario 3", "native VLAN mismatch", "allowed VLAN mismatch", "advanced inter-VLAN paths", "Pro Member Waitlist"]) {
+      expect(accountLesson).toContain(phrase);
+    }
+    expect(accountLesson.match(/<KnowledgeCheck\b/g)).toHaveLength(3);
+    expect(accountLesson).toContain("<InterviewScenario");
+    expect(accountLesson).toContain("<PremiumPreview");
+  });
+
+  it("does not leak protected troubleshooting answers into public content", () => {
+    expect(publicLesson).not.toContain("native VLAN mismatch");
+    expect(publicLesson).not.toContain("allowed VLAN mismatch");
+  });
 });

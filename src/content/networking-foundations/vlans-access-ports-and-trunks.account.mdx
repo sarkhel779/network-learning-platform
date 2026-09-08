@@ -2,12 +2,64 @@
 
 <h2 id="read-port-and-capture-evidence">Read port and capture evidence</h2>
 
-Read a vendor-neutral port table and a sanitized tagged-frame capture.
+### Port evidence table
+
+| Interface | Operational role | VLAN evidence | What it means |
+| --- | --- | --- | --- |
+| Gi0/1 | Access | VLAN 10 | Untagged endpoint ingress is classified into VLAN 10 |
+| Gi0/2 | Access | VLAN 20 | This endpoint belongs to a different Layer 2 domain |
+| Gi0/24 | Trunk | VLANs 10, 20 allowed | The inter-switch link can carry both VLAN identities |
+
+Read the table from left to right: verify interface state and role, identify the VLAN context, then compare the intended path. A port being physically up does not prove its logical membership is correct.
+
+### Sanitized tagged-frame evidence
+
+| Field | Example | Interpretation |
+| --- | --- | --- |
+| Destination MAC | `02:00:00:00:00:0B` | Destination remains a Layer 2 unicast address |
+| Source MAC | `02:00:00:00:00:0A` | Source used for switch learning |
+| TPID | `0x8100` | An 802.1Q tag follows |
+| PCP / DEI | `0 / 0` | Default priority and not drop-eligible |
+| VLAN ID | `10` | Frame belongs to VLAN 10 on this observed link |
+| Encapsulated EtherType | `0x0800` | Payload is IPv4 |
+
+<WiresharkCheck
+  filter="vlan || eth.type == 0x8100"
+  fields={["eth.dst", "eth.src", "vlan.tpid", "vlan.priority", "vlan.dei", "vlan.id", "vlan.etype"]}
+  normalEvidence="A capture on a trunk can expose an 802.1Q VLAN ID, while a capture at an ordinary endpoint commonly shows the corresponding frame without that tag. Capture position matters."
+  exercise="Capture in a safe lab at an endpoint and on a mirrored trunk port, generate one same-VLAN exchange, then correlate MAC addresses, VLAN ID and encapsulated EtherType."
+/>
 
 <h2 id="solve-vlan-reachability">Solve VLAN reachability</h2>
 
-Use interface, membership and frame evidence to explain the observed delivery.
+### Scenario 1 — Same VLAN, one switch
+
+Host A on Gi0/1 and Host B on Gi0/2 both belong to VLAN 10. After learning their MAC addresses, the switch forwards known unicast only through the destination interface. A broadcast is copied to other eligible VLAN 10 ports except ingress.
+
+### Scenario 2 — Same VLAN, two switches
+
+Host A and Host B belong to VLAN 20 on different switches. The inter-switch trunk carries VLAN 20, so the ingress switch tags the trunk transmission and the egress switch removes the tag before the access link. Verify access membership, trunk role and that VLAN 20 is eligible end to end.
+
+### Scenario 3 — Different VLANs
+
+Host A belongs to VLAN 10 and Host C belongs to VLAN 20. The Layer 2 switch does not forward directly between them. Check each host's address, prefix and default gateway, then verify that a Layer 3 interface exists for each VLAN and policy permits the routed conversation.
+
+<InterviewScenario prompt="Two hosts are connected to the same physical switch but cannot communicate. How would you decide whether VLAN separation is expected or a fault?">
+First verify link state, each access port's operational VLAN and the hosts' IP configuration. If the ports belong to different VLANs, direct Layer 2 delivery is not expected; test the intended default gateways and routing path. If they should share a VLAN, compare port membership, MAC-learning evidence and the eligible path before changing configuration.
+</InterviewScenario>
 
 <h2 id="knowledge-check-summary">Knowledge check and summary</h2>
 
-Confirm the difference between access delivery, trunk carriage and inter-VLAN routing.
+<KnowledgeCheck question="What assigns an ordinary untagged endpoint frame to a VLAN on ingress?" options={["The access port's operational VLAN", "The destination IP address", "The trunk's physical cable type"]} correctIndex={0} explanation="The switch classifies the frame according to the ingress access-port configuration." />
+
+<KnowledgeCheck question="Why does an 802.1Q trunk add VLAN information?" options={["To preserve VLAN identity across a shared link", "To replace the destination MAC", "To route directly between VLANs"]} correctIndex={0} explanation="Multiple VLANs share the trunk, so the receiving device needs an explicit VLAN identifier." />
+
+<KnowledgeCheck question="What is required for an IP packet to move from VLAN 10 to VLAN 20?" options={["A Layer 3 routing decision", "Only MAC learning", "A larger broadcast domain"]} correctIndex={0} explanation="Different VLANs are separate Layer 2 domains and require routing between their IP networks." />
+
+Remember: **access classifies, trunk preserves identity, access removes the tag, and routing crosses the VLAN boundary**. Always state the observation point when interpreting tagged or untagged capture evidence.
+
+<h2 id="pro-deep-dive">Pro Deep Dive</h2>
+
+<PremiumPreview ctaLabel="Join the Pro Member Waitlist" ctaHref="/contact">
+Future Pro depth will diagnose **native VLAN mismatch** and **allowed VLAN mismatch**, trace **advanced inter-VLAN paths**, inspect standards-guided captures and platform evidence, work through production failure scenarios, and prepare advanced interview explanations. These solutions remain gated while the public lesson establishes correct operation.
+</PremiumPreview>
