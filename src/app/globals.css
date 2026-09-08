@@ -546,3 +546,15 @@ h1 {
 @media (min-width: 56rem) { .route-decision-results { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 @media (max-width: 35rem) { .route-decision-player__choices label { width: 100%; } }
 @media (prefers-reduced-motion: reduce) { .route-decision-player * { animation: none !important; transition: none !important; } }
+.route-decision-lab { min-width: 0; max-width: 100%; margin: 2rem 0; padding: clamp(0.8rem, 2.5vw, 1.4rem); border: 1px solid var(--border); border-radius: 0.75rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); }
+.route-decision-lab fieldset { min-width: 0; margin: 1rem 0; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; }
+.route-decision-lab legend { font-weight: 800; }
+.route-decision-lab__choices { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+.route-decision-lab__choices label, .route-decision-lab__predictions label { display: flex; min-width: 0; min-block-size: 44px; gap: 0.4rem; }
+.route-decision-lab__choices label { align-items: center; padding: 0.55rem 0.7rem; border: 1px solid var(--border); border-radius: 0.45rem; background: var(--background); }
+.route-decision-lab__predictions { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; margin: 1rem 0; }
+.route-decision-lab__predictions label { flex-direction: column; font-weight: 750; }
+.route-decision-lab select, .route-decision-lab button { min-block-size: 44px; max-width: 100%; padding: 0.6rem 0.8rem; border: 1px solid var(--accent); border-radius: 0.45rem; font: inherit; }
+.route-decision-lab button { background: var(--accent); color: var(--accent-foreground); font-weight: 800; cursor: pointer; }
+.route-decision-lab__evidence, .route-decision-lab__result { padding: 0.9rem; border: 1px solid var(--border); border-inline-start: 0.35rem solid var(--accent); border-radius: 0.45rem; background: var(--background); }
+@media (min-width: 56rem) { .route-decision-lab__choices, .route-decision-lab__predictions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

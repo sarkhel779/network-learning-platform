@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { evaluateRouteDecision } from "./evaluate-route-decision";
 import { accountRouteDecisionScenarioInput } from "./route-decision.account.scenarios";
 import { safeParseRouteDecisionCatalog } from "./route-decision.schema";
@@ -20,5 +22,17 @@ describe("account route-decision data", () => {
       expect(outcome.scope).toBe(scenario.expected.scope);
       expect(outcome.boundaryAction).toBe(scenario.expected.boundaryAction);
     }
+  });
+
+  it("contains routing evidence, troubleshooting, assessment, and the exact Pro waitlist action", () => {
+    const content = readFileSync(resolve("src/content/networking-foundations/routers-default-gateways-and-network-boundaries.account.mdx"), "utf8");
+    expect(content).toMatch(/Destination\/prefix[\s\S]*Next hop[\s\S]*Interface[\s\S]*Purpose/);
+    expect(content).toContain("route print");
+    expect(content).toContain("ip route");
+    expect(content.match(/^\d\. /gm)).toHaveLength(7);
+    expect(content.match(/<KnowledgeCheck/g)).toHaveLength(3);
+    expect(content).toContain("<InterviewScenario");
+    expect(content).toContain("I know this—proceed to advanced");
+    expect(content).toContain('ctaLabel="Join the Pro Member Waitlist"');
   });
 });

@@ -39,6 +39,6 @@ describe("public route-decision scenarios", () => {
     expect(lesson).toContain("This example does not use NAT");
     expect(lesson).toContain("Ordinary Layer 2 broadcasts stop at the router boundary");
     expect(lesson).toContain("<RouteDecisionPlayer />");
-    expect(lesson).toMatch(/Question.*Direct delivery.*Routed delivery.*No route/s);
+    expect(lesson).toMatch(/Question[\s\S]*Direct delivery[\s\S]*Routed delivery[\s\S]*No route/);
   });
 });
