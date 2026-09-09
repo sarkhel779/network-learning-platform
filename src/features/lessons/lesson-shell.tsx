@@ -7,6 +7,7 @@ import type { Viewer } from "@/features/learner-workspace/learner-workspace.type
 import type { LessonProgressManifest, LessonProgressSummary } from "@/features/progress/progress.types";
 import { LessonProgressProvider } from "@/features/progress/lesson-progress-context";
 import { LessonProgressControls } from "@/features/progress/lesson-progress-controls";
+import type { MyLearningModel } from "@/features/progress/my-learning";
 
 import { CurriculumNavigation } from "./curriculum-navigation";
 import { LearningObjective } from "./learning-objective";
@@ -22,6 +23,7 @@ type LessonShellProps = {
   progressManifest?: LessonProgressManifest;
   initialProgress?: LessonProgressSummary | null;
   progressUnavailable?: boolean;
+  myLearning?: MyLearningModel;
   children: ReactNode;
 };
 
@@ -54,6 +56,7 @@ export function LessonShell({
   progressManifest,
   initialProgress,
   progressUnavailable = false,
+  myLearning,
   children,
 }: LessonShellProps) {
   const lessonContent = viewer && progressManifest
@@ -75,6 +78,8 @@ export function LessonShell({
         pathway={pathway}
         currentLessonSlug={lesson.slug}
         viewer={viewer}
+        myLearning={myLearning}
+        progressUnavailable={progressUnavailable}
       />
       <article
         className="lesson-shell"

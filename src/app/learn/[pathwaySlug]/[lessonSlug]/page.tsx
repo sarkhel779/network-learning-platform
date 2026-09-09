@@ -13,7 +13,8 @@ import { loadAuthorizedLessonContent } from "@/features/lessons/lesson-content.r
 import type { LessonContentKey, LessonContentModule } from "@/features/lessons/lesson-content.types";
 import { LessonShell } from "@/features/lessons/lesson-shell";
 import { getLessonProgressManifest } from "@/features/progress/progress-manifests";
-import { getLessonProgress } from "@/features/progress/progress.repository";
+import { loadMyLearning } from "@/features/progress/my-learning.server";
+import type { MyLearningModel } from "@/features/progress/my-learning";
 import type { LessonProgressSummary } from "@/features/progress/progress.types";
 import { buildLessonStructuredData, serializeJsonLd } from "@/features/seo/lesson-structured-data";
 import { getViewer } from "@/lib/supabase/session";
@@ -84,6 +85,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
   let AccountContent: LessonContentModule["default"] | undefined;
   let initialProgress: LessonProgressSummary | null = null;
   let progressUnavailable = false;
+  let myLearning: MyLearningModel | undefined;
 
   try {
     const content = await loadAuthorizedLessonContent(key, viewer ? "account" : "anonymous");
@@ -100,11 +102,10 @@ export default async function LessonPage({ params }: LessonPageProps) {
     ? getLessonProgressManifest(pathway.id, lesson.id)
     : undefined;
   if (viewer) {
-    try {
-      initialProgress = await getLessonProgress(viewer.id, pathway.id, lesson.id);
-    } catch {
-      progressUnavailable = true;
-    }
+    const learning = await loadMyLearning(viewer.id, pathway);
+    myLearning = learning.model;
+    initialProgress = learning.attempts.find(({ lessonId, contentVersion }) => lessonId === lesson.id && contentVersion === progressManifest?.contentVersion) ?? null;
+    progressUnavailable = learning.unavailable;
   }
 
   return (
@@ -122,6 +123,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
         progressManifest={progressManifest}
         initialProgress={initialProgress}
         progressUnavailable={progressUnavailable}
+        myLearning={myLearning}
       >
         {PublicContent ? <PublicContent /> : null}
         {AccountContent ? <AccountContent /> : null}

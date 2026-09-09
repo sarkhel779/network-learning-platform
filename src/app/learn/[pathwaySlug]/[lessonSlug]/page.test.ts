@@ -2,14 +2,14 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { getViewer, getLessonProgress } = vi.hoisted(() => ({
+const { getViewer, listPathwayProgress } = vi.hoisted(() => ({
   getViewer: vi.fn(),
-  getLessonProgress: vi.fn(),
+  listPathwayProgress: vi.fn(),
 }));
 
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/supabase/session", () => ({ getViewer }));
-vi.mock("@/features/progress/progress.repository", () => ({ getLessonProgress }));
+vi.mock("@/features/progress/progress.repository", () => ({ listPathwayProgress }));
 vi.mock("@/features/packet-flow/use-reduced-motion", () => ({
   useReducedMotion: () => false,
   useReducedMotionState: () => ({ reducedMotion: false, isHydrated: true }),
@@ -113,7 +113,7 @@ afterEach(() => {
 
 beforeEach(() => {
   getViewer.mockResolvedValue(null);
-  getLessonProgress.mockResolvedValue(null);
+  listPathwayProgress.mockResolvedValue([]);
 });
 
 describe("lesson route generation", () => {
@@ -183,14 +183,14 @@ describe("lesson route generation", () => {
 
   it("renders public and account content for an authenticated learner and loads progress", async () => {
     getViewer.mockResolvedValue({ id: "learner-1", displayName: "Pranita", avatarUrl: null });
-    getLessonProgress.mockResolvedValue({
+    listPathwayProgress.mockResolvedValue([{
       attemptId: "attempt-1", pathwayId: "path_networking_foundations",
       lessonId: "lesson_how_networks_communicate", contentVersion: 1,
       attemptNumber: 1, status: "in_progress", completedItemIds: [],
       nextItemId: "how_networks_communicate_section_communication_decisions",
       lastItemId: null, lastAnchor: null, completionPercent: 20,
       incorrectCheckCount: 0, updatedAt: "2026-09-09T00:00:00Z",
-    });
+    }]);
     const loader = vi.spyOn(contentRepository, "loadAuthorizedLessonContent");
     const { container } = render(await lessonPage.default({ params: Promise.resolve({
       pathwaySlug: "networking-foundations", lessonSlug: "how-networks-communicate",
@@ -199,8 +199,8 @@ describe("lesson route generation", () => {
     expect(loader).toHaveBeenCalledWith("networking-foundations/how-networks-communicate", "account");
     expect(screen.getByText("Public lesson explanation.")).toBeVisible();
     expect(screen.getByText("Authenticated lesson explanation.")).toBeVisible();
-    expect(getLessonProgress).toHaveBeenCalledWith(
-      "learner-1", "path_networking_foundations", "lesson_how_networks_communicate",
+    expect(listPathwayProgress).toHaveBeenCalledWith(
+      "learner-1", "path_networking_foundations",
     );
     expect(container.querySelector("article")).toHaveAttribute("data-progress-attempt", "attempt-1");
     expect(screen.queryByRole("region", { name: "Continue this lesson for free" })).not.toBeInTheDocument();
@@ -208,7 +208,7 @@ describe("lesson route generation", () => {
 
   it("keeps authenticated lesson content visible when progress loading is unavailable", async () => {
     getViewer.mockResolvedValue({ id: "learner-1", displayName: "Pranita", avatarUrl: null });
-    getLessonProgress.mockRejectedValue(new Error("provider detail"));
+    listPathwayProgress.mockRejectedValue(new Error("provider detail"));
     const { container } = render(await lessonPage.default({ params: Promise.resolve({
       pathwaySlug: "networking-foundations", lessonSlug: "how-networks-communicate",
     }) }));

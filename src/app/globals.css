@@ -134,6 +134,17 @@ a { color: inherit; }
 .learner-workspace-drawer-tools { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-block-end: 1rem; padding-block-end: 1rem; border-block-end: 1px solid var(--border); }
 .learner-workspace-drawer-tools button { min-block-size: 44px; padding: 0.45rem 0.6rem; border: 1px solid var(--border); border-radius: 0.45rem; background: var(--background); color: var(--foreground); font: inherit; font-weight: 700; cursor: pointer; }
 .learner-workspace-drawer-tools button[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--background)); }
+.my-learning { display: grid; min-width: 0; gap: 1rem; }
+.my-learning header { display: grid; gap: 0.4rem; }
+.my-learning h2, .my-learning h3, .my-learning p { margin: 0; }
+.my-learning progress { width: 100%; accent-color: var(--accent); }
+.my-learning__continue { display: block; overflow-wrap: anywhere; padding: 0.8rem; border: 1px solid var(--accent); border-radius: 0.65rem; background: color-mix(in srgb, var(--accent) 12%, var(--background)); font-weight: 800; }
+.my-learning__group { display: grid; gap: 0.5rem; min-width: 0; }
+.my-learning__group ul { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.my-learning__group li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.2rem 0.75rem; padding: 0.7rem; border: 1px solid var(--border); border-radius: 0.55rem; }
+.my-learning__group a { min-width: 0; overflow-wrap: anywhere; font-weight: 750; }
+.my-learning__group small { grid-column: 1 / -1; color: var(--muted); }
+.my-learning__restart { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
 @media (min-width: 48rem) {
   .learner-workspace { display: flex; }
   .learner-workspace-mobile-trigger { display: none; }
