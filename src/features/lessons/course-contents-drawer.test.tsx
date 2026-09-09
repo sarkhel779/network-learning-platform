@@ -23,7 +23,7 @@ describe("CourseContentsDrawer", () => {
 
     const dialog = screen.getByRole("dialog", { name: "Course contents" });
     expect(dialog).toBeVisible();
-    expect(within(dialog).getByRole("button", { name: /Close course contents/i })).toHaveFocus();
+    expect(within(dialog).getByRole("heading", { name: "Course contents" })).toHaveFocus();
 
     await user.keyboard("{Escape}");
 
@@ -55,7 +55,7 @@ describe("CourseContentsDrawer", () => {
     await user.click(screen.getByRole("button", { name: "Course contents" }));
     const dialog = screen.getByRole("dialog", { name: "Course contents" });
     const controls = Array.from(dialog.querySelectorAll<HTMLElement>("button, a[href]"));
-    const first = controls[0];
+    const first = within(dialog).getByRole("heading", { name: "Course contents" });
     const last = controls.at(-1)!;
 
     last.focus();
