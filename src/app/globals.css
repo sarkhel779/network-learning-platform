@@ -746,3 +746,19 @@ h1 {
 .lesson-progress-controls__dialog h2 { margin-top: 0; }
 .section-continue { display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem; }
 @media (prefers-reduced-motion: reduce) { .lesson-progress-controls *, .section-continue * { scroll-behavior: auto !important; transition: none !important; } }
+
+.subnet-player { min-width: 0; margin: 2rem 0; padding: clamp(.8rem, 2.5vw, 1.4rem); border: 1px solid var(--border); border-radius: .75rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
+.subnet-player h3 { margin-top: 0; }
+.subnet-player fieldset, .player-controls { display: flex; flex-wrap: wrap; gap: .55rem; min-width: 0; padding: .75rem; border: 1px solid var(--border); border-radius: .6rem; }
+.subnet-player fieldset label, .player-controls button, .player-controls label { display: flex; align-items: center; gap: .45rem; min-block-size: 44px; padding: .5rem .7rem; }
+.subnet-player fieldset label { border: 1px solid var(--border); border-radius: .45rem; background: var(--background); }
+.subnet-player fieldset label:has(input:checked) { border-color: var(--accent); border-inline-start-width: .35rem; }
+.subnet-address { font-size: 1.25rem; }
+.subnet-binary { display: grid; gap: .55rem; min-width: 0; margin: 1rem 0; padding: .8rem; overflow-x: auto; border: 2px dashed var(--accent); border-radius: .55rem; background: var(--background); }
+.subnet-binary code { min-width: max-content; font-size: clamp(.8rem, 2vw, 1rem); letter-spacing: .08em; }
+.subnet-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: .6rem; }
+.subnet-results div { min-width: 0; padding: .7rem; border-inline-start: .3rem solid var(--accent); background: var(--background); overflow-wrap: anywhere; }
+.subnet-results dt { font-weight: 800; }
+.subnet-results dd { margin: .3rem 0 0; }
+@media (max-width: 35rem) { .subnet-player fieldset label { width: 100%; } .player-controls button, .player-controls label { flex: 1 1 8rem; } }
+@media (prefers-reduced-motion: reduce) { .subnet-player * { animation: none !important; transition: none !important; } }
