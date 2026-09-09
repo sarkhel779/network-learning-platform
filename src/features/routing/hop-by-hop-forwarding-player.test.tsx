@@ -33,9 +33,27 @@ describe("HopByHopForwardingPlayer", () => {
 
   it("identifies the responsible discard device and uses conditional ICMP wording", () => {
     render(<HopByHopForwardingPlayer />);
+    expect(screen.queryByRole("status", { name: "Journey outcome" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("radio", { name: "No usable route" }));
+    expect(screen.queryByRole("status", { name: "Journey outcome" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Next" }));
     expect(screen.getByRole("status")).toHaveTextContent("Router 1 discards the packet");
     expect(screen.getByRole("status")).toHaveTextContent("may be generated");
+  });
+
+  it("shows an Ethernet and IP packet while a routed packet crosses an active link", () => {
+    render(<HopByHopForwardingPlayer />);
+    expect(screen.getByRole("heading", { name: "Ethernet frame" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "IP packet" })).toBeVisible();
+    expect(screen.queryByText("No frame is crossing a link during this step.")).not.toBeInTheDocument();
+  });
+
+  it("identifies the selected next hop and outgoing interface", () => {
+    render(<HopByHopForwardingPlayer />);
+    fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Technical inspection" }));
+    const technicalFields = screen.getByRole("heading", { name: "Technical packet fields" }).parentElement;
+    expect(technicalFields).toHaveTextContent("Selected next hop192.0.2.2");
+    expect(technicalFields).toHaveTextContent("Selected outgoing interfaceR1 Gi0/1");
   });
 });

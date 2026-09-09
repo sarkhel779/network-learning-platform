@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PLAYBACK_SPEEDS } from "@/features/packet-flow/packet-flow.schema";
-import { useReducedMotion } from "@/features/packet-flow/use-reduced-motion";
+import { useReducedMotionState } from "@/features/packet-flow/use-reduced-motion";
 import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 import { routeDecisionScenarios } from "./route-decision.scenarios";
 import { selectRoute, type RouteCriterion } from "./select-route";
@@ -15,7 +15,8 @@ const labels: Record<RouteCriterion, string> = {
 const STEP_COUNT = 6;
 
 export function RoutingTableDecisionPlayer({ progressItemId }: { progressItemId?: string }) {
-  const reducedMotion = useReducedMotion();
+  const { reducedMotion, isHydrated } = useReducedMotionState();
+  const preferenceResolved = useRef(false);
   const { markTerminalStateReached } = useProgressCompletionBoundary(progressItemId);
   const [scenarioIndex, setScenarioIndex] = useState(0);
   const [step, setStep] = useState(0);
@@ -25,7 +26,15 @@ export function RoutingTableDecisionPlayer({ progressItemId }: { progressItemId?
   const trace = useMemo(() => selectRoute(scenario), [scenario]);
   const stage = trace.stages[Math.min(step, trace.stages.length - 1)];
 
-  useEffect(() => { if (reducedMotion) setPlaying(false); }, [reducedMotion]);
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (!preferenceResolved.current) {
+      preferenceResolved.current = true;
+      setPlaying(!reducedMotion);
+      return;
+    }
+    if (reducedMotion) setPlaying(false);
+  }, [isHydrated, reducedMotion]);
   useEffect(() => {
     if (!playing || step === STEP_COUNT - 1) return;
     const timer = window.setTimeout(() => setStep((current) => current + 1), 1800 / speed);

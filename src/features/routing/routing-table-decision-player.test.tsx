@@ -37,4 +37,10 @@ describe("RoutingTableDecisionPlayer", () => {
     expect(within(region).getByRole("table")).toBeInTheDocument();
     expect(region).toHaveClass("routing-table-scroll");
   });
+
+  it("starts normal-motion playback after the client preference resolves", () => {
+    window.matchMedia = vi.fn().mockReturnValue({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() });
+    render(<RoutingTableDecisionPlayer />);
+    expect(screen.getByRole("button", { name: "Pause" })).toBeEnabled();
+  });
 });

@@ -26,4 +26,11 @@ describe("selectRoute", () => {
     ] });
     expect(selectRoute(scenario).outcome).toEqual({ kind: "equal-cost", routeIds: ["a", "b"] });
   });
+
+  it("rejects equal-prefix equal-distance routes with incomparable metrics", () => {
+    expect(() => parseRouteDecisionScenario({ id: "ambiguous", title: "Ambiguous", family: "ipv4", destination: "203.0.113.9", routes: [
+      { id: "ospf", source: "learned", prefix: "203.0.113.0/24", nextHop: "192.0.2.1", outgoingInterface: "Gi0/0", administrativeDistance: 90, metric: 10, metricDomain: "ospf" },
+      { id: "eigrp", source: "learned", prefix: "203.0.113.0/24", nextHop: "192.0.2.2", outgoingInterface: "Gi0/1", administrativeDistance: 90, metric: 10, metricDomain: "eigrp" },
+    ] })).toThrow(/incomparable metric domains/i);
+  });
 });

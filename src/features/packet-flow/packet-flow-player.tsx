@@ -19,6 +19,7 @@ type PacketFlowPlayerProps = Readonly<{
   autoplay?: boolean;
   inspectionDepthControl?: boolean;
   progressItemId?: string;
+  onStepChange?: (stepIndex: number, atFinalStep: boolean) => void;
 }>;
 
 export function PacketFlowPlayer({
@@ -30,6 +31,7 @@ export function PacketFlowPlayer({
   autoplay = true,
   inspectionDepthControl = false,
   progressItemId,
+  onStepChange,
 }: PacketFlowPlayerProps) {
   const { markTerminalStateReached } = useProgressCompletionBoundary(progressItemId);
   const { reducedMotion, isHydrated } = useReducedMotionState();
@@ -78,6 +80,8 @@ export function PacketFlowPlayer({
   useEffect(() => {
     if (atFinalStep) markTerminalStateReached();
   }, [atFinalStep, markTerminalStateReached]);
+
+  useEffect(() => { onStepChange?.(state.stepIndex, atFinalStep); }, [atFinalStep, onStepChange, state.stepIndex]);
 
   return (
     <section

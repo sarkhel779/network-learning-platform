@@ -27,6 +27,9 @@ function PacketLayers({ step }: { step: PacketFlowStep }) {
   if (evidence.includes("ICMP") || evidence.includes("ECHO")) {
     return <section data-packet-layer="ethernet"><h4>Ethernet frame</h4><section data-packet-layer="ip"><h4>IP packet</h4><section data-packet-layer="icmp"><h4>ICMP message</h4></section></section></section>;
   }
+  if (step.packet) {
+    return <section data-packet-layer="ethernet"><h4>Ethernet frame</h4><section data-packet-layer="ip"><h4>IP packet</h4></section></section>;
+  }
   return <section data-packet-layer="context"><h4>Host or device decision</h4><p>No frame is crossing a link during this step.</p></section>;
 }
 
