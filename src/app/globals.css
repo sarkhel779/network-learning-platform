@@ -184,6 +184,28 @@ a { color: inherit; }
 .access-card h2 { margin-top: 0; }
 .access-card > p:not(.eyebrow) { color: var(--muted); }
 .access-card .primary-link { max-width: 100%; min-height: 2.75rem; }
+.sign-in-page { display: grid; width: min(100% - 1.5rem, 72rem); min-height: calc(100dvh - 12rem); place-items: center; margin: 0 auto; padding: clamp(2rem, 8vw, 6rem) 0; }
+.sign-in-card { width: min(100%, 38rem); padding: clamp(1.25rem, 5vw, 2.5rem); border-inline-start-width: 1px; border-radius: 1rem; box-shadow: 0 1.25rem 3rem rgb(0 0 0 / 18%); }
+.sign-in-card h1 { max-width: 12ch; margin-block: .35rem 0; font-size: clamp(2.25rem, 8vw, 4rem); line-height: 1.02; }
+.sign-in-card .summary { margin-block: 1.25rem; }
+.sign-in-card__trust { display: grid; gap: .45rem; margin: 0 0 1.5rem; padding: 0; color: var(--muted); list-style: none; }
+.sign-in-card__trust li::before { content: "✓"; margin-inline-end: .55rem; color: var(--accent); font-weight: 900; }
+.sign-in-form { display: grid; gap: 1rem; }
+.sign-in-form button { width: 100%; min-height: 3rem; justify-content: center; border: 1px solid var(--accent); font: inherit; font-weight: 800; cursor: pointer; }
+.sign-in-form .secondary-link { display: flex; align-items: center; gap: .65rem; padding: .75rem 1rem; border-radius: .55rem; background: var(--background); color: var(--foreground); }
+.sign-in-divider { display: flex; align-items: center; gap: .75rem; margin: 0; color: var(--muted); font-size: .875rem; text-transform: uppercase; }
+.sign-in-divider::before, .sign-in-divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+.sign-in-form form, .sign-in-field { display: grid; gap: .55rem; }
+.sign-in-field label { font-weight: 800; }
+.sign-in-field input { width: 100%; min-height: 3rem; padding: .7rem .85rem; border: 1px solid var(--border); border-radius: .55rem; background: var(--background); color: var(--foreground); font: inherit; }
+.sign-in-form .sign-in-text-action { justify-self: start; width: auto; min-height: 2.75rem; padding: .35rem 0; border: 0; border-radius: 0; background: transparent; color: var(--accent); text-align: start; text-decoration: underline; text-decoration-thickness: .1em; text-underline-offset: .22em; }
+.sign-in-form .sign-in-text-action:hover { text-decoration-thickness: .16em; }
+.sign-in-form .sign-in-text-action:disabled { color: var(--muted); cursor: wait; opacity: .7; }
+.sign-in-feedback { margin: 0; padding: .75rem; border-radius: .5rem; }
+.sign-in-feedback--error { border: 1px solid #ef4444; }
+.sign-in-feedback--success { border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--background)); }
+.sign-in-card__back { display: block; margin-top: 1.25rem; color: var(--accent); font-weight: 800; text-align: center; }
+@media (max-width: 30rem) { .sign-in-page { width: min(100% - 1rem, 72rem); padding-block: 1rem; } .sign-in-card { padding: 1rem; border-radius: .75rem; } }
 .registration-boundary { margin-top: 2.5rem; }
 .learning-block { margin: 2rem 0; padding: 1.25rem; border: 1px solid var(--border); border-radius: 0.5rem; }
 .learning-block h2, .learning-block h3, .learning-block p:first-child { margin-top: 0; }
