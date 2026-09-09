@@ -154,10 +154,10 @@ begin
   if v_item.kind <> p_item_kind or v_item.anchor <> p_anchor then
     raise exception 'progress_item_mismatch' using errcode = '22023';
   end if;
-  if p_event_type <> case v_item.kind
+  if p_event_type <> (case v_item.kind
     when 'section' then 'section_completed'
     when 'interactive' then 'interactive_completed'
-    else 'knowledge_check_attempted' end then
+    else 'knowledge_check_attempted' end) then
     raise exception 'progress_event_mismatch' using errcode = '22023';
   end if;
   if v_item.kind = 'knowledge_check' and p_answer_correct is null then

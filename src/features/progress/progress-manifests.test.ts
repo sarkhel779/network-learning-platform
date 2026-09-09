@@ -67,6 +67,16 @@ describe("lessonProgressManifests", () => {
       .toHaveLength(lessonProgressManifests.length);
   });
 
+  it("parenthesizes the CASE expression used by the progress event guard", () => {
+    const migration = readFileSync(
+      resolve("supabase/migrations/202609090002_create_learner_progress.sql"),
+      "utf8",
+    );
+
+    expect(migration).toContain("if p_event_type <> (case v_item.kind");
+    expect(migration).toContain("else 'knowledge_check_attempted' end) then");
+  });
+
   it("assigns every knowledge check its manifest ID in account content", () => {
     const seen = new Set<string>();
     for (const { pathway, lesson } of publishedLessons) {
