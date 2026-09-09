@@ -279,6 +279,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "subnetting-fundamentals",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "ipv6-fundamentals",
+      },
     ]);
   });
 

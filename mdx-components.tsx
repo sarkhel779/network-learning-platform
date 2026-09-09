@@ -30,6 +30,8 @@ import { Ipv4AddressBoundaryPlayer } from "@/features/ipv4/ipv4-address-boundary
 import { Ipv4BinaryExplorer } from "@/features/ipv4/ipv4-binary-explorer";
 import { SubnetBoundaryPlayer } from "@/features/subnetting/subnet-boundary-player";
 import { SubnetScenarioPlayer } from "@/features/subnetting/subnet-scenario-player";
+import { Ipv6AddressExplorer } from "@/features/ipv6/ipv6-address-explorer";
+import { NdpSlaacJourneyPlayer } from "@/features/ipv6/ndp-slaac-journey-player";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -47,11 +49,13 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     InterviewScenario,
     Ipv4AddressBoundaryPlayer,
     Ipv4BinaryExplorer,
+    Ipv6AddressExplorer,
     KnowledgeCheck,
     LayerModelComparison,
     LearningObjective,
     NetworkCommunicationPacketFlow,
     NetworkDeviceSymbol,
+    NdpSlaacJourneyPlayer,
     PremiumPreview,
     RouteDecisionPlayer,
     RouteDecisionExperience,

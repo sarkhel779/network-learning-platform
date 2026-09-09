@@ -1,0 +1,39 @@
+{/* IPV6_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-ipv6-evidence">Inspect IPv6 evidence</h2>
+
+On **Windows**, use `ipconfig /all`, `Get-NetIPAddress -AddressFamily IPv6`, `Get-NetRoute -AddressFamily IPv6`, and `Get-NetNeighbor -AddressFamily IPv6`. On **Linux**, use `ip -6 address`, `ip -6 route`, and `ip -6 neighbour`. In Wireshark, start broadly with `ipv6`, then isolate Neighbor Discovery with `icmpv6` or message filters such as `icmpv6.type == 135`.
+
+<WiresharkCheck displayFilter="icmpv6">Find an NS/NA exchange. Compare the solicited-node multicast destination, ICMPv6 target address, Ethernet destination, and the neighbour-cache result.</WiresharkCheck>
+
+<SectionContinue itemId="ipv6_fundamentals_section_inspect_ipv6_evidence" anchor="inspect-ipv6-evidence" />
+
+<h2 id="practice-ipv6">Practise IPv6 interpretation</h2>
+
+For each supplied address, expand all eight hextets, apply canonical shortening, classify its type and scope, split the prefix at the stated length, and derive the solicited-node multicast address. Then decide whether the first hop targets the neighbour or the default router.
+
+<SectionContinue itemId="ipv6_fundamentals_section_practice_ipv6" anchor="practice-ipv6" />
+
+<h2 id="troubleshoot-ipv6">Troubleshoot IPv6 methodically</h2>
+
+1. Confirm the interface has a usable link-local address and is not stuck tentative after DAD.
+2. Verify the prefix length and on-link route instead of judging by similar-looking text.
+3. Check Router Advertisements for prefix, lifetime, and default-router information.
+4. Inspect the neighbour cache and NS/NA exchange for the selected next hop.
+5. Check ICMPv6 filtering; blocking essential control messages can break IPv6 even when addresses look correct.
+
+<InterviewScenario title="The address exists but traffic cannot leave the link">A host has a global address and can reach a local neighbour, but no remote IPv6 destination. Explain how you would separate a missing default router, an expired Router Advertisement, and broken neighbour resolution.</InterviewScenario>
+
+<SectionContinue itemId="ipv6_fundamentals_section_troubleshoot_ipv6" anchor="troubleshoot-ipv6" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="ipv6_fundamentals_check_1" question="Which prefix contains IPv6 link-local addresses?" options={["fe80::/10", "fc00::/7", "ff00::/8"]} correctIndex={0} explanation="IPv6 link-local unicast addresses occupy fe80::/10." />
+
+<KnowledgeCheck progressItemId="ipv6_fundamentals_check_2" question="What source address does Duplicate Address Detection use before the tentative address is assigned?" options={["The tentative address", "::", "::1"]} correctIndex={1} explanation="DAD uses the unspecified source :: because the tentative address is not yet safe to use." />
+
+<KnowledgeCheck progressItemId="ipv6_fundamentals_check_3" question="For an off-link destination, which link-layer address does the first frame target?" options={["The remote host", "Every host", "The default router"]} correctIndex={2} explanation="The IPv6 destination stays remote, while the local frame targets the selected default router." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">Diagnose Router Advertisement flags and lifetimes, DAD failures, privacy and stable interface identifiers, dual-stack path selection, extension-header captures, and production ICMPv6 filtering.</PremiumPreview>

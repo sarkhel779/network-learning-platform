@@ -1,0 +1,65 @@
+<LearningObjective>Read, classify, shorten, and troubleshoot IPv6 addresses, then explain how a host forms an address, discovers neighbours, and chooses local delivery or a router.</LearningObjective>
+
+<h2 id="why-ipv6-exists">Why IPv6 exists</h2>
+
+IPv6 provides a vastly larger address space than IPv4 and restores room for end-to-end addressing. It also replaces several familiar IPv4 mechanisms: hosts use Neighbor Discovery rather than ARP, routers advertise network information, and multicast replaces broadcast. Examples here use `2001:db8::/32`, which is reserved for documentation and must not be treated as a deployable allocation.
+
+<SectionContinue itemId="ipv6_fundamentals_section_why_ipv6_exists" anchor="why-ipv6-exists" />
+
+<h2 id="address-structure-hex">Address structure and hexadecimal</h2>
+
+An IPv6 address contains 128 bits written as eight 16-bit **hextets**. Each hexadecimal digit represents four bits, so one hextet contains four hexadecimal digits. Colons separate hextets; they do not mark packet or subnet boundaries by themselves.
+
+<SectionContinue itemId="ipv6_fundamentals_section_address_structure_hex" anchor="address-structure-hex" />
+
+<h2 id="expand-shorten">Expand and shorten addresses safely</h2>
+
+Leading zeroes may be removed from each hextet. One longest consecutive run of all-zero hextets may be replaced by `::`; use it only once. Thus `2001:0db8:0000:0000:0000:0000:0000:0001` becomes `2001:db8::1`. Expansion reverses both rules until exactly eight hextets are visible.
+
+<SectionContinue itemId="ipv6_fundamentals_section_expand_shorten" anchor="expand-shorten" />
+
+<h2 id="interactive-address-explorer">Interactive IPv6 address explorer</h2>
+
+Use the player to unfold an address, identify its prefix and interface portions, and compare its type and scope. The visual conclusion always remains visible: shortening changes notation, never the 128-bit value.
+
+<Ipv6AddressExplorer progressItemId="ipv6_fundamentals_interactive_interactive_address_explorer" />
+
+<h2 id="prefixes-interface-identifiers">Prefixes and interface identifiers</h2>
+
+A prefix length states how many leading bits identify the network prefix. `/64` is common on SLAAC LANs, leaving 64 interface-identifier bits, but IPv6 supports other prefix lengths. A device compares the destination with its configured on-link prefixes before selecting a next hop.
+
+<SectionContinue itemId="ipv6_fundamentals_section_prefixes_interface_identifiers" anchor="prefixes-interface-identifiers" />
+
+<h2 id="address-types-scopes">Address types and scopes</h2>
+
+- Global unicast addresses are globally scoped; this lesson represents them with documentation block `2001:db8::/32`.
+- Link-local addresses use `fe80::/10` and remain on the local link.
+- Unique-local addresses use `fc00::/7` and are intended for private internal use, not public Internet routing.
+- Multicast addresses use `ff00::/8`; their scope field limits where the group is meaningful.
+- `::1` is loopback, while `::` is the unspecified address and is not assigned to an interface.
+
+<SectionContinue itemId="ipv6_fundamentals_section_address_types_scopes" anchor="address-types-scopes" />
+
+<h2 id="no-broadcast">IPv6 has no broadcast</h2>
+
+IPv6 has no broadcast address. A sender uses a specific multicast group when multiple listeners must receive a packet. The Ethernet switch can still forward the multicast frame across eligible ports, but only nodes listening for that IPv6 group accept and process it.
+
+<SectionContinue itemId="ipv6_fundamentals_section_no_broadcast" anchor="no-broadcast" />
+
+<h2 id="neighbor-discovery-icmpv6">Neighbor Discovery and ICMPv6</h2>
+
+Neighbor Discovery Protocol uses ICMPv6 messages. Router Solicitation and Router Advertisement reveal routers and prefixes; Neighbor Solicitation and Neighbor Advertisement resolve neighbours and verify reachability. Duplicate Address Detection sends a Neighbor Solicitation with the unspecified source `::` before a tentative address is used.
+
+<SectionContinue itemId="ipv6_fundamentals_section_neighbor_discovery_icmpv6" anchor="neighbor-discovery-icmpv6" />
+
+<h2 id="interactive-ndp-slaac">Interactive NDP and SLAAC journey</h2>
+
+Follow address formation, DAD, router discovery, neighbour resolution, and delivery. Inspect each hop: ICMPv6 control messages build the information the host needs before normal traffic can move.
+
+<NdpSlaacJourneyPlayer progressItemId="ipv6_fundamentals_interactive_interactive_ndp_slaac" />
+
+<h2 id="default-router-local-delivery">Local delivery or the default router</h2>
+
+For an on-link destination, the host resolves the destination's link-layer address and sends directly. For an off-link destination, it resolves the default router's link-layer address; the IPv6 packet keeps the remote destination address while the first Ethernet frame targets the router.
+
+<SectionContinue itemId="ipv6_fundamentals_section_default_router_local_delivery" anchor="default-router-local-delivery" />

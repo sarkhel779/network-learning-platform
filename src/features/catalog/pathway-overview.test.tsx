@@ -68,7 +68,10 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /ipv4 addressing/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/ipv4-addressing",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(15);
-    expect(screen.getAllByText("Coming later")).toHaveLength(9);
+    expect(screen.getByRole("link", { name: /ipv6 fundamentals/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/ipv6-fundamentals",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(16);
+    expect(screen.getAllByText("Coming later")).toHaveLength(8);
   });
 });
