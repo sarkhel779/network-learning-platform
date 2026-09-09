@@ -23,6 +23,7 @@ export function createPendingProgressStore(storage: Storage, viewerId: string, m
   const write = (events: PendingProgressEvent[]) => storage.setItem(key, JSON.stringify(events.slice(-maximum)));
   return {
     list,
+    clear() { storage.removeItem(key); },
     enqueue(event: PendingProgressEvent) {
       const events = list();
       if (!events.some(({ idempotencyKey }) => idempotencyKey === event.idempotencyKey)) events.push(event);

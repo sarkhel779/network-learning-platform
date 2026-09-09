@@ -2,7 +2,7 @@
 
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
-import { saveProgress } from "./progress-client";
+import { restartProgress, saveProgress } from "./progress-client";
 import type { ProgressMutationInput } from "./progress-input.schema";
 import { createPendingProgressStore, type PendingProgressEvent } from "./pending-progress-store";
 import type { LessonProgressManifest, LessonProgressSummary } from "./progress.types";
@@ -13,8 +13,9 @@ type ContextValue = {
   authoritativeProgress: LessonProgressSummary | null;
   optimisticCompletionPercent: number;
   manifest: LessonProgressManifest;
-  complete: (itemId: string, options?: CompletionOptions) => Promise<void>;
+  complete: (itemId: string, options?: CompletionOptions) => Promise<boolean>;
   retry: (itemId: string) => Promise<void>;
+  restartLesson: () => Promise<void>;
   states: Readonly<Record<string, SaveState>>;
 };
 
@@ -47,7 +48,7 @@ export function LessonProgressProvider({ viewerId, manifest, initialProgress, ch
   const activeKeys = useRef(new Map<string, string>());
 
   const send = useCallback(async (event: PendingProgressEvent) => {
-    if (activeKeys.current.get(event.itemId) === event.idempotencyKey) return;
+    if (activeKeys.current.get(event.itemId) === event.idempotencyKey) return false;
     activeKeys.current.set(event.itemId, event.idempotencyKey);
     setStates((current) => ({ ...current, [event.itemId]: "saving" }));
     try {
@@ -56,8 +57,10 @@ export function LessonProgressProvider({ viewerId, manifest, initialProgress, ch
       setPending(store.list());
       setAuthoritativeProgress(result);
       setStates((current) => ({ ...current, [event.itemId]: "saved" }));
+      return true;
     } catch {
       setStates((current) => ({ ...current, [event.itemId]: "error" }));
+      return false;
     } finally {
       activeKeys.current.delete(event.itemId);
     }
@@ -77,7 +80,8 @@ export function LessonProgressProvider({ viewerId, manifest, initialProgress, ch
   }, [flush]);
 
   const complete = useCallback(async (itemId: string, options?: CompletionOptions) => {
-    if (authoritativeProgress?.completedItemIds.includes(itemId) || store.list().some((event) => event.itemId === itemId)) return;
+    if (authoritativeProgress?.completedItemIds.includes(itemId)) return true;
+    if (store.list().some((event) => event.itemId === itemId)) return false;
     const item = manifest.items.find((candidate) => candidate.itemId === itemId);
     if (!item) throw new Error(`Unknown progress item: ${itemId}`);
     const eventType = options?.eventType ?? eventTypeFor(item.kind);
@@ -90,15 +94,28 @@ export function LessonProgressProvider({ viewerId, manifest, initialProgress, ch
     if (event.eventType !== eventType) throw new Error("Progress event does not match item kind.");
     store.enqueue(event);
     setPending(store.list());
-    await send(event);
+    return send(event);
   }, [authoritativeProgress, manifest, send, store]);
+
+  const restartLesson = useCallback(async () => {
+    const result = await restartProgress({
+      pathwayId: manifest.pathwayId,
+      lessonId: manifest.lessonId,
+      contentVersion: manifest.contentVersion,
+      idempotencyKey: crypto.randomUUID(),
+    });
+    store.clear();
+    setPending([]);
+    setStates({});
+    setAuthoritativeProgress(result);
+  }, [manifest, store]);
 
   const completed = new Set(authoritativeProgress?.completedItemIds ?? []);
   for (const event of pending) {
     if (event.lessonId === manifest.lessonId && manifest.items.some(({ itemId }) => itemId === event.itemId)) completed.add(event.itemId);
   }
   const optimisticCompletionPercent = Math.floor(completed.size * 100 / manifest.items.length);
-  const value = useMemo<ContextValue>(() => ({ authoritativeProgress, optimisticCompletionPercent, manifest, complete, retry: (itemId) => flush(itemId), states }), [authoritativeProgress, optimisticCompletionPercent, manifest, complete, flush, states]);
+  const value = useMemo<ContextValue>(() => ({ authoritativeProgress, optimisticCompletionPercent, manifest, complete, retry: (itemId) => flush(itemId), restartLesson, states }), [authoritativeProgress, optimisticCompletionPercent, manifest, complete, flush, restartLesson, states]);
   return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>;
 }
 
