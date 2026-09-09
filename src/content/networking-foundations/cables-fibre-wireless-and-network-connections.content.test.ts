@@ -20,10 +20,10 @@ describe("connection media lesson content contract", () => {
   });
 
   it("keeps the comparison public and directly imports the lab only in account content", () => {
-    expect(publicSource.match(/<ConnectionMediaComparison\s*\/>/g)).toHaveLength(1);
+    expect(publicSource.match(/<ConnectionMediaComparison\s+progressItemId="[^"]+"\s*\/>/g)).toHaveLength(1);
     expect(publicSource).not.toMatch(/ConnectionMediaExperience|connection-media\.account|accountConnection|<KnowledgeCheck|<InterviewScenario|correctIndex|optical power-budget|Join the Pro Member Waitlist/i);
     expect(accountSource).toContain('import { ConnectionMediaExperience } from "@/features/connection-media/connection-media-experience";');
-    expect(accountSource.match(/<ConnectionMediaExperience\s+scenarios=\{loadAccountConnectionScenarios\(\)\}\s*\/>/g)).toHaveLength(1);
+    expect(accountSource.match(/<ConnectionMediaExperience\s+progressItemId="[^"]+"\s+scenarios=\{loadAccountConnectionScenarios\(\)\}\s*\/>/g)).toHaveLength(1);
     const registry = readFileSync(join(process.cwd(), "mdx-components.tsx"), "utf8");
     expect(registry).not.toMatch(/ConnectionMediaExperience|connection-media\.account/);
     const normalizedPublic = publicSource.replace(/\s+/g, " ");

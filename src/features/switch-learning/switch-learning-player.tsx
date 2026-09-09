@@ -104,7 +104,7 @@ const scenarios: Record<LearningCase, PacketFlowScenario> = {
   moved: scenario("moved", "Host moved", sourceMac, "A new source frame refreshes Host B from Gi0/2 to Gi0/3; the newest observation wins.", "Known unicast: forward to Host A on Gi0/1 while retaining Host B's refreshed Gi0/3 source location.", ["switch-b"], `${hostBMac} → Gi0/2; ${sourceMac} → Gi0/1`, `${hostBMac} → Gi0/3; ${sourceMac} → Gi0/1`),
 };
 
-export function SwitchLearningPlayer() {
+export function SwitchLearningPlayer({ progressItemId }: { progressItemId?: string }) {
   const [learningCase, setLearningCase] = useState<LearningCase>("known");
   return (
     <section className="switch-learning-player" aria-labelledby="switch-learning-title">
@@ -116,7 +116,7 @@ export function SwitchLearningPlayer() {
           <label key={id}><input checked={learningCase === id} name="switch-learning-case" onChange={() => setLearningCase(id)} type="radio" />{scenarios[id].title}</label>
         ))}
       </fieldset>
-      <PacketFlowPlayer autoplay inspectionDepthControl key={learningCase} scenario={scenarios[learningCase]} suppressHeading />
+      <PacketFlowPlayer autoplay inspectionDepthControl key={learningCase} progressItemId={progressItemId} scenario={scenarios[learningCase]} suppressHeading />
     </section>
   );
 }

@@ -16,7 +16,7 @@ const dimensionIds: readonly ComparisonDimensionId[] = [
   "delivery-scope",
 ];
 
-export function SwitchingComparison() {
+export function SwitchingComparison({ progressItemId }: { progressItemId?: string }) {
   const [dimensionId, setDimensionId] = useState<ComparisonDimensionId>("signal-handling");
   const [deviceId, setDeviceId] = useState<SwitchingDeviceId>("hub");
   const device = publicSwitchingComparison.find(({ id }) => id === deviceId)!;
@@ -60,7 +60,7 @@ export function SwitchingComparison() {
         <article aria-labelledby={`switching-device-${device.id}`} className="switching-device-card" data-behavior={detail.behavior}>
           <h4 id={`switching-device-${device.id}`}>{device.name}</h4>
           <p>{device.summary}</p>
-          <PacketJourneyPlayer journey={journey} />
+          <PacketJourneyPlayer journey={journey} progressItemId={progressItemId} />
           <section className="switching-what-changed" aria-label="What changed?">
             <h5>What changed?</h5>
             <dl>

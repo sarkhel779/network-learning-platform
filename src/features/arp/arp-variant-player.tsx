@@ -197,7 +197,7 @@ const choices: readonly { id: ArpVariant; label: string }[] = [
   { id: "inverse", label: "Inverse ARP" },
 ];
 
-export function ArpVariantPlayer() {
+export function ArpVariantPlayer({ progressItemId }: { progressItemId?: string }) {
   const [variant, setVariant] = useState<ArpVariant>("standard");
 
   return (
@@ -213,7 +213,7 @@ export function ArpVariantPlayer() {
           </label>
         ))}
       </fieldset>
-      <PacketFlowPlayer autoplay inspectionDepthControl key={variant} scenario={scenarios[variant]} suppressHeading />
+      <PacketFlowPlayer autoplay inspectionDepthControl key={variant} progressItemId={progressItemId} scenario={scenarios[variant]} suppressHeading />
     </section>
   );
 }

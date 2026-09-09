@@ -93,7 +93,7 @@ const frameFields = [
   ["Frame check sequence", "Helps the receiver detect transmission corruption."],
 ] as const;
 
-export function EthernetFrameExplorer() {
+export function EthernetFrameExplorer({ progressItemId }: { progressItemId?: string }) {
   const [kind, setKind] = useState<DeliveryKind>("known");
   return (
     <section className="ethernet-explorer" aria-labelledby="ethernet-explorer-title">
@@ -107,7 +107,7 @@ export function EthernetFrameExplorer() {
           <label key={value}><input checked={kind === value} name="ethernet-delivery" onChange={() => setKind(value)} type="radio" />{scenarios[value].title}</label>
         ))}
       </fieldset>
-      <PacketFlowPlayer autoplay inspectionDepthControl key={kind} scenario={scenarios[kind]} suppressHeading />
+      <PacketFlowPlayer autoplay inspectionDepthControl key={kind} progressItemId={progressItemId} scenario={scenarios[kind]} suppressHeading />
     </section>
   );
 }

@@ -5,10 +5,12 @@ import { useMemo } from "react";
 import { ConnectionMediaLab } from "./connection-media-lab";
 import { publicConnectionMedia } from "./connection-media.data";
 import { safeParseConnectionMediaCatalog } from "./connection-media.schema";
+import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 
 // Import this composition only from the server-authorized account MDX module.
 // The shared MDX registry must not import it or its protected scenario dataset.
-export function ConnectionMediaExperience({ scenarios }: { scenarios: unknown }) {
+export function ConnectionMediaExperience({ scenarios, progressItemId }: { scenarios: unknown; progressItemId?: string }) {
+  const { markTerminalStateReached } = useProgressCompletionBoundary(progressItemId);
   const catalog = useMemo(
     () => safeParseConnectionMediaCatalog({ media: publicConnectionMedia, scenarios }),
     [scenarios],
@@ -20,7 +22,7 @@ export function ConnectionMediaExperience({ scenarios }: { scenarios: unknown })
         Practise foundational and intermediate scenarios and troubleshooting. Review the requirements, choose a medium, and check your reasoning.
       </p>
       {catalog.success ? (
-        <ConnectionMediaLab scenarios={catalog.data.scenarios} showAdvancedShortcut />
+        <ConnectionMediaLab scenarios={catalog.data.scenarios} showAdvancedShortcut onCompleted={markTerminalStateReached} />
       ) : (
         <div>
           <h3>Connection design lab unavailable</h3>

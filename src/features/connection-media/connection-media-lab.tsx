@@ -34,9 +34,10 @@ function ScenarioRequirements({ scenario }: { scenario: ConnectionScenario }) {
   );
 }
 
-export function ConnectionMediaLab({ scenarios, showAdvancedShortcut = false }: {
+export function ConnectionMediaLab({ scenarios, showAdvancedShortcut = false, onCompleted }: {
   scenarios: readonly ConnectionScenario[];
   showAdvancedShortcut?: boolean;
+  onCompleted?: () => void;
 }) {
   const id = useId();
   const intermediateScenarioInput = useRef<HTMLInputElement>(null);
@@ -71,6 +72,7 @@ export function ConnectionMediaLab({ scenarios, showAdvancedShortcut = false }: 
     setUnavailable(false);
     // A numbered, concise update also announces an identical resubmission once.
     setAnnouncement(`Check ${nextCheck}: ${outcomeLabels[evaluation.outcome]}. Review the connection choice result below.`);
+    if (evaluation.outcome === "recommended") onCompleted?.();
   }
 
   if (!scenario) {

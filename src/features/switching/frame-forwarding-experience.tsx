@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { FrameForwardingLab } from "./frame-forwarding-lab";
 import { publicSwitchingComparison } from "./switching.data";
 import { safeParseSwitchingCatalog } from "./switching.schema";
+import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 
 function EvidenceWorkflow() {
   return (
@@ -23,10 +24,12 @@ function EvidenceWorkflow() {
   );
 }
 
-export function FrameForwardingExperience({ scenarios, showAdvancedShortcut = true }: {
+export function FrameForwardingExperience({ scenarios, showAdvancedShortcut = true, progressItemId }: {
   scenarios: unknown;
   showAdvancedShortcut?: boolean;
+  progressItemId?: string;
 }) {
+  const { markTerminalStateReached } = useProgressCompletionBoundary(progressItemId);
   const catalog = useMemo(
     () => safeParseSwitchingCatalog({ comparison: publicSwitchingComparison, scenarios }),
     [scenarios],
@@ -35,7 +38,7 @@ export function FrameForwardingExperience({ scenarios, showAdvancedShortcut = tr
   return (
     <section aria-labelledby="forward-the-frame">
       {catalog.success ? (
-        <FrameForwardingLab scenarios={catalog.data.scenarios} showAdvancedShortcut={showAdvancedShortcut} />
+        <FrameForwardingLab scenarios={catalog.data.scenarios} showAdvancedShortcut={showAdvancedShortcut} onCompleted={markTerminalStateReached} />
       ) : (
         <div>
           <h3>Frame-forwarding lab unavailable</h3>

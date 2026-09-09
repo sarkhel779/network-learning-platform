@@ -38,7 +38,7 @@ describe("public route-decision scenarios", () => {
     expect(lesson).toContain("matching the first three octets is not a general subnet rule");
     expect(lesson).toContain("This example does not use NAT");
     expect(lesson).toContain("Ordinary Layer 2 broadcasts stop at the router boundary");
-    expect(lesson).toContain("<RouteDecisionPlayer />");
+    expect(lesson).toContain("<RouteDecisionPlayer progressItemId=");
     expect(lesson).toMatch(/Question[\s\S]*Direct delivery[\s\S]*Routed delivery[\s\S]*No route/);
   });
 });

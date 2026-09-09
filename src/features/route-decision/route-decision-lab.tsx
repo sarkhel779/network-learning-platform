@@ -7,7 +7,7 @@ const scopes = ["on-link", "remote-via-gateway", "no-route", "local-broadcast"] 
 const actions = ["direct-delivery", "route-unicast", "stop-broadcast", "host-routing-failure", "router-no-route"] as const;
 const pretty = (value: string) => value.replaceAll("-", " ");
 
-export function RouteDecisionLab({ scenarios, showAdvancedShortcut = false }: { scenarios: readonly RouteDecisionScenario[]; showAdvancedShortcut?: boolean }) {
+export function RouteDecisionLab({ scenarios, showAdvancedShortcut = false, onCompleted }: { scenarios: readonly RouteDecisionScenario[]; showAdvancedShortcut?: boolean; onCompleted?: () => void }) {
   const advancedInput = useRef<HTMLInputElement>(null);
   const [scenarioId, setScenarioId] = useState(scenarios[0]?.id ?? "");
   const [scope, setScope] = useState<RouteDecisionOutcome["scope"]>();
@@ -24,7 +24,9 @@ export function RouteDecisionLab({ scenarios, showAdvancedShortcut = false }: { 
     event.preventDefault();
     if (!scenario || !scope || !boundaryAction) return;
     const prediction: LearnerRoutePrediction = { scope, interfaceId: interfaceId || undefined, nextHopIp: nextHopIp || undefined, boundaryAction };
-    setResult(evaluateRoutePrediction(scenario, prediction));
+    const evaluation = evaluateRoutePrediction(scenario, prediction);
+    setResult(evaluation);
+    if (evaluation.allCorrect) onCompleted?.();
   }
   if (!scenario) return <p>Route-decision practice is unavailable. Review the routing evidence checklist below.</p>;
 

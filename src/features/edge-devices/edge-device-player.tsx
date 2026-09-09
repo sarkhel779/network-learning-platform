@@ -6,6 +6,7 @@ import { NetworkDeviceSymbol } from "@/features/packet-flow/network-device-symbo
 import { PlaybackControls } from "@/features/packet-flow/playback-controls";
 import { createPlaybackState, getStepDelay, playbackReducer } from "@/features/packet-flow/playback";
 import { useReducedMotionState } from "@/features/packet-flow/use-reduced-motion";
+import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 
 import { edgeDeviceJourneys, getEdgeDeviceJourney, type EdgeDeviceKind } from "./edge-device-journeys";
 
@@ -15,7 +16,7 @@ function symbolKind(kind: EdgeDeviceKind) {
   return kind;
 }
 
-function Journey({ journeyId }: { journeyId: string }) {
+function Journey({ journeyId, onComplete }: { journeyId: string; onComplete: () => void }) {
   const journey = getEdgeDeviceJourney(journeyId);
   const { reducedMotion, isHydrated } = useReducedMotionState();
   const preferenceResolved = useRef(false);
@@ -39,6 +40,10 @@ function Journey({ journeyId }: { journeyId: string }) {
     const timer = window.setTimeout(() => dispatch({ type: "tick" }), getStepDelay(stageDurationMs, state.speed));
     return () => window.clearTimeout(timer);
   }, [atFinal, reducedMotion, state.playing, state.speed, state.stepIndex]);
+
+  useEffect(() => {
+    if (atFinal) onComplete();
+  }, [atFinal, onComplete]);
 
   return (
     <section aria-label={`Edge device packet journey: ${journey.title}`} className="edge-device-journey">
@@ -73,7 +78,8 @@ function Journey({ journeyId }: { journeyId: string }) {
   );
 }
 
-export function EdgeDevicePlayer() {
+export function EdgeDevicePlayer({ progressItemId }: { progressItemId?: string }) {
+  const { markTerminalStateReached } = useProgressCompletionBoundary(progressItemId);
   const [journeyId, setJourneyId] = useState(edgeDeviceJourneys[0].id);
   return (
     <section aria-labelledby="edge-device-player-title" className="edge-device-player">
@@ -82,7 +88,7 @@ export function EdgeDevicePlayer() {
       <fieldset><legend>Choose an edge layout</legend>{edgeDeviceJourneys.map((journey) => (
         <label key={journey.id}><input checked={journey.id === journeyId} name="edge-layout" onChange={() => setJourneyId(journey.id)} type="radio" />{journey.title}</label>
       ))}</fieldset>
-      <Journey journeyId={journeyId} key={journeyId} />
+      <Journey journeyId={journeyId} key={journeyId} onComplete={markTerminalStateReached} />
     </section>
   );
 }

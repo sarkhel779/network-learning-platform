@@ -67,7 +67,7 @@ describe("OSI and TCP/IP Models lesson content", () => {
   });
 
   it("embeds the interactive experience without retaining the temporary placeholder", () => {
-    expect(lesson.match(/<EncapsulationExperience\s*\/>/g)).toHaveLength(1);
+    expect(lesson.match(/<EncapsulationExperience\s+progressItemId="[^"]+"\s*\/>/g)).toHaveLength(1);
     expect(lesson.match(/<DeviceLayerScope\s*\/>/g)).toHaveLength(1);
     expect(lesson).not.toContain("will be added in a later update");
   });

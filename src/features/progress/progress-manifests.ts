@@ -13,18 +13,18 @@ type LessonProgressDefinition = Readonly<{
 
 const definitions = [
   { lessonId: "lesson_how_networks_communicate", interactiveAnchors: ["packet-journey"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
-  { lessonId: "lesson_hosts_and_network_devices", interactiveAnchors: ["explore-topology", "compare-journeys"], knowledgeCheckCount: 2, knowledgeAnchor: "test-understanding" },
-  { lessonId: "lesson_cables_fibre_wireless_and_network_connections", interactiveAnchors: ["compare-media", "design-a-connection", "diagnose-link-symptoms"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
-  { lessonId: "lesson_hubs_bridges_and_switches", interactiveAnchors: ["compare-hub-bridge-switch", "forward-the-frame", "diagnose-local-switching-symptoms"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
-  { lessonId: "lesson_unicast_broadcast_and_multicast_communication", interactiveAnchors: ["delivery-scope-player", "predict-delivery", "diagnose-delivery-scope"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
-  { lessonId: "lesson_routers_default_gateways_and_network_boundaries", interactiveAnchors: ["route-decision-player", "read-a-basic-routing-table", "diagnose-gateway-boundary-problems"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
-  { lessonId: "lesson_access_points_modems_onts_and_firewalls", interactiveAnchors: ["interactive-edge-journey", "identify-device-roles", "diagnose-edge-failures"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_hosts_and_network_devices", interactiveAnchors: ["compare-journeys"], knowledgeCheckCount: 2, knowledgeAnchor: "test-understanding" },
+  { lessonId: "lesson_cables_fibre_wireless_and_network_connections", interactiveAnchors: ["compare-media", "design-a-connection"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_hubs_bridges_and_switches", interactiveAnchors: ["compare-hub-bridge-switch", "forward-the-frame"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_unicast_broadcast_and_multicast_communication", interactiveAnchors: ["delivery-scope-player", "predict-delivery"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_routers_default_gateways_and_network_boundaries", interactiveAnchors: ["route-decision-player", "read-a-basic-routing-table"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_access_points_modems_onts_and_firewalls", interactiveAnchors: ["interactive-edge-journey"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_osi_and_tcp_ip_models", interactiveAnchors: ["encapsulation-lab"], knowledgeCheckCount: 2, knowledgeAnchor: "knowledge-summary" },
-  { lessonId: "lesson_first_packet_journey_through_a_small_network", interactiveAnchors: ["complete-packet-journey", "match-evidence-to-the-journey", "troubleshoot-the-first-failed-hop"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
-  { lessonId: "lesson_ethernet_frames_and_mac_addresses", interactiveAnchors: ["interactive-frame-delivery", "inspect-frame-evidence", "diagnose-frame-problems"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
-  { lessonId: "lesson_how_switches_learn_and_forward", interactiveAnchors: ["interactive-switch-learning", "read-mac-table-evidence", "diagnose-switching-behaviour"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
-  { lessonId: "lesson_arp_and_local_delivery", interactiveAnchors: ["interactive-arp-journey", "arp-variants-and-boundaries", "inspect-neighbour-evidence", "troubleshoot-arp-methodically"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
-  { lessonId: "lesson_vlans_access_ports_and_trunks", interactiveAnchors: ["interactive-vlan-membership", "interactive-tag-journey", "solve-vlan-reachability"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_first_packet_journey_through_a_small_network", interactiveAnchors: ["complete-packet-journey"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_ethernet_frames_and_mac_addresses", interactiveAnchors: ["interactive-frame-delivery"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_how_switches_learn_and_forward", interactiveAnchors: ["interactive-switch-learning", "read-mac-table-evidence"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_arp_and_local_delivery", interactiveAnchors: ["interactive-arp-journey", "arp-variants-and-boundaries"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_vlans_access_ports_and_trunks", interactiveAnchors: ["interactive-vlan-membership", "interactive-tag-journey"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
 ] as const satisfies readonly LessonProgressDefinition[];
 
 function itemPrefix(lessonId: string) {

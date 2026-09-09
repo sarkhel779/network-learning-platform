@@ -8,10 +8,12 @@ import { useReducedMotionState } from "@/features/packet-flow/use-reduced-motion
 
 import { PacketJourneyStageView } from "./packet-journey-stage";
 import type { PacketJourney } from "./packet-journey.types";
+import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 
 const stageDurationMs = 1400;
 
-function JourneyPlayback({ journey }: { journey: PacketJourney }) {
+function JourneyPlayback({ journey, progressItemId }: { journey: PacketJourney; progressItemId?: string }) {
+  const { markTerminalStateReached } = useProgressCompletionBoundary(progressItemId);
   const { reducedMotion, isHydrated } = useReducedMotionState();
   const preferenceResolved = useRef(false);
   const [state, dispatch] = useReducer(
@@ -38,6 +40,10 @@ function JourneyPlayback({ journey }: { journey: PacketJourney }) {
     return () => window.clearTimeout(timer);
   }, [atFinal, reducedMotion, state.playing, state.speed, state.stepIndex]);
 
+  useEffect(() => {
+    if (atFinal) markTerminalStateReached();
+  }, [atFinal, markTerminalStateReached]);
+
   return (
     <section aria-label={journey.accessibleName} className="packet-journey-player">
       <PacketJourneyStageView journey={journey} stage={stage} />
@@ -52,6 +58,6 @@ function JourneyPlayback({ journey }: { journey: PacketJourney }) {
   );
 }
 
-export function PacketJourneyPlayer({ journey }: { journey: PacketJourney }) {
-  return <JourneyPlayback journey={journey} key={journey.id} />;
+export function PacketJourneyPlayer({ journey, progressItemId }: { journey: PacketJourney; progressItemId?: string }) {
+  return <JourneyPlayback journey={journey} progressItemId={progressItemId} key={journey.id} />;
 }

@@ -7,7 +7,7 @@ import type { DeliveryScenario, RouterAction } from "./delivery-scope.schema";
 const routerActions: RouterAction[] = ["not-in-path", "receive-local-only", "route-unicast", "multicast-disabled"];
 const toggle = (items: string[], value: string) => items.includes(value) ? items.filter((item) => item !== value) : [...items, value];
 
-export function DeliveryScopeLab({ scenarios, showAdvancedShortcut = false }: { scenarios: DeliveryScenario[]; showAdvancedShortcut?: boolean }) {
+export function DeliveryScopeLab({ scenarios, showAdvancedShortcut = false, onCompleted }: { scenarios: DeliveryScenario[]; showAdvancedShortcut?: boolean; onCompleted?: () => void }) {
   const [scenarioId, setScenarioId] = useState(scenarios[0].id);
   const [egress, setEgress] = useState<string[]>([]);
   const [receivers, setReceivers] = useState<string[]>([]);
@@ -33,7 +33,7 @@ export function DeliveryScopeLab({ scenarios, showAdvancedShortcut = false }: { 
       <fieldset><legend>Hosts that accept</legend>{scenario.nodes.filter(({ id }) => id !== "client").map((node) => <label key={node.id}><input checked={accepters.includes(node.id)} onChange={() => setAccepters(toggle(accepters, node.id))} type="checkbox" />Host {node.label} accepts</label>)}</fieldset>
       <label>Router action<select aria-label="Router action" onChange={(event) => setRouterAction(event.target.value as RouterAction)} value={routerAction}>{routerActions.map((action) => <option key={action} value={action}>{action.replaceAll("-", " ")}</option>)}</select></label>
     </div>
-    <button type="button" onClick={() => { setChecks((count) => count + 1); setResult(evaluateDeliveryPrediction(scenario, { egressPortIds: egress, receivingNodeIds: receivers, acceptingNodeIds: accepters, routerAction })); }}>Check prediction</button>
+    <button type="button" onClick={() => { const evaluation = evaluateDeliveryPrediction(scenario, { egressPortIds: egress, receivingNodeIds: receivers, acceptingNodeIds: accepters, routerAction }); setChecks((count) => count + 1); setResult(evaluation); if (evaluation.correct) onCompleted?.(); }}>Check prediction</button>
     {result && <div className="delivery-scope-lab__result">
       <p aria-live="polite">Check {checks}: {result.correct ? "Correct" : "Review each distinction"}.</p>
       <section><h4>Forwarding decision</h4><p>{labelPorts(result.outcome.egressPortIds)}</p></section>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useReducedMotionState } from "../packet-flow/use-reduced-motion";
+import { useProgressCompletionBoundary } from "../progress/progress-completion-boundary";
 
 import { publicConnectionMedia } from "./connection-media.data";
 import type { ComparisonQualityId, ConnectionMediumId } from "./connection-media.schema";
@@ -53,7 +54,8 @@ const signalVisualStates: Readonly<Record<ComparisonQualityId, Readonly<Record<C
   },
 };
 
-export function ConnectionMediaComparison() {
+export function ConnectionMediaComparison({ progressItemId }: { progressItemId?: string }) {
+  const { markTerminalStateReached, state, retry } = useProgressCompletionBoundary(progressItemId);
   const [qualityId, setQualityId] = useState<ComparisonQualityId>("distance");
   const { reducedMotion, isHydrated } = useReducedMotionState();
 
@@ -119,6 +121,10 @@ export function ConnectionMediaComparison() {
           );
         })}
       </div>
+      <button type="button" onClick={markTerminalStateReached} disabled={state === "saving" || state === "saved"}>
+        {state === "saved" ? "Comparison complete" : state === "saving" ? "Saving…" : "Finish comparison"}
+      </button>
+      {state === "error" ? <button type="button" onClick={() => void retry()}>Retry saving</button> : null}
     </section>
   );
 }
