@@ -13,6 +13,7 @@ import { loadAuthorizedLessonContent } from "@/features/lessons/lesson-content.r
 import type { LessonContentKey, LessonContentModule } from "@/features/lessons/lesson-content.types";
 import { LessonShell } from "@/features/lessons/lesson-shell";
 import { buildLessonStructuredData, serializeJsonLd } from "@/features/seo/lesson-structured-data";
+import { getViewer } from "@/lib/supabase/session";
 
 import { isExpectedCatalogError } from "./catalog-error";
 
@@ -73,6 +74,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const lesson = findPublishedLesson(pathwaySlug, lessonSlug);
   const pathway = getPathway(pathwaySlug);
   const { previous, next } = getAdjacentLessons(pathwaySlug, lessonSlug);
+  const viewer = await getViewer();
   const key: LessonContentKey = `${pathway.slug}/${lesson.slug}`;
 
   let LessonContent: LessonContentModule["default"] | undefined;
@@ -98,6 +100,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
         lesson={lesson}
         previous={previous}
         next={next}
+        viewer={viewer}
       >
         {LessonContent ? <LessonContent /> : null}
       </LessonShell>

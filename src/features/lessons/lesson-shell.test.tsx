@@ -41,6 +41,7 @@ describe("LessonShell", () => {
   it("renders the learning objective before lesson content", () => {
     render(
       <LessonShell
+        viewer={null}
         pathway={pathway}
         lesson={lesson}
         previous={previousLesson}
@@ -63,6 +64,7 @@ describe("LessonShell", () => {
   it("links a published previous lesson", () => {
     render(
       <LessonShell
+        viewer={null}
         pathway={pathway}
         lesson={lesson}
         previous={previousLesson}
@@ -80,6 +82,7 @@ describe("LessonShell", () => {
   it("renders an unpublished next lesson as non-link guidance", () => {
     render(
       <LessonShell
+        viewer={null}
         pathway={pathway}
         lesson={lesson}
         next={nextLesson}
@@ -95,7 +98,7 @@ describe("LessonShell", () => {
 
   it("offers course navigation from a collapsed floating drawer", () => {
     render(
-      <LessonShell pathway={pathway} lesson={pathway.modules[0].lessons[0]}>
+      <LessonShell viewer={null} pathway={pathway} lesson={pathway.modules[0].lessons[0]}>
         <p>Lesson content</p>
       </LessonShell>,
     );
@@ -105,10 +108,34 @@ describe("LessonShell", () => {
     expect(screen.queryByRole("dialog", { name: "Course contents" })).not.toBeInTheDocument();
   });
 
+  it("exposes account tools only to an authenticated viewer", () => {
+    const { rerender } = render(
+      <LessonShell viewer={null} pathway={pathway} lesson={lesson}>
+        <p>Lesson content</p>
+      </LessonShell>,
+    );
+
+    expect(screen.queryByRole("button", { name: "Notes" })).not.toBeInTheDocument();
+
+    rerender(
+      <LessonShell
+        viewer={{ id: "learner-1", displayName: "Pranita", avatarUrl: null }}
+        pathway={pathway}
+        lesson={lesson}
+      >
+        <p>Lesson content</p>
+      </LessonShell>,
+    );
+
+    expect(screen.getByRole("button", { name: "Notes" })).toBeVisible();
+    expect(screen.queryByText(/learner-1|private@example|access_token/i)).not.toBeInTheDocument();
+  });
+
   it("renders section navigation separately from the course curriculum", async () => {
     const user = userEvent.setup();
     render(
       <LessonShell
+        viewer={null}
         pathway={pathway}
         lesson={{
           ...lesson,
@@ -131,7 +158,7 @@ describe("LessonShell", () => {
 
   it("places registration after public content and before bottom lesson navigation", () => {
     render(
-      <LessonShell pathway={pathway} lesson={lesson}>
+      <LessonShell viewer={null} pathway={pathway} lesson={lesson}>
         <p>Public explanation and player content.</p>
       </LessonShell>,
     );
