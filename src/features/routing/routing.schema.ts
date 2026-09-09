@@ -64,7 +64,7 @@ export function prefixMatches(destination: string, prefixText: string) {
     const mask = prefix.length === 0 ? 0 : (0xffffffff << (32 - prefix.length)) >>> 0;
     return (number(destination) & mask) === (number(prefix.address) & mask);
   }
-  const number = (value: string) => parseIpv6(value).hextets.reduce((total, part) => (total << 16n) | BigInt(part), 0n);
+  const number = (value: string) => parseIpv6(value).hextets.reduce((total, part) => (total << BigInt(16)) | BigInt(part), BigInt(0));
   const shift = BigInt(128 - prefix.length);
   return (number(destination) >> shift) === (number(prefix.address) >> shift);
 }
