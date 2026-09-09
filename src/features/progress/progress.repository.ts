@@ -3,6 +3,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getLessonProgressManifest } from "./progress-manifests";
 import type { ProgressMutationInput, RestartProgressInput } from "./progress-input.schema";
 import type { LessonProgressStatus, LessonProgressSummary } from "./progress.types";
+import { isProgressTestAdapterEnabled, listTestProgress, recordTestProgress, restartTestProgress } from "./progress-test-adapter";
 
 type ProgressAttemptRow = {
   id: string;
@@ -52,6 +53,7 @@ export async function listPathwayProgress(
   userId: string,
   pathwayId: string,
 ): Promise<LessonProgressSummary[]> {
+  if (isProgressTestAdapterEnabled(process.env)) return listTestProgress(userId, pathwayId);
   const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase.from("learner_lesson_attempts").select("*")
     .eq("user_id", userId).eq("pathway_id", pathwayId).eq("is_current", true)
@@ -81,9 +83,13 @@ function mapProviderError(message: string | undefined): ProgressMutationResult {
   return { ok: false, code: "unavailable" };
 }
 
-export async function recordLearnerProgress(input: ProgressMutationInput): Promise<ProgressMutationResult> {
+export async function recordLearnerProgress(input: ProgressMutationInput, userId?: string): Promise<ProgressMutationResult> {
   const invalid = validateKnownItem(input);
   if (invalid) return { ok: false, code: invalid };
+  if (userId && isProgressTestAdapterEnabled(process.env)) {
+    const progress = recordTestProgress(userId, input);
+    return progress ? { ok: true, progress } : { ok: false, code: "unavailable" };
+  }
   const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase.rpc("record_learner_progress_event", {
     p_pathway_id: input.pathwayId, p_lesson_id: input.lessonId,
@@ -95,11 +101,12 @@ export async function recordLearnerProgress(input: ProgressMutationInput): Promi
   return { ok: true, progress: mapRow(data as ProgressAttemptRow) };
 }
 
-export async function restartLearnerProgress(input: RestartProgressInput): Promise<ProgressMutationResult> {
+export async function restartLearnerProgress(input: RestartProgressInput, userId?: string): Promise<ProgressMutationResult> {
   let manifest;
   try { manifest = getLessonProgressManifest(input.pathwayId, input.lessonId); }
   catch { return { ok: false, code: "invalid_item" }; }
   if (manifest.contentVersion !== input.contentVersion) return { ok: false, code: "stale_version" };
+  if (userId && isProgressTestAdapterEnabled(process.env)) return { ok: true, progress: restartTestProgress(userId, input) };
   const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase.rpc("restart_learner_lesson", {
     p_pathway_id: input.pathwayId, p_lesson_id: input.lessonId,

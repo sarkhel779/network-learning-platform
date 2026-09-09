@@ -2,11 +2,11 @@ import { describe, expect, it, vi } from "vitest";
 
 import { POST } from "./route";
 
-const { getUser, restartLearnerProgress } = vi.hoisted(() => ({
-  getUser: vi.fn(async () => ({ data: { user: { id: "user-1" } }, error: null })),
+const { getViewer, restartLearnerProgress } = vi.hoisted(() => ({
+  getViewer: vi.fn(async () => ({ id: "user-1" })),
   restartLearnerProgress: vi.fn(async () => ({ ok: true, progress: {} })),
 }));
-vi.mock("@/lib/supabase/server", () => ({ createServerSupabaseClient: async () => ({ auth: { getUser } }) }));
+vi.mock("@/lib/supabase/session", () => ({ getViewer }));
 vi.mock("@/features/progress/progress.repository", () => ({ restartLearnerProgress }));
 
 describe("POST /api/learning/progress/restart", () => {

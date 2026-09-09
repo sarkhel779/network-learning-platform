@@ -25,7 +25,8 @@ async function post(endpoint: string, input: ProgressMutationInput | RestartProg
 }
 
 export function saveProgress(input: ProgressMutationInput, fetcher: Fetcher = fetch) {
-  return post("/api/learning/progress", input, fetcher);
+  const { createdAt: _createdAt, ...payload } = input as ProgressMutationInput & { createdAt?: string };
+  return post("/api/learning/progress", payload, fetcher);
 }
 
 export function restartProgress(input: RestartProgressInput, fetcher: Fetcher = fetch) {

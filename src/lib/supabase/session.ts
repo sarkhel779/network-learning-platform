@@ -6,13 +6,14 @@ import type { Viewer } from "@/features/learner-workspace/learner-workspace.type
 import { createServerSupabaseClient } from "./server";
 
 type ViewerSource = Pick<User, "id" | "user_metadata">;
-type TestSessionEnv = Partial<Record<"NODE_ENV" | "PLAYWRIGHT_TEST_SESSION", string>>;
+type TestSessionEnv = Partial<Record<"NODE_ENV" | "PLAYWRIGHT_TEST_SESSION" | "PACKETSECRETS_TEST_ENV", string>>;
 
 export function resolveTestViewer(viewerId: string | null, env: TestSessionEnv): Viewer | null {
   if (
     !viewerId ||
-    env.NODE_ENV !== "test" ||
-    env.PLAYWRIGHT_TEST_SESSION !== "1"
+    (env.NODE_ENV !== "test" && env.NODE_ENV !== "development") ||
+    env.PLAYWRIGHT_TEST_SESSION !== "1" ||
+    env.PACKETSECRETS_TEST_ENV !== "test"
   ) {
     return null;
   }
