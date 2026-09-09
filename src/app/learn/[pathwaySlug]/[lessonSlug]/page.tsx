@@ -12,6 +12,9 @@ import type { LessonSummary } from "@/features/catalog/catalog.types";
 import { loadAuthorizedLessonContent } from "@/features/lessons/lesson-content.repository";
 import type { LessonContentKey, LessonContentModule } from "@/features/lessons/lesson-content.types";
 import { LessonShell } from "@/features/lessons/lesson-shell";
+import { getLessonProgressManifest } from "@/features/progress/progress-manifests";
+import { getLessonProgress } from "@/features/progress/progress.repository";
+import type { LessonProgressSummary } from "@/features/progress/progress.types";
 import { buildLessonStructuredData, serializeJsonLd } from "@/features/seo/lesson-structured-data";
 import { getViewer } from "@/lib/supabase/session";
 
@@ -77,16 +80,31 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const viewer = await getViewer();
   const key: LessonContentKey = `${pathway.slug}/${lesson.slug}`;
 
-  let LessonContent: LessonContentModule["default"] | undefined;
+  let PublicContent: LessonContentModule["default"] | undefined;
+  let AccountContent: LessonContentModule["default"] | undefined;
+  let initialProgress: LessonProgressSummary | null = null;
+  let progressUnavailable = false;
 
   try {
-    const content = await loadAuthorizedLessonContent(key, "anonymous");
-    LessonContent = content.public?.default;
+    const content = await loadAuthorizedLessonContent(key, viewer ? "account" : "anonymous");
+    PublicContent = content.public?.default;
+    AccountContent = content.account?.default;
   } catch (error) {
     if (error instanceof Error && error.message === "LESSON_CONTENT_NOT_FOUND") {
       notFound();
     }
     throw error;
+  }
+
+  const progressManifest = viewer
+    ? getLessonProgressManifest(pathway.id, lesson.id)
+    : undefined;
+  if (viewer) {
+    try {
+      initialProgress = await getLessonProgress(viewer.id, pathway.id, lesson.id);
+    } catch {
+      progressUnavailable = true;
+    }
   }
 
   return (
@@ -101,8 +119,12 @@ export default async function LessonPage({ params }: LessonPageProps) {
         previous={previous}
         next={next}
         viewer={viewer}
+        progressManifest={progressManifest}
+        initialProgress={initialProgress}
+        progressUnavailable={progressUnavailable}
       >
-        {LessonContent ? <LessonContent /> : null}
+        {PublicContent ? <PublicContent /> : null}
+        {AccountContent ? <AccountContent /> : null}
       </LessonShell>
     </>
   );
