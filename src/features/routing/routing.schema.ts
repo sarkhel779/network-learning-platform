@@ -50,15 +50,6 @@ const scenarioSchema = z.object({
   try { if (addressFamilyOf(scenario.destination) !== scenario.family) context.addIssue({ code: "custom", message: "Destination family does not match scenario" }); }
   catch { context.addIssue({ code: "custom", message: "Invalid destination address" }); }
   if (new Set(scenario.routes.map(({ id }) => id)).size !== scenario.routes.length) context.addIssue({ code: "custom", message: "Route ids must be unique" });
-  const comparisonGroups = new Map<string, Set<string | null>>();
-  for (const route of scenario.routes) {
-    const key = `${route.prefix}|${route.administrativeDistance}`;
-    const domains = comparisonGroups.get(key) ?? new Set<string | null>();
-    domains.add(route.metricDomain);
-    comparisonGroups.set(key, domains);
-  }
-  if ([...comparisonGroups.values()].some((domains) => domains.size > 1))
-    context.addIssue({ code: "custom", path: ["routes"], message: "Equal-prefix, equal-distance routes cannot use incomparable metric domains" });
 });
 
 export type RouteCandidate = z.infer<typeof routeCandidateSchema>;

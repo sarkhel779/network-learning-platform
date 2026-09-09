@@ -32,6 +32,7 @@ export function selectRoute(scenario: RouteDecisionScenario): RouteDecisionTrace
   const remaining = scenario.routes.filter(({ id }) => retained.has(id));
   const domains = new Set(remaining.map(({ metricDomain }) => metricDomain));
   const comparable = domains.size <= 1;
+  if (!comparable && !scenario.allowEqualCost) throw new Error("Routes reaching metric comparison use incomparable metric domains");
   const bestMetric = comparable ? Math.min(Infinity, ...remaining.map(({ metric }) => metric)) : Infinity;
   stage("metric", (route) => !comparable || route.metric === bestMetric);
 

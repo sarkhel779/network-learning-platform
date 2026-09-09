@@ -28,9 +28,11 @@ describe("selectRoute", () => {
   });
 
   it("rejects equal-prefix equal-distance routes with incomparable metrics", () => {
-    expect(() => parseRouteDecisionScenario({ id: "ambiguous", title: "Ambiguous", family: "ipv4", destination: "203.0.113.9", routes: [
-      { id: "ospf", source: "learned", prefix: "203.0.113.0/24", nextHop: "192.0.2.1", outgoingInterface: "Gi0/0", administrativeDistance: 90, metric: 10, metricDomain: "ospf" },
+    const scenario = parseRouteDecisionScenario({ id: "ambiguous", title: "Ambiguous", family: "ipv4", destination: "203.0.113.9", routes: [
+      { id: "ospf", source: "learned", prefix: "203.0.113.42/24", nextHop: "192.0.2.1", outgoingInterface: "Gi0/0", administrativeDistance: 90, metric: 10, metricDomain: "ospf" },
       { id: "eigrp", source: "learned", prefix: "203.0.113.0/24", nextHop: "192.0.2.2", outgoingInterface: "Gi0/1", administrativeDistance: 90, metric: 10, metricDomain: "eigrp" },
-    ] })).toThrow(/incomparable metric domains/i);
+      { id: "harmless-v6", source: "learned", prefix: "2001:db8::/32", nextHop: "2001:db8::1", outgoingInterface: "Gi0/2", administrativeDistance: 90, metric: 1, metricDomain: "isis" },
+    ] });
+    expect(() => selectRoute(scenario)).toThrow(/incomparable metric domains/i);
   });
 });
