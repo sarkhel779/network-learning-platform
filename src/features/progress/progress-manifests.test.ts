@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { pathways } from "@/features/catalog/catalog.data";
@@ -47,5 +49,21 @@ describe("lessonProgressManifests", () => {
       "path_networking_foundations",
       "lesson_missing",
     )).toThrow(/progress manifest not found/i);
+  });
+
+  it("keeps every stable item ID mirrored in the Supabase migration", () => {
+    const migration = readFileSync(
+      resolve("supabase/migrations/202609090002_create_learner_progress.sql"),
+      "utf8",
+    );
+    const itemIds = lessonProgressManifests.flatMap(({ items }) =>
+      items.map(({ itemId }) => itemId));
+
+    for (const itemId of itemIds) {
+      expect(migration.split(`'${itemId}'`)).toHaveLength(2);
+    }
+
+    expect(migration.match(/^  \('path_networking_foundations', 'lesson_[^']+', 1, \d+\)[,;]?$/gm))
+      .toHaveLength(lessonProgressManifests.length);
   });
 });
