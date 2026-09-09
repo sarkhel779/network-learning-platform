@@ -77,6 +77,8 @@ vi.mock("@/content/networking-foundations/vlans-access-ports-and-trunks.account.
 }));
 vi.mock("@/content/networking-foundations/subnetting-fundamentals.public.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/subnetting-fundamentals.account.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/routing-tables-and-default-routes.public.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/routing-tables-and-default-routes.account.mdx", () => ({ default: () => null }));
 
 import {
   createAuthorizedLessonContentLoader,
@@ -257,6 +259,16 @@ describe("loadAuthorizedLessonContent", () => {
 
   it("keeps subnetting practice protected while serving fundamentals anonymously", async () => {
     const key = "networking-foundations/subnetting-fundamentals";
+    const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
+    expect(anonymous.public).toBeDefined();
+    expect(anonymous.account).toBeUndefined();
+    const account = await loadAuthorizedLessonContent(key, "account");
+    expect(account.public).toBeDefined();
+    expect(account.account).toBeDefined();
+  });
+
+  it("keeps routing practice protected while serving route selection publicly", async () => {
+    const key = "networking-foundations/routing-tables-and-default-routes";
     const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
     expect(anonymous.public).toBeDefined();
     expect(anonymous.account).toBeUndefined();
