@@ -18,9 +18,9 @@ describe("LearnerWorkspace", () => {
       <LearnerWorkspace pathway={pathway} currentLessonSlug="how-networks-communicate" viewer={null} />,
     );
 
-    expect(screen.getAllByRole("button").map((button) => button.textContent)).toEqual([
-      "Course contents",
-    ]);
+    expect(screen.getByRole("button", { name: "Course contents" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Learning tools" })).toBeVisible();
+    expect(screen.queryByRole("button", { name: "Notes" })).not.toBeInTheDocument();
   });
 
   it("renders the approved tool order for an authenticated learner", () => {
@@ -77,5 +77,19 @@ describe("LearnerWorkspace", () => {
     expect(screen.getByRole("dialog", { name: "Course contents" })).toHaveTextContent(
       "Network and Device Essentials",
     );
+  });
+
+  it("makes every authenticated tool reachable from the mobile menu", async () => {
+    const user = userEvent.setup();
+    render(
+      <LearnerWorkspace pathway={pathway} currentLessonSlug="how-networks-communicate" viewer={viewer} />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Learning tools" }));
+    const dialog = screen.getByRole("dialog", { name: "Learning tools" });
+    expect(dialog.querySelectorAll(".learner-workspace-mobile-menu button")).toHaveLength(9);
+
+    await user.click(screen.getAllByRole("button", { name: "Notes" }).at(-1)!);
+    expect(screen.getByRole("dialog", { name: "Notes" })).toBeVisible();
   });
 });

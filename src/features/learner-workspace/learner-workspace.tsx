@@ -36,13 +36,25 @@ function ToolIcon() {
 
 export function LearnerWorkspace({ pathway, currentLessonSlug, viewer }: LearnerWorkspaceProps) {
   const [activeToolId, setActiveToolId] = useState<WorkspaceToolId | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const activeTriggerRef = useRef<HTMLButtonElement>(null);
   const tools = getVisibleWorkspaceTools(viewer);
   const activeTool = tools.find(({ id }) => id === activeToolId) ?? null;
 
-  function selectTool(event: MouseEvent<HTMLButtonElement>, toolId: WorkspaceToolId) {
-    activeTriggerRef.current = event.currentTarget;
+  function selectTool(
+    event: MouseEvent<HTMLButtonElement>,
+    toolId: WorkspaceToolId,
+    preserveTrigger = false,
+  ) {
+    if (!preserveTrigger) activeTriggerRef.current = event.currentTarget;
+    setMobileMenuOpen(false);
     setActiveToolId((current) => current === toolId ? null : toolId);
+  }
+
+  function openMobileMenu(event: MouseEvent<HTMLButtonElement>) {
+    activeTriggerRef.current = event.currentTarget;
+    setActiveToolId(null);
+    setMobileMenuOpen(true);
   }
 
   return (
@@ -62,13 +74,39 @@ export function LearnerWorkspace({ pathway, currentLessonSlug, viewer }: Learner
         ))}
       </div>
 
-      <WorkspaceDrawer
-        open={activeTool !== null}
-        title={activeTool?.label ?? "Learning tools"}
-        triggerRef={activeTriggerRef}
-        onClose={() => setActiveToolId(null)}
+      <button
+        aria-expanded={mobileMenuOpen || activeTool !== null}
+        className="learner-workspace-mobile-trigger"
+        onClick={openMobileMenu}
+        type="button"
       >
-        {activeTool?.id === "course" ? (
+        Learning tools
+      </button>
+
+      <WorkspaceDrawer
+        open={mobileMenuOpen || activeTool !== null}
+        title={mobileMenuOpen ? "Learning tools" : (activeTool?.label ?? "Learning tools")}
+        triggerRef={activeTriggerRef}
+        onClose={() => {
+          setMobileMenuOpen(false);
+          setActiveToolId(null);
+        }}
+        presentation={mobileMenuOpen ? "bottom" : "side"}
+      >
+        {mobileMenuOpen ? (
+          <div className="learner-workspace-mobile-menu">
+            {tools.map((tool) => (
+              <button
+                key={tool.id}
+                onClick={(event) => selectTool(event, tool.id, true)}
+                type="button"
+              >
+                <ToolIcon />
+                <span>{tool.label}</span>
+              </button>
+            ))}
+          </div>
+        ) : activeTool?.id === "course" ? (
           <CurriculumNavigation
             pathway={pathway}
             currentLessonSlug={currentLessonSlug}
