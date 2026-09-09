@@ -5,6 +5,7 @@ import type { LessonSummary, Pathway } from "@/features/catalog/catalog.types";
 import { LearnerWorkspace } from "@/features/learner-workspace/learner-workspace";
 import type { Viewer } from "@/features/learner-workspace/learner-workspace.types";
 import type { LessonProgressManifest, LessonProgressSummary } from "@/features/progress/progress.types";
+import { LessonProgressProvider } from "@/features/progress/lesson-progress-context";
 
 import { CurriculumNavigation } from "./curriculum-navigation";
 import { LearningObjective } from "./learning-objective";
@@ -54,6 +55,18 @@ export function LessonShell({
   progressUnavailable = false,
   children,
 }: LessonShellProps) {
+  const lessonContent = viewer && progressManifest
+    ? (
+      <LessonProgressProvider
+        viewerId={viewer.id}
+        manifest={progressManifest}
+        initialProgress={initialProgress ?? null}
+      >
+        {children}
+      </LessonProgressProvider>
+    )
+    : children;
+
   return (
     <main className="lesson-page" id="main-content">
       <LearnerWorkspace
@@ -87,7 +100,7 @@ export function LessonShell({
 
         <LessonSectionNavigation sections={lesson.sections} />
 
-        <div className="lesson-content">{children}</div>
+        <div className="lesson-content">{lessonContent}</div>
 
         {!viewer ? <RegistrationBoundary returnTo={`/learn/${pathway.slug}/${lesson.slug}`} /> : null}
 
