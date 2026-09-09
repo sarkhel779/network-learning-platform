@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(16);
+    expect(lessonProgressManifests).toHaveLength(17);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -57,6 +57,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609090003_add_ipv4_addressing_progress.sql",
       "supabase/migrations/202609090004_add_subnetting_fundamentals_progress.sql",
       "supabase/migrations/202609100001_add_ipv6_fundamentals_progress.sql",
+      "supabase/migrations/202609100002_add_routing_tables_progress.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -67,6 +68,13 @@ describe("lessonProgressManifests", () => {
 
     expect(migration.match(/^  \('path_networking_foundations', 'lesson_[^']+', 1, \d+\)[,;]?$/gm))
       .toHaveLength(lessonProgressManifests.length);
+  });
+
+  it("registers the routing lesson players and three checks as 18 required items", () => {
+    const manifest = getLessonProgressManifest("path_networking_foundations", "lesson_routing_tables_and_default_routes");
+    expect(manifest.items).toHaveLength(18);
+    expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-route-selection", "interactive-hop-by-hop-forwarding"]);
+    expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
   });
 
   it("parenthesizes the CASE expression used by the progress event guard", () => {
