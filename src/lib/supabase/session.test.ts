@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { toViewer } from "./session";
+import { resolveTestViewer, toViewer } from "./session";
 
 describe("toViewer", () => {
   it("returns only workspace-safe identity fields", () => {
@@ -32,5 +32,20 @@ describe("toViewer", () => {
         user_metadata: { full_name: 42, avatar_url: false },
       }),
     ).toEqual({ id: "user-2", displayName: null, avatarUrl: null });
+  });
+});
+
+describe("resolveTestViewer", () => {
+  it("returns null when the server test adapter is not explicitly enabled", () => {
+    expect(resolveTestViewer("learner-1", {})).toBeNull();
+    expect(resolveTestViewer("learner-1", { NODE_ENV: "production", PLAYWRIGHT_TEST_SESSION: "1" })).toBeNull();
+  });
+
+  it("returns a minimal viewer only for the enabled non-production test harness", () => {
+    expect(resolveTestViewer("learner-1", { NODE_ENV: "development", PLAYWRIGHT_TEST_SESSION: "1" })).toEqual({
+      id: "learner-1",
+      displayName: "Playwright learner",
+      avatarUrl: null,
+    });
   });
 });

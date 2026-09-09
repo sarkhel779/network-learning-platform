@@ -12,6 +12,7 @@ export default defineConfig({
   },
   webServer: {
     command: "pnpm run dev",
+    env: { PLAYWRIGHT_TEST_SESSION: "1" },
     url: testBaseUrl,
     reuseExistingServer: !process.env.CI,
   },

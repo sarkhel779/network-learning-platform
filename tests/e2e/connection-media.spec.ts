@@ -126,7 +126,7 @@ test("six public sections, table and registration work without JavaScript at 360
     await boundary.getByRole("link", { name: "Continue with Google or email" }).click();
     await expect(page).toHaveURL(/\/sign-in\?returnTo=/);
     expect(new URL(page.url()).searchParams.get("returnTo")).toBe(lessonRoute);
-    await expect(page.getByText(/Account access is not available yet/i)).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Sign in to Packetsecrets" })).toBeVisible();
   } finally {
     await context.close();
   }
