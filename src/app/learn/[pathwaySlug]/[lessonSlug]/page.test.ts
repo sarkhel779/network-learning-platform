@@ -275,6 +275,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "ipv4-addressing",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "subnetting-fundamentals",
+      },
     ]);
   });
 

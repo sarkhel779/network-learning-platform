@@ -75,6 +75,8 @@ vi.mock("@/content/networking-foundations/vlans-access-ports-and-trunks.public.m
 vi.mock("@/content/networking-foundations/vlans-access-ports-and-trunks.account.mdx", () => ({
   default: () => null,
 }));
+vi.mock("@/content/networking-foundations/subnetting-fundamentals.public.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/subnetting-fundamentals.account.mdx", () => ({ default: () => null }));
 
 import {
   createAuthorizedLessonContentLoader,
@@ -251,6 +253,16 @@ describe("loadAuthorizedLessonContent", () => {
     expect(account.public).toBeDefined();
     expect(account.account).toBeDefined();
     expect(account.pro).toBeUndefined();
+  });
+
+  it("keeps subnetting practice protected while serving fundamentals anonymously", async () => {
+    const key = "networking-foundations/subnetting-fundamentals";
+    const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
+    expect(anonymous.public).toBeDefined();
+    expect(anonymous.account).toBeUndefined();
+    const account = await loadAuthorizedLessonContent(key, "account");
+    expect(account.public).toBeDefined();
+    expect(account.account).toBeDefined();
   });
 
   it("returns no OSI content to anonymous viewers", async () => {

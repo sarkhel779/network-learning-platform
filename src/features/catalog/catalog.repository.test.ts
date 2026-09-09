@@ -88,6 +88,7 @@ describe("catalog repository", () => {
       "ipv4-addressing",
       "osi-and-tcp-ip-models",
       "routers-default-gateways-and-network-boundaries",
+      "subnetting-fundamentals",
       "unicast-broadcast-and-multicast-communication",
       "vlans-access-ports-and-trunks",
     ]);
@@ -218,7 +219,25 @@ describe("catalog repository", () => {
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
       previous: { slug: "vlans-access-ports-and-trunks", published: true },
-      next: { slug: "subnetting-fundamentals", published: false },
+      next: { slug: "subnetting-fundamentals", published: true },
+    });
+  });
+
+  it("publishes Subnetting Fundamentals after IPv4 with two focused interactives", () => {
+    const lesson = getLesson("networking-foundations", "subnetting-fundamentals");
+    expect(lesson).toMatchObject({ estimatedMinutes: 25, published: true });
+    expect(lesson.sections?.map(({ id, access }) => [id, access])).toEqual([
+      ["why-subnetting-exists", "public"], ["prefix-length-and-mask", "public"],
+      ["network-and-host-portions", "public"], ["interactive-subnet-boundary", "public"],
+      ["repeatable-calculation-method", "public"], ["ranges-and-capacity", "public"],
+      ["interactive-subnet-scenarios", "public"], ["special-prefixes", "public"],
+      ["local-or-gateway", "public"], ["inspect-subnet-evidence", "account"],
+      ["practice-subnet-planning", "account"], ["troubleshoot-subnetting", "account"],
+      ["knowledge-check-summary", "account"], ["pro-deep-dive", "pro"],
+    ]);
+    expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
+      previous: { slug: "ipv4-addressing", published: true },
+      next: { slug: "ipv6-fundamentals", published: false },
     });
   });
 
@@ -360,6 +379,7 @@ describe("catalog repository", () => {
       "arp-and-local-delivery",
       "vlans-access-ports-and-trunks",
       "ipv4-addressing",
+      "subnetting-fundamentals",
     ]);
     expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
       title: "Cables, Fibre, Wireless and Network Connections",
@@ -420,7 +440,7 @@ describe("catalog repository", () => {
   it("keeps public foundations limited to published beginner lessons", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[6], lessons[7], lessons[8], lessons[9], lessons[10], lessons[11], lessons[12], lessons[13]];
+    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[6], lessons[7], lessons[8], lessons[9], lessons[10], lessons[11], lessons[12], lessons[13], lessons[14]];
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
@@ -435,12 +455,13 @@ describe("catalog repository", () => {
     expect(arp.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(vlans.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(ipv4.sections?.some(({ access }) => access === "public")).toBe(true);
+    expect(subnetting.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(
-      lessons.slice(14).some(({ sections }) =>
+      lessons.slice(15).some(({ sections }) =>
         sections?.some(({ access }) => access === "public"),
       ),
     ).toBe(false);
-    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4]) {
+    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting]) {
       expect(lesson.sections?.at(-1)).toEqual(expect.objectContaining({
         id: "pro-deep-dive",
         label: "Pro Deep Dive",

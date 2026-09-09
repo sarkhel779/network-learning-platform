@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(14);
+    expect(lessonProgressManifests).toHaveLength(15);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -55,6 +55,7 @@ describe("lessonProgressManifests", () => {
     const migration = [
       "supabase/migrations/202609090002_create_learner_progress.sql",
       "supabase/migrations/202609090003_add_ipv4_addressing_progress.sql",
+      "supabase/migrations/202609090004_add_subnetting_fundamentals_progress.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));

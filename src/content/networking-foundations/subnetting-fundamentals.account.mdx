@@ -1,0 +1,35 @@
+{/* SUBNETTING_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-subnet-evidence">Inspect subnet evidence</h2>
+
+On **Windows**, compare `ipconfig`, `Get-NetIPAddress`, and `Get-NetRoute`. On **Linux**, compare `ip address` and `ip route`. Record the active interface, address, prefix, derived network, and default route. A displayed address alone does not prove that its mask or gateway is correct.
+
+<SectionContinue itemId="subnetting_fundamentals_section_inspect_subnet_evidence" anchor="inspect-subnet-evidence" />
+
+<h2 id="practice-subnet-planning">Practice subnet planning</h2>
+
+For each `/24` through `/30` example, write the mask, block size, network address, broadcast address, usable range, and capacity before checking the result. Always verify that the chosen host is neither the traditional network nor broadcast address.
+
+<SectionContinue itemId="subnetting_fundamentals_section_practice_subnet_planning" anchor="practice-subnet-planning" />
+
+<h2 id="troubleshoot-subnetting">Troubleshoot subnetting methodically</h2>
+
+1. Confirm the address and prefix on the interface carrying traffic.
+2. Calculate each endpoint's network address independently.
+3. Check for an invalid network or broadcast host assignment.
+4. Compare the intended ranges for overlap or unintended gaps.
+5. Verify that local-versus-gateway behavior matches the calculated boundary.
+
+<InterviewScenario title="One host thinks its neighbour is remote">Host A is `192.0.2.62/26` and Host B is `192.0.2.65/26`. Explain why both addresses look close in decimal yet occupy different subnets, then state what Layer 3 path is required.</InterviewScenario>
+
+<SectionContinue itemId="subnetting_fundamentals_section_troubleshoot_subnetting" anchor="troubleshoot-subnetting" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="subnetting_fundamentals_check_1" question="What is the block size of a /26 in the fourth octet?" options={["64", "26", "192"]} correctIndex={0} explanation="A /26 mask ends in 192, so 256 - 192 gives a block size of 64." />
+
+<KnowledgeCheck progressItemId="subnetting_fundamentals_check_2" question="What is the broadcast address for 192.0.2.128/26?" options={["192.0.2.129", "192.0.2.191", "192.0.2.192"]} correctIndex={1} explanation="The next /26 starts at .192, so the preceding address .191 is the broadcast address." />
+
+<KnowledgeCheck progressItemId="subnetting_fundamentals_check_3" question="Which statement about /31 is accurate?" options={["It always wastes both addresses", "It can use both addresses on a point-to-point link", "It contains 31 host bits"]} correctIndex={1} explanation="Modern point-to-point /31 links use both addresses and do not need a broadcast address." />
+
+<PremiumPreview title="Pro Deep Dive">Plan networks with VLSM, validate route summarization boundaries, solve awkward prefixes, review production overlap risks, and practise interview-speed mental calculations.</PremiumPreview>

@@ -78,6 +78,10 @@ const lessonImports = {
     public: () => import("@/content/networking-foundations/ipv4-addressing.public.mdx"),
     account: () => import("@/content/networking-foundations/ipv4-addressing.account.mdx"),
   },
+  "networking-foundations/subnetting-fundamentals": {
+    public: () => import("@/content/networking-foundations/subnetting-fundamentals.public.mdx"),
+    account: () => import("@/content/networking-foundations/subnetting-fundamentals.account.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),
