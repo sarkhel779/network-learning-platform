@@ -26,6 +26,7 @@ const definitions = [
   { lessonId: "lesson_arp_and_local_delivery", interactiveAnchors: ["interactive-arp-journey", "arp-variants-and-boundaries"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_vlans_access_ports_and_trunks", interactiveAnchors: ["interactive-vlan-membership", "interactive-tag-journey"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_ipv4_addressing", interactiveAnchors: ["interactive-binary-explorer", "interactive-address-boundary"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_subnetting_fundamentals", interactiveAnchors: ["interactive-subnet-boundary", "interactive-subnet-scenarios"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
 ] as const satisfies readonly LessonProgressDefinition[];
 
 function itemPrefix(lessonId: string) {

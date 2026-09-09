@@ -9,8 +9,8 @@ describe("Subnetting Fundamentals content", () => {
     const lesson = read("subnetting-fundamentals.public.mdx");
     for (const phrase of ["block size", "network address", "broadcast address", "usable", "/31", "/32", "default gateway"])
       expect(lesson.toLowerCase()).toContain(phrase.toLowerCase());
-    expect(lesson).toContain("<SubnetBoundaryPlayer");
-    expect(lesson).toContain("<SubnetScenarioPlayer");
+    expect(lesson).toContain('<SubnetBoundaryPlayer progressItemId="subnetting_fundamentals_interactive_interactive_subnet_boundary"');
+    expect(lesson).toContain('<SubnetScenarioPlayer progressItemId="subnetting_fundamentals_interactive_interactive_subnet_scenarios"');
   });
 
   it("keeps evidence, troubleshooting, three checks and Pro preview protected", () => {

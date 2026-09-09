@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 import { SUBNET_SCENARIOS } from "./subnet-scenarios";
 
-export function SubnetScenarioPlayer() {
+export function SubnetScenarioPlayer({ progressItemId }: { progressItemId?: string }) {
+  const { markTerminalStateReached } = useProgressCompletionBoundary(progressItemId);
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState<string>();
   const [checked, setChecked] = useState(false);
@@ -22,7 +24,7 @@ export function SubnetScenarioPlayer() {
     <fieldset><legend>{scenario.prompt}</legend>{scenario.options.map((option) => <label key={option.id}>
       <input checked={answer === option.id} name="subnet-answer" onChange={() => { setAnswer(option.id); setChecked(false); }} type="radio" />{option.label}
     </label>)}</fieldset>
-    <button disabled={!answer} onClick={() => setChecked(true)}>Check answer</button>
+    <button disabled={!answer} onClick={() => { setChecked(true); markTerminalStateReached(); }}>Check answer</button>
     {checked && <div className="subnet-feedback">
       <p role={correct ? "status" : "alert"}><strong>{correct ? "Correct." : "Not quite."}</strong> Follow the boundary calculation below.</p>
       <p data-testid="scenario-attempted">Attempt recorded. Completion does not depend on correctness.</p>

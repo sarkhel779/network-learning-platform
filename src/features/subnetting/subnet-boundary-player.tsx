@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useReducedMotion } from "@/features/packet-flow/use-reduced-motion";
+import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 import { analyzeSubnet } from "./subnetting";
 
 const scenarios = [
@@ -19,7 +20,8 @@ const stages = [
   "Read the complete subnet range",
 ] as const;
 
-export function SubnetBoundaryPlayer() {
+export function SubnetBoundaryPlayer({ progressItemId }: { progressItemId?: string }) {
+  const { markTerminalStateReached } = useProgressCompletionBoundary(progressItemId);
   const reducedMotion = useReducedMotion();
   const [scenarioIndex, setScenarioIndex] = useState(0);
   const [step, setStep] = useState(0);
@@ -37,6 +39,10 @@ export function SubnetBoundaryPlayer() {
     const timer = window.setTimeout(() => setStep((value) => value + 1), 1400 / speed);
     return () => window.clearTimeout(timer);
   }, [playing, speed, step]);
+
+  useEffect(() => {
+    if (step === stages.length - 1) markTerminalStateReached();
+  }, [markTerminalStateReached, step]);
 
   function chooseScenario(index: number) {
     setScenarioIndex(index);
