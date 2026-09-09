@@ -41,11 +41,11 @@ The failure is still on the local next-hop resolution path. Check the PC interfa
 
 <h2 id="knowledge-check-summary">Knowledge check and summary</h2>
 
-<KnowledgeCheck question="For a remote server, which destination MAC does the PC use in its first Ethernet frame?" options={["The default gateway's LAN-interface MAC", "The remote server's MAC", "The Ethernet broadcast MAC for the entire conversation"]} correctIndex={0} explanation="The IP destination remains the server, but the first local frame is addressed to the next hop: the default gateway." />
+<KnowledgeCheck progressItemId="first_packet_journey_through_a_small_network_check_1" question="For a remote server, which destination MAC does the PC use in its first Ethernet frame?" options={["The default gateway's LAN-interface MAC", "The remote server's MAC", "The Ethernet broadcast MAC for the entire conversation"]} correctIndex={0} explanation="The IP destination remains the server, but the first local frame is addressed to the next hop: the default gateway." />
 
-<KnowledgeCheck question="What does the router replace when forwarding the request onto another Ethernet network?" options={["The link-layer frame", "The end-to-end source and destination IP addresses", "The application request"]} correctIndex={0} explanation="The incoming frame ends at the router. The router forwards the IP packet inside a new frame for the outgoing link." />
+<KnowledgeCheck progressItemId="first_packet_journey_through_a_small_network_check_2" question="What does the router replace when forwarding the request onto another Ethernet network?" options={["The link-layer frame", "The end-to-end source and destination IP addresses", "The application request"]} correctIndex={0} explanation="The incoming frame ends at the router. The router forwards the IP packet inside a new frame for the outgoing link." />
 
-<KnowledgeCheck question="Why might a capture show the PC-side frame but not the router-to-server frame?" options={["A capture sees traffic only at its observation point", "Routers never create outgoing frames", "ICMP hides every Ethernet header"]} correctIndex={0} explanation="Packet evidence is limited by capture position; absence at one observation point is not proof that no later link carried traffic." />
+<KnowledgeCheck progressItemId="first_packet_journey_through_a_small_network_check_3" question="Why might a capture show the PC-side frame but not the router-to-server frame?" options={["A capture sees traffic only at its observation point", "Routers never create outgoing frames", "ICMP hides every Ethernet header"]} correctIndex={0} explanation="Packet evidence is limited by capture position; absence at one observation point is not proof that no later link carried traffic." />
 
 Remember: the host chooses a next hop, ARP supplies a local MAC, switches forward frames, routers replace link framing, and the response repeats the decisions in reverse.
 

@@ -50,11 +50,11 @@ First verify link state, each access port's operational VLAN and the hosts' IP c
 
 <h2 id="knowledge-check-summary">Knowledge check and summary</h2>
 
-<KnowledgeCheck question="What assigns an ordinary untagged endpoint frame to a VLAN on ingress?" options={["The access port's operational VLAN", "The destination IP address", "The trunk's physical cable type"]} correctIndex={0} explanation="The switch classifies the frame according to the ingress access-port configuration." />
+<KnowledgeCheck progressItemId="vlans_access_ports_and_trunks_check_1" question="What assigns an ordinary untagged endpoint frame to a VLAN on ingress?" options={["The access port's operational VLAN", "The destination IP address", "The trunk's physical cable type"]} correctIndex={0} explanation="The switch classifies the frame according to the ingress access-port configuration." />
 
-<KnowledgeCheck question="Why does an 802.1Q trunk add VLAN information?" options={["To preserve VLAN identity across a shared link", "To replace the destination MAC", "To route directly between VLANs"]} correctIndex={0} explanation="Multiple VLANs share the trunk, so the receiving device needs an explicit VLAN identifier." />
+<KnowledgeCheck progressItemId="vlans_access_ports_and_trunks_check_2" question="Why does an 802.1Q trunk add VLAN information?" options={["To preserve VLAN identity across a shared link", "To replace the destination MAC", "To route directly between VLANs"]} correctIndex={0} explanation="Multiple VLANs share the trunk, so the receiving device needs an explicit VLAN identifier." />
 
-<KnowledgeCheck question="What is required for an IP packet to move from VLAN 10 to VLAN 20?" options={["A Layer 3 routing decision", "Only MAC learning", "A larger broadcast domain"]} correctIndex={0} explanation="Different VLANs are separate Layer 2 domains and require routing between their IP networks." />
+<KnowledgeCheck progressItemId="vlans_access_ports_and_trunks_check_3" question="What is required for an IP packet to move from VLAN 10 to VLAN 20?" options={["A Layer 3 routing decision", "Only MAC learning", "A larger broadcast domain"]} correctIndex={0} explanation="Different VLANs are separate Layer 2 domains and require routing between their IP networks." />
 
 Remember: **access classifies, trunk preserves identity, access removes the tag, and routing crosses the VLAN boundary**. Always state the observation point when interpreting tagged or untagged capture evidence.
 

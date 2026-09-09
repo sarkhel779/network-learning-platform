@@ -31,11 +31,11 @@ Capture at more than one observation point when possible. Record destination add
 
 <h2 id="knowledge-check-summary">Knowledge check and summary</h2>
 
-<KnowledgeCheck question="A switch floods a frame whose destination MAC is unknown. What is its delivery type?" options={["Unknown unicast", "Broadcast", "Multicast"]} correctIndex={0} explanation="Flooding is the switch action. The destination remains one unicast address." />
+<KnowledgeCheck progressItemId="unicast_broadcast_and_multicast_communication_check_1" question="A switch floods a frame whose destination MAC is unknown. What is its delivery type?" options={["Unknown unicast", "Broadcast", "Multicast"]} correctIndex={0} explanation="Flooding is the switch action. The destination remains one unicast address." />
 
-<KnowledgeCheck question="A non-subscriber captures a multicast frame but its application receives nothing. Which statement fits?" options={["The interface received it but the host did not accept it", "The frame must be unicast", "The router converted it to broadcast"]} correctIndex={0} explanation="Physical receipt and host acceptance are different; missing group-aware switching can expose the frame to non-subscribers." />
+<KnowledgeCheck progressItemId="unicast_broadcast_and_multicast_communication_check_2" question="A non-subscriber captures a multicast frame but its application receives nothing. Which statement fits?" options={["The interface received it but the host did not accept it", "The frame must be unicast", "The router converted it to broadcast"]} correctIndex={0} explanation="Physical receipt and host acceptance are different; missing group-aware switching can expose the frame to non-subscribers." />
 
-<KnowledgeCheck question="How does a DHCP request reach a server in another subnet?" options={["The broadcast crosses every router unchanged", "A configured relay forwards a separate request", "The switch changes it to HTTPS"]} correctIndex={1} explanation="The local broadcast stops at the router boundary. A configured relay performs explicit forwarding." />
+<KnowledgeCheck progressItemId="unicast_broadcast_and_multicast_communication_check_3" question="How does a DHCP request reach a server in another subnet?" options={["The broadcast crosses every router unchanged", "A configured relay forwards a separate request", "The switch changes it to HTTPS"]} correctIndex={1} explanation="The local broadcast stops at the router boundary. A configured relay performs explicit forwarding." />
 
 <div className="lesson-table" role="region" aria-label="Delivery scope summary table" tabIndex={0}>
   <table>

@@ -66,4 +66,23 @@ describe("lessonProgressManifests", () => {
     expect(migration.match(/^  \('path_networking_foundations', 'lesson_[^']+', 1, \d+\)[,;]?$/gm))
       .toHaveLength(lessonProgressManifests.length);
   });
+
+  it("assigns every knowledge check its manifest ID in account content", () => {
+    const seen = new Set<string>();
+    for (const { pathway, lesson } of publishedLessons) {
+      const source = readFileSync(resolve(
+        `src/content/${pathway.slug}/${lesson.slug}.account.mdx`,
+      ), "utf8");
+      const contentIds = [...source.matchAll(/<KnowledgeCheck\s+progressItemId="([^"]+)"/g)]
+        .map((match) => match[1]);
+      const manifestIds = getLessonProgressManifest(pathway.id, lesson.id).items
+        .filter(({ kind }) => kind === "knowledge_check")
+        .map(({ itemId }) => itemId);
+      expect(contentIds, lesson.id).toEqual(manifestIds);
+      for (const itemId of contentIds) {
+        expect(seen.has(itemId), itemId).toBe(false);
+        seen.add(itemId);
+      }
+    }
+  });
 });

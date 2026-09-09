@@ -133,3 +133,19 @@ export function useLessonProgressItem(itemId: string) {
     retry: () => context.retry(itemId),
   };
 }
+
+export function useOptionalLessonProgressItem(itemId: string) {
+  const context = useContext(ProgressContext);
+  if (!context) {
+    return {
+      state: "idle" as SaveState,
+      complete: async () => true,
+      retry: async () => undefined,
+    };
+  }
+  return {
+    state: context.states[itemId] ?? (context.authoritativeProgress?.completedItemIds.includes(itemId) ? "saved" : "idle"),
+    complete: (options?: CompletionOptions) => context.complete(itemId, options),
+    retry: () => context.retry(itemId),
+  };
+}

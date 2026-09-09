@@ -51,11 +51,11 @@ forwarding problem. These symptoms need different fixes.
 
 <h2 id="knowledge-check-summary">Knowledge check and summary</h2>
 
-<KnowledgeCheck question="A remote packet leaves an Ethernet host without NAT. Which destination addresses are used first?" options={["Remote IP and gateway MAC", "Gateway IP and remote MAC", "Gateway IP and gateway MAC"]} correctIndex={0} explanation="The remote destination remains in the IP packet, while the local frame targets the selected gateway interface." />
+<KnowledgeCheck progressItemId="routers_default_gateways_and_network_boundaries_check_1" question="A remote packet leaves an Ethernet host without NAT. Which destination addresses are used first?" options={["Remote IP and gateway MAC", "Gateway IP and remote MAC", "Gateway IP and gateway MAC"]} correctIndex={0} explanation="The remote destination remains in the IP packet, while the local frame targets the selected gateway interface." />
 
-<KnowledgeCheck question="Both a specific network route and a default route match. Which is selected?" options={["The more-specific prefix", "Always the default", "Whichever appears last on screen"]} correctIndex={0} explanation="Longest-prefix matching selects the more-specific route before the default fallback." />
+<KnowledgeCheck progressItemId="routers_default_gateways_and_network_boundaries_check_2" question="Both a specific network route and a default route match. Which is selected?" options={["The more-specific prefix", "Always the default", "Whichever appears last on screen"]} correctIndex={0} explanation="Longest-prefix matching selects the more-specific route before the default fallback." />
 
-<KnowledgeCheck question="What normally happens to an ordinary Ethernet broadcast at a router boundary?" options={["It stops at that Layer 2 boundary", "It is repeated into every subnet", "It becomes a remote unicast automatically"]} correctIndex={0} explanation="Routers do not bridge ordinary Layer 2 broadcasts into another subnet by default." />
+<KnowledgeCheck progressItemId="routers_default_gateways_and_network_boundaries_check_3" question="What normally happens to an ordinary Ethernet broadcast at a router boundary?" options={["It stops at that Layer 2 boundary", "It is repeated into every subnet", "It becomes a remote unicast automatically"]} correctIndex={0} explanation="Routers do not bridge ordinary Layer 2 broadcasts into another subnet by default." />
 
 <InterviewScenario prompt="A host can reach its default gateway but cannot reach a remote server. How would you narrow the fault domain?">
 First verify the destination and selected route, then separate forward-path evidence from the return

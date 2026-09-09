@@ -54,11 +54,11 @@ refresh a shared address, while alternating or conflicting replies may indicate 
 
 <h2 id="knowledge-check-summary">Knowledge check and summary</h2>
 
-<KnowledgeCheck question="A host is sending to a remote IPv4 destination. Which address does it normally resolve with ARP?" options={["The selected local gateway IPv4 address", "The remote server IPv4 address", "Every router on the path"]} correctIndex={0} explanation="ARP resolves the next hop on the current local link. For remote traffic that next hop is normally the selected gateway." />
+<KnowledgeCheck progressItemId="arp_and_local_delivery_check_1" question="A host is sending to a remote IPv4 destination. Which address does it normally resolve with ARP?" options={["The selected local gateway IPv4 address", "The remote server IPv4 address", "Every router on the path"]} correctIndex={0} explanation="ARP resolves the next hop on the current local link. For remote traffic that next hop is normally the selected gateway." />
 
-<KnowledgeCheck question="Why does the switch send an ARP request through multiple eligible interfaces?" options={["Its Ethernet destination is broadcast", "ARP is always unknown unicast", "The router requested a copy"]} correctIndex={0} explanation="The request is enclosed in a frame addressed to FF:FF:FF:FF:FF:FF, so the switch floods it within the Layer 2 domain except through ingress." />
+<KnowledgeCheck progressItemId="arp_and_local_delivery_check_2" question="Why does the switch send an ARP request through multiple eligible interfaces?" options={["Its Ethernet destination is broadcast", "ARP is always unknown unicast", "The router requested a copy"]} correctIndex={0} explanation="The request is enclosed in a frame addressed to FF:FF:FF:FF:FF:FF, so the switch floods it within the Layer 2 domain except through ingress." />
 
-<KnowledgeCheck question="What can Proxy ARP conceal?" options={["An incorrect host prefix or gateway design", "A broken physical cable", "An expired DNS record"]} correctIndex={0} explanation="A router can answer on behalf of another IP and restore reachability even though the host's on-link decision is based on incorrect addressing." />
+<KnowledgeCheck progressItemId="arp_and_local_delivery_check_3" question="What can Proxy ARP conceal?" options={["An incorrect host prefix or gateway design", "A broken physical cable", "An expired DNS record"]} correctIndex={0} explanation="A router can answer on behalf of another IP and restore reachability even though the host's on-link decision is based on incorrect addressing." />
 
 Remember: **choose the next hop, inspect the cache, resolve only when necessary, then build the frame**.
 Always distinguish the ARP target IP from the final packet destination and the Ethernet broadcast field.
