@@ -6,6 +6,7 @@ import { SectionContinue } from "./section-continue";
 
 const { complete } = vi.hoisted(() => ({ complete: vi.fn() }));
 vi.mock("./lesson-progress-context", () => ({
+  useOptionalLessonProgress: () => ({}),
   useLessonProgressItem: () => ({ state: "idle", complete, retry: vi.fn() }),
   useLessonProgress: () => ({ manifest: { items: [
     { itemId: "read_intro", label: "Introduction", anchor: "intro" },

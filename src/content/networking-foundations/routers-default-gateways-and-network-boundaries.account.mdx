@@ -49,6 +49,8 @@ No matching route is a host routing failure. A matching route with an unreachabl
 local next-hop problem. A packet that reaches the gateway but meets no onward route is a router-side
 forwarding problem. These symptoms need different fixes.
 
+<SectionContinue itemId="routers_default_gateways_and_network_boundaries_section_diagnose_gateway_boundary_problems" anchor="diagnose-gateway-boundary-problems" />
+
 <h2 id="knowledge-check-summary">Knowledge check and summary</h2>
 
 <KnowledgeCheck progressItemId="routers_default_gateways_and_network_boundaries_check_1" question="A remote packet leaves an Ethernet host without NAT. Which destination addresses are used first?" options={["Remote IP and gateway MAC", "Gateway IP and remote MAC", "Gateway IP and gateway MAC"]} correctIndex={0} explanation="The remote destination remains in the IP packet, while the local frame targets the selected gateway interface." />

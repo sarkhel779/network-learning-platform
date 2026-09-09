@@ -24,6 +24,8 @@ Match each observation to the decision it proves:
   exercise="Compare the Ethernet addresses before and after the router, then compare the IP endpoints. Record where the capture was taken because one observation point cannot expose every link."
 />
 
+<SectionContinue itemId="first_packet_journey_through_a_small_network_section_match_evidence_to_the_journey" anchor="match-evidence-to-the-journey" />
+
 <h2 id="troubleshoot-the-first-failed-hop">Troubleshoot the first failed hop</h2>
 
 Work from the source outward and record evidence instead of restarting every device:
@@ -38,6 +40,8 @@ Work from the source outward and record evidence instead of restarting every dev
 <InterviewScenario prompt="The PC repeatedly broadcasts ARP for its gateway but receives no reply. What has failed, and what has not yet been tested?">
 The failure is still on the local next-hop resolution path. Check the PC interface and VLAN, switch forwarding, the gateway interface state and address, and whether the devices share the intended broadcast domain. Remote routing, the server, and the return path have not yet been tested because the first unicast frame was never created.
 </InterviewScenario>
+
+<SectionContinue itemId="first_packet_journey_through_a_small_network_section_troubleshoot_the_first_failed_hop" anchor="troubleshoot-the-first-failed-hop" />
 
 <h2 id="knowledge-check-summary">Knowledge check and summary</h2>
 

@@ -11,6 +11,8 @@ not a trusted identity check and not a way to discover every router on the end-t
 ARP is carried directly inside an Ethernet frame with EtherType `0x0806`; it is not carried inside
 an IPv4 packet. ARP resolves IPv4 next hops. IPv6 uses Neighbor Discovery instead.
 
+<SectionContinue itemId="arp_and_local_delivery_section_why_arp_exists" anchor="why-arp-exists" />
+
 <h2 id="choose-the-next-hop-first">Choose the next hop first</h2>
 
 Before sending ARP, a host applies its interface prefix and routing table:
@@ -22,6 +24,8 @@ Before sending ARP, a host applies its interface prefix and routing table:
 For example, `192.0.2.10/24` treats `192.0.2.20` as local, so it asks for `192.0.2.20`. To reach
 `198.51.100.50`, it instead asks for its gateway such as `192.0.2.1`. A host does **not** ARP for a
 remote server across a router.
+
+<SectionContinue itemId="arp_and_local_delivery_section_choose_the_next_hop_first" anchor="choose-the-next-hop-first" />
 
 <h2 id="request-reply-and-cache">Request, reply and cache</h2>
 
@@ -39,6 +43,8 @@ while the enclosing Ethernet destination is broadcast. These two fields must not
 
 Cache entries age because local evidence can change. A usable cached mapping avoids a fresh broadcast;
 an unanswered request can leave an incomplete entry and prevents the original frame from being built.
+
+<SectionContinue itemId="arp_and_local_delivery_section_request_reply_and_cache" anchor="request-reply-and-cache" />
 
 <h2 id="interactive-arp-journey">Interactive ARP journey</h2>
 

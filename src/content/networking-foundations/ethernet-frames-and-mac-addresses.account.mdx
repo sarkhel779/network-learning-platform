@@ -9,6 +9,8 @@
   exercise="Capture an ARP request and a later unicast frame. Compare their destination MAC addresses and record the capture point before drawing conclusions about switch forwarding."
 />
 
+<SectionContinue itemId="ethernet_frames_and_mac_addresses_section_inspect_frame_evidence" anchor="inspect-frame-evidence" />
+
 <h2 id="diagnose-frame-problems">Diagnose frame problems</h2>
 
 Use evidence from the nearest observable layer:
@@ -22,6 +24,8 @@ Use evidence from the nearest observable layer:
 <InterviewScenario prompt="A switch floods a frame whose destination is 02:00:00:00:00:99. Does this prove the sender used broadcast?">
 No. The individual/group bit indicates a unicast destination. Flooding can occur because the switch does not yet have that destination in its MAC table. Verify the table and VLAN, then observe whether later frames become known unicast.
 </InterviewScenario>
+
+<SectionContinue itemId="ethernet_frames_and_mac_addresses_section_diagnose_frame_problems" anchor="diagnose-frame-problems" />
 
 <h2 id="knowledge-check-summary">Knowledge check and summary</h2>
 

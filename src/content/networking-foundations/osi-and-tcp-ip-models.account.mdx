@@ -15,6 +15,8 @@ The models are useful when they lead to a specific question: *which information 
 device using to make its decision?* They are not a memorization test or a promise that real
 software always divides itself in the same way.
 
+<SectionContinue itemId="osi_and_tcp_ip_models_section_why_layers" anchor="why-layers" />
+
 <h2 id="osi-model">The seven OSI layers</h2>
 
 The **Open Systems Interconnection (OSI)** model names seven conceptual layers. Read downward
@@ -41,6 +43,8 @@ while the sender prepares data, then upward while the receiver uses it.
 Modern applications often handle the top three responsibilities together. That grouping helps
 explain why the TCP/IP model has fewer layers.
 
+<SectionContinue itemId="osi_and_tcp_ip_models_section_osi_model" anchor="osi-model" />
+
 <h2 id="tcp-ip-model">The four-layer TCP/IP model</h2>
 
 The **TCP/IP** model describes the Internet protocol suite in four layers:
@@ -53,6 +57,8 @@ The **TCP/IP** model describes the Internet protocol suite in four layers:
 TCP is a transport protocol, not the name of the entire model. A UDP exchange can use the same
 Internet and Network Access layers while making a different transport choice.
 
+<SectionContinue itemId="osi_and_tcp_ip_models_section_tcp_ip_model" anchor="tcp-ip-model" />
+
 <h2 id="model-mapping">OSI-to-TCP/IP mapping</h2>
 
 The two models overlap instead of providing a one-to-one translation.
@@ -62,6 +68,8 @@ The two models overlap instead of providing a one-to-one translation.
 A layer name alone is not a full explanation. Say what a device commonly examines and what
 decision it makes. A router commonly uses a destination IP address to select a next network, then
 needs a new local frame to send the packet over that next link.
+
+<SectionContinue itemId="osi_and_tcp_ip_models_section_model_mapping" anchor="model-mapping" />
 
 <h2 id="encapsulation-lab">Interactive encapsulation and decapsulation</h2>
 
@@ -85,6 +93,8 @@ No device is permanently limited to one layer. This comparison describes what ea
 
 One home gateway can contain an access point, switch, router, and firewall. The functions stay
 distinct even when they share hardware.
+
+<SectionContinue itemId="osi_and_tcp_ip_models_section_device_layer_scope" anchor="device-layer-scope" />
 
 <h2 id="wireshark-layers">Wireshark layer identification</h2>
 
@@ -118,6 +128,8 @@ Capture on the active host interface and choose a filter that matches your quest
 A capture on one host cannot reveal every frame rebuilt beyond a router. Compare other capture
 points only when you have access to them.
 
+<SectionContinue itemId="osi_and_tcp_ip_models_section_wireshark_layers" anchor="wireshark-layers" />
+
 <h2 id="troubleshooting-interview">Troubleshooting and interview scenarios</h2>
 
 Work upward from link, to local delivery, to IP path, transport reachability, and application
@@ -145,6 +157,8 @@ higher layer is healthy.
     <li>Anchor the explanation to HTTP, TCP or UDP, IPv4, and Ethernet or Wi-Fi instead of only reciting layer names.</li>
   </ol>
 </InterviewScenario>
+
+<SectionContinue itemId="osi_and_tcp_ip_models_section_troubleshooting_interview" anchor="troubleshooting-interview" />
 
 <h2 id="knowledge-summary">Knowledge check and summary</h2>
 

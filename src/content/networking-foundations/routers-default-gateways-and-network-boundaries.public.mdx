@@ -12,6 +12,8 @@ Think of an apartment building: a message for another apartment stays inside the
 a parcel for another street first goes to the building's exit. The exit matters, but it is not the
 parcel's final destination.
 
+<SectionContinue itemId="routers_default_gateways_and_network_boundaries_section_why_network_boundaries_matter" anchor="why-network-boundaries-matter" />
+
 <h2 id="what-a-router-does">What a router does</h2>
 
 A router connects IP networks. It receives an eligible packet, consults its routing information,
@@ -20,6 +22,8 @@ simply repeat the incoming Ethernet frame.
 
 Ordinary Layer 2 broadcasts stop at the router boundary. Specially configured relay functions are
 different from forwarding every local broadcast by default.
+
+<SectionContinue itemId="routers_default_gateways_and_network_boundaries_section_what_a_router_does" anchor="what-a-router-does" />
 
 <h2 id="local-or-remote">Local or remote?</h2>
 
@@ -36,6 +40,8 @@ For example, a `/20` can include addresses whose third octets differ.
 ARP answers only the local IPv4 next-hop question. It does not discover a remote host through a
 router and it does not replace a missing route.
 
+<SectionContinue itemId="routers_default_gateways_and_network_boundaries_section_local_or_remote" anchor="local-or-remote" />
+
 <h2 id="default-gateway">The default gateway</h2>
 
 The default gateway is normally a router interface that the host can reach on its local link. A
@@ -44,6 +50,8 @@ next hop for remote traffic—not the packet's final destination.
 
 If the configured gateway is outside every usable on-link network, the host cannot normally reach
 it. A gateway setting alone does not make that address local.
+
+<SectionContinue itemId="routers_default_gateways_and_network_boundaries_section_default_gateway" anchor="default-gateway" />
 
 <h2 id="direct-and-routed-delivery">Direct delivery and routed delivery</h2>
 
@@ -63,6 +71,8 @@ it. A gateway setting alone does not make that address local.
 For a remote destination, the packet keeps the remote destination IP address while the first Ethernet
 frame targets the gateway's MAC address. This example does not use NAT.
 
+<SectionContinue itemId="routers_default_gateways_and_network_boundaries_section_direct_and_routed_delivery" anchor="direct-and-routed-delivery" />
+
 <h2 id="what-changes-at-each-hop">What changes at each hop</h2>
 
 At a router, the incoming Layer 2 frame ends. The router processes the IP packet, decreases TTL,
@@ -71,6 +81,8 @@ hop by hop. Without NAT, the source and destination IP addresses identify the sa
 
 The gateway's MAC address can therefore be the first frame's destination even though the gateway's
 IP address is not the packet's final destination.
+
+<SectionContinue itemId="routers_default_gateways_and_network_boundaries_section_what_changes_at_each_hop" anchor="what-changes-at-each-hop" />
 
 <h2 id="route-decision-player">Interactive route-decision player</h2>
 

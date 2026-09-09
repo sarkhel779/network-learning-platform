@@ -11,6 +11,8 @@ For each symptom, name the role before the box:
 3. The ONT reports loss of optical signal: investigate the fibre access circuit and provider handoff before changing firewall policy.
 4. A bridged modem works with one router but not after adding another: confirm which device owns the WAN address and avoid accidental double routing.
 
+<SectionContinue itemId="access_points_modems_onts_and_firewalls_section_identify_device_roles" anchor="identify-device-roles" />
+
 <h2 id="diagnose-edge-failures">Diagnose edge failures</h2>
 
 Follow the boundary in order: client link → access point → LAN → router → firewall decision → modem or ONT → provider handoff. Record the last working interface and the first failing interface.
@@ -20,6 +22,8 @@ Do not reset every device at once. A Wi-Fi failure, missing route, denied sessio
 <InterviewScenario prompt="A laptop joins Wi-Fi and reaches the gateway, but an Internet connection fails. How would you narrow the fault domain?">
 The access-point path and local gateway are already working. Confirm the router has a usable WAN route, then distinguish a firewall denial from a modem or ONT link problem and an upstream provider failure. Use interface status, routing evidence, firewall session or deny evidence, and provider-link indicators in that order.
 </InterviewScenario>
+
+<SectionContinue itemId="access_points_modems_onts_and_firewalls_section_diagnose_edge_failures" anchor="diagnose-edge-failures" />
 
 <h2 id="knowledge-check-summary">Knowledge check and summary</h2>
 

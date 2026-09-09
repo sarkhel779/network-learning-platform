@@ -20,7 +20,7 @@ describe("public lesson source boundaries", () => {
       expect(source).toContain(`id="${id}"`);
     }
     expect(source).toContain("<LayerModelComparison />");
-    expect(source).toContain("<EncapsulationExperience />");
+    expect(source).toContain("<EncapsulationExperience progressItemId=");
   });
 
   it.each(publicFiles)("excludes account practice and answers from %s", (file) => {

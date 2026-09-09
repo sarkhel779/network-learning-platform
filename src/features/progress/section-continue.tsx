@@ -2,10 +2,16 @@
 
 import { useState } from "react";
 
-import { useLessonProgress, useLessonProgressItem } from "./lesson-progress-context";
+import { useLessonProgress, useLessonProgressItem, useOptionalLessonProgress } from "./lesson-progress-context";
 import { focusLessonAnchor } from "./progress-navigation";
 
 export function SectionContinue({ itemId, anchor: _anchor }: { itemId: string; anchor: string }) {
+  const progress = useOptionalLessonProgress();
+  if (!progress) return null;
+  return <TrackedSectionContinue itemId={itemId} anchor={_anchor} />;
+}
+
+function TrackedSectionContinue({ itemId, anchor: _anchor }: { itemId: string; anchor: string }) {
   const { manifest } = useLessonProgress();
   const { state, complete, retry } = useLessonProgressItem(itemId);
   const [navigationUnavailable, setNavigationUnavailable] = useState(false);

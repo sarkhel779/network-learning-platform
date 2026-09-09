@@ -125,6 +125,10 @@ export function useLessonProgress() {
   return context;
 }
 
+export function useOptionalLessonProgress() {
+  return useContext(ProgressContext);
+}
+
 export function useLessonProgressItem(itemId: string) {
   const context = useLessonProgress();
   return {

@@ -6,6 +6,8 @@ That separation reduces unnecessary broadcast delivery and makes the network eas
 
 > **VLAN is not a subnet.** A VLAN is a Layer 2 forwarding domain; a subnet is a Layer 3 IP-address range. Designs commonly map one subnet to one VLAN because it is clear and predictable, but the two terms describe different layers.
 
+<SectionContinue itemId="vlans_access_ports_and_trunks_section_why_vlans_exist" anchor="why-vlans-exist" />
+
 <h2 id="access-ports-and-membership">Access ports and membership</h2>
 
 An access port places ordinary endpoint traffic into one operational VLAN. A laptop usually sends and receives **normally untagged** Ethernet frames on that access link. The switch knows that frames entering Gi0/1 belong to VLAN 10 because of the port's configuration—not because the laptop wrote VLAN 10 into every frame.
@@ -18,6 +20,8 @@ For a frame entering an access port, the switch:
 4. forwards, filters or floods only through eligible interfaces in the same VLAN.
 
 Moving a cable to a differently configured access port can therefore change the host's Layer 2 membership even when the host itself has not changed.
+
+<SectionContinue itemId="vlans_access_ports_and_trunks_section_access_ports_and_membership" anchor="access-ports-and-membership" />
 
 <h2 id="interactive-vlan-membership">Interactive VLAN membership</h2>
 
@@ -35,6 +39,8 @@ The tag also carries priority (PCP), drop eligibility (DEI) and a 12-bit VLAN id
 
 Endpoint-facing access links and network-device trunks describe roles, not connector types. An access-link frame is normally untagged at the endpoint, while a trunk commonly carries tagged frames for multiple VLANs. Special designs can differ, so avoid treating “untagged” as a universal law.
 
+<SectionContinue itemId="vlans_access_ports_and_trunks_section_trunks_and_802_1q" anchor="trunks-and-802-1q" />
+
 <h2 id="interactive-tag-journey">Interactive tag journey</h2>
 
 Follow the same frame from an access link, across a shared trunk, and back onto an access link. Open technical inspection when the tag is visible to unfold its individual fields.
@@ -50,3 +56,5 @@ A trunk's **allowed VLAN** set controls which VLAN identities may use that link.
 Switching inside one VLAN and routing between VLANs are separate decisions. Hosts in VLAN 10 and VLAN 20 need a **Layer 3 device**—such as a router or multilayer switch—to exchange IP packets. Each host sends the local frame toward its default gateway; the Layer 3 device routes the packet and builds a new Layer 2 frame for the destination VLAN.
 
 This lesson establishes the forwarding foundation. Later lessons will explain **Spanning Tree Protocol** for loop prevention and **link aggregation** for combining compatible physical links. Their control decisions affect which links can carry VLAN traffic, but they do not change the basic meaning of access membership or an 802.1Q VLAN ID.
+
+<SectionContinue itemId="vlans_access_ports_and_trunks_section_allowed_vlans_and_routing_boundary" anchor="allowed-vlans-and-routing-boundary" />
