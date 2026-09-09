@@ -10,6 +10,50 @@
   --focus-ring: #f09a18;
 }
 
+.ipv6-address-explorer {
+  display: grid;
+  gap: 1rem;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.ipv6-address-explorer fieldset,
+.ipv6-address-explorer form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.ipv6-address-explorer input:not([type="radio"]) {
+  inline-size: min(100%, 36rem);
+  min-block-size: 44px;
+}
+
+.ipv6-hextets {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(4.5rem, 1fr));
+  gap: 0.4rem;
+  max-width: 100%;
+  overflow-x: auto;
+  padding-block: 0.35rem;
+}
+
+.ipv6-hextets code {
+  border: 1px solid var(--line);
+  border-block-end-width: 3px;
+  min-width: 4.5rem;
+  padding: 0.65rem 0.5rem;
+  text-align: center;
+}
+
+@media (max-width: 520px) {
+  .ipv6-address-explorer fieldset label,
+  .ipv6-address-explorer form label,
+  .ipv6-address-explorer form button {
+    width: 100%;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
