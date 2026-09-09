@@ -1,0 +1,33 @@
+<LearningObjective>Read an IPv4 address and prefix, separate its network and host portions, and recognize addresses that have special local purposes.</LearningObjective>
+
+<h2 id="read-an-ipv4-address">Read an IPv4 address</h2>
+
+IPv4 identifies an interface with **32 bits**. People normally write those bits as **four octets**, such as `192.0.2.44`. Each octet contains eight bits and therefore ranges from 0 to 255. An address identifies a logical attachment to an IP network; it is not a permanent identity for the whole device.
+
+<SectionContinue itemId="ipv4_addressing_section_read_an_ipv4_address" anchor="read-an-ipv4-address" />
+
+<h2 id="dotted-decimal-and-binary">Dotted decimal and binary</h2>
+
+The positions in one octet have values `128, 64, 32, 16, 8, 4, 2, 1`. Add the positions whose bits are 1. For example, `11000000` is 128 + 64, or 192. Dotted decimal is only a readable representation of the same binary value routers process.
+
+<SectionContinue itemId="ipv4_addressing_section_dotted_decimal_and_binary" anchor="dotted-decimal-and-binary" />
+
+<h2 id="interactive-binary-explorer">Interactive binary explorer</h2>
+
+<Ipv4BinaryExplorer progressItemId="ipv4_addressing_interactive_interactive_binary_explorer" />
+
+<h2 id="prefixes-network-and-host">Prefixes, network and host portions</h2>
+
+The prefix length tells you how many leading bits form the **network portion**. The remaining bits form the **host portion**. In `192.0.2.44/24`, the first 24 bits identify `192.0.2.0/24`; the last eight select an address inside it. A prefix is not optional decoration—it changes the boundary.
+
+<SectionContinue itemId="ipv4_addressing_section_prefixes_network_and_host" anchor="prefixes-network-and-host" />
+
+<h2 id="interactive-address-boundary">Interactive address boundary</h2>
+
+<Ipv4AddressBoundaryPlayer progressItemId="ipv4_addressing_interactive_interactive_address_boundary" />
+
+<h2 id="special-address-ranges">Special address ranges</h2>
+
+Not every syntactically valid address is a normal internet destination. **Private** ranges are commonly used inside organizations and are not globally routed by default. `127.0.0.0/8` is **loopback** for the local host. `169.254.0.0/16` is IPv4 **link-local**, often indicating that normal configuration failed. The **documentation** ranges `192.0.2.0/24`, `198.51.100.0/24`, and `203.0.113.0/24` are safe for examples. Public addresses are not automatically reachable, owned by you, or safe to expose.
+
+<SectionContinue itemId="ipv4_addressing_section_special_address_ranges" anchor="special-address-ranges" />

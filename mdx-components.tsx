@@ -26,6 +26,8 @@ import { ArpVariantPlayer } from "@/features/arp/arp-variant-player";
 import { VlanMembershipPlayer } from "@/features/vlans/vlan-membership-player";
 import { VlanTagJourneyPlayer } from "@/features/vlans/vlan-tag-journey-player";
 import { SectionContinue } from "@/features/progress/section-continue";
+import { Ipv4AddressBoundaryPlayer } from "@/features/ipv4/ipv4-address-boundary-player";
+import { Ipv4BinaryExplorer } from "@/features/ipv4/ipv4-binary-explorer";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -41,6 +43,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     HostsAndDevicesExperience,
     HostsAndDevicesStaticOverview,
     InterviewScenario,
+    Ipv4AddressBoundaryPlayer,
+    Ipv4BinaryExplorer,
     KnowledgeCheck,
     LayerModelComparison,
     LearningObjective,

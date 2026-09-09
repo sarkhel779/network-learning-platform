@@ -1,0 +1,29 @@
+{/* IPV4_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-address-evidence">Inspect address evidence</h2>
+
+Use **Windows ipconfig** or `Get-NetIPConfiguration`, and **Linux ip address**, to verify the address and prefix on the interface that actually carries the traffic. Record the interface, address, prefix, gateway, and source of configuration. Do not assume that seeing an address proves the gateway or destination is reachable.
+
+<SectionContinue itemId="ipv4_addressing_section_inspect_address_evidence" anchor="inspect-address-evidence" />
+
+<h2 id="troubleshoot-addressing">Troubleshoot addressing</h2>
+
+1. Confirm the active interface and its operational state.
+2. Validate every octet and the prefix length.
+3. Decide whether the destination is on-link or requires a gateway.
+4. Compare with a working neighbour instead of guessing.
+5. Treat a `169.254.x.x` address as evidence to investigate automatic configuration—not as the root cause by itself.
+
+<InterviewScenario title="The address looks right but the host is isolated">A workstation has `10.20.30.40/16`, while its peers use `/24`. Explain how the longer perceived on-link scope can prevent it from sending some destinations to the gateway, then identify the smallest safe correction.</InterviewScenario>
+
+<SectionContinue itemId="ipv4_addressing_section_troubleshoot_addressing" anchor="troubleshoot-addressing" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="ipv4_addressing_check_1" question="How many bits are in an IPv4 address?" options={["32", "24", "128"]} correctIndex={0} explanation="IPv4 contains 32 bits, commonly displayed as four eight-bit octets." />
+
+<KnowledgeCheck progressItemId="ipv4_addressing_check_2" question="What does /24 specify?" options={["The first 24 bits are the network prefix", "The address contains 24 total bits", "Exactly 24 hosts are available"]} correctIndex={0} explanation="A /24 prefix assigns the first 24 bits to the network portion and leaves eight host bits." />
+
+<KnowledgeCheck progressItemId="ipv4_addressing_check_3" question="Which address most strongly suggests an IPv4 link-local fallback?" options={["169.254.9.2", "10.20.30.40", "192.0.2.44"]} correctIndex={0} explanation="169.254.0.0/16 is reserved for IPv4 link-local addressing." />
+
+<PremiumPreview title="Pro Deep Dive">Explore special-use registries, overlapping address plans, capture evidence, production diagnostics, and advanced interview scenarios.</PremiumPreview>

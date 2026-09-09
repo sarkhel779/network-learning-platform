@@ -25,6 +25,7 @@ const definitions = [
   { lessonId: "lesson_how_switches_learn_and_forward", interactiveAnchors: ["interactive-switch-learning", "read-mac-table-evidence"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_arp_and_local_delivery", interactiveAnchors: ["interactive-arp-journey", "arp-variants-and-boundaries"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_vlans_access_ports_and_trunks", interactiveAnchors: ["interactive-vlan-membership", "interactive-tag-journey"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_ipv4_addressing", interactiveAnchors: ["interactive-binary-explorer", "interactive-address-boundary"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
 ] as const satisfies readonly LessonProgressDefinition[];
 
 function itemPrefix(lessonId: string) {

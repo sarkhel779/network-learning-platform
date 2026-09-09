@@ -65,7 +65,10 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /vlans, access ports and trunks/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/vlans-access-ports-and-trunks",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(13);
-    expect(screen.getAllByText("Coming later")).toHaveLength(11);
+    expect(screen.getByRole("link", { name: /ipv4 addressing/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/ipv4-addressing",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(14);
+    expect(screen.getAllByText("Coming later")).toHaveLength(10);
   });
 });
