@@ -5,6 +5,7 @@ import { PLAYBACK_SPEEDS } from "@/features/packet-flow/packet-flow.schema";
 import { useReducedMotionState } from "@/features/packet-flow/use-reduced-motion";
 import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 import { routeDecisionScenarios } from "./route-decision.scenarios";
+import type { RouteDecisionScenario } from "./routing.schema";
 import { selectRoute, type RouteCriterion } from "./select-route";
 
 const labels: Record<RouteCriterion, string> = {
@@ -14,7 +15,7 @@ const labels: Record<RouteCriterion, string> = {
 };
 const STEP_COUNT = 6;
 
-export function RoutingTableDecisionPlayer({ progressItemId }: { progressItemId?: string }) {
+export function RoutingTableDecisionPlayer({ progressItemId, scenarios = routeDecisionScenarios }: { progressItemId?: string; scenarios?: readonly RouteDecisionScenario[] }) {
   const { reducedMotion, isHydrated } = useReducedMotionState();
   const preferenceResolved = useRef(false);
   const { markTerminalStateReached } = useProgressCompletionBoundary(progressItemId);
@@ -22,9 +23,12 @@ export function RoutingTableDecisionPlayer({ progressItemId }: { progressItemId?
   const [step, setStep] = useState(0);
   const [playing, setPlaying] = useState(!reducedMotion);
   const [speed, setSpeed] = useState(1);
-  const scenario = routeDecisionScenarios[scenarioIndex];
-  const trace = useMemo(() => selectRoute(scenario), [scenario]);
-  const stage = trace.stages[Math.min(step, trace.stages.length - 1)];
+  const scenario = scenarios[scenarioIndex];
+  const trace = useMemo(() => {
+    try { return selectRoute(scenario); }
+    catch { return null; }
+  }, [scenario]);
+  const stage = trace?.stages[Math.min(step, trace.stages.length - 1)];
 
   useEffect(() => {
     if (!isHydrated) return;
@@ -43,11 +47,23 @@ export function RoutingTableDecisionPlayer({ progressItemId }: { progressItemId?
   useEffect(() => { if (step === STEP_COUNT - 1) markTerminalStateReached(); }, [markTerminalStateReached, step]);
 
   const chooseScenario = (index: number) => { setScenarioIndex(index); setStep(0); setPlaying(!reducedMotion); };
-  const outcomeText = trace.outcome.kind === "no-route" ? "No usable route: discard the packet." : `${trace.outcome.kind === "equal-cost" ? "Equal-cost routes" : "Selected route"}: ${trace.outcome.routeIds.join(", ")}.`;
+  const outcomeText = trace?.outcome.kind === "no-route" ? "No usable route: discard the packet." : trace ? `${trace.outcome.kind === "equal-cost" ? "Equal-cost routes" : "Selected route"}: ${trace.outcome.routeIds.join(", ")}.` : "";
+
+  if (!trace || !stage) return <section aria-labelledby="routing-decision-title" className="routing-decision-player">
+    <h3 id="routing-decision-title">Choose the route in the correct order</h3>
+    <p role="alert">This routing scenario cannot be animated safely. Use the static route evidence below.</p>
+    <p><strong>Destination:</strong> {scenario.destination} ({scenario.family.toUpperCase()})</p>
+    <div aria-label="Static routing table" className="routing-table-scroll" role="region" tabIndex={0}>
+      <table><caption>Routes configured for {scenario.title}</caption><thead><tr><th>Source</th><th>Prefix</th><th>Next hop</th><th>Outgoing interface</th><th>Administrative distance</th><th>Metric</th></tr></thead>
+        <tbody>{scenario.routes.map((route) => <tr key={route.id}><td>{route.source}</td><td><code>{route.prefix}</code></td><td><code>{route.nextHop ?? "Directly connected"}</code></td><td>{route.outgoingInterface}</td><td>{route.administrativeDistance}</td><td>{route.metric}</td></tr>)}</tbody>
+      </table>
+    </div>
+    <p>{scenario.plainLanguageConclusion}</p>
+  </section>;
 
   return <section aria-labelledby="routing-decision-title" className="routing-decision-player">
     <h3 id="routing-decision-title">Choose the route in the correct order</h3>
-    <fieldset><legend>Choose a routing-table scenario</legend>{routeDecisionScenarios.map((item, index) => <label key={item.id}><input checked={index === scenarioIndex} name="routing-decision-scenario" onChange={() => chooseScenario(index)} type="radio" />{item.title}</label>)}</fieldset>
+    <fieldset><legend>Choose a routing-table scenario</legend>{scenarios.map((item, index) => <label key={item.id}><input checked={index === scenarioIndex} name="routing-decision-scenario" onChange={() => chooseScenario(index)} type="radio" />{item.title}</label>)}</fieldset>
     <p><strong>Destination:</strong> {scenario.destination} ({scenario.family.toUpperCase()})</p>
     <p aria-live="polite">Step {step + 1} of {STEP_COUNT}: {step < 5 ? labels[stage.criterion] : "Forwarding result"}</p>
     <div aria-label="Scrollable routing table" className="routing-table-scroll" role="region" tabIndex={0}>
