@@ -6,7 +6,7 @@ import SignInPage from "./page";
 
 afterEach(cleanup);
 
-describe("temporary sign-in page", () => {
+describe("sign-in page", () => {
   it.each([
     "/",
     "/paths/networking-foundations",
@@ -32,13 +32,26 @@ describe("temporary sign-in page", () => {
     expect(container.textContent).not.toContain("example.com");
   });
 
-  it("honestly explains passwordless sign-in preparation without collecting credentials", async () => {
+  it("offers Google and email passwordless sign-in without collecting a password", async () => {
     const page = await SignInPage({ searchParams: Promise.resolve({}) });
     const { container } = render(page);
     expect(screen.getByRole("heading", { level: 1, name: "Sign in to Packetsecrets" })).toBeVisible();
-    expect(screen.getByText(/Google and email passwordless sign-in is being prepared/)).toBeVisible();
-    expect(container.querySelector("form, input, button")).toBeNull();
+    expect(screen.getByRole("button", { name: "Continue with Google" })).toBeVisible();
+    expect(screen.getByLabelText("Email address")).toHaveAttribute("type", "email");
+    expect(container.querySelector('input[type="password"]')).toBeNull();
     const html = renderToStaticMarkup(page);
-    expect(new DOMParser().parseFromString(html, "text/html").body.innerHTML).toBe(html);
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    expect(parsed.querySelector("main#main-content form")).not.toBeNull();
+    expect(parsed.querySelector("parsererror")).toBeNull();
+  });
+
+  it("shows a neutral callback error", async () => {
+    render(await SignInPage({
+      searchParams: Promise.resolve({ error: "authentication" }),
+    }));
+
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Your secure sign-in could not be completed. Please try again.",
+    );
   });
 });

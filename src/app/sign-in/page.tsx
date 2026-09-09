@@ -1,25 +1,18 @@
 import Link from "next/link";
 
-import { listPathways, listPublishedLessons } from "@/features/catalog/catalog.repository";
+import { safeReturnPath } from "@/features/auth/return-path";
+import { SignInForm } from "@/features/auth/sign-in-form";
 
 type SignInPageProps = {
-  searchParams: Promise<{ returnTo?: string | string[] }>;
+  searchParams: Promise<{
+    error?: string | string[];
+    returnTo?: string | string[];
+  }>;
 };
 
-function safeReturnPath(value: string | string[] | undefined): string {
-  const allowedPaths = new Set([
-    "/",
-    ...listPathways().flatMap(({ slug }) => [
-      `/paths/${slug}`,
-      ...listPublishedLessons(slug).map((lesson) => `/learn/${slug}/${lesson.slug}`),
-    ]),
-  ]);
-
-  return typeof value === "string" && allowedPaths.has(value) ? value : "/";
-}
-
 export default async function SignInPage({ searchParams }: SignInPageProps) {
-  const returnTo = safeReturnPath((await searchParams).returnTo);
+  const params = await searchParams;
+  const returnTo = safeReturnPath(params.returnTo);
   const returnLabel = returnTo.startsWith("/learn/")
     ? "Back to your lesson"
     : returnTo.startsWith("/paths/")
@@ -32,10 +25,13 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
         <p className="eyebrow">Free account</p>
         <h1 id="sign-in-heading">Sign in to Packetsecrets</h1>
         <p className="summary">
-          Google and email passwordless sign-in is being prepared.
-          Account access is not available yet. You can keep exploring the public
-          lessons and interactive players while we get it ready.
+          Continue securely with Google or receive a one-time sign-in link by
+          email. Packetsecrets never asks you to create a password.
         </p>
+        {params.error === "authentication" ? (
+          <p role="alert">Your secure sign-in could not be completed. Please try again.</p>
+        ) : null}
+        <SignInForm returnTo={returnTo} />
         <Link className="primary-link" href={returnTo}>{returnLabel}</Link>
       </section>
     </main>
