@@ -26,6 +26,8 @@ Apply the mask to the address. Bits under mask ones identify the network; bits u
 
 Find the first mask octet that is not 255. This is the **interesting octet**. Subtract its mask value from 256 to get the **block size**. List multiples of that block size; the nearest multiple at or below the address is the network boundary, and the next multiple begins the following subnet.
 
+<SectionContinue itemId="subnetting_fundamentals_section_repeatable_calculation_method" anchor="repeatable-calculation-method" />
+
 <h2 id="ranges-and-capacity">Network, usable range, broadcast, and capacity</h2>
 
 The network address is the first address in a traditional subnet. The address immediately before the next boundary is its broadcast address. Addresses between them form the traditionally usable host range. With `h` host bits there are `2^h` total addresses and, for ordinary prefixes, `2^h - 2` traditionally usable addresses.
