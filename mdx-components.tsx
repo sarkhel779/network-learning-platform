@@ -33,6 +33,7 @@ import { SubnetScenarioPlayer } from "@/features/subnetting/subnet-scenario-play
 import { Ipv6AddressExplorer } from "@/features/ipv6/ipv6-address-explorer";
 import { NdpSlaacJourneyPlayer } from "@/features/ipv6/ndp-slaac-journey-player";
 import { RoutingTableDecisionPlayer } from "@/features/routing/routing-table-decision-player";
+import { HopByHopForwardingPlayer } from "@/features/routing/hop-by-hop-forwarding-player";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -47,6 +48,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     DeliveryScopePlayer,
     HostsAndDevicesExperience,
     HostsAndDevicesStaticOverview,
+    HopByHopForwardingPlayer,
     InterviewScenario,
     Ipv4AddressBoundaryPlayer,
     Ipv4BinaryExplorer,
