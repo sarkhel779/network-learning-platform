@@ -40,11 +40,11 @@ export function RoutingTableDecisionPlayer({ progressItemId, scenarios = routeDe
     if (reducedMotion) setPlaying(false);
   }, [isHydrated, reducedMotion]);
   useEffect(() => {
-    if (!playing || step === STEP_COUNT - 1) return;
+    if (!trace || !playing || step === STEP_COUNT - 1) return;
     const timer = window.setTimeout(() => setStep((current) => current + 1), 1800 / speed);
     return () => window.clearTimeout(timer);
-  }, [playing, speed, step]);
-  useEffect(() => { if (step === STEP_COUNT - 1) markTerminalStateReached(); }, [markTerminalStateReached, step]);
+  }, [playing, speed, step, trace]);
+  useEffect(() => { if (trace && step === STEP_COUNT - 1) markTerminalStateReached(); }, [markTerminalStateReached, step, trace]);
 
   const chooseScenario = (index: number) => { setScenarioIndex(index); setStep(0); setPlaying(!reducedMotion); };
   const outcomeText = trace?.outcome.kind === "no-route" ? "No usable route: discard the packet." : trace ? `${trace.outcome.kind === "equal-cost" ? "Equal-cost routes" : "Selected route"}: ${trace.outcome.routeIds.join(", ")}.` : "";

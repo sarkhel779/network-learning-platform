@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RoutingTableDecisionPlayer } from "./routing-table-decision-player";
 import { routeDecisionScenarios } from "./route-decision.scenarios";
@@ -52,5 +52,17 @@ describe("RoutingTableDecisionPlayer", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("cannot be animated safely");
     expect(screen.getByRole("region", { name: "Static routing table" })).toBeVisible();
     expect(screen.getByText(base.plainLanguageConclusion!)).toBeVisible();
+  });
+
+  it("does not autoplay or award progress behind an invalid-scenario fallback", () => {
+    vi.useFakeTimers();
+    window.matchMedia = vi.fn().mockReturnValue({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() });
+    const base = routeDecisionScenarios[0];
+    const malformed = { ...base, allowEqualCost: false, routes: base.routes.map((route, index) => ({ ...route, prefix: "192.0.2.0/24", administrativeDistance: 1, metricDomain: index === 0 ? "cost" : "hops" })) } as typeof base;
+    render(<RoutingTableDecisionPlayer progressItemId="invalid-route-player" scenarios={[malformed]} />);
+    act(() => vi.advanceTimersByTime(30_000));
+    expect(markTerminalStateReached).not.toHaveBeenCalled();
+    expect(screen.queryByRole("button", { name: "Pause" })).not.toBeInTheDocument();
+    vi.useRealTimers();
   });
 });
