@@ -37,6 +37,7 @@ export function WorkspaceDrawer({
 }: WorkspaceDrawerProps) {
   const headingId = useId();
   const drawerRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
   const close = useCallback(() => {
     onClose();
@@ -47,7 +48,7 @@ export function WorkspaceDrawer({
     if (!open) return;
 
     const drawer = drawerRef.current;
-    drawer?.querySelector<HTMLElement>(focusableSelector)?.focus();
+    headingRef.current?.focus();
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -61,7 +62,7 @@ export function WorkspaceDrawer({
       const controls = Array.from(
         drawer.querySelectorAll<HTMLElement>(focusableSelector),
       );
-      const first = controls[0];
+      const first = headingRef.current;
       const last = controls.at(-1);
       if (!first || !last) return;
 
@@ -96,7 +97,7 @@ export function WorkspaceDrawer({
         role="dialog"
       >
         <div className="workspace-drawer__header course-contents-drawer__header">
-          <h2 id={headingId}>{title}</h2>
+          <h2 id={headingId} ref={headingRef} tabIndex={-1}>{title}</h2>
           <button onClick={close} type="button">Close {title}</button>
         </div>
         <div className="workspace-drawer__body">{children}</div>

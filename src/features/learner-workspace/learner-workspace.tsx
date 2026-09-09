@@ -60,10 +60,11 @@ export function LearnerWorkspace({ pathway, currentLessonSlug, viewer }: Learner
   return (
     <>
       <div aria-label="Learner workspace" className="learner-workspace" role="toolbar">
-        {tools.map((tool) => (
+        {tools.map((tool, index) => (
           <button
             aria-expanded={activeToolId === tool.id}
             className="learner-workspace__tool"
+            data-group-start={index > 0 && tools[index - 1].group !== tool.group ? "true" : undefined}
             key={tool.id}
             onClick={(event) => selectTool(event, tool.id)}
             type="button"
@@ -95,8 +96,9 @@ export function LearnerWorkspace({ pathway, currentLessonSlug, viewer }: Learner
       >
         {mobileMenuOpen ? (
           <div className="learner-workspace-mobile-menu">
-            {tools.map((tool) => (
+            {tools.map((tool, index) => (
               <button
+                data-group-start={index > 0 && tools[index - 1].group !== tool.group ? "true" : undefined}
                 key={tool.id}
                 onClick={(event) => selectTool(event, tool.id, true)}
                 type="button"
@@ -106,14 +108,31 @@ export function LearnerWorkspace({ pathway, currentLessonSlug, viewer }: Learner
               </button>
             ))}
           </div>
-        ) : activeTool?.id === "course" ? (
-          <CurriculumNavigation
-            pathway={pathway}
-            currentLessonSlug={currentLessonSlug}
-            onLessonSelect={() => setActiveToolId(null)}
-          />
         ) : activeTool ? (
-          <p>{placeholderCopy[activeTool.id]}</p>
+          <>
+            <nav aria-label="Workspace tools" className="learner-workspace-drawer-tools">
+              {tools.map((tool, index) => (
+                <button
+                  aria-pressed={activeTool.id === tool.id}
+                  data-group-start={index > 0 && tools[index - 1].group !== tool.group ? "true" : undefined}
+                  key={tool.id}
+                  onClick={(event) => selectTool(event, tool.id, true)}
+                  type="button"
+                >
+                  {tool.label}
+                </button>
+              ))}
+            </nav>
+            {activeTool.id === "course" ? (
+              <CurriculumNavigation
+                pathway={pathway}
+                currentLessonSlug={currentLessonSlug}
+                onLessonSelect={() => setActiveToolId(null)}
+              />
+            ) : (
+              <p>{placeholderCopy[activeTool.id]}</p>
+            )}
+          </>
         ) : null}
       </WorkspaceDrawer>
     </>

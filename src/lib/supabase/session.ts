@@ -11,7 +11,7 @@ type TestSessionEnv = Partial<Record<"NODE_ENV" | "PLAYWRIGHT_TEST_SESSION", str
 export function resolveTestViewer(viewerId: string | null, env: TestSessionEnv): Viewer | null {
   if (
     !viewerId ||
-    env.NODE_ENV === "production" ||
+    env.NODE_ENV !== "test" ||
     env.PLAYWRIGHT_TEST_SESSION !== "1"
   ) {
     return null;

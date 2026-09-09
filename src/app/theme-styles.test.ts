@@ -49,7 +49,8 @@ describe("system theme and table styles", () => {
     expect(css).toMatch(/\.learner-workspace\s*\{[^}]*position:\s*fixed/);
     expect(css).toMatch(/\.learner-workspace-mobile-trigger\s*\{[^}]*display:\s*flex/);
     expect(css).toMatch(/@media\s*\(min-width:\s*48rem\)[\s\S]*\.learner-workspace-mobile-trigger\s*\{[^}]*display:\s*none/);
-    expect(css).toMatch(/@media\s*\(max-width:\s*47\.999rem\)[\s\S]*\.workspace-overlay--bottom\s+\.workspace-drawer\s*\{[^}]*inset-block-end:\s*0/);
+    expect(css).toMatch(/@media\s*\(max-width:\s*47\.999rem\)[\s\S]*\.workspace-overlay--bottom\s+\.workspace-drawer[^\{]*\{[^}]*inset-block-end:\s*0/);
+    expect(css).toMatch(/\.workspace-overlay--side\s+\.workspace-drawer[^\{]*\{[^}]*inset-block-end:\s*0/);
     const lessonShell = css.match(/\.lesson-shell\s*\{([^}]*)\}/)?.[1] ?? "";
     expect(lessonShell).not.toMatch(/(?:^|;)\s*width:/);
     expect(lessonShell).not.toMatch(/transform:/);

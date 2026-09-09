@@ -132,7 +132,7 @@ describe("parsePublicEnv", () => {
 
 - [ ] **Step 2: Run the focused test and verify the red state**
 
-Run: `pnpm test -- src/lib/env/public-env.test.ts`  
+Run: `pnpm test -- src/lib/env/public-env.test.ts`
 Expected: FAIL because `parsePublicEnv` does not exist.
 
 - [ ] **Step 3: Install the official Supabase packages**
@@ -234,7 +234,7 @@ export const config = {
 
 - [ ] **Step 8: Run focused tests and type checking**
 
-Run: `pnpm test -- src/lib/env/public-env.test.ts src/middleware.test.ts && pnpm typecheck`  
+Run: `pnpm test -- src/lib/env/public-env.test.ts src/middleware.test.ts && pnpm typecheck`
 Expected: PASS.
 
 - [ ] **Step 9: Commit the client foundation**
@@ -296,7 +296,7 @@ rollback;
 
 - [ ] **Step 2: Run the SQL test and verify the red state**
 
-Run: `supabase test db supabase/tests/learner_profiles_rls.sql`  
+Run: `supabase test db supabase/tests/learner_profiles_rls.sql`
 Expected: FAIL because `learner_profiles` does not exist. If the Supabase CLI is unavailable locally, record this test as CI-required and continue only after the migration is reviewed manually.
 
 - [ ] **Step 3: Implement the profile migration**
@@ -353,7 +353,7 @@ grant select, update on public.learner_profiles to authenticated;
 
 - [ ] **Step 4: Run the SQL policy test**
 
-Run: `supabase test db supabase/tests/learner_profiles_rls.sql`  
+Run: `supabase test db supabase/tests/learner_profiles_rls.sql`
 Expected: 4 assertions pass.
 
 - [ ] **Step 5: Commit the owned profile schema**
@@ -395,7 +395,7 @@ describe("toViewer", () => {
 
 - [ ] **Step 2: Run the focused test and verify the red state**
 
-Run: `pnpm test -- src/lib/supabase/session.test.ts`  
+Run: `pnpm test -- src/lib/supabase/session.test.ts`
 Expected: FAIL because `toViewer` does not exist.
 
 - [ ] **Step 3: Implement the viewer boundary**
@@ -431,7 +431,7 @@ export async function getViewer(): Promise<Viewer | null> {
 
 - [ ] **Step 4: Run focused tests and type checking**
 
-Run: `pnpm test -- src/lib/supabase/session.test.ts && pnpm typecheck`  
+Run: `pnpm test -- src/lib/supabase/session.test.ts && pnpm typecheck`
 Expected: PASS and no email, token, provider data, or metadata object appears in `Viewer`.
 
 - [ ] **Step 5: Commit the viewer boundary**
@@ -471,12 +471,12 @@ expect(safeReturnPath("//attacker.example")).toBe("/");
 
 - [ ] **Step 2: Run the return-path test and verify the red state**
 
-Run: `pnpm test -- src/features/auth/return-path.test.ts`  
+Run: `pnpm test -- src/features/auth/return-path.test.ts`
 Expected: FAIL because the extracted helper does not exist.
 
 - [ ] **Step 3: Implement and verify the extracted helper**
 
-Run: `pnpm test -- src/features/auth/return-path.test.ts`  
+Run: `pnpm test -- src/features/auth/return-path.test.ts`
 Expected: PASS.
 
 - [ ] **Step 4: Write failing sign-in form tests**
@@ -501,7 +501,7 @@ expect(signInWithOtp).toHaveBeenCalledWith(expect.objectContaining({
 
 - [ ] **Step 5: Run the form tests and verify the red state**
 
-Run: `pnpm test -- src/features/auth/sign-in-form.test.tsx`  
+Run: `pnpm test -- src/features/auth/sign-in-form.test.tsx`
 Expected: FAIL because `SignInForm` does not exist.
 
 - [ ] **Step 6: Implement the client sign-in form**
@@ -528,7 +528,7 @@ Use the server client to call `exchangeCodeForSession(code)`. Pass only `safeRet
 
 - [ ] **Step 9: Replace the placeholder page and run auth tests**
 
-Run: `pnpm test -- src/features/auth src/app/sign-in/page.test.tsx src/app/auth/callback/route.test.ts && pnpm typecheck`  
+Run: `pnpm test -- src/features/auth src/app/sign-in/page.test.tsx src/app/auth/callback/route.test.ts && pnpm typecheck`
 Expected: PASS.
 
 - [ ] **Step 10: Commit working passwordless authentication**
@@ -568,7 +568,7 @@ Add a second test rejecting spaces, uppercase characters, and display-title-deri
 
 - [ ] **Step 2: Run focused catalog tests and verify the red state**
 
-Run: `pnpm test -- src/features/catalog/catalog.schema.test.ts src/features/catalog/catalog.repository.test.ts`  
+Run: `pnpm test -- src/features/catalog/catalog.schema.test.ts src/features/catalog/catalog.repository.test.ts`
 Expected: FAIL because sections do not require `targetId`.
 
 - [ ] **Step 3: Add the type and uniqueness refinement**
@@ -589,7 +589,7 @@ Use durable semantic IDs such as `why-vlans-exist`, `interactive-vlan-membership
 
 - [ ] **Step 5: Verify schema, repository, route, and content tests**
 
-Run: `pnpm test -- src/features/catalog src/app/learn src/content`  
+Run: `pnpm test -- src/features/catalog src/app/learn src/content`
 Expected: PASS.
 
 - [ ] **Step 6: Commit stable content targets**
@@ -630,7 +630,7 @@ expect(trigger).toHaveFocus();
 
 - [ ] **Step 2: Run the focused test and verify the red state**
 
-Run: `pnpm test -- src/features/learner-workspace/workspace-drawer.test.tsx`  
+Run: `pnpm test -- src/features/learner-workspace/workspace-drawer.test.tsx`
 Expected: FAIL because `WorkspaceDrawer` does not exist.
 
 - [ ] **Step 3: Implement the shared drawer shell**
@@ -649,7 +649,7 @@ Keep `CourseContentsDrawer` as a compatibility wrapper during this task:
 
 - [ ] **Step 5: Run drawer and lesson-shell regression tests**
 
-Run: `pnpm test -- src/features/learner-workspace/workspace-drawer.test.tsx src/features/lessons/course-contents-drawer.test.tsx src/features/lessons/lesson-shell.test.tsx`  
+Run: `pnpm test -- src/features/learner-workspace/workspace-drawer.test.tsx src/features/lessons/course-contents-drawer.test.tsx src/features/lessons/lesson-shell.test.tsx`
 Expected: PASS.
 
 - [ ] **Step 6: Commit the shared drawer shell**
@@ -685,7 +685,7 @@ expect(getVisibleWorkspaceTools(viewer).map(({ id }) => id)).toEqual([
 
 - [ ] **Step 2: Run the tool-definition test and verify the red state**
 
-Run: `pnpm test -- src/features/learner-workspace/workspace-tools.test.ts`  
+Run: `pnpm test -- src/features/learner-workspace/workspace-tools.test.ts`
 Expected: FAIL because the tool registry does not exist.
 
 - [ ] **Step 3: Implement immutable tool definitions**
@@ -710,7 +710,7 @@ Use one `activeToolId: WorkspaceToolId | null` state. Render Course contents wit
 
 - [ ] **Step 6: Run workspace component tests**
 
-Run: `pnpm test -- src/features/learner-workspace`  
+Run: `pnpm test -- src/features/learner-workspace`
 Expected: PASS.
 
 - [ ] **Step 7: Commit the access-aware toolbar**
@@ -744,7 +744,7 @@ Verify that:
 
 - [ ] **Step 2: Run route and shell tests and verify the red state**
 
-Run: `pnpm test -- src/features/lessons/lesson-shell.test.tsx src/app/learn/[pathwaySlug]/[lessonSlug]/page.test.ts`  
+Run: `pnpm test -- src/features/lessons/lesson-shell.test.tsx src/app/learn/[pathwaySlug]/[lessonSlug]/page.test.ts`
 Expected: FAIL because the route and shell do not accept a viewer.
 
 - [ ] **Step 3: Compose the server and client boundaries**
@@ -757,7 +757,7 @@ Authenticated lesson rendering is request-specific. Remove or adjust any incompa
 
 - [ ] **Step 5: Run route, shell, SEO, sitemap, and content tests**
 
-Run: `pnpm test -- src/app/learn src/features/lessons src/features/seo src/app/sitemap.test.ts src/content`  
+Run: `pnpm test -- src/app/learn src/features/lessons src/features/seo src/app/sitemap.test.ts src/content`
 Expected: PASS.
 
 - [ ] **Step 6: Commit authenticated lesson composition**
@@ -791,7 +791,7 @@ Test for:
 
 - [ ] **Step 2: Run focused tests and verify the red state**
 
-Run: `pnpm test -- src/features/learner-workspace/learner-workspace.test.tsx src/app/theme-styles.test.ts`  
+Run: `pnpm test -- src/features/learner-workspace/learner-workspace.test.tsx src/app/theme-styles.test.ts`
 Expected: FAIL because responsive workspace styles do not exist.
 
 - [ ] **Step 3: Implement the responsive styles**
@@ -804,7 +804,7 @@ Under `prefers-reduced-motion: reduce`, remove drawer transitions. Use borders p
 
 - [ ] **Step 5: Run presentation and existing drawer tests**
 
-Run: `pnpm test -- src/features/learner-workspace src/features/lessons/course-contents-drawer.test.tsx src/app/theme-styles.test.ts`  
+Run: `pnpm test -- src/features/learner-workspace src/features/lessons/course-contents-drawer.test.tsx src/app/theme-styles.test.ts`
 Expected: PASS.
 
 - [ ] **Step 6: Commit responsive presentation**
@@ -845,7 +845,7 @@ At a 390 px viewport, verify the desktop toolbar is hidden, Learning tools opens
 
 - [ ] **Step 3: Run the new browser tests and verify the red state**
 
-Run: `pnpm test:e2e -- tests/e2e/learner-workspace.spec.ts`  
+Run: `pnpm test:e2e -- tests/e2e/learner-workspace.spec.ts`
 Expected: FAIL until the signed-in fixture and final responsive details are connected.
 
 - [ ] **Step 4: Add the deterministic signed-in test adapter**
@@ -854,12 +854,12 @@ Inject a `Viewer` only when `NODE_ENV === "test"` and a server-only test header 
 
 - [ ] **Step 5: Run the focused browser suite**
 
-Run: `pnpm test:e2e -- tests/e2e/learner-workspace.spec.ts`  
+Run: `pnpm test:e2e -- tests/e2e/learner-workspace.spec.ts`
 Expected: all learner-workspace journeys pass in desktop and mobile Chromium projects.
 
 - [ ] **Step 6: Run existing lesson and navigation browser regressions**
 
-Run: `pnpm test:e2e -- tests/e2e/lesson.spec.ts tests/e2e/navigation.spec.ts tests/e2e/lesson-access.spec.ts`  
+Run: `pnpm test:e2e -- tests/e2e/lesson.spec.ts tests/e2e/navigation.spec.ts tests/e2e/lesson-access.spec.ts`
 Expected: PASS.
 
 - [ ] **Step 7: Commit browser coverage**
@@ -879,22 +879,22 @@ git commit -m "test: cover learner workspace journeys"
 
 - [ ] **Step 1: Run all unit and component tests**
 
-Run: `pnpm test`  
+Run: `pnpm test`
 Expected: every test passes with zero unhandled errors.
 
 - [ ] **Step 2: Run static quality gates**
 
-Run: `pnpm lint && pnpm typecheck && pnpm build`  
+Run: `pnpm lint && pnpm typecheck && pnpm build`
 Expected: all commands exit 0.
 
 - [ ] **Step 3: Run the full browser suite**
 
-Run: `pnpm test:e2e`  
+Run: `pnpm test:e2e`
 Expected: every configured desktop and mobile project passes.
 
 - [ ] **Step 4: Run database policy tests**
 
-Run: `supabase test db`  
+Run: `supabase test db`
 Expected: all profile ownership assertions pass. If CI owns the Supabase CLI, attach the successful CI job before merge; do not waive the RLS gate.
 
 - [ ] **Step 5: Perform manual accessibility and responsive review**
@@ -903,7 +903,7 @@ Check the VLAN lesson at desktop width, 768 px, and 390 px. Verify keyboard-only
 
 - [ ] **Step 6: Verify the diff and repository state**
 
-Run: `git diff --check && git status --short && git log --oneline --decorate -12`  
+Run: `git diff --check && git status --short && git log --oneline --decorate -12`
 Expected: no whitespace errors, no uncommitted generated output, and focused commits corresponding to Tasks 1–10.
 
 - [ ] **Step 7: Record the handoff evidence**

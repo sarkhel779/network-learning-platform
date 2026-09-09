@@ -37,8 +37,8 @@ test.describe("authenticated workspace", () => {
 
     await toolbar.getByRole("button", { name: "Notes" }).click();
     await expect(page.getByRole("dialog", { name: "Notes" })).toBeVisible();
-    await page.keyboard.press("Escape");
-    await toolbar.getByRole("button", { name: "Bookmarks" }).click();
+    const drawerTools = page.getByRole("navigation", { name: "Workspace tools" });
+    await drawerTools.getByRole("button", { name: "Bookmarks" }).click();
     await expect(page.getByRole("dialog", { name: "Bookmarks" })).toBeVisible();
     await expect(page.getByRole("dialog")).toHaveCount(1);
     await expect(page).toHaveURL(/#interactive-tag-journey$/);
@@ -53,10 +53,15 @@ test.describe("authenticated workspace", () => {
     await trigger.click();
     const sheet = page.getByRole("dialog", { name: "Learning tools" });
     await expect(sheet.locator(".learner-workspace-mobile-menu > button")).toHaveText(toolLabels);
+    await sheet.locator(".learner-workspace-mobile-menu > button").filter({ hasText: "Notes" }).click();
+    const notes = page.getByRole("dialog", { name: "Notes" });
+    const box = await notes.boundingBox();
+    expect(box?.y).toBeGreaterThan(0);
+    expect((box?.y ?? 0) + (box?.height ?? 0)).toBeGreaterThanOrEqual(843);
     expect(await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)).toBe(false);
 
     await page.keyboard.press("Escape");
-    await expect(sheet).toHaveCount(0);
+    await expect(notes).toHaveCount(0);
     await expect(trigger).toBeFocused();
   });
 });

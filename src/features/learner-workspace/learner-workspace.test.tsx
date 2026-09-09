@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 
@@ -59,11 +59,12 @@ describe("LearnerWorkspace", () => {
     await user.click(screen.getByRole("button", { name: "Notes" }));
     expect(screen.getByRole("dialog", { name: "Notes" })).toBeVisible();
 
-    await user.click(screen.getByRole("button", { name: "Bookmarks" }));
+    const drawerTools = screen.getByRole("navigation", { name: "Workspace tools" });
+    await user.click(within(drawerTools).getByRole("button", { name: "Bookmarks" }));
     expect(screen.queryByRole("dialog", { name: "Notes" })).not.toBeInTheDocument();
     expect(screen.getByRole("dialog", { name: "Bookmarks" })).toBeVisible();
 
-    await user.click(screen.getByRole("button", { name: "Bookmarks" }));
+    await user.click(within(screen.getByRole("navigation", { name: "Workspace tools" })).getByRole("button", { name: "Bookmarks" }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 

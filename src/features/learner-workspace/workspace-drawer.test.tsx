@@ -23,7 +23,7 @@ describe("WorkspaceDrawer", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("focuses the first control, traps focus, and closes with Escape", async () => {
+  it("focuses the heading, traps focus, and closes with Escape", async () => {
     const user = userEvent.setup();
     const triggerRef = createRef<HTMLButtonElement>();
     const close = vi.fn();
@@ -38,11 +38,11 @@ describe("WorkspaceDrawer", () => {
     );
 
     expect(screen.getByRole("dialog", { name: "Notes" })).toBeVisible();
-    expect(screen.getByRole("button", { name: "Close Notes" })).toHaveFocus();
+    expect(screen.getByRole("heading", { name: "Notes" })).toHaveFocus();
 
     screen.getByRole("link", { name: "Last action" }).focus();
     await user.keyboard("{Tab}");
-    expect(screen.getByRole("button", { name: "Close Notes" })).toHaveFocus();
+    expect(screen.getByRole("heading", { name: "Notes" })).toHaveFocus();
 
     await user.keyboard("{Escape}");
     expect(close).toHaveBeenCalledOnce();
