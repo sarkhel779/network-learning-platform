@@ -1,0 +1,49 @@
+<LearningObjective>Calculate an IPv4 subnet's network boundary, usable range, broadcast address, and capacity, then decide whether two hosts can communicate directly.</LearningObjective>
+
+<h2 id="why-subnetting-exists">Why subnetting exists</h2>
+
+Subnetting divides an IPv4 address block into smaller, deliberate network boundaries. It helps an organization assign addresses, limit broadcast scope, and tell hosts when to send locally or use a router. A subnet is a Layer 3 address boundary; a VLAN is a Layer 2 broadcast domain. They are commonly mapped one-to-one, but they are not the same thing.
+
+<SectionContinue itemId="subnetting_fundamentals_section_why_subnetting_exists" anchor="why-subnetting-exists" />
+
+<h2 id="prefix-length-and-mask">Prefix length and subnet mask</h2>
+
+A CIDR prefix such as `/26` says that the first 26 bits are network bits. The remaining six are host bits. The equivalent mask is `255.255.255.192`, whose binary form contains 26 contiguous ones followed by six zeros. Class A, B, and C defaults are not needed for this calculation.
+
+<SectionContinue itemId="subnetting_fundamentals_section_prefix_length_and_mask" anchor="prefix-length-and-mask" />
+
+<h2 id="network-and-host-portions">Network and host portions</h2>
+
+Apply the mask to the address. Bits under mask ones identify the network; bits under zeros vary inside that network. Two addresses are in the same subnet only when applying their configured prefix produces the same network address.
+
+<SectionContinue itemId="subnetting_fundamentals_section_network_and_host_portions" anchor="network-and-host-portions" />
+
+<h2 id="interactive-subnet-boundary">Interactive subnet boundary</h2>
+
+<SubnetBoundaryPlayer />
+
+<h2 id="repeatable-calculation-method">A repeatable calculation method</h2>
+
+Find the first mask octet that is not 255. This is the **interesting octet**. Subtract its mask value from 256 to get the **block size**. List multiples of that block size; the nearest multiple at or below the address is the network boundary, and the next multiple begins the following subnet.
+
+<h2 id="ranges-and-capacity">Network, usable range, broadcast, and capacity</h2>
+
+The network address is the first address in a traditional subnet. The address immediately before the next boundary is its broadcast address. Addresses between them form the traditionally usable host range. With `h` host bits there are `2^h` total addresses and, for ordinary prefixes, `2^h - 2` traditionally usable addresses.
+
+<SectionContinue itemId="subnetting_fundamentals_section_ranges_and_capacity" anchor="ranges-and-capacity" />
+
+<h2 id="interactive-subnet-scenarios">Interactive subnet scenarios</h2>
+
+<SubnetScenarioPlayer />
+
+<h2 id="special-prefixes">Special prefixes: /31 and /32</h2>
+
+Do not subtract two blindly. A `/31` can use both addresses on a modern point-to-point link and has no broadcast address. A `/32` identifies exactly one address, often as a host route or loopback reference, so it has no ordinary host range or broadcast address.
+
+<SectionContinue itemId="subnetting_fundamentals_section_special_prefixes" anchor="special-prefixes" />
+
+<h2 id="local-or-gateway">Local delivery or the default gateway</h2>
+
+A host applies its own mask to its address and the destination. Matching network addresses mean on-link delivery; different results mean the packet normally goes to the default gateway. This calculation happens before ARP resolves the selected local next hop.
+
+<SectionContinue itemId="subnetting_fundamentals_section_local_or_gateway" anchor="local-or-gateway" />
