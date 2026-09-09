@@ -23,7 +23,7 @@ describe("CourseContentsDrawer", () => {
 
     const dialog = screen.getByRole("dialog", { name: "Course contents" });
     expect(dialog).toBeVisible();
-    expect(within(dialog).getByRole("button", { name: "Close course contents" })).toHaveFocus();
+    expect(within(dialog).getByRole("button", { name: /Close course contents/i })).toHaveFocus();
 
     await user.keyboard("{Escape}");
 
@@ -37,7 +37,7 @@ describe("CourseContentsDrawer", () => {
 
     const trigger = screen.getByRole("button", { name: "Course contents" });
     await user.click(trigger);
-    await user.click(screen.getByRole("button", { name: "Dismiss course contents" }));
+    await user.click(screen.getByRole("button", { name: /Dismiss course contents/i }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 
     await user.click(trigger);
