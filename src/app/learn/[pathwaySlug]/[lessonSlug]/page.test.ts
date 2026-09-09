@@ -1,9 +1,15 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+const { getViewer, listPathwayProgress } = vi.hoisted(() => ({
+  getViewer: vi.fn(),
+  listPathwayProgress: vi.fn(),
+}));
 
 vi.mock("server-only", () => ({}));
-vi.mock("@/lib/supabase/session", () => ({ getViewer: async () => null }));
+vi.mock("@/lib/supabase/session", () => ({ getViewer }));
+vi.mock("@/features/progress/progress.repository", () => ({ listPathwayProgress }));
 vi.mock("@/features/packet-flow/use-reduced-motion", () => ({
   useReducedMotion: () => false,
   useReducedMotionState: () => ({ reducedMotion: false, isHydrated: true }),
@@ -21,8 +27,9 @@ vi.mock("@/content/networking-foundations/how-networks-communicate.public.mdx", 
     ),
   };
 });
-vi.mock("@/content/networking-foundations/how-networks-communicate.account.mdx", () => {
-  throw new Error("ACCOUNT_ONLY_SENTINEL: anonymous route imported a protected body");
+vi.mock("@/content/networking-foundations/how-networks-communicate.account.mdx", async () => {
+  const { createElement } = await import("react");
+  return { default: () => createElement("p", null, "Authenticated lesson explanation.") };
 });
 vi.mock("@/content/networking-foundations/cables-fibre-wireless-and-network-connections.public.mdx", async () => {
   const { createElement, Fragment } = await import("react");
@@ -104,6 +111,11 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+beforeEach(() => {
+  getViewer.mockResolvedValue(null);
+  listPathwayProgress.mockResolvedValue([]);
+});
+
 describe("lesson route generation", () => {
   it("provides unique catalog SEO and a relative canonical for each published lesson", async () => {
     const metadata = await Promise.all(listPublishedLessons("networking-foundations").map((lesson) =>
@@ -167,6 +179,42 @@ describe("lesson route generation", () => {
     expect(loader).toHaveBeenCalledWith("networking-foundations/how-networks-communicate", "anonymous");
     expect(container.innerHTML).not.toMatch(/ACCOUNT_ONLY_SENTINEL|PRO_ONLY_SENTINEL/);
     expect(renderToStaticMarkup(page)).not.toMatch(/ACCOUNT_ONLY_SENTINEL|PRO_ONLY_SENTINEL/);
+  });
+
+  it("renders public and account content for an authenticated learner and loads progress", async () => {
+    getViewer.mockResolvedValue({ id: "learner-1", displayName: "Pranita", avatarUrl: null });
+    listPathwayProgress.mockResolvedValue([{
+      attemptId: "attempt-1", pathwayId: "path_networking_foundations",
+      lessonId: "lesson_how_networks_communicate", contentVersion: 1,
+      attemptNumber: 1, status: "in_progress", completedItemIds: [],
+      nextItemId: "how_networks_communicate_section_communication_decisions",
+      lastItemId: null, lastAnchor: null, completionPercent: 20,
+      incorrectCheckCount: 0, updatedAt: "2026-09-09T00:00:00Z",
+    }]);
+    const loader = vi.spyOn(contentRepository, "loadAuthorizedLessonContent");
+    const { container } = render(await lessonPage.default({ params: Promise.resolve({
+      pathwaySlug: "networking-foundations", lessonSlug: "how-networks-communicate",
+    }) }));
+
+    expect(loader).toHaveBeenCalledWith("networking-foundations/how-networks-communicate", "account");
+    expect(screen.getByText("Public lesson explanation.")).toBeVisible();
+    expect(screen.getByText("Authenticated lesson explanation.")).toBeVisible();
+    expect(listPathwayProgress).toHaveBeenCalledWith(
+      "learner-1", "path_networking_foundations",
+    );
+    expect(container.querySelector("article")).toHaveAttribute("data-progress-attempt", "attempt-1");
+    expect(screen.queryByRole("region", { name: "Continue this lesson for free" })).not.toBeInTheDocument();
+  });
+
+  it("keeps authenticated lesson content visible when progress loading is unavailable", async () => {
+    getViewer.mockResolvedValue({ id: "learner-1", displayName: "Pranita", avatarUrl: null });
+    listPathwayProgress.mockRejectedValue(new Error("provider detail"));
+    const { container } = render(await lessonPage.default({ params: Promise.resolve({
+      pathwaySlug: "networking-foundations", lessonSlug: "how-networks-communicate",
+    }) }));
+    expect(screen.getByText("Authenticated lesson explanation.")).toBeVisible();
+    expect(container.querySelector("article")).toHaveAttribute("data-progress-unavailable", "true");
+    expect(container.innerHTML).not.toContain("provider detail");
   });
 
   it("emits only published lessons from the validated catalogue", () => {

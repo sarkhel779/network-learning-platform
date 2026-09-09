@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useReducedMotionState } from "@/features/packet-flow/use-reduced-motion";
+import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 import { evaluateDelivery } from "./evaluate-delivery";
 import { publicDeliveryDemonstrations } from "./delivery-scope.data";
 
@@ -11,7 +12,8 @@ function labels(ids: string[], kind: "port" | "node") {
   return ids.map((id) => records.find((record) => record.id === id)?.label ?? id).join(", ");
 }
 
-export function DeliveryScopePlayer() {
+export function DeliveryScopePlayer({ progressItemId }: { progressItemId?: string }) {
+  const { markTerminalStateReached, state, retry } = useProgressCompletionBoundary(progressItemId);
   const [selectedId, setSelectedId] = useState(publicDeliveryDemonstrations[0].id);
   const scenario = publicDeliveryDemonstrations.find(({ id }) => id === selectedId)!;
   const outcome = evaluateDelivery(scenario);
@@ -36,6 +38,10 @@ export function DeliveryScopePlayer() {
         <section aria-labelledby="router-result"><h4 id="router-result">Router boundary</h4><p>{outcome.routerAction.replaceAll("-", " ")}</p></section>
       </div>
       <p aria-live="polite">{outcome.explanation}</p>
+      <button type="button" onClick={markTerminalStateReached} disabled={state === "saving" || state === "saved"}>
+        {state === "saved" ? "Scenario complete" : state === "saving" ? "Saving…" : "Finish scenario"}
+      </button>
+      {state === "error" ? <button type="button" onClick={() => void retry()}>Retry saving</button> : null}
     </section>
   );
 }

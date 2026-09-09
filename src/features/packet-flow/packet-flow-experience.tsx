@@ -15,6 +15,7 @@ type PacketFlowExperienceProps = Readonly<{
   onDeviceSelect?: (deviceId: string) => void;
   autoplay?: boolean;
   inspectionDepthControl?: boolean;
+  progressItemId?: string;
 }>;
 
 function subscribeToClientRender() {
@@ -29,6 +30,7 @@ function ClientOnlyPacketFlowPlayer({
   onDeviceSelect,
   autoplay,
   inspectionDepthControl,
+  progressItemId,
 }: {
   scenario: Parameters<typeof PacketFlowPlayer>[0]["scenario"];
   headingId?: string;
@@ -37,6 +39,7 @@ function ClientOnlyPacketFlowPlayer({
   onDeviceSelect?: (deviceId: string) => void;
   autoplay?: boolean;
   inspectionDepthControl?: boolean;
+  progressItemId?: string;
 }) {
   const canRenderInteractively = useSyncExternalStore(
     subscribeToClientRender,
@@ -53,6 +56,7 @@ function ClientOnlyPacketFlowPlayer({
       onDeviceSelect={onDeviceSelect}
       autoplay={autoplay}
       inspectionDepthControl={inspectionDepthControl}
+      progressItemId={progressItemId}
     />
   ) : (
     <PacketFlowFallback />
@@ -67,6 +71,7 @@ export function PacketFlowExperience({
   onDeviceSelect,
   autoplay,
   inspectionDepthControl,
+  progressItemId,
 }: PacketFlowExperienceProps) {
   const parsedScenario = safeParsePacketFlowScenario(scenario);
 
@@ -82,17 +87,19 @@ export function PacketFlowExperience({
         onDeviceSelect={onDeviceSelect}
         autoplay={autoplay}
         inspectionDepthControl={inspectionDepthControl}
+        progressItemId={progressItemId}
       />
     </PacketFlowErrorBoundary>
   );
 }
 
-export function NetworkCommunicationPacketFlow() {
+export function NetworkCommunicationPacketFlow({ progressItemId }: { progressItemId?: string }) {
   return (
     <PacketFlowExperience
       headingId="packet-journey"
       scenario={networkCommunicationScenario}
       suppressHeading
+      progressItemId={progressItemId}
     />
   );
 }

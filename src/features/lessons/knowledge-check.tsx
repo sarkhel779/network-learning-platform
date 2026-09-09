@@ -2,7 +2,10 @@
 
 import { useId, useState } from "react";
 
+import { useOptionalLessonProgressItem } from "@/features/progress/lesson-progress-context";
+
 type KnowledgeCheckProps = {
+  progressItemId: string;
   question: string;
   options: string[];
   correctIndex: number;
@@ -20,6 +23,7 @@ function assertValidCorrectIndex(options: string[], correctIndex: number) {
 }
 
 export function KnowledgeCheck({
+  progressItemId,
   question,
   options,
   correctIndex,
@@ -30,6 +34,7 @@ export function KnowledgeCheck({
   const groupName = useId();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [checked, setChecked] = useState(false);
+  const progress = useOptionalLessonProgressItem(progressItemId);
   const isCorrect = checked && selectedIndex === correctIndex;
 
   return (
@@ -55,7 +60,13 @@ export function KnowledgeCheck({
         </div>
         <button
           disabled={selectedIndex === null}
-          onClick={() => setChecked(true)}
+          onClick={() => {
+            setChecked(true);
+            void progress.complete({
+              eventType: "knowledge_check_attempted",
+              answerCorrect: selectedIndex === correctIndex,
+            });
+          }}
           type="button"
         >
           Check answer
@@ -70,6 +81,11 @@ export function KnowledgeCheck({
           </>
         ) : null}
       </div>
+      {progress.state === "saving" ? <p role="status">Saving answer…</p> : null}
+      {progress.state === "saved" ? <p role="status">Answer saved</p> : null}
+      {progress.state === "error" ? (
+        <p role="alert">Answer progress was not saved. <button type="button" onClick={() => void progress.retry()}>Retry saving answer</button></p>
+      ) : null}
     </section>
   );
 }

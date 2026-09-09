@@ -2,21 +2,31 @@
 
 Delivery scope answers a practical question: which interfaces receive a transmission, and which hosts actually accept and process it? These are separate events. A switch forwards through ports, interfaces receive bits, and a host decides whether the destination is relevant.
 
+<SectionContinue itemId="unicast_broadcast_and_multicast_communication_section_why_delivery_scope_matters" anchor="why-delivery-scope-matters" />
+
 <h2 id="unicast-one-destination">Unicast: one intended destination</h2>
 
 Unicast identifies one intended destination, such as your laptop sending an HTTPS request to a web server. When the destination MAC address is already learned, a switch selects one egress port. A switch may forward an unknown unicast through several ports while it learns, but the destination remains unicast.
+
+<SectionContinue itemId="unicast_broadcast_and_multicast_communication_section_unicast_one_destination" anchor="unicast-one-destination" />
 
 <h2 id="broadcast-local-domain">Broadcast: the local broadcast domain</h2>
 
 A broadcast is delivered throughout its local broadcast domain. An ARP request is a familiar example: every local interface receives it, but only the device owning the requested address replies. A router can receive the frame on a local interface, but does not ordinarily forward it into another network. A DHCP relay is a configured agent that creates or forwards a new request toward a server; it is not an ordinary broadcast crossing the router unchanged.
 
+<SectionContinue itemId="unicast_broadcast_and_multicast_communication_section_broadcast_local_domain" anchor="broadcast-local-domain" />
+
 <h2 id="multicast-receiver-group">Multicast: an interested receiver group</h2>
 
 Multicast addresses a receiver group, such as viewers subscribed to the same live video stream. Hosts accept the traffic only when they have joined that group, while efficient forwarding depends on group-aware network state. Without that state, local flooding can make a non-subscriber interface receive a frame that its host then rejects.
 
+<SectionContinue itemId="unicast_broadcast_and_multicast_communication_section_multicast_receiver_group" anchor="multicast-receiver-group" />
+
 <h2 id="unknown-unicast-is-not-broadcast">Unknown unicast is not broadcast</h2>
 
 Flooding describes a switch action. Unicast, broadcast, and multicast describe destination scope. Flooding does not rewrite the original unicast destination into a broadcast address.
+
+<SectionContinue itemId="unicast_broadcast_and_multicast_communication_section_unknown_unicast_is_not_broadcast" anchor="unknown-unicast-is-not-broadcast" />
 
 <h2 id="compare-delivery-types">Compare delivery types</h2>
 
@@ -35,6 +45,8 @@ Compare who the sender intends to reach, what the switch forwards, what each int
   </table>
 </div>
 
+<SectionContinue itemId="unicast_broadcast_and_multicast_communication_section_compare_delivery_types" anchor="compare-delivery-types" />
+
 <h2 id="delivery-scope-player">Interactive delivery-scope player</h2>
 
-<DeliveryScopePlayer />
+<DeliveryScopePlayer progressItemId="unicast_broadcast_and_multicast_communication_interactive_delivery_scope_player" />

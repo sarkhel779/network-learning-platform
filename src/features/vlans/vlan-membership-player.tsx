@@ -29,7 +29,7 @@ const choiceData: readonly { id: Journey; label: string; sourceId: "host-a" | "h
   { id: "cross", label: "Cross-VLAN destination", sourceId: "host-a", vlan: 10, action: "cross-vlan-unicast" },
 ];
 
-export function VlanMembershipPlayer() {
+export function VlanMembershipPlayer({ progressItemId }: { progressItemId?: string }) {
   const [journey, setJourney] = useState<Journey>("vlan10");
   const [moveHostD, setMoveHostD] = useState(false);
   const scenario = useMemo(() => {
@@ -75,6 +75,6 @@ export function VlanMembershipPlayer() {
       {choiceData.map(({ id, label }) => <label key={id}><input type="radio" name="vlan-journey" checked={journey === id} onChange={() => setJourney(id)} />{label}</label>)}
     </fieldset>
     <label className="vlan-membership-player__move"><input type="checkbox" checked={moveHostD} onChange={(event) => setMoveHostD(event.target.checked)} />Move Host D to VLAN 10</label>
-    <PacketFlowPlayer autoplay inspectionDepthControl key={`${journey}-${moveHostD}`} scenario={scenario} suppressHeading />
+    <PacketFlowPlayer autoplay inspectionDepthControl key={`${journey}-${moveHostD}`} progressItemId={progressItemId} scenario={scenario} suppressHeading />
   </section>;
 }

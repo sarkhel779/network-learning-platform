@@ -7,7 +7,7 @@ import { DeliveryScopeExperience } from "@/features/delivery-scope/delivery-scop
 
 Predict the switch egress ports, interfaces that physically receive the frame, hosts that accept it, and the router-boundary action. Use **I know this—proceed to advanced** when the foundational cases are already familiar.
 
-<DeliveryScopeExperience scenarios={loadAccountDeliveryScenarios()} />
+<DeliveryScopeExperience progressItemId="unicast_broadcast_and_multicast_communication_interactive_predict_delivery" scenarios={loadAccountDeliveryScenarios()} />
 
 <h2 id="diagnose-delivery-scope">Diagnose delivery-scope scenarios</h2>
 
@@ -25,17 +25,21 @@ An ordinary Layer 2 broadcast stops at a router. For DHCP, verify whether a conf
 
 An unsubscribed host may capture multicast when the switch lacks receiver-group state, then reject it. For another network, verify that multicast routing is explicitly enabled; addressing alone does not create routed distribution.
 
+<SectionContinue itemId="unicast_broadcast_and_multicast_communication_section_diagnose_delivery_scope" anchor="diagnose-delivery-scope" />
+
 <h2 id="packet-evidence">Packet evidence</h2>
 
 Capture at more than one observation point when possible. Record destination addressing, ingress and egress links, interface receipt, and host processing. A capture proves receipt at that point—not application acceptance.
 
+<SectionContinue itemId="unicast_broadcast_and_multicast_communication_section_packet_evidence" anchor="packet-evidence" />
+
 <h2 id="knowledge-check-summary">Knowledge check and summary</h2>
 
-<KnowledgeCheck question="A switch floods a frame whose destination MAC is unknown. What is its delivery type?" options={["Unknown unicast", "Broadcast", "Multicast"]} correctIndex={0} explanation="Flooding is the switch action. The destination remains one unicast address." />
+<KnowledgeCheck progressItemId="unicast_broadcast_and_multicast_communication_check_1" question="A switch floods a frame whose destination MAC is unknown. What is its delivery type?" options={["Unknown unicast", "Broadcast", "Multicast"]} correctIndex={0} explanation="Flooding is the switch action. The destination remains one unicast address." />
 
-<KnowledgeCheck question="A non-subscriber captures a multicast frame but its application receives nothing. Which statement fits?" options={["The interface received it but the host did not accept it", "The frame must be unicast", "The router converted it to broadcast"]} correctIndex={0} explanation="Physical receipt and host acceptance are different; missing group-aware switching can expose the frame to non-subscribers." />
+<KnowledgeCheck progressItemId="unicast_broadcast_and_multicast_communication_check_2" question="A non-subscriber captures a multicast frame but its application receives nothing. Which statement fits?" options={["The interface received it but the host did not accept it", "The frame must be unicast", "The router converted it to broadcast"]} correctIndex={0} explanation="Physical receipt and host acceptance are different; missing group-aware switching can expose the frame to non-subscribers." />
 
-<KnowledgeCheck question="How does a DHCP request reach a server in another subnet?" options={["The broadcast crosses every router unchanged", "A configured relay forwards a separate request", "The switch changes it to HTTPS"]} correctIndex={1} explanation="The local broadcast stops at the router boundary. A configured relay performs explicit forwarding." />
+<KnowledgeCheck progressItemId="unicast_broadcast_and_multicast_communication_check_3" question="How does a DHCP request reach a server in another subnet?" options={["The broadcast crosses every router unchanged", "A configured relay forwards a separate request", "The switch changes it to HTTPS"]} correctIndex={1} explanation="The local broadcast stops at the router boundary. A configured relay performs explicit forwarding." />
 
 <div className="lesson-table" role="region" aria-label="Delivery scope summary table" tabIndex={0}>
   <table>

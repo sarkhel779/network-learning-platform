@@ -31,9 +31,10 @@ function ForwardingTable({ entries, label }: {
   );
 }
 
-export function FrameForwardingLab({ scenarios, showAdvancedShortcut = false }: {
+export function FrameForwardingLab({ scenarios, showAdvancedShortcut = false, onCompleted }: {
   scenarios: readonly SwitchingScenario[];
   showAdvancedShortcut?: boolean;
+  onCompleted?: () => void;
 }) {
   const id = useId();
   const intermediateScenarioInput = useRef<HTMLInputElement>(null);
@@ -77,6 +78,7 @@ export function FrameForwardingLab({ scenarios, showAdvancedShortcut = false }: 
     setResult(evaluation);
     setUnavailable(false);
     setAnnouncement(`Check ${nextCheck}: ${outcome}. Review the frame forwarding result below.`);
+    if (evaluation.correct) onCompleted?.();
   }
 
   if (!scenario) return <p>Frame-forwarding lab unavailable. The selected scenario could not be found.</p>;

@@ -6,11 +6,15 @@ A home gateway may contain a wireless access point, Ethernet switch, router, fir
 
 Think of a railway station containing platforms, ticket checks, route signs, and a connection to another railway company. Sharing one building does not make every job the same. The analogy stops at the fact that packets are processed electronically rather than carried by people.
 
+<SectionContinue itemId="access_points_modems_onts_and_firewalls_section_one_box_many_jobs" anchor="one-box-many-jobs" />
+
 <h2 id="access-points-bridge-wireless">Access points bridge wireless</h2>
 
 An access point gives Wi-Fi clients access to a local network. In its basic role it bridges wireless traffic to a wired LAN. It handles wireless association and link-layer delivery; it does not automatically become the Internet router or security policy boundary.
 
 The client interface might be labelled `Wi-Fi`, while the access point's wired side might be `LAN`, `Ethernet`, or an uplink port. Both sides can belong to the same IP network.
+
+<SectionContinue itemId="access_points_modems_onts_and_firewalls_section_access_points_bridge_wireless" anchor="access-points-bridge-wireless" />
 
 <h2 id="modems-and-onts-convert-signals">Modems and ONTs convert signals</h2>
 
@@ -18,11 +22,15 @@ A cable or DSL modem adapts customer network data to the provider's access techn
 
 Bridge mode exposes that separation clearly: the modem or ONT supplies the handoff while another device performs routing and firewall functions.
 
+<SectionContinue itemId="access_points_modems_onts_and_firewalls_section_modems_and_onts_convert_signals" anchor="modems-and-onts-convert-signals" />
+
 <h2 id="routers-and-firewalls-set-boundaries">Routers and firewalls set boundaries</h2>
 
 A router selects paths between IP networks. A firewall evaluates traffic crossing a security boundary and may permit or deny it using configured policy and session information. One home gateway often performs both roles, but routing and security remain different decisions.
 
 This lesson does not teach firewall rule design, state tables, NAT, or VPN configuration. Those belong to later service and Network Security pathways.
+
+<SectionContinue itemId="access_points_modems_onts_and_firewalls_section_routers_and_firewalls_set_boundaries" anchor="routers-and-firewalls-set-boundaries" />
 
 <h2 id="compare-edge-devices">Compare edge devices</h2>
 
@@ -40,11 +48,13 @@ This lesson does not teach firewall rule design, state tables, NAT, or VPN confi
   </table>
 </div>
 
+<SectionContinue itemId="access_points_modems_onts_and_firewalls_section_compare_edge_devices" anchor="compare-edge-devices" />
+
 <h2 id="interactive-edge-journey">Interactive edge-device journey</h2>
 
 Choose a common layout and follow the packet through every interface. At each stage, the highlighted device explains what it does and the packet opens to show what remains inside.
 
-<EdgeDevicePlayer />
+<EdgeDevicePlayer progressItemId="access_points_modems_onts_and_firewalls_interactive_interactive_edge_journey" />
 
 <noscript>
   <p><strong>Static journey:</strong> Laptop creates data → access point bridges the wireless link → router selects the WAN → firewall evaluates policy → modem or ONT converts the access signal → ISP receives the handoff.</p>

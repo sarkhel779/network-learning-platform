@@ -12,6 +12,10 @@ import type { LessonSummary } from "@/features/catalog/catalog.types";
 import { loadAuthorizedLessonContent } from "@/features/lessons/lesson-content.repository";
 import type { LessonContentKey, LessonContentModule } from "@/features/lessons/lesson-content.types";
 import { LessonShell } from "@/features/lessons/lesson-shell";
+import { getLessonProgressManifest } from "@/features/progress/progress-manifests";
+import { loadMyLearning } from "@/features/progress/my-learning.server";
+import type { MyLearningModel } from "@/features/progress/my-learning";
+import type { LessonProgressSummary } from "@/features/progress/progress.types";
 import { buildLessonStructuredData, serializeJsonLd } from "@/features/seo/lesson-structured-data";
 import { getViewer } from "@/lib/supabase/session";
 
@@ -77,16 +81,31 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const viewer = await getViewer();
   const key: LessonContentKey = `${pathway.slug}/${lesson.slug}`;
 
-  let LessonContent: LessonContentModule["default"] | undefined;
+  let PublicContent: LessonContentModule["default"] | undefined;
+  let AccountContent: LessonContentModule["default"] | undefined;
+  let initialProgress: LessonProgressSummary | null = null;
+  let progressUnavailable = false;
+  let myLearning: MyLearningModel | undefined;
 
   try {
-    const content = await loadAuthorizedLessonContent(key, "anonymous");
-    LessonContent = content.public?.default;
+    const content = await loadAuthorizedLessonContent(key, viewer ? "account" : "anonymous");
+    PublicContent = content.public?.default;
+    AccountContent = content.account?.default;
   } catch (error) {
     if (error instanceof Error && error.message === "LESSON_CONTENT_NOT_FOUND") {
       notFound();
     }
     throw error;
+  }
+
+  const progressManifest = viewer
+    ? getLessonProgressManifest(pathway.id, lesson.id)
+    : undefined;
+  if (viewer) {
+    const learning = await loadMyLearning(viewer.id, pathway);
+    myLearning = learning.model;
+    initialProgress = learning.attempts.find(({ lessonId, contentVersion }) => lessonId === lesson.id && contentVersion === progressManifest?.contentVersion) ?? null;
+    progressUnavailable = learning.unavailable;
   }
 
   return (
@@ -101,8 +120,13 @@ export default async function LessonPage({ params }: LessonPageProps) {
         previous={previous}
         next={next}
         viewer={viewer}
+        progressManifest={progressManifest}
+        initialProgress={initialProgress}
+        progressUnavailable={progressUnavailable}
+        myLearning={myLearning}
       >
-        {LessonContent ? <LessonContent /> : null}
+        {PublicContent ? <PublicContent /> : null}
+        {AccountContent ? <AccountContent /> : null}
       </LessonShell>
     </>
   );

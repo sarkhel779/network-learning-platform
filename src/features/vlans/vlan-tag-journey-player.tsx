@@ -7,6 +7,7 @@ import { PlaybackControls } from "@/features/packet-flow/playback-controls";
 import { createPlaybackState, getStepDelay, playbackReducer } from "@/features/packet-flow/playback";
 import { parsePacketFlowScenario } from "@/features/packet-flow/packet-flow.schema";
 import { useReducedMotionState } from "@/features/packet-flow/use-reduced-motion";
+import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 import { VlanFrameStage } from "./vlan-frame-stage";
 import { getVlanTagJourney } from "./vlan-tag-journey.data";
 
@@ -27,7 +28,8 @@ const links = [
   { id: "switch-b-host-d", from: "switch-b", to: "host-d", fromInterface: "Switch B Gi0/2 · access VLAN 20", toInterface: "Host D eth0" },
 ] as const;
 
-export function VlanTagJourneyPlayer() {
+export function VlanTagJourneyPlayer({ progressItemId }: { progressItemId?: string }) {
+  const { markTerminalStateReached } = useProgressCompletionBoundary(progressItemId);
   const [vlan, setVlan] = useState<10 | 20>(10);
   const [technical, setTechnical] = useState(false);
   const { reducedMotion, isHydrated } = useReducedMotionState();
@@ -55,6 +57,9 @@ export function VlanTagJourneyPlayer() {
     const timer = window.setTimeout(() => dispatch({ type: "tick" }), getStepDelay(3000, state.speed));
     return () => window.clearTimeout(timer);
   }, [state.playing, state.speed, state.stepCount, state.stepIndex]);
+  useEffect(() => {
+    if (state.stepIndex === state.stepCount - 1) markTerminalStateReached();
+  }, [markTerminalStateReached, state.stepCount, state.stepIndex]);
 
   return <section className="vlan-tag-journey-player" aria-labelledby="vlan-tag-journey-title">
     <h3 id="vlan-tag-journey-title">Follow the 802.1Q tag across a trunk</h3>

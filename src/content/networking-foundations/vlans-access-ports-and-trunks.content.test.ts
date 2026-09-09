@@ -7,11 +7,11 @@ const accountLesson = readFileSync(join(process.cwd(), "src/content/networking-f
 
 describe("VLAN lesson content contract", () => {
   it("places the VLAN membership player in the public lesson", () => {
-    expect(publicLesson).toContain("<VlanMembershipPlayer />");
+    expect(publicLesson).toContain("<VlanMembershipPlayer progressItemId=");
   });
 
   it("places the 802.1Q tag journey player in the public lesson", () => {
-    expect(publicLesson).toContain("<VlanTagJourneyPlayer />");
+    expect(publicLesson).toContain("<VlanTagJourneyPlayer progressItemId=");
   });
 
   it("keeps account evidence in the protected block", () => {

@@ -38,13 +38,17 @@ describe("toViewer", () => {
 describe("resolveTestViewer", () => {
   it("returns null when the server test adapter is not explicitly enabled", () => {
     expect(resolveTestViewer("learner-1", {})).toBeNull();
-    expect(resolveTestViewer("learner-1", { NODE_ENV: "development", PLAYWRIGHT_TEST_SESSION: "1" })).toBeNull();
     expect(resolveTestViewer("learner-1", { NODE_ENV: "staging", PLAYWRIGHT_TEST_SESSION: "1" })).toBeNull();
     expect(resolveTestViewer("learner-1", { NODE_ENV: "production", PLAYWRIGHT_TEST_SESSION: "1" })).toBeNull();
   });
 
   it("returns a minimal viewer only for the explicitly enabled test harness", () => {
-    expect(resolveTestViewer("learner-1", { NODE_ENV: "test", PLAYWRIGHT_TEST_SESSION: "1" })).toEqual({
+    expect(resolveTestViewer("learner-1", { NODE_ENV: "test", PLAYWRIGHT_TEST_SESSION: "1", PACKETSECRETS_TEST_ENV: "test" })).toEqual({
+      id: "learner-1",
+      displayName: "Playwright learner",
+      avatarUrl: null,
+    });
+    expect(resolveTestViewer("learner-1", { NODE_ENV: "development", PLAYWRIGHT_TEST_SESSION: "1", PACKETSECRETS_TEST_ENV: "test" })).toEqual({
       id: "learner-1",
       displayName: "Playwright learner",
       avatarUrl: null,

@@ -11,6 +11,7 @@ afterEach(cleanup);
 
 const pathway = getPathway("networking-foundations");
 const viewer: Viewer = { id: "learner-1", displayName: "Pranita", avatarUrl: null };
+const myLearning = { pathwayTitle: pathway.title, pathwayId: pathway.id, completionPercent: 0, continueLesson: null, groups: { not_started: [], in_progress: [], completed: [] } } as const;
 
 describe("LearnerWorkspace", () => {
   it("renders only Course contents for a signed-out visitor", () => {
@@ -78,6 +79,13 @@ describe("LearnerWorkspace", () => {
     expect(screen.getByRole("dialog", { name: "Course contents" })).toHaveTextContent(
       "Network and Device Essentials",
     );
+  });
+
+  it("renders server-loaded progress inside My learning", async () => {
+    const user = userEvent.setup();
+    render(<LearnerWorkspace pathway={pathway} currentLessonSlug="how-networks-communicate" viewer={viewer} myLearning={myLearning} />);
+    await user.click(screen.getByRole("button", { name: "My learning" }));
+    expect(screen.getByRole("dialog", { name: "My learning" })).toHaveTextContent("0% complete");
   });
 
   it("makes every authenticated tool reachable from the mobile menu", async () => {

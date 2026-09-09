@@ -5,10 +5,13 @@
     normalEvidence="An ARP request is normally a local broadcast asking who owns an IPv4 address, followed by an ARP reply that identifies a MAC address. ICMP echo traffic then shows source and destination IP addresses, while the Ethernet source and destination identify the devices for that local link."
     exercise="Find the ARP request and reply first. Then find the ICMP echo request and reply, and compare the Ethernet addresses with the IP addresses."
   />
+
+<SectionContinue itemId="how_networks_communicate_section_wireshark_check" anchor="wireshark-check" />
+
 </section>
 
 <section id="knowledge-check">
-  <KnowledgeCheck
+  <KnowledgeCheck progressItemId="how_networks_communicate_check_1"
     question="A PC is sending an IPv4 packet to a server on another network. After ARP resolves the default router, which destination addresses should the PC use?"
     options={[
       "The server's IP address in the packet and the router interface's MAC address in the frame",
@@ -34,6 +37,9 @@
     the full DNS process add important steps, but they have not been taught fully yet, so this
     answer does not pretend to trace them.
   </InterviewScenario>
+
+<SectionContinue itemId="how_networks_communicate_section_interview_scenario" anchor="interview-scenario" />
+
 </section>
 
 <PremiumPreview>

@@ -17,7 +17,7 @@ describe("How Switches Learn and Forward content", () => {
       "forward-filter-or-flood",
       "interactive-switch-learning",
     ]);
-    expect(publicLesson).toContain("<SwitchLearningPlayer />");
+    expect(publicLesson).toContain("<SwitchLearningPlayer progressItemId=");
     expect(publicLesson).toContain("receipt is not acceptance");
     expect(publicLesson).not.toContain("SWITCH_ACCOUNT_SENTINEL");
   });

@@ -10,6 +10,7 @@ import {
   type PlaybackSpeed,
 } from "../packet-flow/playback";
 import { useReducedMotionState } from "../packet-flow/use-reduced-motion";
+import { useProgressCompletionBoundary } from "../progress/progress-completion-boundary";
 import { layerModelsLab } from "./layer-models.data";
 import type { LayerModelsLab } from "./layer-models.schema";
 
@@ -17,6 +18,7 @@ type EncapsulationStep = LayerModelsLab["encapsulationSteps"][number];
 
 type EncapsulationPlayerProps = Readonly<{
   steps: LayerModelsLab["encapsulationSteps"];
+  progressItemId?: string;
 }>;
 
 const PDU_BLOCKS = {
@@ -31,7 +33,8 @@ function titleCaseDirection(direction: EncapsulationStep["direction"]): string {
   return `${direction.charAt(0).toUpperCase()}${direction.slice(1)}`;
 }
 
-export function EncapsulationPlayer({ steps }: EncapsulationPlayerProps) {
+export function EncapsulationPlayer({ steps, progressItemId }: EncapsulationPlayerProps) {
+  const { markTerminalStateReached } = useProgressCompletionBoundary(progressItemId);
   const { reducedMotion, isHydrated } = useReducedMotionState();
   const preferenceResolved = useRef(false);
   const playbackReducedMotion = reducedMotion || !isHydrated;
@@ -66,6 +69,10 @@ export function EncapsulationPlayer({ steps }: EncapsulationPlayerProps) {
     );
     return () => window.clearTimeout(timeoutId);
   }, [atFinalStep, currentStep.durationMs, state.playing, state.speed, state.stepIndex]);
+
+  useEffect(() => {
+    if (atFinalStep) markTerminalStateReached();
+  }, [atFinalStep, markTerminalStateReached]);
 
   const activeOsiName = currentStep.activeOsiLayer === 7
     ? "Application"

@@ -8,6 +8,7 @@ import type { PacketFlowScenario } from "./packet-flow.schema";
 import { PlaybackControls } from "./playback-controls";
 import { createPlaybackState, getStepDelay, playbackReducer } from "./playback";
 import { useReducedMotionState } from "./use-reduced-motion";
+import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 
 type PacketFlowPlayerProps = Readonly<{
   scenario: PacketFlowScenario;
@@ -17,6 +18,7 @@ type PacketFlowPlayerProps = Readonly<{
   onDeviceSelect?: (deviceId: string) => void;
   autoplay?: boolean;
   inspectionDepthControl?: boolean;
+  progressItemId?: string;
 }>;
 
 export function PacketFlowPlayer({
@@ -27,7 +29,9 @@ export function PacketFlowPlayer({
   onDeviceSelect,
   autoplay = true,
   inspectionDepthControl = false,
+  progressItemId,
 }: PacketFlowPlayerProps) {
+  const { markTerminalStateReached } = useProgressCompletionBoundary(progressItemId);
   const { reducedMotion, isHydrated } = useReducedMotionState();
   const preferenceResolved = useRef(false);
   const playbackReducedMotion = reducedMotion || !isHydrated;
@@ -70,6 +74,10 @@ export function PacketFlowPlayer({
     const timeoutId = window.setTimeout(() => dispatch({ type: "tick" }), getStepDelay(currentStep.durationMs, state.speed));
     return () => window.clearTimeout(timeoutId);
   }, [atFinalStep, currentStep.durationMs, reducedMotion, state.playing, state.speed, state.stepIndex]);
+
+  useEffect(() => {
+    if (atFinalStep) markTerminalStateReached();
+  }, [atFinalStep, markTerminalStateReached]);
 
   return (
     <section

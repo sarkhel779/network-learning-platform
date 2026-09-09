@@ -12,6 +12,8 @@ The frame enters an intermediary through an **ingress port**. Any port selected 
 onward is an **egress port**. A hub, bridge, and switch do not make that selection in the same
 way. This lesson keeps one small topology stable so each behavioral difference is visible.
 
+<SectionContinue itemId="hubs_bridges_and_switches_section_one_local_ethernet_conversation" anchor="one-local-ethernet-conversation" />
+
 <h2 id="what-a-hub-does">What a hub does</h2>
 
 A hub is a physical-layer repeater with several ports. When a signal enters one port, the hub
@@ -22,6 +24,8 @@ Every attached device shares the available bandwidth and the same collision doma
 hub-based Ethernet commonly used half duplex, so devices had to take turns and simultaneous
 transmissions could collide. A receiving interface still decides whether a repeated frame is
 addressed to it, but the hub has already sent the signal throughout the shared segment.
+
+<SectionContinue itemId="hubs_bridges_and_switches_section_what_a_hub_does" anchor="what-a-hub-does" />
 
 <h2 id="why-bridges-changed-ethernet">Why bridges changed Ethernet</h2>
 
@@ -34,6 +38,8 @@ few ports and performed more work in software. A modern switch applies the same 
 idea across more ports at higher speed. Neither device becomes a router merely because it
 forwards selectively.
 
+<SectionContinue itemId="hubs_bridges_and_switches_section_why_bridges_changed_ethernet" anchor="why-bridges-changed-ethernet" />
+
 <h2 id="how-a-switch-learns">How a switch learns</h2>
 
 When a frame arrives, a switch records the frame's **source MAC address** against the ingress
@@ -43,6 +49,8 @@ same source appears on another port later, the switch refreshes the entry to the
 The switch does not learn a destination merely by reading the destination field. It looks up
 that address to make a forwarding decision. Dynamic entries eventually age out after an
 implementation-dependent period unless traffic refreshes them; there is no universal timer.
+
+<SectionContinue itemId="hubs_bridges_and_switches_section_how_a_switch_learns" anchor="how-a-switch-learns" />
 
 <h2 id="how-a-switch-forwards">How a switch forwards</h2>
 
@@ -57,6 +65,8 @@ After learning the source, the switch examines the destination:
 Each full-duplex switch port normally forms a separate collision domain with dedicated link
 capacity. The switch does not automatically split the broadcast domain, route IP packets,
 authorize users, or encrypt their traffic.
+
+<SectionContinue itemId="hubs_bridges_and_switches_section_how_a_switch_forwards" anchor="how-a-switch-forwards" />
 
 <h2 id="compare-hub-bridge-switch">Compare hub, bridge and switch</h2>
 
@@ -77,4 +87,4 @@ The important improvement is a change in decision-making, not simply a faster bo
 The interactive comparison will build on this table. The table preserves the complete public
 conclusion when JavaScript or motion is unavailable.
 
-<SwitchingComparison />
+<SwitchingComparison progressItemId="hubs_bridges_and_switches_interactive_compare_hub_bridge_switch" />

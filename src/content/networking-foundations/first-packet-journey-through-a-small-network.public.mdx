@@ -8,11 +8,15 @@ The PC already has `192.0.2.10/24`, default gateway `192.0.2.1`, and destination
 
 The PC applies its `/24` prefix to its own address and the destination. The results differ, so the destination is remote. The PC keeps the server as the IP destination but chooses the default gateway as its first local next hop.
 
+<SectionContinue itemId="first_packet_journey_through_a_small_network_section_before_the_first_frame" anchor="before-the-first-frame" />
+
 <h2 id="resolve-the-next-hop">Resolve the next hop</h2>
 
 Ethernet cannot send a frame using only the gateway's IP address. When the PC has no cached mapping, it broadcasts an ARP request: “Who has `192.0.2.1`?” The destination MAC is `FF:FF:FF:FF:FF:FF`.
 
 The switch floods that broadcast only inside the local broadcast domain. The router does not forward the ARP request to the server network. Because its LAN interface owns `192.0.2.1`, the router replies with that interface's MAC address. The PC records the mapping.
+
+<SectionContinue itemId="first_packet_journey_through_a_small_network_section_resolve_the_next_hop" anchor="resolve-the-next-hop" />
 
 <h2 id="switch-and-route-the-request">Switch and route the request</h2>
 
@@ -20,15 +24,19 @@ The PC builds an Ethernet frame addressed to the router's LAN MAC. Inside it, th
 
 The switch reads the destination MAC and forwards the frame toward the router. The router removes the incoming Ethernet frame, reads the destination IP, selects its server-facing interface, decreases TTL, and builds a replacement frame for the next link. The end-to-end IP addresses remain unchanged in this lesson because NAT is not part of the topology.
 
+<SectionContinue itemId="first_packet_journey_through_a_small_network_section_switch_and_route_the_request" anchor="switch-and-route-the-request" />
+
 <h2 id="return-traffic">Return traffic</h2>
 
 The server accepts the request and creates an echo reply with the IP endpoints reversed. Its first frame is addressed to its own gateway. At the router, that frame ends; the router selects the PC-side network and creates another frame. The switch forwards it to the PC, completing the round trip.
+
+<SectionContinue itemId="first_packet_journey_through_a_small_network_section_return_traffic" anchor="return-traffic" />
 
 <h2 id="complete-packet-journey">Complete packet journey</h2>
 
 The player starts automatically unless your device requests reduced motion. Pause, move one step at a time, or change speed. Every link names both interfaces. At each step, open the packet and switch between the plain-language and technical inspection views.
 
-<FirstPacketJourneyPlayer />
+<FirstPacketJourneyPlayer progressItemId="first_packet_journey_through_a_small_network_interactive_complete_packet_journey" />
 
 <noscript>
   <p><strong>Static journey:</strong> remote decision → ARP broadcast inside the LAN → ARP reply → request frame through the switch → router replaces the frame → server replies → router replaces the return frame → PC receives the reply.</p>

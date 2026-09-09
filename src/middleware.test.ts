@@ -20,9 +20,32 @@ import { config, middleware } from "./middleware";
 
 describe("session refresh middleware", () => {
   beforeEach(() => {
+    vi.unstubAllEnvs();
     process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "public-anon-key";
     getUser.mockReset().mockResolvedValue({ data: { user: null }, error: null });
+  });
+
+  it("bypasses Supabase only for the exact Playwright test session", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+    vi.stubEnv("PLAYWRIGHT_TEST_SESSION", "1");
+    vi.stubEnv("PACKETSECRETS_TEST_ENV", "test");
+
+    const response = await middleware(new NextRequest("https://packetsecrets.test/learn/networking-foundations/vlans", {
+      headers: { "x-packetsecrets-test-viewer": "learner-1" },
+    }));
+
+    expect(response.status).toBe(200);
+    expect(getUser).not.toHaveBeenCalled();
+  });
+
+  it("does not bypass Supabase outside the exact test guard", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+    vi.stubEnv("PLAYWRIGHT_TEST_SESSION", "1");
+
+    await middleware(new NextRequest("https://packetsecrets.test/learn/networking-foundations/vlans"));
+
+    expect(getUser).toHaveBeenCalledOnce();
   });
 
   it("validates the user and copies refreshed cookies onto the response", async () => {

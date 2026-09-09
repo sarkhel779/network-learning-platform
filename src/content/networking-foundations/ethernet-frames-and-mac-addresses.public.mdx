@@ -4,17 +4,23 @@ Ethernet moves data across one local link or switched LAN. A host places an uppe
 
 Think of an IP address as the final street address and a MAC address as the label for the next local delivery. The labels solve different problems, and neither replaces the other.
 
+<SectionContinue itemId="ethernet_frames_and_mac_addresses_section_ethernet_delivers_on_the_local_link" anchor="ethernet-delivers-on-the-local-link" />
+
 <h2 id="read-an-ethernet-frame">Read an Ethernet frame</h2>
 
 An Ethernet transmission begins with synchronization information, followed by destination and source MAC addresses. The type/length field explains what follows, the payload carries upper-layer data, optional padding satisfies the minimum frame size, and the frame check sequence helps detect corruption.
 
 In common Ethernet II captures, `0x0800` means IPv4, `0x0806` means ARP, and `0x86DD` means IPv6. A normal packet capture often omits the preamble, start-frame delimiter, and FCS because the network adapter processes them before software sees the frame.
 
+<SectionContinue itemId="ethernet_frames_and_mac_addresses_section_read_an_ethernet_frame" anchor="read-an-ethernet-frame" />
+
 <h2 id="understand-mac-addresses">Understand MAC addresses</h2>
 
 A MAC address is normally written as six hexadecimal octets, such as `02:00:00:00:00:0A`. It identifies an interface for link-layer delivery. The first octet also carries individual/group and universal/local bits. An OUI can identify an assigned vendor block, but modern devices can use locally administered or randomized addresses.
 
 A MAC address is useful forwarding information—not a trustworthy username, permanent identity, or security boundary.
+
+<SectionContinue itemId="ethernet_frames_and_mac_addresses_section_understand_mac_addresses" anchor="understand-mac-addresses" />
 
 <h2 id="delivery-addresses">Unicast, broadcast, multicast and unknown unicast</h2>
 
@@ -33,10 +39,12 @@ A MAC address is useful forwarding information—not a trustworthy username, per
 
 Unknown unicast is **not** broadcast. Its destination bit pattern still names one interface; flooding is the switch's temporary forwarding action.
 
+<SectionContinue itemId="ethernet_frames_and_mac_addresses_section_delivery_addresses" anchor="delivery-addresses" />
+
 <h2 id="interactive-frame-delivery">Interactive frame delivery</h2>
 
 Choose each address type and follow the frame. The player starts automatically unless your device requests reduced motion. Pause it, move one step at a time, or open the technical packet fields.
 
-<EthernetFrameExplorer />
+<EthernetFrameExplorer progressItemId="ethernet_frames_and_mac_addresses_interactive_interactive_frame_delivery" />
 
 <noscript><p><strong>Static comparison:</strong> known unicast uses one learned port; broadcast is delivered across the VLAN; multicast targets a receiver group; unknown unicast is flooded only because the destination port is not yet known.</p></noscript>

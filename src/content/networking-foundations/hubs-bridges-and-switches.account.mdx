@@ -9,7 +9,7 @@ The guided lab begins with `first-frame-unknown-destination` and progresses thro
 learning, known forwarding, `same-segment-filtering`, broadcast flooding, and an aged-out
 destination. Predict the decision before revealing the forwarding evidence.
 
-<FrameForwardingExperience scenarios={loadAccountSwitchingScenarios()} />
+<FrameForwardingExperience progressItemId="hubs_bridges_and_switches_interactive_forward_the_frame" scenarios={loadAccountSwitchingScenarios()} />
 
 <h2 id="diagnose-local-switching-symptoms">Diagnose local switching symptoms</h2>
 
@@ -55,27 +55,29 @@ If a required link is down, editing or clearing the forwarding table cannot rest
 Verify power, cable or radio path, interface state, and link evidence at both ends first. Repair
 the physical condition, then observe new source learning and repeat the original traffic test.
 
+<SectionContinue itemId="hubs_bridges_and_switches_section_diagnose_local_switching_symptoms" anchor="diagnose-local-switching-symptoms" />
+
 <h2 id="knowledge-check-summary">Knowledge check and summary</h2>
 
 Account practice will check whether the learner can distinguish known-unicast forwarding,
 same-port filtering, unknown-unicast flooding, and broadcast flooding without confusing a
 switching decision with routing or application reachability.
 
-<KnowledgeCheck
+<KnowledgeCheck progressItemId="hubs_bridges_and_switches_check_1"
   question="A switch receives a frame from source 02:00:00:00:00:01 on port 1. What does it learn?"
   options={["The source MAC is reachable through port 1", "The destination MAC is reachable through port 1", "Every MAC address is reachable through port 1"]}
   correctIndex={0}
   explanation="The ingress frame proves where its source is reachable. The destination is looked up for forwarding; it is not learned from that lookup."
 />
 
-<KnowledgeCheck
+<KnowledgeCheck progressItemId="hubs_bridges_and_switches_check_2"
   question="A unicast destination is absent from the forwarding table. What should the switch do?"
   options={["Route it through the default gateway", "Flood eligible ports except ingress", "Return it through the ingress port"]}
   correctIndex={1}
   explanation="An unknown unicast is flooded only within its eligible Layer 2 scope and never back through ingress. This is not an IP routing decision."
 />
 
-<KnowledgeCheck
+<KnowledgeCheck progressItemId="hubs_bridges_and_switches_check_3"
   question="The destination is learned on the same bridge port where the frame arrived. What is the correct action?"
   options={["Filter it from the other ports", "Broadcast it to every port including ingress", "Delete every forwarding entry"]}
   correctIndex={0}

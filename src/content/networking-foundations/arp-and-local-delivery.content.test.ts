@@ -17,8 +17,8 @@ describe("ARP and Local Delivery content", () => {
       "interactive-arp-journey",
       "arp-variants-and-boundaries",
     ]);
-    expect(publicLesson).toContain("<ArpLocalDeliveryPlayer />");
-    expect(publicLesson).toContain("<ArpVariantPlayer />");
+    expect(publicLesson).toContain("<ArpLocalDeliveryPlayer progressItemId=");
+    expect(publicLesson).toContain("<ArpVariantPlayer progressItemId=");
     expect(publicLesson).toContain("RARP");
     expect(publicLesson).toContain("Inverse ARP");
     expect(publicLesson).not.toContain("ARP_ACCOUNT_SENTINEL");

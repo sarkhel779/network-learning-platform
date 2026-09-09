@@ -239,7 +239,7 @@ const choices: readonly { id: ArpCase; label: string }[] = [
   { id: "gratuitous", label: "Gratuitous ARP" },
 ];
 
-export function ArpLocalDeliveryPlayer() {
+export function ArpLocalDeliveryPlayer({ progressItemId }: { progressItemId?: string }) {
   const [arpCase, setArpCase] = useState<ArpCase>("local");
   return (
     <section className="arp-local-delivery-player" aria-labelledby="arp-local-delivery-title">
@@ -254,7 +254,7 @@ export function ArpLocalDeliveryPlayer() {
           </label>
         ))}
       </fieldset>
-      <PacketFlowPlayer autoplay inspectionDepthControl key={arpCase} scenario={scenarios[arpCase]} suppressHeading />
+      <PacketFlowPlayer autoplay inspectionDepthControl key={arpCase} progressItemId={progressItemId} scenario={scenarios[arpCase]} suppressHeading />
     </section>
   );
 }

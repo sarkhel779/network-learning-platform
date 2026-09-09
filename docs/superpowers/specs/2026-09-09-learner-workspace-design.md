@@ -337,11 +337,19 @@ Deferred features are certificates, streaks, points, achievements, public profil
 - Add Bookmarks, Save for later, and revision markers.
 - Provide stale-target recovery.
 
-### Stage 4 — Supporting tools
+### Stage 4A — Supporting tools
 
 - Add Practice history and recommendations.
 - Add Glossary and contextual Feedback.
 - Connect Account and security settings.
+
+### Stage 4B — Expert support and notifications
+
+- Add an asynchronous Ask an Expert conversation from lesson and knowledge-check context.
+- Add a protected expert-team reply workspace with assignment and conversation status.
+- Add an in-app Notifications tool with unread state when an expert replies.
+- Add authorization, abuse controls, retention rules, and operational response expectations before rollout.
+- Allow learners to leave the lesson and return to the contextual conversation later; real-time presence is not required for the initial version.
 
 ### Stage 5 — Pro preparation
 

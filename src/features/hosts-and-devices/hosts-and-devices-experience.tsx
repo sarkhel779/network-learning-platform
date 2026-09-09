@@ -7,7 +7,7 @@ import { PacketFlowExperience } from "@/features/packet-flow/packet-flow-experie
 import { DeviceDetails } from "./device-details";
 import { hostsAndDevicesLab } from "./hosts-and-devices.data";
 
-export function HostsAndDevicesExperience() {
+export function HostsAndDevicesExperience({ progressItemId }: { progressItemId?: string }) {
   const experienceRef = useRef<HTMLElement>(null);
   const [journeyId, setJourneyId] = useState(hostsAndDevicesLab.journeys[0].id);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>();
@@ -62,6 +62,7 @@ export function HostsAndDevicesExperience() {
         selectedDeviceId={selectedDeviceId}
         onDeviceSelect={setSelectedDeviceId}
         autoplay={autoplay}
+        progressItemId={progressItemId}
       />
 
       {selectedProfile ? (

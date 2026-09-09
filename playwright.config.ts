@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const testBaseUrl = process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:3000";
+const testPort = new URL(testBaseUrl).port || "3000";
 
 export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
@@ -11,10 +12,11 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   webServer: {
-    command: "pnpm run dev",
+    command: `"${process.execPath}" node_modules/next/dist/bin/next dev -p ${testPort}`,
     env: {
       NODE_ENV: "test",
       PLAYWRIGHT_TEST_SESSION: "1",
+      PACKETSECRETS_TEST_ENV: "test",
       NEXT_PUBLIC_SUPABASE_URL: "https://playwright.supabase.co",
       NEXT_PUBLIC_SUPABASE_ANON_KEY: "playwright-public-key",
     },

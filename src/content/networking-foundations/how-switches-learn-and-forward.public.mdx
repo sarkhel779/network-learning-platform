@@ -15,6 +15,8 @@ Think of a receptionist recording the door through which a person entered, then 
 directory for the recipient. The analogy stops at one important limit: a switch learns from
 observed source frames, not from a trusted identity system, and an entry can age or move.
 
+<SectionContinue itemId="how_switches_learn_and_forward_section_the_switch_decision_cycle" anchor="the-switch-decision-cycle" />
+
 <h2 id="learn-the-source-address">Learn the source address</h2>
 
 When a frame from `02:00:00:00:00:0A` arrives on `Gi0/1`, the switch records or refreshes
@@ -24,6 +26,8 @@ most recently observed in this Layer 2 scope?**
 The switch does not learn the destination from this frame. If the same source later arrives on
 `Gi0/3`, source learning refreshes the entry to `Gi0/3`. This is how normal host movement is
 learned; the table is dynamic rather than a permanent cabling inventory.
+
+<SectionContinue itemId="how_switches_learn_and_forward_section_learn_the_source_address" anchor="learn-the-source-address" />
 
 <h2 id="look-up-the-destination">Look up the destination</h2>
 
@@ -36,6 +40,8 @@ After source learning, the switch examines the destination MAC:
 
 The source and destination fields have different jobs: the source teaches the switch; the
 destination guides the forwarding decision.
+
+<SectionContinue itemId="how_switches_learn_and_forward_section_look_up_the_destination" anchor="look-up-the-destination" />
 
 <h2 id="forward-filter-or-flood">Forward, filter or flood</h2>
 
@@ -56,12 +62,14 @@ Flooding describes a switch action, not automatic acceptance by every endpoint. 
 interface can receive a copy and discard it because the destination does not apply: **receipt is not acceptance**.
 The switch also stays within its current Layer 2 scope; routing and VLAN boundaries are separate decisions.
 
+<SectionContinue itemId="how_switches_learn_and_forward_section_forward_filter_or_flood" anchor="forward-filter-or-flood" />
+
 <h2 id="interactive-switch-learning">Interactive switch learning</h2>
 
 Watch the frame enter a labelled interface, open its Ethernet fields, and follow the MAC table
 through source learning, destination lookup, egress selection and transmission. The player starts
 automatically unless reduced motion is enabled; all stages remain available through manual controls.
 
-<SwitchLearningPlayer />
+<SwitchLearningPlayer progressItemId="how_switches_learn_and_forward_interactive_interactive_switch_learning" />
 
 <noscript><p><strong>Static decision:</strong> receive on ingress, learn the source there, look up the destination, then forward one known unicast, filter a same-interface destination, or flood an unknown unicast or broadcast through eligible interfaces except ingress.</p></noscript>

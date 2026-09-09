@@ -4,6 +4,7 @@ import { type MouseEvent, useRef, useState } from "react";
 
 import type { Pathway } from "@/features/catalog/catalog.types";
 import { CurriculumNavigation } from "@/features/lessons/curriculum-navigation";
+import { MyLearning, type MyLearningModel } from "@/features/progress/my-learning";
 
 import type { Viewer, WorkspaceToolId } from "./learner-workspace.types";
 import { WorkspaceDrawer } from "./workspace-drawer";
@@ -13,6 +14,8 @@ type LearnerWorkspaceProps = Readonly<{
   pathway: Pathway;
   currentLessonSlug: string;
   viewer: Viewer | null;
+  myLearning?: MyLearningModel;
+  progressUnavailable?: boolean;
 }>;
 
 const placeholderCopy: Record<Exclude<WorkspaceToolId, "course">, string> = {
@@ -34,7 +37,7 @@ function ToolIcon() {
   );
 }
 
-export function LearnerWorkspace({ pathway, currentLessonSlug, viewer }: LearnerWorkspaceProps) {
+export function LearnerWorkspace({ pathway, currentLessonSlug, viewer, myLearning, progressUnavailable }: LearnerWorkspaceProps) {
   const [activeToolId, setActiveToolId] = useState<WorkspaceToolId | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const activeTriggerRef = useRef<HTMLButtonElement>(null);
@@ -129,6 +132,8 @@ export function LearnerWorkspace({ pathway, currentLessonSlug, viewer }: Learner
                 currentLessonSlug={currentLessonSlug}
                 onLessonSelect={() => setActiveToolId(null)}
               />
+            ) : activeTool.id === "learning" && myLearning ? (
+              <MyLearning model={myLearning} unavailable={progressUnavailable} />
             ) : (
               <p>{placeholderCopy[activeTool.id]}</p>
             )}

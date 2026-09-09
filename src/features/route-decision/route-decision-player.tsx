@@ -11,7 +11,7 @@ const scopeLabels = { "on-link": "On-link", "remote-via-gateway": "Remote via ga
 const recipientLabels = { destination: "Destination host", gateway: "Gateway interface", "local-broadcast": "Local broadcast", none: "No frame" } as const;
 const actionLabels = { "direct-delivery": "Direct delivery", "route-unicast": "Route unicast", "stop-broadcast": "Stop broadcast", "host-routing-failure": "Host routing failure", "router-no-route": "Router has no onward route" } as const;
 
-export function RouteDecisionPlayer() {
+export function RouteDecisionPlayer({ progressItemId }: { progressItemId?: string }) {
   const [selectedId, setSelectedId] = useState(publicRouteDecisionScenarios[0].id);
   const [explanationMode, setExplanationMode] = useState<"plain" | "technical">("plain");
   const scenario = publicRouteDecisionScenarios.find(({ id }) => id === selectedId)!;
@@ -34,7 +34,7 @@ export function RouteDecisionPlayer() {
         ))}
       </fieldset>
 
-      <PacketJourneyPlayer journey={journey} />
+      <PacketJourneyPlayer journey={journey} progressItemId={progressItemId} />
       <noscript><StaticPacketJourney journey={journey} /></noscript>
 
       <div className="route-decision-results" aria-live="polite">
