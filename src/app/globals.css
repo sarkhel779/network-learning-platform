@@ -672,6 +672,16 @@ h1 {
 @media (min-width: 48rem) { .packet-journey-stage { grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.8fr); align-items: start; } }
 @media (prefers-reduced-motion: reduce) { .packet-journey-stage .packet-journey-marker { animation: none; } }
 
+.ipv4-player { min-width: 0; margin: 1.5rem 0; padding: 1rem; border: 1px solid var(--border); border-radius: .75rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
+.ipv4-player h3 { margin-top: 0; }
+.ipv4-bits { display: grid; grid-template-columns: repeat(4, minmax(3.5rem, 1fr)); gap: .5rem; }
+.ipv4-bits button { display: grid; gap: .25rem; min-width: 0; padding: .65rem .35rem; border: 1px solid var(--border); border-radius: .5rem; color: var(--foreground); background: var(--background); }
+.ipv4-bits button[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 18%, var(--background)); }
+.ipv4-bits strong, .ipv4-result { font-size: 1.2rem; font-weight: 800; }
+.ipv4-boundary { display: grid; gap: .5rem; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); margin-top: 1rem; }
+.ipv4-boundary span { min-width: 0; padding: .7rem; border-inline-start: .3rem solid var(--accent); background: var(--background); overflow-wrap: anywhere; }
+@media (min-width: 40rem) { .ipv4-bits { grid-template-columns: repeat(8, minmax(3.5rem, 1fr)); } }
+
 .edge-device-player { min-width: 0; margin: 2rem 0; padding: clamp(0.8rem, 2.5vw, 1.4rem); border: 1px solid var(--border); border-radius: 0.75rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); }
 .edge-device-player > h3 { margin-top: 0; }
 .edge-device-player fieldset { display: flex; flex-wrap: wrap; gap: 0.5rem; min-width: 0; margin: 1rem 0; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; }

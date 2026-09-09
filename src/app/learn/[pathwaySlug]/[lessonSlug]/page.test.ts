@@ -271,6 +271,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "vlans-access-ports-and-trunks",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "ipv4-addressing",
+      },
     ]);
   });
 

@@ -31,7 +31,7 @@ describe("ModuleList publication labels", () => {
   it("describes unpublished lessons as Coming later without Free or Premium access claims", () => {
     const pathway = getPathway("networking-foundations");
     render(<ModuleList modules={pathway.modules} pathwaySlug={pathway.slug} />);
-    const card = screen.getByRole("heading", { name: "IPv4 Addressing" }).closest("li")!;
+    const card = screen.getByRole("heading", { name: "Subnetting Fundamentals" }).closest("li")!;
     expect(within(card).getByText("Coming later")).toBeVisible();
     expect(within(card).queryByText(/^(Free|Premium)$/)).toBeNull();
     expect(within(card).queryByRole("link")).toBeNull();

@@ -276,11 +276,24 @@ const curriculum: Pathway[] = [
         id: "module_ip_addressing_and_routing", slug: "ip-addressing-and-routing", title: "IP Addressing and Routing",
         description: "Learn addressing, subnetting, routing choices, and network control evidence.",
         lessons: [
-          plannedLesson({
+          {
             id: "lesson_ipv4_addressing", slug: "ipv4-addressing", title: "IPv4 Addressing",
             objective: "Read dotted-decimal addresses and prefixes and distinguish network, host, private, public, loopback, link-local, and documentation ranges.",
-            seo: { title: "IPv4 Addressing for Beginners", description: "Read IPv4 addresses and prefixes, then identify network, host, private, public, loopback, link-local, and documentation ranges." }, estimatedMinutes: 20,
-          }),
+            seo: { title: "IPv4 Addressing for Beginners", description: "Read IPv4 addresses and prefixes, then identify network, host, private, public, loopback, link-local, and documentation ranges." }, estimatedMinutes: 25,
+            published: true,
+            sections: [
+              { id: "read-an-ipv4-address", label: "Read an IPv4 address", access: "public" },
+              { id: "dotted-decimal-and-binary", label: "Dotted decimal and binary", access: "public" },
+              { id: "interactive-binary-explorer", label: "Interactive binary explorer", access: "public" },
+              { id: "prefixes-network-and-host", label: "Prefixes, network and host portions", access: "public" },
+              { id: "interactive-address-boundary", label: "Interactive address boundary", access: "public" },
+              { id: "special-address-ranges", label: "Special address ranges", access: "public" },
+              { id: "inspect-address-evidence", label: "Inspect address evidence", access: "account" },
+              { id: "troubleshoot-addressing", label: "Troubleshoot addressing", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore special-use ranges, overlapping plans, capture evidence, production diagnostics, and interview scenarios." },
+            ],
+          },
           plannedLesson({
             id: "lesson_subnetting_fundamentals", slug: "subnetting-fundamentals", title: "Subnetting Fundamentals",
             objective: "Calculate network boundaries, usable ranges, broadcast addresses, and host capacity for common IPv4 prefixes.",
