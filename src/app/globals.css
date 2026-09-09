@@ -808,3 +808,12 @@ h1 {
 .subnet-feedback { margin-top: 1rem; padding: 1rem; border-inline-start: .35rem solid var(--accent); border-radius: .45rem; background: var(--background); }
 @media (max-width: 35rem) { .subnet-player fieldset label { width: 100%; } .player-controls button, .player-controls label { flex: 1 1 8rem; } }
 @media (prefers-reduced-motion: reduce) { .subnet-player * { animation: none !important; transition: none !important; } }
+
+.routing-decision-player { min-width: 0; }
+.routing-decision-player fieldset { display: flex; flex-wrap: wrap; gap: .5rem; }
+.routing-decision-player fieldset label { min-height: 44px; display: inline-flex; align-items: center; gap: .45rem; }
+.routing-table-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: .75rem; }
+.routing-table-scroll table { min-width: 820px; width: 100%; border-collapse: collapse; }
+.routing-table-scroll th, .routing-table-scroll td { padding: .65rem; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+.routing-table-scroll tr[data-status="rejected"] { opacity: .65; text-decoration: line-through; }
+.routing-outcome { border-inline-start: .3rem solid var(--accent); padding: .75rem 1rem; margin-block: 1rem; }
