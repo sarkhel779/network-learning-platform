@@ -25,6 +25,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/networking-foundations/vlans-access-ports-and-trunks" },
       { url: "https://packetsecrets.com/learn/networking-foundations/ipv4-addressing" },
       { url: "https://packetsecrets.com/learn/networking-foundations/subnetting-fundamentals" },
+      { url: "https://packetsecrets.com/learn/networking-foundations/ipv6-fundamentals" },
     ]);
     const urls = entries.map(({ url }) => url);
     for (const pathway of listPathways()) {
@@ -44,6 +45,6 @@ describe("public sitemap", () => {
     for (const unpublishedUrl of unpublishedSlugs) {
       expect(urls).not.toContain(unpublishedUrl);
     }
-    expect(unpublishedSlugs).toHaveLength(9);
+    expect(unpublishedSlugs).toHaveLength(8);
   });
 });
