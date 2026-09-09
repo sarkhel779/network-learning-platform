@@ -15,6 +15,6 @@ export default defineConfig({
     environment: "jsdom",
     exclude: [...configDefaults.exclude, ".worktrees/**", "tests/e2e/**"],
     passWithNoTests: true,
-    setupFiles: ["@testing-library/jest-dom/vitest"],
+    setupFiles: ["./src/test/setup.ts"],
   },
 });
