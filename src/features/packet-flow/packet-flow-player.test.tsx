@@ -126,6 +126,13 @@ describe("PacketFlowPlayer", () => {
     expect(screen.queryByRole("heading", { name: "IP packet" })).not.toBeInTheDocument();
   });
 
+  it("shows the IP layer when an Ethernet frame explicitly carries IPv4 or IPv6", () => {
+    const ipFrame = parsePacketFlowScenario({ ...scenario, id: "ip-frame", steps: [{ ...scenario.steps[0], id: "ipv4-data", title: "Forward an IPv4 frame", packet: { kind: "frame", label: "IPv4 data frame", from: "client", to: "gateway" }, summaryFields: [{ label: "IPv4 destination", value: "203.0.113.20", layer: "ip" }], detailFields: [] }] });
+    render(<PacketFlowPlayer scenario={ipFrame} autoplay={false} />);
+    expect(screen.getByRole("heading", { name: "Ethernet frame" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "IP packet" })).toBeVisible();
+  });
+
   it("renders the initial step, its fields, and autoplay controls", () => {
     render(<PacketFlowPlayer scenario={scenario} />);
 
