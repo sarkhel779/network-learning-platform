@@ -89,6 +89,7 @@ describe("catalog repository", () => {
       "ipv6-fundamentals",
       "osi-and-tcp-ip-models",
       "routers-default-gateways-and-network-boundaries",
+      "routing-tables-and-default-routes",
       "subnetting-fundamentals",
       "unicast-broadcast-and-multicast-communication",
       "vlans-access-ports-and-trunks",
@@ -257,7 +258,7 @@ describe("catalog repository", () => {
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
       previous: { slug: "subnetting-fundamentals", published: true },
-      next: { slug: "routing-tables-and-default-routes", published: false },
+      next: { slug: "routing-tables-and-default-routes", published: true },
     });
   });
 
@@ -401,6 +402,7 @@ describe("catalog repository", () => {
       "ipv4-addressing",
       "subnetting-fundamentals",
       "ipv6-fundamentals",
+      "routing-tables-and-default-routes",
     ]);
     expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
       title: "Cables, Fibre, Wireless and Network Connections",
@@ -461,7 +463,7 @@ describe("catalog repository", () => {
   it("keeps public foundations limited to published beginner lessons", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[6], lessons[7], lessons[8], lessons[9], lessons[10], lessons[11], lessons[12], lessons[13], lessons[14], lessons[15]];
+    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[6], lessons[7], lessons[8], lessons[9], lessons[10], lessons[11], lessons[12], lessons[13], lessons[14], lessons[15], lessons[16]];
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
@@ -478,12 +480,13 @@ describe("catalog repository", () => {
     expect(ipv4.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(subnetting.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(ipv6.sections?.some(({ access }) => access === "public")).toBe(true);
+    expect(routingTables.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(
-      lessons.slice(16).some(({ sections }) =>
+      lessons.slice(17).some(({ sections }) =>
         sections?.some(({ access }) => access === "public"),
       ),
     ).toBe(false);
-    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6]) {
+    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables]) {
       expect(lesson.sections?.at(-1)).toEqual(expect.objectContaining({
         id: "pro-deep-dive",
         label: "Pro Deep Dive",
@@ -516,6 +519,27 @@ describe("catalog repository", () => {
     expect(() => getLesson("networking-foundations", "missing")).toThrowError(
       "LESSON_NOT_FOUND",
     );
+  });
+
+  it("publishes routing tables after IPv6 with the approved access sequence", () => {
+    const lesson = getLesson("networking-foundations", "routing-tables-and-default-routes");
+    expect(lesson).toMatchObject({
+      id: "lesson_routing_tables_and_default_routes",
+      published: true,
+      estimatedMinutes: 25,
+    });
+    expect(lesson.sections?.map(({ id }) => id)).toEqual([
+      "why-routing-exists", "route-table-anatomy", "route-sources",
+      "how-prefix-matching-works", "interactive-route-selection", "longest-prefix-match",
+      "administrative-distance", "route-metric", "next-hop-outgoing-interface",
+      "interactive-hop-by-hop-forwarding", "ipv4-ipv6-routing", "no-route-packet-disposal",
+      "inspect-routing-evidence", "guided-routing-practice", "troubleshoot-routing",
+      "knowledge-check-summary", "pro-deep-dive",
+    ]);
+    expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
+      previous: { slug: "ipv6-fundamentals", published: true },
+      next: { slug: "icmp-ping-and-path-discovery", published: false },
+    });
   });
 
   it("throws the documented error for an unknown pathway", () => {

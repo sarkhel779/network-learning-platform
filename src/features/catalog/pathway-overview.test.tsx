@@ -71,7 +71,10 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /ipv6 fundamentals/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/ipv6-fundamentals",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(16);
-    expect(screen.getAllByText("Coming later")).toHaveLength(8);
+    expect(screen.getByRole("link", { name: /routing, routing tables and default routes/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/routing-tables-and-default-routes",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(17);
+    expect(screen.getAllByText("Coming later")).toHaveLength(7);
   });
 });

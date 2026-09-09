@@ -283,6 +283,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "ipv6-fundamentals",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "routing-tables-and-default-routes",
+      },
     ]);
   });
 

@@ -1,0 +1,46 @@
+{/* ROUTING_TABLES_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-routing-evidence">Inspect routing evidence</h2>
+
+On **Windows**, compare `route print` with `Get-NetRoute`; verify the address family, destination prefix, next hop, interface index, and metric. On **Linux**, use `ip route` for IPv4 and `ip -6 route` for IPv6. On a representative network device, use commands such as `show ip route` and `show ipv6 route`, then inspect the legend before interpreting route-source codes.
+
+Capture traffic in **Wireshark** while testing a known path. Confirm that the IP destination remains the final endpoint while Ethernet source and destination addresses change at each routed link. A reduced IPv4 TTL or IPv6 Hop Limit is forwarding evidence. ICMP or ICMPv6 errors are useful evidence when present, but their absence is not proof that no router discarded the packet.
+
+<WiresharkCheck displayFilter="ip || ipv6 || icmp || icmpv6">Compare two routed captures. Record the unchanged destination IP, changed Layer 2 addresses, reduced TTL or Hop Limit, and any conditional ICMP/ICMPv6 response.</WiresharkCheck>
+
+<SectionContinue itemId="routing_tables_and_default_routes_section_inspect_routing_evidence" anchor="inspect-routing-evidence" />
+
+<h2 id="guided-routing-practice">Guided routing practice</h2>
+
+For each destination, write the candidates in this order: correct address family, matching prefixes, longest prefix, lowest administrative distance among equal prefixes, and lowest comparable metric if a genuine tie remains. Then state the outgoing interface, next hop, expected Layer 2 target, and whether TTL or Hop Limit permits forwarding.
+
+<InterviewScenario title="A default exists, but it does not win">A router has a default route and a more-specific route that matches the destination. Explain why longest-prefix match chooses the specific route before administrative distance or metric is considered.</InterviewScenario>
+
+<SectionContinue itemId="routing_tables_and_default_routes_section_guided_routing_practice" anchor="guided-routing-practice" />
+
+<h2 id="troubleshoot-routing">Troubleshoot routing methodically</h2>
+
+1. Confirm the destination address and whether the packet is IPv4 or IPv6.
+2. Verify that at least one prefix matches, including a usable default if required.
+3. Apply longest-prefix match before comparing route sources.
+4. For equal prefixes, check administrative distance; compare metrics only when they are genuinely comparable.
+5. Verify the selected outgoing interface is operational and the next hop is reachable on that link.
+6. Inspect ARP or NDP evidence for next-hop Layer 2 resolution.
+7. Check TTL or Hop Limit and identify the router responsible for any discard.
+8. Correlate packet evidence with conditional ICMP or ICMPv6 messages and filtering policy.
+
+<InterviewScenario title="The route looks correct but the packet stops">Separate a bad route selection from an inactive interface, unresolved next hop, expired TTL/Hop Limit, and a return-path problem. Name the evidence you would collect at each stage.</InterviewScenario>
+
+<SectionContinue itemId="routing_tables_and_default_routes_section_troubleshoot_routing" anchor="troubleshoot-routing" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="routing_tables_and_default_routes_check_1" question="Which route wins when 203.0.113.20 matches both 0.0.0.0/0 and 203.0.113.0/24?" options={["The default route", "The /24 route", "The route with the highest metric"]} correctIndex={1} explanation="Both routes match, but /24 is the longer and therefore more-specific prefix." />
+
+<KnowledgeCheck progressItemId="routing_tables_and_default_routes_check_2" question="What normally changes when an IP packet crosses a router?" options={["The final destination IP", "The Layer 2 addresses and TTL/Hop Limit", "The address family"]} correctIndex={1} explanation="The router creates a new Layer 2 header and decrements TTL or Hop Limit; the final destination IP remains unchanged." />
+
+<KnowledgeCheck progressItemId="routing_tables_and_default_routes_check_3" question="What happens when no route, including no usable default, matches?" options={["The router broadcasts the packet", "The router discards the packet and may send an ICMP error", "The router changes the destination"]} correctIndex={1} explanation="Without a usable route the router discards the packet. An ICMP or ICMPv6 response is conditional, not guaranteed." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">Trace recursive lookup, ECMP forwarding behaviour, protocol best-path internals, policy routing, VRFs, convergence, route redistribution, and production failure evidence. Those mechanisms build on—but do not replace—the foundational route-selection order used here.</PremiumPreview>

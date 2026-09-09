@@ -1,0 +1,78 @@
+<LearningObjective>Read IPv4 and IPv6 routing tables, apply route-selection rules in the correct order, and explain how a router forwards or discards a packet at each hop.</LearningObjective>
+
+<h2 id="why-routing-exists">Why routing exists</h2>
+
+Ethernet delivers a frame on one local Layer 2 domain. Routing moves an IP packet between Layer 3 networks. A host sends an off-link packet to a router, and each router independently chooses where that packet should go next. A route is a forwarding instruction, not a record of the whole end-to-end journey.
+
+<SectionContinue itemId="routing_tables_and_default_routes_section_why_routing_exists" anchor="why-routing-exists" />
+
+<h2 id="route-table-anatomy">Route-table anatomy</h2>
+
+A useful route entry names a destination prefix, a route source, an outgoing interface, and—when another router must receive the packet—a next-hop address. It can also carry an administrative distance and metric. Read the entry as: “For destinations inside this prefix, use this interface and, if present, send toward this next hop.”
+
+<SectionContinue itemId="routing_tables_and_default_routes_section_route_table_anatomy" anchor="route-table-anatomy" />
+
+<h2 id="route-sources">Connected, static, learned, and default routes</h2>
+
+- A **connected route** appears because the router has an active interface in that network.
+- A **static route** is configured deliberately by an administrator.
+- A **learned route** arrives through a routing protocol.
+- A **default route** (`0.0.0.0/0` or `::/0`) is the least-specific match and is used only when no more-specific route wins.
+
+The source explains how the router learned the route; it does not override longest-prefix matching.
+
+<SectionContinue itemId="routing_tables_and_default_routes_section_route_sources" anchor="route-sources" />
+
+<h2 id="how-prefix-matching-works">How prefix matching works</h2>
+
+The router first keeps routes from the destination's address family, then checks whether the destination bits match each route prefix. An IPv4 destination is never evaluated against an IPv6 route, and an IPv6 destination is never evaluated against an IPv4 route.
+
+<SectionContinue itemId="routing_tables_and_default_routes_section_how_prefix_matching_works" anchor="how-prefix-matching-works" />
+
+<h2 id="interactive-route-selection">Interactive route selection</h2>
+
+Change the scenario and watch the same decision order: address family, prefix match, longest prefix, administrative distance, comparable metric, then forwarding result. Rejected rows remain visible so the reason is inspectable.
+
+<RoutingTableDecisionPlayer progressItemId="routing_tables_and_default_routes_interactive_interactive_route_selection" />
+
+<h2 id="longest-prefix-match">Longest-prefix match</h2>
+
+Among matching routes, the route with the greatest prefix length is most specific and wins. A `/32` IPv4 or `/128` IPv6 host route beats a shorter network route, and either beats a `/0` default. The router does not prefer a default merely because it is static.
+
+<SectionContinue itemId="routing_tables_and_default_routes_section_longest_prefix_match" anchor="longest-prefix-match" />
+
+<h2 id="administrative-distance">Administrative distance</h2>
+
+If multiple route sources offer the same prefix length, administrative distance expresses the local router's preference for those sources. Lower is preferred. Administrative distance is locally significant and vendor defaults can differ, so compare it only after family, matching, and prefix length.
+
+<SectionContinue itemId="routing_tables_and_default_routes_section_administrative_distance" anchor="administrative-distance" />
+
+<h2 id="route-metric">Route metric</h2>
+
+If routes to the same prefix remain tied within a comparable routing source, its metric chooses the preferred path; lower commonly wins. Metrics from different protocols may measure different things and should not be compared as if they shared one scale. Equal-cost routes can support ECMP, previewed here without covering platform-specific load sharing.
+
+<SectionContinue itemId="routing_tables_and_default_routes_section_route_metric" anchor="route-metric" />
+
+<h2 id="next-hop-outgoing-interface">Next hop and outgoing interface</h2>
+
+The outgoing interface identifies the link the packet will leave. The next hop identifies the adjacent router that should receive it. A directly connected route may need only an interface because the destination itself is on that link. Before transmission, the router resolves the Layer 2 address needed on that outgoing link.
+
+<SectionContinue itemId="routing_tables_and_default_routes_section_next_hop_outgoing_interface" anchor="next-hop-outgoing-interface" />
+
+<h2 id="interactive-hop-by-hop-forwarding">Interactive hop-by-hop forwarding</h2>
+
+Follow successful and failed journeys. At every routed hop, the destination IP address does not change, the Layer 2 header is replaced for the new link, and the IPv4 TTL or IPv6 Hop Limit decreases exactly once. Each router performs a fresh lookup in its own routing table.
+
+<HopByHopForwardingPlayer progressItemId="routing_tables_and_default_routes_interactive_interactive_hop_by_hop_forwarding" />
+
+<h2 id="ipv4-ipv6-routing">IPv4 and IPv6 routing</h2>
+
+IPv4 and IPv6 use separate route families but the foundational selection method is the same: match the destination, prefer the longest prefix, then resolve genuine ties using route preference and a comparable metric. IPv4 decrements TTL; IPv6 decrements Hop Limit. Their neighbour-resolution and control-message details differ.
+
+<SectionContinue itemId="routing_tables_and_default_routes_section_ipv4_ipv6_routing" anchor="ipv4-ipv6-routing" />
+
+<h2 id="no-route-packet-disposal">No route and packet disposal</h2>
+
+If no specific route and no usable default route match, there is **no usable route**: the router cannot forward the packet and discards it. It may generate ICMP Destination Unreachable for IPv4 or ICMPv6 Destination Unreachable for IPv6, but policy, rate limiting, reachability, or filtering can prevent that response. Silence alone does not prove the discard reason.
+
+<SectionContinue itemId="routing_tables_and_default_routes_section_no_route_packet_disposal" anchor="no-route-packet-disposal" />

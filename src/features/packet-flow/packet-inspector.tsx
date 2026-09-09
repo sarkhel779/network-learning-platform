@@ -21,12 +21,20 @@ function Fields({ fields }: Readonly<{ fields: PacketFlowStep["summaryFields"] }
 
 function PacketLayers({ step }: { step: PacketFlowStep }) {
   const evidence = [step.packet?.label, step.title, ...step.summaryFields.map(({ value }) => value)].join(" ").toUpperCase();
+  const fields = [...step.summaryFields, ...step.detailFields];
   if (evidence.includes("ARP")) {
     return <section data-packet-layer="ethernet"><h4>Ethernet frame</h4><section data-packet-layer="arp"><h4>ARP message</h4></section></section>;
   }
   if (evidence.includes("ICMP") || evidence.includes("ECHO")) {
     return <section data-packet-layer="ethernet"><h4>Ethernet frame</h4><section data-packet-layer="ip"><h4>IP packet</h4><section data-packet-layer="icmp"><h4>ICMP message</h4></section></section></section>;
   }
+  const carriesIp = step.packet?.kind === "packet"
+    || fields.some(({ layer }) => layer === "ip")
+    || /\bIPV[46]\b|\bIP PACKET\b/.test(evidence);
+  if (step.packet && carriesIp) {
+    return <section data-packet-layer="ethernet"><h4>Ethernet frame</h4><section data-packet-layer="ip"><h4>IP packet</h4></section></section>;
+  }
+  if (step.packet?.kind === "frame") return <section data-packet-layer="ethernet"><h4>Ethernet frame</h4></section>;
   return <section data-packet-layer="context"><h4>Host or device decision</h4><p>No frame is crossing a link during this step.</p></section>;
 }
 
