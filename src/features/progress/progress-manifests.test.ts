@@ -1,0 +1,51 @@
+import { describe, expect, it } from "vitest";
+
+import { pathways } from "@/features/catalog/catalog.data";
+
+import {
+  getLessonProgressManifest,
+  lessonProgressManifests,
+} from "./progress-manifests";
+
+const publishedLessons = pathways.flatMap((pathway) =>
+  pathway.modules.flatMap((module) =>
+    module.lessons
+      .filter((lesson) => lesson.published)
+      .map((lesson) => ({ pathway, lesson })),
+  ),
+);
+
+describe("lessonProgressManifests", () => {
+  it("defines exactly one manifest for every published lesson", () => {
+    expect(lessonProgressManifests).toHaveLength(13);
+
+    expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
+      publishedLessons.map(({ lesson }) => lesson.id).sort(),
+    );
+  });
+
+  it("uses catalog anchors for section requirements and excludes Pro sections", () => {
+    for (const { pathway, lesson } of publishedLessons) {
+      const manifest = getLessonProgressManifest(pathway.id, lesson.id);
+      const catalogSections = lesson.sections ?? [];
+
+      for (const item of manifest.items.filter(({ kind }) => kind === "section")) {
+        const section = catalogSections.find(({ id }) => id === item.anchor);
+        expect(section, `${lesson.id}:${item.itemId}`).toBeDefined();
+        expect(section?.access, `${lesson.id}:${item.itemId}`).not.toBe("pro");
+      }
+    }
+  });
+
+  it("returns a manifest only for the matching pathway and lesson", () => {
+    expect(getLessonProgressManifest(
+      "path_networking_foundations",
+      "lesson_arp_and_local_delivery",
+    ).lessonId).toBe("lesson_arp_and_local_delivery");
+
+    expect(() => getLessonProgressManifest(
+      "path_networking_foundations",
+      "lesson_missing",
+    )).toThrow(/progress manifest not found/i);
+  });
+});
