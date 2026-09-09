@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
+vi.mock("@/lib/supabase/session", () => ({ getViewer: async () => null }));
 vi.mock("@/features/packet-flow/use-reduced-motion", () => ({
   useReducedMotion: () => false,
   useReducedMotionState: () => ({ reducedMotion: false, isHydrated: true }),

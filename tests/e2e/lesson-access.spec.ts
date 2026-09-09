@@ -141,7 +141,13 @@ test("anonymous direct lesson exposes public learning, canonical metadata, and s
 
   try {
     for (const { slug, title } of publishedLessons.slice(1)) {
-      await page.getByRole("button", { name: "Course contents" }).click();
+      const desktopContents = page.getByRole("button", { name: "Course contents" });
+      if (await desktopContents.isVisible()) {
+        await desktopContents.click();
+      } else {
+        await page.getByRole("button", { name: "Learning tools" }).click();
+        await page.getByRole("dialog", { name: "Learning tools" }).getByRole("button", { name: "Course contents" }).click();
+      }
       const curriculum = page.getByRole("dialog", { name: "Course contents" });
       const link = curriculum.getByRole("link", { name: new RegExp(title) });
       await expect(link).toBeVisible();
@@ -311,7 +317,7 @@ test("public content and registration remain useful during no-JavaScript navigat
     await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
     await page.getByRole("link", { name: "Continue with Google or email" }).click();
     await expect(page).toHaveURL(/\/sign-in\?returnTo=/);
-    await expect(page.getByText(/Account access is not available yet/i)).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Sign in to Packetsecrets" })).toBeVisible();
   } finally {
     await context.close();
   }

@@ -12,6 +12,12 @@ export default defineConfig({
   },
   webServer: {
     command: "pnpm run dev",
+    env: {
+      NODE_ENV: "test",
+      PLAYWRIGHT_TEST_SESSION: "1",
+      NEXT_PUBLIC_SUPABASE_URL: "https://playwright.supabase.co",
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: "playwright-public-key",
+    },
     url: testBaseUrl,
     reuseExistingServer: !process.env.CI,
   },

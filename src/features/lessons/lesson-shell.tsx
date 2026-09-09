@@ -2,8 +2,9 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import type { LessonSummary, Pathway } from "@/features/catalog/catalog.types";
+import { LearnerWorkspace } from "@/features/learner-workspace/learner-workspace";
+import type { Viewer } from "@/features/learner-workspace/learner-workspace.types";
 
-import { CourseContentsDrawer } from "./course-contents-drawer";
 import { CurriculumNavigation } from "./curriculum-navigation";
 import { LearningObjective } from "./learning-objective";
 import { LessonSectionNavigation } from "./lesson-section-navigation";
@@ -14,6 +15,7 @@ type LessonShellProps = {
   lesson: LessonSummary;
   previous?: LessonSummary;
   next?: LessonSummary;
+  viewer: Viewer | null;
   children: ReactNode;
 };
 
@@ -42,11 +44,16 @@ export function LessonShell({
   lesson,
   previous,
   next,
+  viewer,
   children,
 }: LessonShellProps) {
   return (
     <main className="lesson-page" id="main-content">
-      <CourseContentsDrawer pathway={pathway} currentLessonSlug={lesson.slug} />
+      <LearnerWorkspace
+        pathway={pathway}
+        currentLessonSlug={lesson.slug}
+        viewer={viewer}
+      />
       <article className="lesson-shell">
         <noscript>
           <details className="lesson-curriculum lesson-curriculum--fallback">

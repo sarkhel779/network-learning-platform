@@ -76,7 +76,7 @@ describe("compiled lesson markup", () => {
     const lesson = getLesson(pathway.slug, slug);
     const container = document.body.appendChild(document.createElement("div"));
     container.innerHTML = renderToStaticMarkup(
-      <LessonShell pathway={pathway} lesson={lesson}>
+      <LessonShell viewer={null} pathway={pathway} lesson={lesson}>
         <Content components={getMDXComponents({})} />
       </LessonShell>,
     );

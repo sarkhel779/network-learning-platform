@@ -78,16 +78,17 @@ test("shows the complete curriculum in an overlay drawer on desktop", async ({ p
     "/learn/networking-foundations/hosts-and-network-devices",
   );
 
-  await expect(drawer.locator(".curriculum-navigation__lesson > a")).toHaveCount(12);
-  await expect(drawer.locator(".curriculum-navigation__lesson > div")).toHaveCount(12);
-  await expect(drawer.getByText("Coming later", { exact: true })).toHaveCount(12);
+  await expect(drawer.locator(".curriculum-navigation__lesson > a")).toHaveCount(13);
+  await expect(drawer.locator(".curriculum-navigation__lesson > div")).toHaveCount(11);
+  await expect(drawer.getByText("Coming later", { exact: true })).toHaveCount(11);
 });
 
 test("reveals the mobile curriculum drawer without horizontal overflow", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/learn/networking-foundations/how-networks-communicate");
 
-  await page.getByRole("button", { name: "Course contents" }).click();
+  await page.getByRole("button", { name: "Learning tools" }).click();
+  await page.getByRole("dialog", { name: "Learning tools" }).getByRole("button", { name: "Course contents" }).click();
   const contents = page.getByRole("dialog", { name: "Course contents" });
   await expect(contents.getByRole("navigation", { name: "Course curriculum" })).toBeVisible();
 
@@ -220,7 +221,7 @@ test("keeps the models account boundary usable without JavaScript", async ({ bro
     await expect(page.getByRole("region", { name: "Continue this lesson for free" })).toContainText("No payment required.");
     await page.getByRole("link", { name: "Continue with Google or email" }).click();
     await expect(page).toHaveURL(/\/sign-in\?returnTo=%2Flearn%2Fnetworking-foundations%2Fosi-and-tcp-ip-models/);
-    await expect(page.getByText(/Account access is not available yet/i)).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Sign in to Packetsecrets" })).toBeVisible();
   } finally {
     await context.close();
   }
