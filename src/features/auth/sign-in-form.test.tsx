@@ -31,9 +31,11 @@ describe("SignInForm", () => {
       screen.getByRole("button", { name: "Continue with Google" }),
     ).toBeVisible();
     expect(screen.getByLabelText("Email address")).toBeVisible();
-    expect(
-      screen.getByRole("button", { name: "Email me a sign-in link" }),
-    ).toBeVisible();
+    expect(screen.getByRole("button", { name: "Email me a sign-in link" }))
+      .toHaveClass("sign-in-text-action");
+    expect(screen.getByRole("button", { name: "Continue with Google" }).querySelector("svg"))
+      .toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByLabelText("Email address").closest(".sign-in-field")).not.toBeNull();
   });
 
   it("rejects an invalid email without contacting Supabase", async () => {

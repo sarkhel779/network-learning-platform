@@ -45,6 +45,13 @@ describe("sign-in page", () => {
     expect(parsed.querySelector("parsererror")).toBeNull();
   });
 
+  it("uses the dedicated responsive sign-in layout", async () => {
+    const { container } = render(await SignInPage({ searchParams: Promise.resolve({}) }));
+    expect(container.querySelector("main.sign-in-page")).not.toBeNull();
+    expect(container.querySelector("section.sign-in-card")).not.toBeNull();
+    expect(container.querySelector(".sign-in-card__trust")).toHaveTextContent("Passwordless");
+  });
+
   it("shows a neutral callback error", async () => {
     render(await SignInPage({
       searchParams: Promise.resolve({ error: "authentication" }),
