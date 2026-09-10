@@ -103,6 +103,11 @@ const lessonImports = {
     account: () => import("@/content/networking-foundations/dhcp-and-automatic-address-configuration.account.mdx"),
     pro: () => import("@/content/networking-foundations/dhcp-and-automatic-address-configuration.pro.mdx"),
   },
+  "networking-foundations/dns-and-name-resolution": {
+    public: () => import("@/content/networking-foundations/dns-and-name-resolution.public.mdx"),
+    account: () => import("@/content/networking-foundations/dns-and-name-resolution.account.mdx"),
+    pro: () => import("@/content/networking-foundations/dns-and-name-resolution.pro.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),

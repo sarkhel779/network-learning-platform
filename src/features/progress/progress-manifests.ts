@@ -7,6 +7,7 @@ import type { LessonProgressManifest, ProgressManifestItem } from "./progress.ty
 type LessonProgressDefinition = Readonly<{
   lessonId: string;
   itemPrefix?: string;
+  stripInteractiveAnchorPrefix?: boolean;
   interactiveAnchors: readonly string[];
   knowledgeCheckCount: number;
   knowledgeAnchor: string | null;
@@ -33,6 +34,7 @@ const definitions = [
   { lessonId: "lesson_icmp_ping_and_path_discovery", interactiveAnchors: ["interactive-ping-evidence", "interactive-traceroute-discovery"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_tcp_udp_and_ports", interactiveAnchors: ["interactive-tcp-connection", "interactive-tcp-udp-port-delivery"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_dhcp_and_automatic_address_configuration", itemPrefix: "dhcp_automatic_address_configuration", interactiveAnchors: ["interactive-dora-journey", "interactive-relay-helper"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_dns_and_name_resolution", itemPrefix: "dns_name_resolution", stripInteractiveAnchorPrefix: true, interactiveAnchors: ["interactive-complete-resolution", "interactive-dns-troubleshooting"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
 ] as const satisfies readonly LessonProgressDefinition[];
 
 function itemPrefix(lessonId: string) {
@@ -49,9 +51,15 @@ function sectionItem(lessonId: string, section: LessonSection, prefix = itemPref
   };
 }
 
-function interactiveItem(lessonId: string, section: LessonSection, prefix = itemPrefix(lessonId)): ProgressManifestItem {
+function interactiveItem(
+  lessonId: string,
+  section: LessonSection,
+  prefix = itemPrefix(lessonId),
+  stripAnchorPrefix = false,
+): ProgressManifestItem {
+  const anchorPart = stripAnchorPrefix ? section.id.replace(/^interactive-(?:dns-)?/, "") : section.id;
   return {
-    itemId: `${prefix}_interactive_${section.id.replaceAll("-", "_")}`,
+    itemId: `${prefix}_interactive_${anchorPart.replaceAll("-", "_")}`,
     kind: "interactive",
     label: section.label,
     anchor: section.id,
@@ -68,7 +76,7 @@ function buildItems(
   const items = sections
     .filter(({ access, id }) => access !== "pro" && id !== definition.knowledgeAnchor)
     .map((section) => definition.interactiveAnchors.includes(section.id)
-      ? interactiveItem(lessonId, section, prefix)
+      ? interactiveItem(lessonId, section, prefix, definition.stripInteractiveAnchorPrefix)
       : sectionItem(lessonId, section, prefix));
 
   if (definition.knowledgeAnchor) {

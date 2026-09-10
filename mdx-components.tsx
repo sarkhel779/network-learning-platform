@@ -42,6 +42,11 @@ import { DoraPlayer } from "@/features/dhcp/dora-player";
 import { DhcpRelayPlayer } from "@/features/dhcp/relay-player";
 import { LeaseTimingPlayer } from "@/features/dhcp/lease-timing-player";
 import { DhcpRfcCheck } from "@/features/dhcp/rfc-check";
+import { DnsResolutionPlayer } from "@/features/dns/resolution-player";
+import { DnsTroubleshootingPlayer } from "@/features/dns/troubleshooting-player";
+import { DnsTimingPlayer } from "@/features/dns/dns-timing-player";
+import { DnsRfcCheck } from "@/features/dns/dns-rfc-check";
+import { RootBootstrapPlayer } from "@/features/dns/root-bootstrap-player";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -53,6 +58,11 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     DhcpRelayPlayer,
     DhcpRfcCheck,
     DoraPlayer,
+    DnsResolutionPlayer,
+    DnsTroubleshootingPlayer,
+    DnsTimingPlayer,
+    DnsRfcCheck,
+    RootBootstrapPlayer,
     EdgeDevicePlayer,
     EthernetFrameExplorer,
     FirstPacketJourneyPlayer,

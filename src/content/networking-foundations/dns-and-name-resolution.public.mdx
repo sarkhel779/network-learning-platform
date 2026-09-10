@@ -1,0 +1,98 @@
+<LearningObjective>Trace a DNS question through clients, recursive resolvers, referrals, authoritative answers, caching, and transport evidence.</LearningObjective>
+
+<h2 id="why-name-resolution-exists">Why name resolution exists</h2>
+
+Applications use stable, meaningful names while network delivery uses addresses. DNS is a distributed database that returns the requested kind of information for a name; resolving a name and reaching its service are separate outcomes.
+
+<SectionContinue itemId="dns_name_resolution_section_why_name_resolution_exists" anchor="why-name-resolution-exists" />
+
+<h2 id="dns-roles">DNS roles and responsibility boundaries</h2>
+
+An application asks a local **stub resolver**. The stub normally requests recursive service from a configured **recursive resolver**. That resolver uses its cache or contacts **root**, **TLD**, and **authoritative** servers. The stub does not normally walk the hierarchy itself.
+
+<SectionContinue itemId="dns_name_resolution_section_dns_roles_responsibility_boundaries" anchor="dns-roles-responsibility-boundaries" />
+
+<h2 id="labels-zones-delegation">Domain labels, zones, and delegation</h2>
+
+An absolute name is a sequence of labels ending at the root. A **zone** is an administratively served portion of that namespace. At a zone cut, parent NS records delegate responsibility; Additional records may carry address **glue** needed to reach the delegated servers.
+
+<SectionContinue itemId="dns_name_resolution_section_domain_labels_zones_delegation" anchor="domain-labels-zones-delegation" />
+
+<h2 id="recursive-iterative-resolution">Recursive service versus iterative referrals</h2>
+
+The client asks its resolver to return a finished result. Upstream, the resolver commonly follows referrals: a root response points toward the TLD, the TLD points toward the child authority, and the authority provides the answer or authoritative negative evidence.
+
+<SectionContinue itemId="dns_name_resolution_section_recursive_service_iterative_referrals" anchor="recursive-service-iterative-referrals" />
+
+<h2 id="interactive-complete-resolution">Interactive complete DNS resolution</h2>
+
+Compare cold cache, warm cache, aliases, IPv6 records, TCP retry, and an authoritative negative answer. Every step keeps the server role, DNS message, cache decision, and explanation synchronized.
+
+<DnsResolutionPlayer progressItemId="dns_name_resolution_interactive_complete_resolution" />
+
+<h2 id="dns-message-structure">DNS message and header structure</h2>
+
+The header contains `ID`, `QR`, `OPCODE`, `AA`, `TC`, `RD`, `RA`, `AD`, `CD`, `RCODE`, and the four section counts `QDCOUNT`, `ANCOUNT`, `NSCOUNT`, and `ARCOUNT`. The Question, Answer, Authority, and Additional sections have different jobs. A compression pointer changes encoding, not the logical name.
+
+<SectionContinue itemId="dns_name_resolution_section_dns_message_header_structure" anchor="dns-message-header-structure" />
+
+<h2 id="record-types">Common record types and selection rules</h2>
+
+- **A** maps an owner to IPv4 data; **AAAA** carries IPv6 data.
+- **CNAME** aliases one owner to a canonical name and must be followed to useful data.
+- **NS** delegates or identifies authority; **SOA** identifies a zone and supports negative caching.
+- **MX** selects mail exchangers by preference; **TXT** stores text interpreted by another convention.
+- **PTR** supplies reverse-lookup data; **SRV** carries service priority, weight, port, and target.
+- **CAA** expresses certification-authority policy.
+
+Standard CNAME semantics conflict with other data at the same owner, making an ordinary apex CNAME problematic. Provider “flattening” is implementation behavior rather than a wire-level apex CNAME.
+
+<SectionContinue itemId="dns_name_resolution_section_record_types_selection_rules" anchor="record-types-selection-rules" />
+
+<h2 id="dns-transport">UDP 53, TCP 53, EDNS, and encrypted DNS</h2>
+
+DNS commonly starts with **UDP 53**. A response with `TC=1` can require **TCP 53**, and zone transfers use TCP. **EDNS** advertises extended capabilities and a UDP payload size; larger datagrams can still encounter fragmentation or path failure. DoT, DoH, and DoQ encrypt a particular hop but do not change record meaning, hide queries from the chosen resolver, or equal DNSSEC validation.
+
+<SectionContinue itemId="dns_name_resolution_section_dns_transports" anchor="dns-transports" />
+
+<h2 id="caching-ttl">Caching, TTL, and negative caching</h2>
+
+A resolver may reuse an eligible record while its TTL remains positive. The displayed TTL normally counts down from the stored value. Authoritative negative answers use SOA evidence to bound negative caching. Browser, OS, and recursive-resolver caches are distinct layers and need not expose identical controls.
+
+<SectionContinue itemId="dns_name_resolution_section_caching_ttl_negative_caching" anchor="caching-ttl-negative-caching" />
+
+<h2 id="response-codes">Response codes and NODATA</h2>
+
+**NOERROR** with requested data is a successful answer. **NODATA** is NOERROR where the name exists but the requested type is absent. **NXDOMAIN** says the queried name does not exist. **SERVFAIL** means the resolver could not produce a valid result, **REFUSED** declines the operation, and **FORMERR** reports malformed input. A timeout is transport behavior, not an RCODE.
+
+<SectionContinue itemId="dns_name_resolution_section_response_codes_nodata" anchor="response-codes-nodata" />
+
+<h2 id="reverse-dns">Reverse DNS</h2>
+
+Reverse DNS queries PTR data beneath `in-addr.arpa.` for IPv4 or `ip6.arpa.` for IPv6. A PTR answer is separately administered evidence; it does not prove forward resolution, identity, or authorization by itself.
+
+<SectionContinue itemId="dns_name_resolution_section_reverse_dns" anchor="reverse-dns" />
+
+<h2 id="interactive-dns-troubleshooting">Interactive DNS troubleshooting</h2>
+
+Use the packet facts to distinguish NXDOMAIN from NODATA. Submit a prediction before revealing the decisive RCODE, section, and SOA evidence.
+
+<DnsTroubleshootingPlayer access="public" />
+
+<h2 id="dns-command-capture-evidence">Practical command and capture evidence</h2>
+
+`nslookup`, `Resolve-DnsName`, and `dig` show the response returned through a selected resolver; they do not automatically reveal every upstream exchange. In Wireshark begin with `dns`, then correlate IDs, flags, sections, UDP/TCP ports, timing, and retries. Useful filters include `udp.port == 53`, `tcp.port == 53`, and `dns.flags.response == 1`.
+
+<SectionContinue itemId="dns_name_resolution_section_dns_command_capture_evidence" anchor="dns-command-capture-evidence" />
+
+<h2 id="dns-misconceptions">Common DNS misconceptions</h2>
+
+DNS does not “convert a URL into an IP”; it answers a typed question about a domain name. Every query does not visit the root because caches retain delegations. An authoritative server need not offer recursion. DNSSEC authenticates DNS data; it does not encrypt queries. A DNS answer does not prove that the application service is healthy.
+
+<SectionContinue itemId="dns_name_resolution_section_common_dns_misconceptions" anchor="common-dns-misconceptions" />
+
+<h2 id="summary">Summary and next steps</h2>
+
+Identify the question, resolver role, transport, flags, response code, four sections, TTL, and cache state. Follow referrals until authority, and separate a DNS response from a timeout or later application failure.
+
+<SectionContinue itemId="dns_name_resolution_section_summary_next_steps" anchor="summary-next-steps" />

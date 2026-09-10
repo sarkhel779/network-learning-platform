@@ -13,7 +13,7 @@ export default defineConfig({
   },
   test: {
     environment: "jsdom",
-    exclude: [...configDefaults.exclude, ".worktrees/**", "tests/e2e/**"],
+    exclude: [...configDefaults.exclude, "**/.pnpm-store/**", "**/.worktrees/**", "**/work/**", "tests/e2e/**"],
     passWithNoTests: true,
     setupFiles: ["./src/test/setup.ts"],
   },

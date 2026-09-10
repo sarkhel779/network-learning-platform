@@ -224,6 +224,35 @@ a { color: inherit; }
 .lesson-section-navigation__locked .access-label, .lesson-section-navigation__status { font-size: 0.8rem; }
 .lesson-section-navigation__status { color: var(--muted); }
 .lesson-section-navigation__locked p { flex-basis: 100%; margin: 0; color: var(--muted); font-size: 0.875rem; }
+.lesson-section-navigation--dns-map { padding: 0; overflow: hidden; }
+.dns-map__trigger { display: inline-grid; grid-template-columns: auto auto; align-items: center; gap: .65rem; min-block-size: 44px; margin: .75rem 1rem; padding: .6rem .9rem; border: 1px solid color-mix(in srgb, var(--accent) 70%, var(--border)); border-radius: .5rem; background: color-mix(in srgb, var(--accent) 14%, var(--background)); color: var(--foreground); box-shadow: 0 .2rem .7rem rgb(0 0 0 / 12%); font: inherit; text-align: start; cursor: pointer; transition: border-color 180ms ease, background 180ms ease, transform 180ms ease; }
+.dns-map__trigger:hover, .dns-map__trigger:focus-visible, .dns-map__trigger[aria-expanded="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 23%, var(--background)); }
+.dns-map__trigger:hover { transform: translateY(-1px); }
+.dns-map__trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.dns-map__trigger strong { font-size: 1.05rem; }
+.dns-map__toggle { font-size: 1.3rem; transition: transform 200ms ease; }
+.dns-map__trigger[aria-expanded="true"] .dns-map__toggle { transform: rotate(180deg); }
+.dns-map__route { position: relative; display: flex; align-items: center; gap: .35rem; min-width: 0; padding: .25rem 1rem 1rem; overflow: hidden; }
+.dns-map__travelling-packet { position: absolute; z-index: 2; inset-inline-start: 1rem; inset-block-start: .7rem; color: var(--accent); font-size: .7rem; opacity: 0; filter: drop-shadow(0 0 .3rem color-mix(in srgb, var(--accent) 70%, transparent)); pointer-events: none; }
+.dns-map__panel .dns-map__travelling-packet { animation: dns-packet-route 1.35s ease-in-out .12s both; }
+.dns-map__hop { display: flex; flex: 1 0 auto; align-items: center; gap: .35rem; }
+.dns-map__hop > span { padding: .35rem .6rem; border-radius: 999px; background: color-mix(in srgb, var(--accent) 12%, var(--background)); font-weight: 700; white-space: nowrap; }
+.dns-map__panel .dns-map__hop > span { animation: dns-node-reveal .28s ease-out both; }
+.dns-map__panel .dns-map__hop:nth-of-type(3) > span { animation-delay: .38s; }
+.dns-map__panel .dns-map__hop:nth-of-type(4) > span { animation-delay: .7s; }
+.dns-map__panel .dns-map__hop:nth-of-type(5) > span { animation-delay: 1.02s; }
+.dns-map__hop > i { display: block; flex: 1 0 1.25rem; block-size: 2px; background: var(--border); }
+.dns-map__groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.25rem; padding: 0 1rem 1rem; border-block-start: 1px solid var(--border); }
+.dns-map__groups section { min-width: 0; padding-block-start: 1rem; }
+.dns-map__groups h3 { margin: 0 0 .5rem; font-size: 1rem; }
+.lesson-section-navigation--dns-map .dns-map__groups ol { display: grid; gap: .4rem; margin: 0; padding-inline-start: 1.25rem; }
+@media (max-width: 35rem) { .dns-map__groups { grid-template-columns: minmax(0, 1fr); } }
+.lesson-section-navigation__locked-link { padding: .2rem .3rem; border-radius: .35rem; color: var(--muted); text-decoration: none; }
+.lesson-section-navigation__locked-link:hover, .lesson-section-navigation__locked-link:focus-visible { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--foreground); }
+.lesson-section-navigation__locked-link > span:first-child { text-decoration: underline; text-decoration-style: dotted; text-underline-offset: .2em; }
+@keyframes dns-packet-route { 0% { inset-inline-start: 1rem; opacity: 0; transform: scale(.75); } 10% { opacity: 1; } 88% { opacity: 1; } 100% { inset-inline-start: calc(100% - 2rem); opacity: 0; transform: scale(1); } }
+@keyframes dns-node-reveal { from { opacity: .45; transform: translateY(.25rem); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .dns-map__trigger, .dns-map__toggle { transition: none; } .dns-map__panel .dns-map__travelling-packet, .dns-map__panel .dns-map__hop > span { animation: none; opacity: 1; } }
 .access-card { min-width: 0; padding: clamp(1rem, 4vw, 1.5rem); overflow-wrap: anywhere; border: 1px solid var(--border); border-inline-start: 0.35rem solid var(--accent); border-radius: 0.5rem; background: color-mix(in srgb, var(--accent) 6%, var(--background)); }
 .access-card h2 { margin-top: 0; }
 .access-card > p:not(.eyebrow) { color: var(--muted); }
@@ -906,3 +935,31 @@ h1 {
 .dhcp-rfc-check [role="status"]:not(:empty) { padding: .75rem; border-inline-start: .35rem solid var(--accent); background: var(--background); }
 @media (max-width: 35rem) { .dhcp-player fieldset label { width: 100%; } .dhcp-inspector-region dl { grid-template-columns: minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .dhcp-player * { animation: none !important; transition: none !important; } }
+
+.dns-player { display: grid; gap: 1rem; min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+.dns-player, .dns-troubleshooting-player, .dns-timing-player, .dns-rfc-check, .root-bootstrap-player { margin: 2rem 0; padding: clamp(.8rem, 2.5vw, 1.4rem); border: 1px solid var(--border); border-radius: .75rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
+.dns-troubleshooting-player, .dns-timing-player, .dns-rfc-check, .root-bootstrap-player { display: grid; gap: 1rem; min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+.dns-player > h3, .dns-troubleshooting-player > h3, .dns-timing-player > h3, .dns-rfc-check > h3, .root-bootstrap-player > h3 { margin: 0; }
+.dns-player fieldset, .dns-troubleshooting-player fieldset, .dns-rfc-check fieldset { display: flex; flex-wrap: wrap; gap: .55rem; min-width: 0; margin: 0; padding: .75rem; border: 1px solid var(--border); border-radius: .6rem; }
+.dns-player fieldset label, .dns-troubleshooting-player fieldset label, .dns-rfc-check fieldset label { display: inline-flex; align-items: center; gap: .45rem; min-block-size: 44px; padding: .5rem .7rem; border: 1px solid var(--border); border-radius: .45rem; background: var(--background); cursor: pointer; }
+.dns-player fieldset label:has(input:checked), .dns-troubleshooting-player fieldset label:has(input:checked), .dns-rfc-check fieldset label:has(input:checked) { border-color: var(--accent); border-inline-start-width: .35rem; background: color-mix(in srgb, var(--accent) 12%, var(--background)); }
+.dns-topology { min-width: 0; max-width: 100%; padding: .85rem; border: 2px dashed var(--accent); border-radius: .7rem; background: var(--background); }
+.dns-active-exchange { margin: 0 0 .75rem; }
+.dns-role-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; margin: 0; padding: 0; list-style: none; }
+.dns-role-list li { display: grid; min-width: 0; min-height: 4.5rem; align-content: center; gap: .25rem; padding: .65rem; border: 1px solid var(--border); border-radius: .55rem; text-align: center; overflow-wrap: anywhere; }
+.dns-role-list li.is-active { border-color: var(--accent); border-inline-start-width: .35rem; background: color-mix(in srgb, var(--accent) 10%, var(--background)); }
+.dns-role-list small { color: var(--muted); font-weight: 700; }
+.dns-cache-state { min-width: 0; padding: .8rem; border-inline-start: .35rem solid var(--accent); background: var(--background); }
+.dns-message-inspector { display: grid; gap: .75rem; min-width: 0; max-width: 100%; }
+.dns-message-inspector .packet-table-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: .6rem; }
+.dns-message-inspector table { width: 100%; min-width: 38rem; border-collapse: collapse; }
+.dns-message-inspector th, .dns-message-inspector td { padding: .6rem; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+.dns-player .transport-player-controls { display: flex; flex-wrap: wrap; gap: .65rem; min-width: 0; margin: 0; }
+.dns-player .transport-player-controls button, .dns-player .transport-player-controls select, .dns-timing-player .transport-player-controls button, .root-bootstrap-player .transport-player-controls button { min-block-size: 44px; }
+.dns-troubleshooting-player > label, .dns-timing-player > label { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.dns-troubleshooting-player select, .dns-timing-player select { min-block-size: 44px; max-width: 100%; font: inherit; }
+.dns-troubleshooting-player button, .dns-rfc-check button { justify-self: start; min-block-size: 44px; padding: .55rem .8rem; border: 1px solid var(--accent); border-radius: .45rem; background: var(--background); color: inherit; font: inherit; font-weight: 700; cursor: pointer; }
+.dns-troubleshooting-player button:disabled, .dns-rfc-check button:disabled { cursor: not-allowed; opacity: .55; }
+.dns-troubleshooting-player [role="status"], .dns-rfc-check [role="status"] { min-width: 0; padding: .75rem; border-inline-start: .35rem solid var(--accent); background: var(--background); }
+@media (max-width: 35rem) { .dns-role-list { grid-template-columns: minmax(0, 1fr); } .dns-player fieldset label, .dns-troubleshooting-player fieldset label, .dns-rfc-check fieldset label { width: 100%; } .dns-player .transport-player-controls button, .dns-player .transport-player-controls label { flex: 1 1 8rem; } }
+@media (prefers-reduced-motion: reduce) { .dns-player * { animation: none !important; transition: none !important; } }

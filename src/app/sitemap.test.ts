@@ -30,6 +30,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/networking-foundations/icmp-ping-and-path-discovery" },
       { url: "https://packetsecrets.com/learn/networking-foundations/tcp-udp-and-ports" },
       { url: "https://packetsecrets.com/learn/networking-foundations/dhcp-and-automatic-address-configuration" },
+      { url: "https://packetsecrets.com/learn/networking-foundations/dns-and-name-resolution" },
     ]);
     const urls = entries.map(({ url }) => url);
     for (const pathway of listPathways()) {
@@ -49,6 +50,6 @@ describe("public sitemap", () => {
     for (const unpublishedUrl of unpublishedSlugs) {
       expect(urls).not.toContain(unpublishedUrl);
     }
-    expect(unpublishedSlugs).toHaveLength(4);
+    expect(unpublishedSlugs).toHaveLength(3);
   });
 });
