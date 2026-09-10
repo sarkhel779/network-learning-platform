@@ -27,4 +27,14 @@ describe("HTTP and essential network services content", () => {
       expect(account).toContain(`progressItemId="essential_services_troubleshooting_${id}"`);
     }
   });
+
+  it("pairs Wireshark-style evidence with an RFC check for every Pro service", () => {
+    const pro = read("pro");
+    expect(pro.match(/<CaptureAnalysisLab\b/g)).toHaveLength(6);
+    expect(pro.match(/<RfcValidationLab\b/g)).toHaveLength(6);
+    for (const service of ["web", "remote-access", "email", "file-transfer", "time", "monitoring"]) {
+      expect(pro).toContain(`service="${service}"`);
+    }
+    expect(pro).not.toMatch(/TLS key derivation|cipher suite negotiation exercise/i);
+  });
 });
