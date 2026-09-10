@@ -90,6 +90,10 @@ const lessonImports = {
     public: () => import("@/content/networking-foundations/routing-tables-and-default-routes.public.mdx"),
     account: () => import("@/content/networking-foundations/routing-tables-and-default-routes.account.mdx"),
   },
+  "networking-foundations/icmp-ping-and-path-discovery": {
+    public: () => import("@/content/networking-foundations/icmp-ping-and-path-discovery.public.mdx"),
+    account: () => import("@/content/networking-foundations/icmp-ping-and-path-discovery.account.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),

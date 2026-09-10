@@ -1,0 +1,45 @@
+{/* ICMP_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-icmp-evidence">Inspect ICMP evidence</h2>
+
+On **Windows**, start with `ping 192.0.2.44` and use `tracert 192.0.2.44` for its ICMP Echo based path evidence. On **Linux**, compare `ping 192.0.2.44`, `traceroute 192.0.2.44`, and `tracepath 192.0.2.44`. State which probe transport the command actually uses; platform and options can change it.
+
+In Wireshark, begin with `icmp`, then narrow representative evidence with `icmp.type == 0`, `icmp.type == 3`, or `icmp.type == 11`. Correlate identifiers, sequence numbers, source and destination IPv4 addresses, reporter address, type/code, checksum status, and quoted trigger fields. A missing response remains absence of observed evidence, not proof of one failure cause.
+
+<WiresharkCheck displayFilter="icmp">Capture one Echo exchange or ICMP error. Identify the request, intended destination, reporting device, type/code, and quoted packet evidence before writing a conclusion.</WiresharkCheck>
+
+<SectionContinue itemId="icmp_ping_and_path_discovery_section_inspect_icmp_evidence" anchor="inspect-icmp-evidence" />
+
+<h2 id="guided-icmp-diagnosis">Guided ICMP diagnosis</h2>
+
+For each of the six ping outcomes—success, timeout, network unreachable, host unreachable, administratively prohibited, and TTL exceeded—separate what the source sent from what it observed. If an error arrived, identify the reporter and its quoted packet. If nothing arrived, preserve that uncertainty.
+
+<InterviewScenario title="The destination did not reply">A ping times out, but later traceroute probes pass a silent hop. Explain why you cannot conclude that the silent router dropped all forwarded traffic, then name the routing, policy, return-path, and application evidence you would gather next.</InterviewScenario>
+
+<SectionContinue itemId="icmp_ping_and_path_discovery_section_guided_icmp_diagnosis" anchor="guided-icmp-diagnosis" />
+
+<h2 id="troubleshoot-icmp">Troubleshoot ICMP methodically</h2>
+
+1. Verify source and destination **addressing**, including the prefix and mask.
+2. Verify the selected **route** to the intended destination.
+3. Verify the local **gateway** and its Layer 2 resolution when the destination is off-link.
+4. Check host firewall and other **local policy** affecting the request or returning evidence.
+5. Check network and destination **remote policy**, including filtering and rate limiting.
+6. Investigate the **return path** separately; it may differ from the forward path.
+7. Test **application reachability** independently because successful Echo is not a service-port test.
+
+<InterviewScenario title="Ping works but the service does not">Explain how Echo success can coexist with application failure. Choose evidence that tests the application's transport and port without treating ping as proof of service health.</InterviewScenario>
+
+<SectionContinue itemId="icmp_ping_and_path_discovery_section_troubleshoot_icmp" anchor="troubleshoot-icmp" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="icmp_ping_and_path_discovery_check_1" question="What does a ping timeout establish?" options={["The destination is powered off", "No reply was observed before the deadline", "Every router discarded the request"]} correctIndex={1} explanation="A timeout records an observation window without a reply. Loss, filtering, rate limiting, routing, return-path, or endpoint conditions remain possible." />
+
+<KnowledgeCheck progressItemId="icmp_ping_and_path_discovery_check_2" question="Why can an intermediate router send ICMP Time Exceeded?" options={["The IPv4 probe's TTL expired there", "The application port opened there", "The router changed the final destination"]} correctIndex={0} explanation="A router decrements IPv4 TTL. When the lifetime expires, it discards that probe and may report Time Exceeded type 11, code 0." />
+
+<KnowledgeCheck progressItemId="icmp_ping_and_path_discovery_check_3" question="What is the safest interpretation of a traceroute * when a later hop responds?" options={["The silent router could not forward", "No response was observed for that probe, but forwarding may have continued", "The destination changed protocols"]} correctIndex={1} explanation="A star represents missing response evidence for that probe. A later reply demonstrates that silence alone does not prove forwarding stopped." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">Investigate filtered or **rate-limited** ICMP, IPv4 **Path MTU Discovery** and **fragmentation-needed** evidence, **asymmetric** or deceptive traceroute paths, **protocol-specific** probes, and deeper packet-capture diagnosis. These advanced cases refine the same evidence-first method without changing what a timeout or `*` can prove.</PremiumPreview>

@@ -287,6 +287,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "routing-tables-and-default-routes",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "icmp-ping-and-path-discovery",
+      },
     ]);
   });
 

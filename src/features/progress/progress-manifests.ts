@@ -29,6 +29,7 @@ const definitions = [
   { lessonId: "lesson_subnetting_fundamentals", interactiveAnchors: ["interactive-subnet-boundary", "interactive-subnet-scenarios"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_ipv6_fundamentals", interactiveAnchors: ["interactive-address-explorer", "interactive-ndp-slaac"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_routing_tables_and_default_routes", interactiveAnchors: ["interactive-route-selection", "interactive-hop-by-hop-forwarding"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_icmp_ping_and_path_discovery", interactiveAnchors: ["interactive-ping-evidence", "interactive-traceroute-discovery"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
 ] as const satisfies readonly LessonProgressDefinition[];
 
 function itemPrefix(lessonId: string) {

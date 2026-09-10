@@ -28,12 +28,12 @@ describe("ModuleList publication labels", () => {
       .toHaveAttribute("href", "/learn/networking-foundations/arp-and-local-delivery");
   });
 
-  it("describes unpublished lessons as Coming later without Free or Premium access claims", () => {
+  it("links the published ICMP lesson as Free", () => {
     const pathway = getPathway("networking-foundations");
     render(<ModuleList modules={pathway.modules} pathwaySlug={pathway.slug} />);
-    const card = screen.getByRole("heading", { name: "ICMP, Ping and Path Discovery" }).closest("li")!;
-    expect(within(card).getByText("Coming later")).toBeVisible();
-    expect(within(card).queryByText(/^(Free|Premium)$/)).toBeNull();
-    expect(within(card).queryByRole("link")).toBeNull();
+    const link = screen.getByRole("link", { name: "ICMP, Ping and Path Discovery" });
+    const card = link.closest("li")!;
+    expect(within(card).getByText("Free")).toBeVisible();
+    expect(link).toHaveAttribute("href", "/learn/networking-foundations/icmp-ping-and-path-discovery");
   });
 });
