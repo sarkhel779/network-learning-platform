@@ -821,6 +821,15 @@ h1 {
 .icmp-evidence-scroll { max-width: 100%; overflow-x: auto; }
 .icmp-evidence-scroll table { min-width: 34rem; }
 @media (max-width: 35rem) { .ping-evidence-player fieldset label { width: 100%; } .icmp-topology { grid-template-columns: 1fr; } }
+.traceroute-discovery-player { display: grid; gap: 1rem; min-width: 0; }
+.traceroute-discovery-player fieldset { display: flex; flex-wrap: wrap; gap: .55rem; }
+.traceroute-discovery-player fieldset label { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; }
+.traceroute-topology { display: flex; flex-wrap: wrap; gap: .65rem; list-style: none; padding: 1rem; border: 1px solid var(--border); border-radius: .75rem; }
+.traceroute-topology li { display: grid; flex: 1 1 9rem; gap: .2rem; padding: .55rem; text-align: center; }
+.traceroute-topology li[data-active="true"] { outline: 3px solid var(--focus); outline-offset: 2px; }
+.traceroute-evidence-scroll { max-width: 100%; overflow-x: auto; }
+.traceroute-evidence-scroll table { min-width: 46rem; }
+@media (max-width: 35rem) { .traceroute-discovery-player fieldset label { width: 100%; } .traceroute-topology { display: grid; grid-template-columns: 1fr; } }
 .routing-decision-player fieldset { display: flex; flex-wrap: wrap; gap: .5rem; }
 .routing-decision-player fieldset label { min-height: 44px; display: inline-flex; align-items: center; gap: .45rem; }
 .routing-table-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: .75rem; }
