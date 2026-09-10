@@ -35,6 +35,8 @@ function packetKindLabel(label: string): string {
   return "FRAME";
 }
 
+const PACKET_MARKER_VERTICAL_OFFSET = 30;
+
 function insetLinkPoint(
   from: { x: number; y: number },
   to: { x: number; y: number },
@@ -80,7 +82,13 @@ export function NetworkTopology({
         const from = devicesById.get(packet.from);
         const to = devicesById.get(otherId);
         if (!from || !to) return [];
-        return [{ link, start: insetLinkPoint(from, to, false), end: insetLinkPoint(from, to, true) }];
+        const start = insetLinkPoint(from, to, false);
+        const end = insetLinkPoint(from, to, true);
+        return [{
+          link,
+          start: { ...start, y: start.y - PACKET_MARKER_VERTICAL_OFFSET },
+          end: { ...end, y: end.y - PACKET_MARKER_VERTICAL_OFFSET },
+        }];
       })
     : [];
   const titleId = `${scenario.id}-topology-title`;
@@ -91,7 +99,7 @@ export function NetworkTopology({
       className={`network-topology${reducedMotion ? " network-topology--reduced-motion" : ""}`}
       data-reduced-motion={reducedMotion ? "true" : undefined}
     >
-      <svg viewBox="0 0 800 240" role={onDeviceSelect ? "group" : "img"} aria-labelledby={titleId} aria-describedby={descriptionId}>
+      <svg viewBox="0 0 800 270" role={onDeviceSelect ? "group" : "img"} aria-labelledby={titleId} aria-describedby={descriptionId}>
         <title id={titleId}>{scenario.title}</title>
         <desc id={descriptionId}>Topology order: {scenario.devices.map((device) => device.label).join(", ")}. Current step: {step.title}. {step.explanation}</desc>
         <g className="network-topology__links">
