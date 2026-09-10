@@ -1,0 +1,73 @@
+<LearningObjective>Trace IPv4 DHCP from discovery through lease use, explain direct and relayed packet delivery, and identify the header evidence that supports each conclusion.</LearningObjective>
+
+<h2 id="why-automatic-configuration-exists">Why automatic configuration exists</h2>
+
+An IPv4 host needs an address, prefix, gateway, and usually DNS information before it can communicate usefully. DHCP supplies those values as a time-limited lease, reducing manual errors while keeping assignment under network control.
+
+<SectionContinue itemId="dhcp_automatic_address_configuration_section_why_automatic_configuration_exists" anchor="why-automatic-configuration-exists" />
+
+<h2 id="dhcp-roles">DHCP roles: client, server, scope, lease, and relay</h2>
+
+The **client** requests configuration. The **server** selects values from a **scope**, a pool and policy for one subnet. A **lease** grants temporary use. A router or layer-3 switch acting as a **relay** (often configured with a helper address) carries client requests between broadcast domains; it does not replace the DHCP server.
+
+<SectionContinue itemId="dhcp_automatic_address_configuration_section_dhcp_roles" anchor="dhcp-roles" />
+
+<h2 id="udp-ports-67-68">UDP ports 67 and 68</h2>
+
+On a direct client/server exchange, client requests use **UDP 68 to UDP 67** and server replies use **UDP 67 to UDP 68**. Between a relay and server, both routed directions use **UDP 67 to UDP 67**. These port pairs identify roles; the IP and Ethernet destinations show whether the current leg is broadcast or unicast.
+
+<SectionContinue itemId="dhcp_automatic_address_configuration_section_udp_ports_67_68" anchor="udp-ports-67-68" />
+
+<h2 id="broadcast-unicast-rules">Broadcast and unicast rules</h2>
+
+A client without an address normally broadcasts DHCPDISCOVER. Its DHCPREQUEST during initial selection also broadcasts so every offering server learns which offer was selected. DHCPOFFER and DHCPACK delivery depend on client state, the broadcast flag, and reachability. A relay receives the local broadcast, then sends a routed unicast to the server with `giaddr` populated; “DHCP is always broadcast” is therefore incorrect.
+
+<SectionContinue itemId="dhcp_automatic_address_configuration_section_broadcast_unicast_rules" anchor="broadcast-unicast-rules" />
+
+<h2 id="dhcp-packet-structure">DHCP packet structure</h2>
+
+The fixed BOOTP/DHCP header contains `op`, `htype`, `hlen`, `hops`, `xid`, `secs`, `flags`, `ciaddr`, `yiaddr`, `siaddr`, `giaddr`, `chaddr`, `sname`, `file`, and the `magic cookie`. DHCP options follow it. `xid` correlates one transaction; the high broadcast bit in `flags` requests broadcast delivery; `yiaddr` carries a proposed or assigned client address during initial allocation; `giaddr` lets a server select the remote client subnet. Options identify the message type, server, requested address, lease timers, mask, router, DNS servers, and other policy.
+
+<SectionContinue itemId="dhcp_automatic_address_configuration_section_dhcp_packet_structure" anchor="dhcp-packet-structure" />
+
+<h2 id="interactive-dora-journey">Interactive DHCP DORA journey</h2>
+
+Trace Discover, Offer, Request, and ACK with synchronized client/server state, L2/L3 destinations, flags, addresses, transaction ID, and options. Compare multiple offers, NAK, and a no-offer failure.
+
+<DoraPlayer progressItemId="dhcp_automatic_address_configuration_interactive_interactive_dora_journey" />
+
+<h2 id="lease-contents">Lease contents: address, prefix, gateway, DNS, and lease time</h2>
+
+An ACK can supply the address in `yiaddr`, subnet mask, default router, DNS servers, lease duration, renewal time T1, and rebinding time T2. These are separate facts: receiving an address does not imply the correct prefix, gateway, or DNS. Values are server policy, not universal constants.
+
+<SectionContinue itemId="dhcp_automatic_address_configuration_section_lease_contents" anchor="lease-contents" />
+
+<h2 id="lease-lifecycle">Lease lifecycle: allocation, T1 renewal, T2 rebinding, and expiry</h2>
+
+After ACK the client is **BOUND**. At T1 it normally unicasts DHCPREQUEST to the original server while the address remains valid. If renewal fails, at T2 it enters **REBINDING** and broadcasts so another server may respond. A received ACK recalculates timers; a NAK invalidates the address immediately. At expiry, the client must stop using the address. DHCPDECLINE reports a detected conflict; DHCPRELEASE voluntarily returns a lease and has no required reply.
+
+<SectionContinue itemId="dhcp_automatic_address_configuration_section_lease_lifecycle" anchor="lease-lifecycle" />
+
+<h2 id="interactive-relay-helper">Interactive DHCP relay and helper-address journey</h2>
+
+Follow every leg instead of treating relay as one arrow: client-to-relay UDP 68→67, relay-to-server UDP 67→67, server-to-relay UDP 67→67, and relay-to-client UDP 67→68. Inspect `hops`, `giaddr`, subnet selection, and optional Option 82 insertion/removal. The public failure shows what happens when the helper address is missing.
+
+<DhcpRelayPlayer progressItemId="dhcp_automatic_address_configuration_interactive_interactive_relay_helper" />
+
+<h2 id="dhcp-boundaries">DHCP boundaries and DHCPv6/SLAAC</h2>
+
+This lesson’s packet mechanics are IPv4 DHCP. IPv6 uses different DHCPv6 messages and ports, and hosts may instead or also use **SLAAC** from Router Advertisements. DHCPv6 can provide addresses or other configuration, including prefix delegation, but an IPv4 DORA capture should not be projected onto IPv6.
+
+<SectionContinue itemId="dhcp_automatic_address_configuration_section_dhcp_boundaries" anchor="dhcp-boundaries" />
+
+<h2 id="dhcp-evidence">Common DHCP evidence and terminology</h2>
+
+Useful evidence includes message type, `xid`, client identifier or `chaddr`, requested address, server identifier, `yiaddr`, `giaddr`, flags, UDP ports, lease timers, and Option 82. **Silence** means no reply was observed; it does not by itself distinguish server absence, pool exhaustion, policy, relay configuration, filtering, or return-path failure.
+
+<SectionContinue itemId="dhcp_automatic_address_configuration_section_dhcp_evidence" anchor="dhcp-evidence" />
+
+<h2 id="summary">Summary</h2>
+
+DHCP is a stateful, lease-based configuration protocol. Read it one leg at a time: identify the message, ports, delivery mode, transaction, address fields, options, and current client state. Direct DORA uses client 68/server 67; a relay adds routed server-side 67-to-67 legs and `giaddr` evidence.
+
+<SectionContinue itemId="dhcp_automatic_address_configuration_section_summary" anchor="summary" />

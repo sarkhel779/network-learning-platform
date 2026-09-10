@@ -90,6 +90,16 @@ vi.mock("@/content/networking-foundations/access-points-modems-onts-and-firewall
 vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx", () => {
   throw new Error("OSI_ACCOUNT_SENTINEL: anonymous route imported a protected body");
 });
+vi.mock("@/content/networking-foundations/dhcp-and-automatic-address-configuration.public.mdx", async () => {
+  const { createElement } = await import("react");
+  return { default: () => createElement("p", null, "Public DHCP packet journey.") };
+});
+vi.mock("@/content/networking-foundations/dhcp-and-automatic-address-configuration.account.mdx", () => {
+  throw new Error("DHCP_ACCOUNT_SENTINEL: anonymous route imported a protected body");
+});
+vi.mock("@/content/networking-foundations/dhcp-and-automatic-address-configuration.pro.mdx", () => {
+  throw new Error("DHCP_PRO_SENTINEL: anonymous route imported a protected body");
+});
 
 import * as contentRepository from "@/features/lessons/lesson-content.repository";
 import { listPublishedLessons } from "@/features/catalog/catalog.repository";
@@ -295,7 +305,23 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "tcp-udp-and-ports",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "dhcp-and-automatic-address-configuration",
+      },
     ]);
+  });
+
+  it("renders the canonical DHCP route without protected blocks for anonymous visitors", async () => {
+    const loader = vi.spyOn(contentRepository, "loadAuthorizedLessonContent");
+    const page = await lessonPage.default({ params: Promise.resolve({
+      pathwaySlug: "networking-foundations", lessonSlug: "dhcp-and-automatic-address-configuration",
+    }) });
+    const { container } = render(page);
+    expect(screen.getByRole("heading", { level: 1, name: "DHCP and Automatic Address Configuration" })).toBeVisible();
+    expect(screen.getByText("Public DHCP packet journey.")).toBeVisible();
+    expect(loader).toHaveBeenCalledWith("networking-foundations/dhcp-and-automatic-address-configuration", "anonymous");
+    expect(container.innerHTML).not.toMatch(/DHCP_(?:ACCOUNT|PRO)_SENTINEL/);
   });
 
   it("renders only the edge-device public body for anonymous visitors", async () => {

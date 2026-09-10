@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(19);
+    expect(lessonProgressManifests).toHaveLength(20);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -60,6 +60,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609100002_add_routing_tables_progress.sql",
       "supabase/migrations/202609100003_add_icmp_ping_path_progress.sql",
       "supabase/migrations/202609100004_add_tcp_udp_ports_progress.sql",
+      "supabase/migrations/202609110001_add_dhcp_progress.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -109,6 +110,16 @@ describe("lessonProgressManifests", () => {
     expect(manifest.items.filter(({ kind }) => kind === "knowledge_check").map(({ itemId }) => itemId))
       .toEqual(["tcp_udp_and_ports_check_1", "tcp_udp_and_ports_check_2", "tcp_udp_and_ports_check_3"]);
     expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
+  });
+
+  it("registers DHCP in catalog order while excluding Pro sections", () => {
+    const manifest = getLessonProgressManifest("path_networking_foundations", "lesson_dhcp_and_automatic_address_configuration");
+    expect(manifest.items).toHaveLength(19);
+    expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor))
+      .toEqual(["interactive-dora-journey", "interactive-relay-helper"]);
+    expect(manifest.items.filter(({ kind }) => kind === "knowledge_check").map(({ itemId }) => itemId))
+      .toEqual(["dhcp_automatic_address_configuration_check_1", "dhcp_automatic_address_configuration_check_2", "dhcp_automatic_address_configuration_check_3"]);
+    expect(manifest.items.some(({ anchor }) => anchor === "lease-timing-diagram")).toBe(false);
   });
 
   it("parenthesizes the CASE expression used by the progress event guard", () => {

@@ -64,6 +64,18 @@ describe("system theme and table styles", () => {
     expect(css).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.transport-player \*\s*\{[^}]*animation:\s*none\s*!important/);
   });
 
+  it("keeps DHCP players, diagrams, and packet tables inside the lesson width", () => {
+    expect(css).toMatch(/\.dhcp-player\s*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%[^}]*overflow-wrap:\s*anywhere/);
+    expect(css).toMatch(/\.dhcp-topology\s*\{[^}]*max-width:\s*100%[^}]*overflow-x:\s*auto/);
+    expect(css).toMatch(/\.dhcp-topology svg\s*\{[^}]*min-width:\s*42rem[^}]*height:\s*auto/);
+    expect(css).toMatch(/\.dhcp-packet-inspector\s*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%/);
+    expect(css).toMatch(/\.dhcp-inspector-region \.table-scroll\s*\{[^}]*max-width:\s*100%[^}]*overflow-x:\s*auto/);
+    expect(css).toMatch(/@media\s*\(max-width:\s*35rem\)[\s\S]*\.dhcp-player fieldset label\s*\{[^}]*width:\s*100%/);
+    expect(css).toMatch(/\.dhcp-rfc-check\s*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%/);
+    expect(css).toMatch(/\.dhcp-rfc-check > button\s*\{[^}]*min-block-size:\s*44px/);
+    expect(css).not.toMatch(/\.dhcp-player\s*\{[^}]*width:\s*\d{4}px/);
+  });
+
   it("renders shared player controls with the established outlined appearance", () => {
     const style = document.createElement("style");
     style.textContent = css;

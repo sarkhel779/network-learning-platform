@@ -80,7 +80,10 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /tcp, udp and ports/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/tcp-udp-and-ports",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(19);
-    expect(screen.getAllByText("Coming later")).toHaveLength(5);
+    expect(screen.getByRole("link", { name: /dhcp and automatic address configuration/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/dhcp-and-automatic-address-configuration",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(20);
+    expect(screen.getAllByText("Coming later")).toHaveLength(4);
   });
 });
