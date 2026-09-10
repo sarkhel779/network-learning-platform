@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(17);
+    expect(lessonProgressManifests).toHaveLength(18);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -58,6 +58,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609090004_add_subnetting_fundamentals_progress.sql",
       "supabase/migrations/202609100001_add_ipv6_fundamentals_progress.sql",
       "supabase/migrations/202609100002_add_routing_tables_progress.sql",
+      "supabase/migrations/202609100003_add_icmp_ping_path_progress.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -75,6 +76,27 @@ describe("lessonProgressManifests", () => {
     expect(manifest.items).toHaveLength(18);
     expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-route-selection", "interactive-hop-by-hop-forwarding"]);
     expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
+  });
+
+  it("registers the ICMP lesson in catalog order with two players and three checks", () => {
+    const manifest = getLessonProgressManifest(
+      "path_networking_foundations",
+      "lesson_icmp_ping_and_path_discovery",
+    );
+    expect(manifest.items).toHaveLength(18);
+    expect(new Set(manifest.items.map(({ itemId }) => itemId)).size).toBe(18);
+    expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor))
+      .toEqual(["interactive-ping-evidence", "interactive-traceroute-discovery"]);
+    expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
+    expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
+
+    const pathway = pathways.find(({ id }) => id === "path_networking_foundations");
+    const lesson = pathway?.modules.flatMap(({ lessons }) => lessons)
+      .find(({ id }) => id === "lesson_icmp_ping_and_path_discovery");
+    const expectedCatalogAnchors = lesson?.sections
+      ?.filter(({ access, id }) => access !== "pro" && id !== "knowledge-check-summary")
+      .map(({ id }) => id);
+    expect(manifest.items.slice(0, 15).map(({ anchor }) => anchor)).toEqual(expectedCatalogAnchors);
   });
 
   it("parenthesizes the CASE expression used by the progress event guard", () => {
