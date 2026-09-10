@@ -105,7 +105,11 @@ export function LessonShell({
 
         <LearningObjective>{lesson.objective}</LearningObjective>
 
-        <LessonSectionNavigation sections={lesson.sections} />
+        <LessonSectionNavigation
+          lockedReturnTo={lesson.slug === "dns-and-name-resolution" ? `/learn/${pathway.slug}/${lesson.slug}` : undefined}
+          presentation={lesson.slug === "dns-and-name-resolution" ? "dns-network-map" : "list"}
+          sections={lesson.sections}
+        />
 
         <div className="lesson-content">{lessonContent}</div>
 
