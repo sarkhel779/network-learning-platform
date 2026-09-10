@@ -85,6 +85,7 @@ describe("catalog repository", () => {
       "how-networks-communicate",
       "how-switches-learn-and-forward",
       "hubs-bridges-and-switches",
+      "icmp-ping-and-path-discovery",
       "ipv4-addressing",
       "ipv6-fundamentals",
       "osi-and-tcp-ip-models",
@@ -403,6 +404,7 @@ describe("catalog repository", () => {
       "subnetting-fundamentals",
       "ipv6-fundamentals",
       "routing-tables-and-default-routes",
+      "icmp-ping-and-path-discovery",
     ]);
     expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
       title: "Cables, Fibre, Wireless and Network Connections",
@@ -463,7 +465,7 @@ describe("catalog repository", () => {
   it("keeps public foundations limited to published beginner lessons", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[6], lessons[7], lessons[8], lessons[9], lessons[10], lessons[11], lessons[12], lessons[13], lessons[14], lessons[15], lessons[16]];
+    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables, icmp] = [lessons[0], lessons[1], lessons[2], lessons[3], lessons[4], lessons[5], lessons[6], lessons[7], lessons[8], lessons[9], lessons[10], lessons[11], lessons[12], lessons[13], lessons[14], lessons[15], lessons[16], lessons[17]];
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
@@ -481,12 +483,13 @@ describe("catalog repository", () => {
     expect(subnetting.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(ipv6.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(routingTables.sections?.some(({ access }) => access === "public")).toBe(true);
+    expect(icmp.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(
-      lessons.slice(17).some(({ sections }) =>
+      lessons.slice(18).some(({ sections }) =>
         sections?.some(({ access }) => access === "public"),
       ),
     ).toBe(false);
-    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables]) {
+    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables, icmp]) {
       expect(lesson.sections?.at(-1)).toEqual(expect.objectContaining({
         id: "pro-deep-dive",
         label: "Pro Deep Dive",
@@ -538,7 +541,31 @@ describe("catalog repository", () => {
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
       previous: { slug: "ipv6-fundamentals", published: true },
-      next: { slug: "icmp-ping-and-path-discovery", published: false },
+      next: { slug: "icmp-ping-and-path-discovery", published: true },
+    });
+  });
+
+  it("publishes ICMP after routing with the approved access sequence", () => {
+    const lesson = getLesson("networking-foundations", "icmp-ping-and-path-discovery");
+    expect(lesson).toMatchObject({
+      id: "lesson_icmp_ping_and_path_discovery",
+      published: true,
+      estimatedMinutes: 20,
+    });
+    expect(lesson.sections?.map(({ id, access }) => [id, access])).toEqual([
+      ["why-icmp-exists", "public"], ["icmp-message-anatomy", "public"],
+      ["informational-and-error-messages", "public"], ["echo-request-and-reply", "public"],
+      ["interactive-ping-evidence", "public"], ["what-successful-ping-proves", "public"],
+      ["timeouts-loss-and-rtt", "public"], ["destination-unreachable", "public"],
+      ["ttl-exceeded", "public"], ["interactive-traceroute-discovery", "public"],
+      ["why-traceroute-can-be-incomplete", "public"], ["safe-conclusions", "public"],
+      ["inspect-icmp-evidence", "account"], ["guided-icmp-diagnosis", "account"],
+      ["troubleshoot-icmp", "account"], ["knowledge-check-summary", "account"],
+      ["pro-deep-dive", "pro"],
+    ]);
+    expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
+      previous: { slug: "routing-tables-and-default-routes", published: true },
+      next: { slug: "tcp-udp-and-ports", published: false },
     });
   });
 

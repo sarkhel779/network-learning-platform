@@ -79,6 +79,8 @@ vi.mock("@/content/networking-foundations/subnetting-fundamentals.public.mdx", (
 vi.mock("@/content/networking-foundations/subnetting-fundamentals.account.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/routing-tables-and-default-routes.public.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/routing-tables-and-default-routes.account.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/icmp-ping-and-path-discovery.public.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/icmp-ping-and-path-discovery.account.mdx", () => ({ default: () => null }));
 
 import {
   createAuthorizedLessonContentLoader,
@@ -275,6 +277,17 @@ describe("loadAuthorizedLessonContent", () => {
     const account = await loadAuthorizedLessonContent(key, "account");
     expect(account.public).toBeDefined();
     expect(account.account).toBeDefined();
+  });
+
+  it("keeps ICMP practice protected while serving packet evidence publicly", async () => {
+    const key = "networking-foundations/icmp-ping-and-path-discovery";
+    const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
+    expect(anonymous.public).toBeDefined();
+    expect(anonymous.account).toBeUndefined();
+    const account = await loadAuthorizedLessonContent(key, "account");
+    expect(account.public).toBeDefined();
+    expect(account.account).toBeDefined();
+    expect(account.pro).toBeUndefined();
   });
 
   it("returns no OSI content to anonymous viewers", async () => {
