@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(21);
+    expect(lessonProgressManifests).toHaveLength(22);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -62,6 +62,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609100004_add_tcp_udp_ports_progress.sql",
       "supabase/migrations/202609110001_add_dhcp_progress.sql",
       "supabase/migrations/202609110002_add_dns_progress.sql",
+      "supabase/migrations/202609110003_add_essential_services_progress.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -134,6 +135,16 @@ describe("lessonProgressManifests", () => {
     expect(manifest.items.filter(({ kind }) => kind === "knowledge_check").map(({ itemId }) => itemId))
       .toEqual(["dns_name_resolution_check_1", "dns_name_resolution_check_2", "dns_name_resolution_check_3"]);
     expect(manifest.items.some(({ anchor }) => anchor.includes("root-server"))).toBe(false);
+  });
+
+  it("registers all essential-service journeys and diagnostics without Pro evidence labs", () => {
+    const manifest = getLessonProgressManifest("path_networking_foundations", "lesson_http_https_tls_and_essential_network_services");
+    expect(manifest.items).toHaveLength(24);
+    for (const service of ["web", "remote_access", "email", "file_transfer", "time", "monitoring"]) {
+      expect(manifest.items.some(({ itemId }) => itemId === `essential_services_interactive_${service}`)).toBe(true);
+      expect(manifest.items.some(({ itemId }) => itemId === `essential_services_troubleshooting_${service}`)).toBe(true);
+    }
+    expect(manifest.items.every(({ itemId }) => !itemId.includes("rfc") && !itemId.includes("capture"))).toBe(true);
   });
 
   it("parenthesizes the CASE expression used by the progress event guard", () => {

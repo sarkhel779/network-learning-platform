@@ -9,7 +9,9 @@ type LessonProgressDefinition = Readonly<{
   itemPrefix?: string;
   stripInteractiveAnchorPrefix?: boolean;
   interactiveAnchors: readonly string[];
+  interactiveItemIds?: Readonly<Record<string, string>>;
   knowledgeCheckCount: number;
+  knowledgeCheckItemIds?: readonly string[];
   knowledgeAnchor: string | null;
 }>;
 
@@ -35,6 +37,21 @@ const definitions = [
   { lessonId: "lesson_tcp_udp_and_ports", interactiveAnchors: ["interactive-tcp-connection", "interactive-tcp-udp-port-delivery"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_dhcp_and_automatic_address_configuration", itemPrefix: "dhcp_automatic_address_configuration", interactiveAnchors: ["interactive-dora-journey", "interactive-relay-helper"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_dns_and_name_resolution", itemPrefix: "dns_name_resolution", stripInteractiveAnchorPrefix: true, interactiveAnchors: ["interactive-complete-resolution", "interactive-dns-troubleshooting"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  {
+    lessonId: "lesson_http_https_tls_and_essential_network_services", itemPrefix: "essential_services",
+    interactiveAnchors: ["web-service-journey", "web-troubleshooting", "remote-access-journey", "remote-access-troubleshooting", "email-journey", "email-troubleshooting", "file-transfer-journey", "file-transfer-troubleshooting", "time-journey", "time-troubleshooting", "monitoring-journey", "monitoring-troubleshooting"],
+    interactiveItemIds: {
+      "web-service-journey": "essential_services_interactive_web", "web-troubleshooting": "essential_services_troubleshooting_web",
+      "remote-access-journey": "essential_services_interactive_remote_access", "remote-access-troubleshooting": "essential_services_troubleshooting_remote_access",
+      "email-journey": "essential_services_interactive_email", "email-troubleshooting": "essential_services_troubleshooting_email",
+      "file-transfer-journey": "essential_services_interactive_file_transfer", "file-transfer-troubleshooting": "essential_services_troubleshooting_file_transfer",
+      "time-journey": "essential_services_interactive_time", "time-troubleshooting": "essential_services_troubleshooting_time",
+      "monitoring-journey": "essential_services_interactive_monitoring", "monitoring-troubleshooting": "essential_services_troubleshooting_monitoring",
+    },
+    knowledgeCheckCount: 6,
+    knowledgeCheckItemIds: ["essential_services_check_web", "essential_services_check_remote_access", "essential_services_check_email", "essential_services_check_file_transfer", "essential_services_check_time", "essential_services_check_monitoring"],
+    knowledgeAnchor: "knowledge-check-summary",
+  },
 ] as const satisfies readonly LessonProgressDefinition[];
 
 function itemPrefix(lessonId: string) {
@@ -56,10 +73,11 @@ function interactiveItem(
   section: LessonSection,
   prefix = itemPrefix(lessonId),
   stripAnchorPrefix = false,
+  itemIdOverride?: string,
 ): ProgressManifestItem {
   const anchorPart = stripAnchorPrefix ? section.id.replace(/^interactive-(?:dns-)?/, "") : section.id;
   return {
-    itemId: `${prefix}_interactive_${anchorPart.replaceAll("-", "_")}`,
+    itemId: itemIdOverride ?? `${prefix}_interactive_${anchorPart.replaceAll("-", "_")}`,
     kind: "interactive",
     label: section.label,
     anchor: section.id,
@@ -76,13 +94,13 @@ function buildItems(
   const items = sections
     .filter(({ access, id }) => access !== "pro" && id !== definition.knowledgeAnchor)
     .map((section) => definition.interactiveAnchors.includes(section.id)
-      ? interactiveItem(lessonId, section, prefix, definition.stripInteractiveAnchorPrefix)
+      ? interactiveItem(lessonId, section, prefix, definition.stripInteractiveAnchorPrefix, definition.interactiveItemIds?.[section.id])
       : sectionItem(lessonId, section, prefix));
 
   if (definition.knowledgeAnchor) {
     for (let index = 1; index <= definition.knowledgeCheckCount; index += 1) {
       items.push({
-        itemId: `${prefix}_check_${index}`,
+        itemId: definition.knowledgeCheckItemIds?.[index - 1] ?? `${prefix}_check_${index}`,
         kind: "knowledge_check",
         label: `Knowledge check ${index}`,
         anchor: `${prefix.replaceAll("_", "-")}-check-${index}`,
