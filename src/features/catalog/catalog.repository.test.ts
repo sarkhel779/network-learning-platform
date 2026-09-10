@@ -80,6 +80,7 @@ describe("catalog repository", () => {
       "arp-and-local-delivery",
       "cables-fibre-wireless-and-network-connections",
       "dhcp-and-automatic-address-configuration",
+      "dns-and-name-resolution",
       "ethernet-frames-and-mac-addresses",
       "first-packet-journey-through-a-small-network",
       "hosts-and-network-devices",
@@ -409,6 +410,7 @@ describe("catalog repository", () => {
       "icmp-ping-and-path-discovery",
       "tcp-udp-and-ports",
       "dhcp-and-automatic-address-configuration",
+      "dns-and-name-resolution",
     ]);
     expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
       title: "Cables, Fibre, Wireless and Network Connections",
@@ -469,7 +471,7 @@ describe("catalog repository", () => {
   it("keeps public foundations limited to published beginner lessons", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables, icmp, transport, dhcp] = lessons;
+    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables, icmp, transport, dhcp, dns] = lessons;
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
@@ -490,8 +492,9 @@ describe("catalog repository", () => {
     expect(icmp.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(transport.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(dhcp.sections?.some(({ access }) => access === "public")).toBe(true);
+    expect(dns.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(
-      lessons.slice(20).some(({ sections }) =>
+      lessons.slice(21).some(({ sections }) =>
         sections?.some(({ access }) => access === "public"),
       ),
     ).toBe(false);
@@ -609,7 +612,30 @@ describe("catalog repository", () => {
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
       previous: { slug: "tcp-udp-and-ports", published: true },
-      next: { slug: "dns-and-name-resolution", published: false },
+      next: { slug: "dns-and-name-resolution", published: true },
+    });
+  });
+
+  it("publishes DNS after DHCP with the approved tiered section sequence", () => {
+    const lesson = getLesson("networking-foundations", "dns-and-name-resolution");
+    expect(lesson).toMatchObject({ id: "lesson_dns_and_name_resolution", published: true, estimatedMinutes: 25 });
+    expect(lesson.sections?.map(({ id, access }) => [id, access])).toEqual([
+      ["why-name-resolution-exists", "public"], ["dns-roles-responsibility-boundaries", "public"],
+      ["domain-labels-zones-delegation", "public"], ["recursive-service-iterative-referrals", "public"],
+      ["interactive-complete-resolution", "public"], ["dns-message-header-structure", "public"],
+      ["record-types-selection-rules", "public"], ["dns-transports", "public"],
+      ["caching-ttl-negative-caching", "public"], ["response-codes-nodata", "public"],
+      ["reverse-dns", "public"], ["interactive-dns-troubleshooting", "public"],
+      ["dns-command-capture-evidence", "public"], ["common-dns-misconceptions", "public"],
+      ["summary-next-steps", "public"], ["cold-warm-cache-practice", "account"],
+      ["record-selection-practice", "account"], ["dns-packet-capture-practice", "account"],
+      ["knowledge-check-summary", "account"], ["dns-timing-diagram", "pro"],
+      ["rfc-level-dns-checks", "pro"], ["dnssec-advanced-wireshark", "pro"],
+      ["advanced-dns-operations", "pro"], ["root-server-bootstrap-bonus", "pro"],
+    ]);
+    expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
+      previous: { slug: "dhcp-and-automatic-address-configuration", published: true },
+      next: { slug: "http-https-tls-and-essential-network-services", published: false },
     });
   });
 

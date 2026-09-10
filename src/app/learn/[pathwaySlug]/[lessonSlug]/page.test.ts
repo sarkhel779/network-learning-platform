@@ -100,6 +100,16 @@ vi.mock("@/content/networking-foundations/dhcp-and-automatic-address-configurati
 vi.mock("@/content/networking-foundations/dhcp-and-automatic-address-configuration.pro.mdx", () => {
   throw new Error("DHCP_PRO_SENTINEL: anonymous route imported a protected body");
 });
+vi.mock("@/content/networking-foundations/dns-and-name-resolution.public.mdx", async () => {
+  const { createElement } = await import("react");
+  return { default: () => createElement("p", null, "Public DNS resolution journey.") };
+});
+vi.mock("@/content/networking-foundations/dns-and-name-resolution.account.mdx", () => {
+  throw new Error("DNS_ACCOUNT_SENTINEL: anonymous route imported a protected body");
+});
+vi.mock("@/content/networking-foundations/dns-and-name-resolution.pro.mdx", () => {
+  throw new Error("DNS_PRO_SENTINEL: anonymous route imported a protected body");
+});
 
 import * as contentRepository from "@/features/lessons/lesson-content.repository";
 import { listPublishedLessons } from "@/features/catalog/catalog.repository";
@@ -309,6 +319,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "dhcp-and-automatic-address-configuration",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "dns-and-name-resolution",
+      },
     ]);
   });
 
@@ -322,6 +336,18 @@ describe("lesson route generation", () => {
     expect(screen.getByText("Public DHCP packet journey.")).toBeVisible();
     expect(loader).toHaveBeenCalledWith("networking-foundations/dhcp-and-automatic-address-configuration", "anonymous");
     expect(container.innerHTML).not.toMatch(/DHCP_(?:ACCOUNT|PRO)_SENTINEL/);
+  });
+
+  it("renders the canonical DNS route without protected blocks for anonymous visitors", async () => {
+    const loader = vi.spyOn(contentRepository, "loadAuthorizedLessonContent");
+    const page = await lessonPage.default({ params: Promise.resolve({
+      pathwaySlug: "networking-foundations", lessonSlug: "dns-and-name-resolution",
+    }) });
+    const { container } = render(page);
+    expect(screen.getByRole("heading", { level: 1, name: "DNS and Name Resolution" })).toBeVisible();
+    expect(screen.getByText("Public DNS resolution journey.")).toBeVisible();
+    expect(loader).toHaveBeenCalledWith("networking-foundations/dns-and-name-resolution", "anonymous");
+    expect(container.innerHTML).not.toMatch(/DNS_(?:ACCOUNT|PRO)_SENTINEL/);
   });
 
   it("renders only the edge-device public body for anonymous visitors", async () => {
