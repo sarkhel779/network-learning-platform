@@ -1,0 +1,45 @@
+{/* DHCP_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-dhcp-evidence">Inspect DHCP evidence</h2>
+
+Capture with `bootp` or `dhcp`; narrow a transaction with `bootp.xid == 0x1234abcd`. For each packet record message type, source/destination MAC and IPv4 addresses, UDP ports, `xid`, `secs`, broadcast flag, `ciaddr`, `yiaddr`, `siaddr`, `giaddr`, server identifier, requested address, lease timers, and relay information. Compare the capture with server lease logs and relay counters rather than trusting one screen alone.
+
+<WiresharkCheck displayFilter="bootp">Capture one direct or relayed DHCP exchange. Prove its message order, delivery mode, transaction identity, selected address or failure point, and the exact field supporting each conclusion.</WiresharkCheck>
+
+<SectionContinue itemId="dhcp_automatic_address_configuration_section_inspect_dhcp_evidence" anchor="inspect-dhcp-evidence" />
+
+<h2 id="guided-dora-diagnosis">Guided direct-DORA diagnosis</h2>
+
+Start with the last state transition actually observed. Repeated Discover with **no offer** narrows the failure to server reachability, server policy, **address-pool exhaustion**, filtering, or the return path; it does not prove the server is down. If an Offer arrives but no Request follows, investigate client selection and competing offers. A NAK is explicit rejection, while silence remains ambiguous.
+
+<InterviewScenario title="Discover repeats but no Offer returns">Identify the client broadcast, UDP 68/67, transaction ID, scope capacity, server logs, security policy, and a known-good client comparison. State what the capture proves and what still needs evidence.</InterviewScenario>
+
+<SectionContinue itemId="dhcp_automatic_address_configuration_section_guided_dora_diagnosis" anchor="guided-dora-diagnosis" />
+
+<h2 id="guided-relay-diagnosis">Guided relay/helper-address diagnosis</h2>
+
+Prove all four legs. A **missing helper address** prevents a local broadcast from becoming routed relay traffic. A **helper on the wrong interface** may never receive the client broadcast. If the **scope does not match `giaddr`**, the server cannot select the intended client subnet. Verify that `giaddr`, relay source, hop count, and any Option 82 identity agree with the topology.
+
+<InterviewScenario title="The local VLAN sees Discover, but the server sees nothing">Locate the client-facing layer-3 interface, helper configuration, route, ACL, relay/server UDP 67-to-67 path, and server-facing capture. Explain why a working helper on another interface is not sufficient.</InterviewScenario>
+
+<SectionContinue itemId="dhcp_automatic_address_configuration_section_guided_relay_diagnosis" anchor="guided-relay-diagnosis" />
+
+<h2 id="troubleshoot-dhcp">Troubleshoot DHCP methodically</h2>
+
+1. Confirm client link/VLAN membership and the expected IPv4 scope.
+2. Capture the client broadcast and confirm UDP 68 to 67.
+3. For a remote server, verify helper placement, `giaddr`, and both UDP 67-to-67 relay legs.
+4. Check pool availability, exclusions, reservations, and policy for **address-pool exhaustion**.
+5. Test ACL, firewall, or security controls for **blocked UDP 67/68** in both directions.
+6. Separate a **missing helper address**, **helper on the wrong interface**, and **scope does not match `giaddr`** with interface and server evidence.
+7. Treat **no offer** as an observation, then locate the first missing leg.
+
+<SectionContinue itemId="dhcp_automatic_address_configuration_section_troubleshoot_dhcp" anchor="troubleshoot-dhcp" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="dhcp_automatic_address_configuration_check_1" question="Which ports are used from a DHCP relay to a DHCP server?" options={["UDP 68 to UDP 67", "UDP 67 to UDP 67", "TCP 67 to TCP 68"]} correctIndex={1} explanation="The relay and server communicate using UDP 67 to UDP 67; the client-facing leg uses client UDP 68 and server UDP 67." />
+
+<KnowledgeCheck progressItemId="dhcp_automatic_address_configuration_check_2" question="Which field normally selects the client subnet for a relayed IPv4 request?" options={["yiaddr", "giaddr", "siaddr"]} correctIndex={1} explanation="The first relay populates giaddr, and the server uses it to select an appropriate scope for the remote client subnet." />
+
+<KnowledgeCheck progressItemId="dhcp_automatic_address_configuration_check_3" question="What must a client do when its DHCP lease expires without renewal?" options={["Keep using the address until another host objects", "Stop using the address and return to acquisition", "Unicast a Release and wait indefinitely"]} correctIndex={1} explanation="The lease no longer authorizes use of the address after expiry, so the client must remove it and seek valid configuration." />

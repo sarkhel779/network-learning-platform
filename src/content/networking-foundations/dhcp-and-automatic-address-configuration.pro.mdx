@@ -1,0 +1,33 @@
+import { dhcpRfcChecks } from "@/features/dhcp/dhcp-pro.data"
+
+<h2 id="lease-timing-diagram">Interactive lease timing diagram</h2>
+
+Compare normal renewal, delayed response, retry/silence, and relay delay. Every point derives its position from elapsed seconds and keeps state, destination behavior, evidence, and lease validity synchronized.
+
+<LeaseTimingPlayer />
+
+<h2 id="rfc-level-checks">Advanced RFC-level packet checks</h2>
+
+These are guided checks: submit an answer to reveal the governing rule, packet evidence, operational consequence, and primary source immediately.
+
+<DhcpRfcCheck check={dhcpRfcChecks[0]} />
+<DhcpRfcCheck check={dhcpRfcChecks[1]} />
+<DhcpRfcCheck check={dhcpRfcChecks[2]} />
+<DhcpRfcCheck check={dhcpRfcChecks[3]} />
+<DhcpRfcCheck check={dhcpRfcChecks[4]} />
+<DhcpRfcCheck check={dhcpRfcChecks[5]} />
+<DhcpRfcCheck check={dhcpRfcChecks[6]} />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+**DHCP snooping** establishes trusted server-facing ports, rejects rogue-server replies on untrusted ports, and can build address bindings used by related protections. Its trust boundary must match the real relay and uplink topology.
+
+**Option 82** carries Relay Agent Information such as Circuit ID and Remote ID. Trace insertion by a trusted relay, echo by the server, and removal before client delivery. Treat untrusted Option 82 input as a policy and spoofing risk.
+
+Model **reservations**, **exclusions**, policy options, and **multiple-server** behavior explicitly. Multiple offers are valid, but scope ownership and reconciliation must prevent conflicting allocations. Advanced capture analysis should correlate `xid`, `secs`, flags, identifiers, requested addresses, option lengths/order, lease timers, server logs, binding state, and relay transformations.
+
+DHCP authentication exists but depends on deployment and key management; operational defenses still commonly include DHCP snooping, port trust, rate limits, and monitoring. **DHCPv4 high availability and failover are vendor-specific or implementation-specific approaches**, not an Internet-standard failover protocol established by the RFC below.
+
+In the IPv6 boundary, DHCPv6 can be stateful, stateless, or coexist with SLAAC; it also supports **prefix delegation**. **RFC 8156 defines DHCPv6 failover**, not DHCPv4 failover.
+
+Primary references: [RFC 2131](https://www.rfc-editor.org/rfc/rfc2131), [RFC 2132](https://www.rfc-editor.org/rfc/rfc2132), [RFC 3046](https://www.rfc-editor.org/rfc/rfc3046), [RFC 3118](https://www.rfc-editor.org/rfc/rfc3118), [RFC 3442](https://www.rfc-editor.org/rfc/rfc3442), [RFC 6607](https://www.rfc-editor.org/rfc/rfc6607), and [RFC 8156](https://www.rfc-editor.org/rfc/rfc8156).
