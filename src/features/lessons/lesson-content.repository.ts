@@ -108,6 +108,11 @@ const lessonImports = {
     account: () => import("@/content/networking-foundations/dns-and-name-resolution.account.mdx"),
     pro: () => import("@/content/networking-foundations/dns-and-name-resolution.pro.mdx"),
   },
+  "networking-foundations/http-https-tls-and-essential-network-services": {
+    public: () => import("@/content/networking-foundations/http-https-tls-and-essential-network-services.public.mdx"),
+    account: () => import("@/content/networking-foundations/http-https-tls-and-essential-network-services.account.mdx"),
+    pro: () => import("@/content/networking-foundations/http-https-tls-and-essential-network-services.pro.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),

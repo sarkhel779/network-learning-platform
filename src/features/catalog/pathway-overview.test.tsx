@@ -86,7 +86,10 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /dns and name resolution/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/dns-and-name-resolution",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(21);
-    expect(screen.getAllByText("Coming later")).toHaveLength(3);
+    expect(screen.getByRole("link", { name: /http, https, tls and essential network services/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/http-https-tls-and-essential-network-services",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(22);
+    expect(screen.getAllByText("Coming later")).toHaveLength(2);
   });
 });
