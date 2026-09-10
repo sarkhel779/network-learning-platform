@@ -55,4 +55,12 @@ describe("system theme and table styles", () => {
     expect(lessonShell).not.toMatch(/(?:^|;)\s*width:/);
     expect(lessonShell).not.toMatch(/transform:/);
   });
+
+  it("keeps transport players responsive, touch-friendly, and locally scrollable", () => {
+    expect(css).toMatch(/\.transport-player\s*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%/);
+    expect(css).toMatch(/\.transport-player fieldset label[^\{]*\{[^}]*min-block-size:\s*44px/);
+    expect(css).toMatch(/\.transport-evidence-scroll\s*\{[^}]*max-width:\s*100%[^}]*overflow-x:\s*auto/);
+    expect(css).toMatch(/@media\s*\(max-width:\s*35rem\)[\s\S]*\.transport-topology\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
+    expect(css).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.transport-player \*\s*\{[^}]*animation:\s*none\s*!important/);
+  });
 });

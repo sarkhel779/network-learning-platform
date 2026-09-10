@@ -848,3 +848,24 @@ h1 {
   .hop-by-hop-player .network-topology,
   .hop-by-hop-player .packet-inspector { min-width: 0; overflow-x: auto; }
 }
+
+.transport-player { display: grid; gap: 1rem; min-width: 0; max-width: 100%; margin: 2rem 0; padding: clamp(.8rem, 2.5vw, 1.4rem); overflow-wrap: anywhere; border: 1px solid var(--border); border-radius: .75rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
+.transport-player > h3 { margin: 0; }
+.transport-player fieldset { display: flex; flex-wrap: wrap; gap: .55rem; min-width: 0; margin: 0; padding: .75rem; border: 1px solid var(--border); border-radius: .6rem; }
+.transport-player fieldset legend { font-weight: 800; }
+.transport-player fieldset label { display: inline-flex; align-items: center; gap: .45rem; min-block-size: 44px; padding: .5rem .7rem; border: 1px solid var(--border); border-radius: .45rem; background: var(--background); cursor: pointer; }
+.transport-player fieldset label:has(input:checked) { border-color: var(--accent); border-inline-start-width: .35rem; background: color-mix(in srgb, var(--accent) 12%, var(--background)); }
+.transport-topology { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; min-width: 0; padding: 1rem; border: 2px dashed var(--accent); border-radius: .7rem; background: var(--background); }
+.transport-topology > div { display: grid; align-content: center; gap: .3rem; min-width: 0; min-height: 5rem; padding: .65rem; text-align: center; border: 1px solid var(--border); border-radius: .55rem; }
+.transport-topology span { color: var(--muted); overflow-wrap: anywhere; }
+.transport-topology [data-direction], .transport-topology [data-protocol] { border-color: var(--accent); border-inline-start-width: .35rem; }
+.transport-tuple { padding: .75rem; border-inline-start: .35rem solid var(--accent); background: var(--background); overflow-wrap: anywhere; }
+.transport-evidence-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: .6rem; }
+.transport-evidence-scroll table { width: 100%; min-width: 34rem; border-collapse: collapse; }
+.transport-evidence-scroll th, .transport-evidence-scroll td { padding: .65rem; text-align: left; border-bottom: 1px solid var(--border); }
+.transport-socket-result, .transport-outcome { padding: .85rem; border: 1px solid var(--border); border-inline-start: .35rem solid var(--accent); border-radius: .55rem; background: var(--background); }
+.transport-socket-result[data-match="none"] { border-inline-start-style: dashed; }
+.transport-player-controls { margin: 0; }
+.transport-player-controls select { min-block-size: 44px; max-width: 100%; font: inherit; }
+@media (max-width: 35rem) { .transport-player fieldset label { width: 100%; } .transport-topology { grid-template-columns: minmax(0, 1fr); } .transport-player-controls button, .transport-player-controls label { flex: 1 1 8rem; } }
+@media (prefers-reduced-motion: reduce) { .transport-player * { animation: none !important; transition: none !important; } }
