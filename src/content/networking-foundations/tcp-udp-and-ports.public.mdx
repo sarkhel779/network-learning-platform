@@ -1,0 +1,83 @@
+<LearningObjective>Compare TCP and UDP, use ports and sockets to identify conversations, and trace connection establishment, reliable delivery, flow control, and closure.</LearningObjective>
+
+<h2 id="why-transport-protocols-exist">Why transport protocols exist</h2>
+
+IP delivers a packet to a host, but a host may run a browser, DNS client, messaging app, and many services at once. A **transport protocol** adds application-to-application delivery. TCP and UDP place source and destination ports inside the IP packet so the receiving operating system can continue the decision.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_why_transport_protocols_exist" anchor="why-transport-protocols-exist" />
+
+<h2 id="segments-datagrams-ports-sockets">Segments, datagrams, ports, and sockets</h2>
+
+A TCP transport unit is commonly called a **segment**; a UDP transport unit is a **datagram**. A port is a 16-bit number in the transport header, not a physical connector. A **socket** is an operating-system communication endpoint described by protocol, local address, and local port; a connected conversation also includes its remote address and port.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_segments_datagrams_ports_sockets" anchor="segments-datagrams-ports-sockets" />
+
+<h2 id="source-destination-ports-multiplexing">Source and destination ports, multiplexing, and demultiplexing</h2>
+
+The destination port helps the receiving host find a listening or receiving application. The source port identifies the sender's side and is often an **ephemeral** client port. Multiplexing lets many applications share the network stack; demultiplexing uses protocol and endpoint information to deliver each arrival to the correct socket. The full conversation is distinguished by protocol plus source and destination IP addresses and ports.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_source_destination_ports_multiplexing" anchor="source-destination-ports-multiplexing" />
+
+<h2 id="tcp-udp-header-essentials">TCP and UDP header essentials</h2>
+
+Both headers carry source and destination ports plus a checksum. TCP additionally carries sequence and acknowledgement numbers, flags, a receive window, and options because it manages a byte stream and connection state. UDP carries length and checksum around a message-oriented datagram with a smaller transport contract. Smaller does not mean UDP is always faster, and TCP's transport reliability does not guarantee application-level success.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_tcp_udp_header_essentials" anchor="tcp-udp-header-essentials" />
+
+<h2 id="interactive-tcp-connection">Interactive TCP Connection Journey</h2>
+
+Follow successful setup, data, loss and retransmission, graceful closure, explicit refusal, and timeout. Watch the direction, flags, sequence and acknowledgement values, receive window, and both endpoint states update together.
+
+<TcpConnectionPlayer progressItemId="tcp_udp_and_ports_interactive_interactive_tcp_connection" />
+
+<h2 id="sequence-acknowledgements-ordered-delivery">Sequence numbers, acknowledgements, and ordered delivery</h2>
+
+TCP numbers bytes. A segment beginning at sequence 1001 with 100 payload bytes covers bytes 1001 through 1100; acknowledgement 1101 says the receiver next expects byte 1101. The receiver can reorder arrived ranges before presenting a continuous byte stream. An ACK proves transport receipt through a byte position, not that the application processed the data successfully.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_sequence_acknowledgements_ordered_delivery" anchor="sequence-acknowledgements-ordered-delivery" />
+
+<h2 id="loss-retransmission-duplicates">Loss, retransmission, and duplicates</h2>
+
+When acknowledgement evidence does not advance, TCP may retransmit the missing sequence range. If an original copy was merely delayed, both copies can arrive; sequence numbers let the receiver discard duplicate bytes rather than deliver them twice. Retransmission improves delivery but cannot promise that a connection will eventually succeed.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_loss_retransmission_duplicates" anchor="loss-retransmission-duplicates" />
+
+<h2 id="flow-control-receive-window">Flow control and the receive window</h2>
+
+The receiver advertises how much additional data it can currently buffer in the **receive window**. The sender limits unacknowledged data accordingly so it does not overwhelm that receiver. This is flow control between endpoints; congestion control, which responds to network conditions, belongs to deeper study.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_flow_control_receive_window" anchor="flow-control-receive-window" />
+
+<h2 id="graceful-closure-resets">Graceful closure and resets</h2>
+
+FIN and ACK close each sending direction gracefully because TCP is full duplex. RST ends or rejects a connection abruptly. A reachable host with no TCP listener commonly returns RST, but a timeout is different: no response was observed, so loss, filtering, routing, return-path, or host conditions remain possible.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_graceful_closure_resets" anchor="graceful-closure-resets" />
+
+<h2 id="interactive-tcp-udp-port-delivery">Interactive TCP vs UDP and Port Delivery</h2>
+
+Trace TCP and UDP arrivals through header inspection and socket lookup. Compare listening applications, two ephemeral client conversations, and closed destinations. A TCP host may return RST; a UDP host may return ICMP Port Unreachable, while filtering or policy can instead leave the sender observing silence.
+
+<PortDeliveryPlayer progressItemId="tcp_udp_and_ports_interactive_interactive_tcp_udp_port_delivery" />
+
+<h2 id="common-service-ephemeral-ports">Common service ports and ephemeral ports</h2>
+
+These defaults are clues, not immutable rules. Clients normally choose temporary ephemeral source ports while servers listen on known service ports.
+
+| Service | Foundational transport and port |
+| --- | --- |
+| HTTP | TCP 80 |
+| HTTPS | TCP 443; modern HTTP can also use QUIC over UDP |
+| DNS | UDP or TCP 53, depending on the exchange |
+| DHCP | UDP 67 and 68 |
+| SSH | TCP 22 |
+| SMTP | TCP 25 for foundational server-to-server delivery |
+| NTP | UDP 123 |
+
+<SectionContinue itemId="tcp_udp_and_ports_section_common_service_ephemeral_ports" anchor="common-service-ephemeral-ports" />
+
+<h2 id="choosing-tcp-or-udp">Choosing TCP or UDP carefully</h2>
+
+Choose based on the application's delivery contract. TCP supplies connection state, ordered bytes, acknowledgements, retransmission, and flow control. UDP supplies independent datagrams and leaves ordering, recovery, pacing, and session behavior to the application when needed. Either can perform well or poorly depending on the workload, implementation, path, and higher-layer design.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_choosing_tcp_or_udp" anchor="choosing-tcp-or-udp" />

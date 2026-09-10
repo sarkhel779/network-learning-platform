@@ -36,6 +36,8 @@ import { RoutingTableDecisionPlayer } from "@/features/routing/routing-table-dec
 import { HopByHopForwardingPlayer } from "@/features/routing/hop-by-hop-forwarding-player";
 import { PingEvidencePlayer } from "@/features/icmp/ping-evidence-player";
 import { TracerouteDiscoveryPlayer } from "@/features/icmp/traceroute-discovery-player";
+import { TcpConnectionPlayer } from "@/features/transport/tcp-connection-player";
+import { PortDeliveryPlayer } from "@/features/transport/port-delivery-player";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -64,6 +66,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     PremiumPreview,
     PingEvidencePlayer,
     TracerouteDiscoveryPlayer,
+    TcpConnectionPlayer,
+    PortDeliveryPlayer,
     RouteDecisionPlayer,
     RouteDecisionExperience,
     RoutingTableDecisionPlayer,
