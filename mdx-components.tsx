@@ -50,6 +50,7 @@ import { RootBootstrapPlayer } from "@/features/dns/root-bootstrap-player";
 import { ServiceJourneyPlayer } from "@/features/essential-services/service-journey-player";
 import { ProtocolMessageInspector } from "@/features/essential-services/protocol-message-inspector";
 import { PortTransportPanel } from "@/features/essential-services/port-transport-panel";
+import { ServiceTroubleshootingLab } from "@/features/essential-services/service-troubleshooting-lab";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -69,6 +70,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ServiceJourneyPlayer,
     ProtocolMessageInspector,
     PortTransportPanel,
+    ServiceTroubleshootingLab,
     EdgeDevicePlayer,
     EthernetFrameExplorer,
     FirstPacketJourneyPlayer,
