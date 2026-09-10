@@ -86,6 +86,9 @@ vi.mock("@/content/networking-foundations/tcp-udp-and-ports.account.mdx", () => 
 vi.mock("@/content/networking-foundations/dhcp-and-automatic-address-configuration.public.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/dhcp-and-automatic-address-configuration.account.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/dhcp-and-automatic-address-configuration.pro.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/dns-and-name-resolution.public.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/dns-and-name-resolution.account.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/dns-and-name-resolution.pro.mdx", () => ({ default: () => null }));
 
 import {
   createAuthorizedLessonContentLoader,
@@ -308,6 +311,13 @@ describe("loadAuthorizedLessonContent", () => {
 
   it("loads DHCP content according to anonymous, account, and Pro access", async () => {
     const key = "networking-foundations/dhcp-and-automatic-address-configuration";
+    expect(await loadAuthorizedLessonContent(key, "anonymous")).toMatchObject({ public: expect.anything(), account: undefined, pro: undefined });
+    expect(await loadAuthorizedLessonContent(key, "account")).toMatchObject({ public: expect.anything(), account: expect.anything(), pro: undefined });
+    expect(await loadAuthorizedLessonContent(key, "pro")).toMatchObject({ public: expect.anything(), account: expect.anything(), pro: expect.anything() });
+  });
+
+  it("loads DNS content according to anonymous, account, and Pro access", async () => {
+    const key = "networking-foundations/dns-and-name-resolution";
     expect(await loadAuthorizedLessonContent(key, "anonymous")).toMatchObject({ public: expect.anything(), account: undefined, pro: undefined });
     expect(await loadAuthorizedLessonContent(key, "account")).toMatchObject({ public: expect.anything(), account: expect.anything(), pro: undefined });
     expect(await loadAuthorizedLessonContent(key, "pro")).toMatchObject({ public: expect.anything(), account: expect.anything(), pro: expect.anything() });
