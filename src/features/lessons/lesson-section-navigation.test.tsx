@@ -95,6 +95,27 @@ describe("LessonSectionNavigation", () => {
     expect(navigation.querySelector(".dns-map__travelling-packet")).not.toBe(firstPacket);
   });
 
+  it("renders a reusable service-station map and preserves locked anchors", async () => {
+    const user = userEvent.setup();
+    const mapSections: LessonSection[] = [
+      { id: "http-request-response", label: "HTTP request and response", access: "public" },
+      { id: "web-capture-analysis", label: "Pro capture analysis", access: "pro", preview: "Inspect evidence." },
+    ];
+    render(<LessonSectionNavigation presentation="network-map" panelId="service-page-contents" lockedReturnTo="/learn/networking-foundations/http-https-tls-and-essential-network-services" mapGroups={[
+      { label: "Web services", node: "Web", ids: ["http-request-response"] },
+      { label: "Advanced evidence", node: "Pro", ids: ["web-capture-analysis"] },
+    ]} sections={mapSections} />);
+    const button = screen.getByRole("button", { name: "Page contents" });
+    await user.click(button);
+    expect(screen.getByRole("link", { name: "HTTP request and response" })).toHaveAttribute("href", "#http-request-response");
+    expect(screen.getByRole("link", { name: /Pro capture analysis.*Pro.*Locked/ })).toHaveAttribute("href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fhttp-https-tls-and-essential-network-services%23web-capture-analysis");
+    const firstRoute = screen.getByTestId("network-map-route");
+    expect(firstRoute).toHaveAttribute("data-reveal-cycle", "1");
+    await user.click(button);
+    await user.click(button);
+    expect(screen.getByTestId("network-map-route")).toHaveAttribute("data-reveal-cycle", "2");
+  });
+
   it("server-renders locked previews without paragraph nesting or parser repairs", () => {
     const html = renderToStaticMarkup(<LessonSectionNavigation sections={[
       { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore standards and diagnostic checks." },

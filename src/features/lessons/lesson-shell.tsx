@@ -14,6 +14,15 @@ import { LearningObjective } from "./learning-objective";
 import { LessonSectionNavigation } from "./lesson-section-navigation";
 import { RegistrationBoundary } from "./registration-boundary";
 
+const essentialServiceGroups = [
+  { label: "Web services", node: "Web", ids: ["web-services", "web-service-journey", "web-troubleshooting", "web-capture-analysis", "web-rfc-validation"] },
+  { label: "Remote access", node: "Remote", ids: ["remote-access-services", "remote-access-journey", "remote-access-troubleshooting", "remote-access-capture-analysis", "remote-access-rfc-validation"] },
+  { label: "Email services", node: "Email", ids: ["email-services", "email-journey", "email-troubleshooting", "email-capture-analysis", "email-rfc-validation"] },
+  { label: "File transfer", node: "Files", ids: ["file-transfer-services", "file-transfer-journey", "file-transfer-troubleshooting", "file-transfer-capture-analysis", "file-transfer-rfc-validation"] },
+  { label: "Time services", node: "Time", ids: ["time-services", "time-journey", "time-troubleshooting", "time-capture-analysis", "time-rfc-validation"] },
+  { label: "Monitoring", node: "Monitor", ids: ["monitoring-services", "monitoring-journey", "monitoring-troubleshooting", "monitoring-capture-analysis", "monitoring-rfc-validation", "knowledge-check-summary"] },
+] as const;
+
 type LessonShellProps = {
   pathway: Pathway;
   lesson: LessonSummary;
@@ -106,8 +115,10 @@ export function LessonShell({
         <LearningObjective>{lesson.objective}</LearningObjective>
 
         <LessonSectionNavigation
-          lockedReturnTo={lesson.slug === "dns-and-name-resolution" ? `/learn/${pathway.slug}/${lesson.slug}` : undefined}
-          presentation={lesson.slug === "dns-and-name-resolution" ? "dns-network-map" : "list"}
+          lockedReturnTo={["dns-and-name-resolution", "http-https-tls-and-essential-network-services"].includes(lesson.slug) ? `/learn/${pathway.slug}/${lesson.slug}` : undefined}
+          mapGroups={lesson.slug === "http-https-tls-and-essential-network-services" ? essentialServiceGroups : undefined}
+          panelId={lesson.slug === "http-https-tls-and-essential-network-services" ? "service-page-contents" : "dns-page-contents"}
+          presentation={lesson.slug === "dns-and-name-resolution" ? "dns-network-map" : lesson.slug === "http-https-tls-and-essential-network-services" ? "network-map" : "list"}
           sections={lesson.sections}
         />
 
