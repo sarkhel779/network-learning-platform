@@ -1,6 +1,28 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { resolveTestViewer, toViewer } from "./session";
+const { authGetUser } = vi.hoisted(() => ({ authGetUser: vi.fn() }));
+
+vi.mock("next/headers", () => ({ headers: vi.fn(async () => new Headers()) }));
+vi.mock("./server", () => ({
+  createServerSupabaseClient: vi.fn(async () => ({ auth: { getUser: authGetUser } })),
+}));
+
+import { getViewer, resolveTestViewer, toViewer } from "./session";
+
+beforeEach(() => {
+  vi.unstubAllEnvs();
+  authGetUser.mockReset().mockResolvedValue({ data: { user: null } });
+});
+
+describe("getViewer", () => {
+  it("returns an anonymous viewer without creating a Supabase client when configuration is absent", async () => {
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "");
+
+    await expect(getViewer()).resolves.toBeNull();
+    expect(authGetUser).not.toHaveBeenCalled();
+  });
+});
 
 describe("toViewer", () => {
   it("returns only workspace-safe identity fields", () => {

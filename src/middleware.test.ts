@@ -48,6 +48,18 @@ describe("session refresh middleware", () => {
     expect(getUser).toHaveBeenCalledOnce();
   });
 
+  it("keeps public routes available when Supabase is not configured", async () => {
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "");
+
+    const response = await middleware(new NextRequest(
+      "https://packetsecrets.test/learn/networking-foundations/icmp-ping-and-path-discovery",
+    ));
+
+    expect(response.status).toBe(200);
+    expect(getUser).not.toHaveBeenCalled();
+  });
+
   it("validates the user and copies refreshed cookies onto the response", async () => {
     const response = await middleware(new NextRequest("https://packetsecrets.test/learn/networking-foundations/vlans"));
 
