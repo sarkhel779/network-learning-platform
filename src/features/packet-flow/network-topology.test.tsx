@@ -42,6 +42,17 @@ describe("NetworkTopology semantics", () => {
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 
+  it("reserves room for lower device labels and keeps packet markers above them", () => {
+    const lowerLinkStep = scenario.steps.find((step) => step.activeLinkIds.includes("switch-local") && step.packet);
+    expect(lowerLinkStep).toBeDefined();
+    const { container } = render(<NetworkTopology scenario={scenario} step={lowerLinkStep!} reducedMotion />);
+
+    expect(screen.getByRole("img", { name: "Wired host to local server" })).toHaveAttribute("viewBox", "0 0 800 270");
+    const markerTransform = container.querySelector("[data-packet-marker]")?.getAttribute("transform") ?? "";
+    const markerY = Number(markerTransform.match(/translate\([^ ]+ ([^)]+)\)/)?.[1]);
+    expect(markerY).toBeLessThanOrEqual(140);
+  });
+
   it.each(["{Enter}", " "])("activates a focused device with %s", async (key) => {
     const user = userEvent.setup();
     const onDeviceSelect = vi.fn();

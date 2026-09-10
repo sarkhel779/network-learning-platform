@@ -299,7 +299,7 @@ a { color: inherit; }
 .network-topology__packet-marker { fill: var(--accent); stroke: var(--foreground); stroke-width: 2; }
 .network-topology__packet-marker--broadcast { fill: #b45309; stroke-width: 3; }
 .network-topology__packet-marker text { fill: #000; stroke: none; font-size: 1rem; font-weight: 900; letter-spacing: 0.05em; }
-.network-topology__active-text { margin: 0.75rem 0 0; color: var(--foreground); font-weight: 700; }
+.network-topology__active-text { margin: 1rem 0 0; color: var(--foreground); font-weight: 700; line-height: 1.5rem; }
 .packet-flow-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin: 1rem 0; }
 .packet-flow-controls button, .packet-flow-controls select { min-height: 2.75rem; border: 1px solid var(--accent); border-radius: 0.35rem; background: var(--background); color: var(--foreground); font: inherit; }
 .packet-flow-controls button { min-width: 5.5rem; padding: 0.55rem 0.8rem; cursor: pointer; font-weight: 700; }
@@ -793,8 +793,11 @@ h1 {
 
 .subnet-player { min-width: 0; margin: 2rem 0; padding: clamp(.8rem, 2.5vw, 1.4rem); border: 1px solid var(--border); border-radius: .75rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
 .subnet-player h3 { margin-top: 0; }
-.subnet-player fieldset, .player-controls { display: flex; flex-wrap: wrap; gap: .55rem; min-width: 0; padding: .75rem; border: 1px solid var(--border); border-radius: .6rem; }
+.subnet-player fieldset, .player-controls { display: flex; flex-wrap: wrap; gap: .55rem; min-width: 0; margin: 1rem 0; padding: .75rem; border: 1px solid var(--border); border-radius: .6rem; }
 .subnet-player fieldset label, .player-controls button, .player-controls label { display: flex; align-items: center; gap: .45rem; min-block-size: 44px; padding: .5rem .7rem; }
+.player-controls button, .player-controls select { border-width: 1px; border-style: solid; border-color: var(--accent); border-radius: .45rem; background: var(--background); color: inherit; font: inherit; }
+.player-controls button { cursor: pointer; font-weight: 700; }
+.player-controls button:disabled { cursor: not-allowed; opacity: .55; }
 .subnet-player fieldset label { border: 1px solid var(--border); border-radius: .45rem; background: var(--background); }
 .subnet-player fieldset label:has(input:checked) { border-color: var(--accent); border-inline-start-width: .35rem; }
 .subnet-address { font-size: 1.25rem; }
@@ -848,3 +851,24 @@ h1 {
   .hop-by-hop-player .network-topology,
   .hop-by-hop-player .packet-inspector { min-width: 0; overflow-x: auto; }
 }
+
+.transport-player { display: grid; gap: 1rem; min-width: 0; max-width: 100%; margin: 2rem 0; padding: clamp(.8rem, 2.5vw, 1.4rem); overflow-wrap: anywhere; border: 1px solid var(--border); border-radius: .75rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
+.transport-player > h3 { margin: 0; }
+.transport-player fieldset { display: flex; flex-wrap: wrap; gap: .55rem; min-width: 0; margin: 0; padding: .75rem; border: 1px solid var(--border); border-radius: .6rem; }
+.transport-player fieldset legend { font-weight: 800; }
+.transport-player fieldset label { display: inline-flex; align-items: center; gap: .45rem; min-block-size: 44px; padding: .5rem .7rem; border: 1px solid var(--border); border-radius: .45rem; background: var(--background); cursor: pointer; }
+.transport-player fieldset label:has(input:checked) { border-color: var(--accent); border-inline-start-width: .35rem; background: color-mix(in srgb, var(--accent) 12%, var(--background)); }
+.transport-topology { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; min-width: 0; padding: 1rem; border: 2px dashed var(--accent); border-radius: .7rem; background: var(--background); }
+.transport-topology > div { display: grid; align-content: center; gap: .3rem; min-width: 0; min-height: 5rem; padding: .65rem; text-align: center; border: 1px solid var(--border); border-radius: .55rem; }
+.transport-topology span { color: var(--muted); overflow-wrap: anywhere; }
+.transport-topology [data-direction], .transport-topology [data-protocol] { border-color: var(--accent); border-inline-start-width: .35rem; }
+.transport-tuple { padding: .75rem; border-inline-start: .35rem solid var(--accent); background: var(--background); overflow-wrap: anywhere; }
+.transport-evidence-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: .6rem; }
+.transport-evidence-scroll table { width: 100%; min-width: 34rem; border-collapse: collapse; }
+.transport-evidence-scroll th, .transport-evidence-scroll td { padding: .65rem; text-align: left; border-bottom: 1px solid var(--border); }
+.transport-socket-result, .transport-outcome { padding: .85rem; border: 1px solid var(--border); border-inline-start: .35rem solid var(--accent); border-radius: .55rem; background: var(--background); }
+.transport-socket-result[data-match="none"] { border-inline-start-style: dashed; }
+.transport-player-controls { margin: 0; }
+.transport-player-controls select { min-block-size: 44px; max-width: 100%; font: inherit; }
+@media (max-width: 35rem) { .transport-player fieldset label { width: 100%; } .transport-topology { grid-template-columns: minmax(0, 1fr); } .transport-player-controls button, .transport-player-controls label { flex: 1 1 8rem; } }
+@media (prefers-reduced-motion: reduce) { .transport-player * { animation: none !important; transition: none !important; } }

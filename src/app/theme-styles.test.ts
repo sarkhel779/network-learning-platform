@@ -55,4 +55,56 @@ describe("system theme and table styles", () => {
     expect(lessonShell).not.toMatch(/(?:^|;)\s*width:/);
     expect(lessonShell).not.toMatch(/transform:/);
   });
+
+  it("keeps transport players responsive, touch-friendly, and locally scrollable", () => {
+    expect(css).toMatch(/\.transport-player\s*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%/);
+    expect(css).toMatch(/\.transport-player fieldset label[^\{]*\{[^}]*min-block-size:\s*44px/);
+    expect(css).toMatch(/\.transport-evidence-scroll\s*\{[^}]*max-width:\s*100%[^}]*overflow-x:\s*auto/);
+    expect(css).toMatch(/@media\s*\(max-width:\s*35rem\)[\s\S]*\.transport-topology\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
+    expect(css).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.transport-player \*\s*\{[^}]*animation:\s*none\s*!important/);
+  });
+
+  it("renders shared player controls with the established outlined appearance", () => {
+    const style = document.createElement("style");
+    style.textContent = css;
+    const controls = document.createElement("div");
+    controls.className = "player-controls";
+    const button = document.createElement("button");
+    button.textContent = "Next";
+    controls.append(button);
+    document.head.append(style);
+    document.body.append(controls);
+    document.documentElement.style.setProperty("--accent", "#2563eb");
+    document.documentElement.style.setProperty("--background", "transparent");
+    try {
+      const rendered = getComputedStyle(button);
+      expect(rendered.borderStyle).toBe("solid");
+      expect(rendered.backgroundColor).toBe("rgba(0, 0, 0, 0)");
+      expect(rendered.fontWeight).toBe("700");
+    } finally {
+      document.documentElement.style.removeProperty("--accent");
+      document.documentElement.style.removeProperty("--background");
+      controls.remove();
+      style.remove();
+    }
+  });
+
+  it("keeps topology status and playback controls vertically separated", () => {
+    const style = document.createElement("style");
+    style.textContent = css;
+    const status = document.createElement("p");
+    status.className = "network-topology__active-text";
+    const controls = document.createElement("div");
+    controls.className = "player-controls";
+    document.head.append(style);
+    document.body.append(status, controls);
+    try {
+      expect(getComputedStyle(status).lineHeight).toBe("1.5rem");
+      expect(getComputedStyle(controls).marginTop).toBe("1rem");
+    } finally {
+      status.remove();
+      controls.remove();
+      style.remove();
+    }
+  });
 });

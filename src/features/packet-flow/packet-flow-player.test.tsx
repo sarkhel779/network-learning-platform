@@ -317,8 +317,8 @@ describe("PacketFlowPlayer", () => {
     const requestAnimation = requestMarker?.querySelector("animateTransform");
 
     expect(requestMarker).toHaveAttribute("data-step-id", "request");
-    expect(requestAnimation).toHaveAttribute("from", "152 120");
-    expect(requestAnimation).toHaveAttribute("to", "648 120");
+    expect(requestAnimation).toHaveAttribute("from", "152 90");
+    expect(requestAnimation).toHaveAttribute("to", "648 90");
 
     rerender(<NetworkTopology scenario={scenario} step={reverseTravelStep} reducedMotion={false} />);
     const replyMarker = container.querySelector("[data-packet-marker]");
@@ -326,8 +326,8 @@ describe("PacketFlowPlayer", () => {
 
     expect(replyMarker).not.toBe(requestMarker);
     expect(replyMarker).toHaveAttribute("data-step-id", "reply-on-same-link");
-    expect(replyAnimation).toHaveAttribute("from", "648 120");
-    expect(replyAnimation).toHaveAttribute("to", "152 120");
+    expect(replyAnimation).toHaveAttribute("from", "648 90");
+    expect(replyAnimation).toHaveAttribute("to", "152 90");
   });
 
   it("renders a reduced-motion packet directly at the destination", () => {
@@ -336,7 +336,7 @@ describe("PacketFlowPlayer", () => {
     );
     const marker = container.querySelector("[data-packet-marker]");
 
-    expect(marker).toHaveAttribute("transform", "translate(648 120)");
+    expect(marker).toHaveAttribute("transform", "translate(648 90)");
     expect(marker?.querySelector("animateTransform")).not.toBeInTheDocument();
   });
 

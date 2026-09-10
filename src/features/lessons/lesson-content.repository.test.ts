@@ -81,6 +81,8 @@ vi.mock("@/content/networking-foundations/routing-tables-and-default-routes.publ
 vi.mock("@/content/networking-foundations/routing-tables-and-default-routes.account.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/icmp-ping-and-path-discovery.public.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/icmp-ping-and-path-discovery.account.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/tcp-udp-and-ports.public.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/tcp-udp-and-ports.account.mdx", () => ({ default: () => null }));
 
 import {
   createAuthorizedLessonContentLoader,
@@ -281,6 +283,17 @@ describe("loadAuthorizedLessonContent", () => {
 
   it("keeps ICMP practice protected while serving packet evidence publicly", async () => {
     const key = "networking-foundations/icmp-ping-and-path-discovery";
+    const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
+    expect(anonymous.public).toBeDefined();
+    expect(anonymous.account).toBeUndefined();
+    const account = await loadAuthorizedLessonContent(key, "account");
+    expect(account.public).toBeDefined();
+    expect(account.account).toBeDefined();
+    expect(account.pro).toBeUndefined();
+  });
+
+  it("keeps transport practice protected while serving both players publicly", async () => {
+    const key = "networking-foundations/tcp-udp-and-ports";
     const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
     expect(anonymous.public).toBeDefined();
     expect(anonymous.account).toBeUndefined();

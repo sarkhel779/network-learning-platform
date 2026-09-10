@@ -395,11 +395,31 @@ const curriculum: Pathway[] = [
         id: "module_transport_and_application_services", slug: "transport-and-application-services", title: "Transport and Application Services",
         description: "Explore transport behavior and the services applications rely on.",
         lessons: [
-          plannedLesson({
+          {
             id: "lesson_tcp_udp_and_ports", slug: "tcp-udp-and-ports", title: "TCP, UDP and Ports",
             objective: "Compare TCP and UDP, explain sockets/ports, and trace connection establishment, reliability, flow, and closure at a foundational level.",
             seo: { title: "TCP, UDP and Network Ports", description: "Compare TCP and UDP, learn how sockets and ports identify conversations, and trace foundational connection behavior." }, estimatedMinutes: 25,
-          }),
+            published: true,
+            sections: [
+              { id: "why-transport-protocols-exist", label: "Why transport protocols exist", access: "public" },
+              { id: "segments-datagrams-ports-sockets", label: "Segments, datagrams, ports, and sockets", access: "public" },
+              { id: "source-destination-ports-multiplexing", label: "Source and destination ports", access: "public" },
+              { id: "tcp-udp-header-essentials", label: "TCP and UDP header essentials", access: "public" },
+              { id: "interactive-tcp-connection", label: "Interactive TCP connection journey", access: "public" },
+              { id: "sequence-acknowledgements-ordered-delivery", label: "Sequence numbers and acknowledgements", access: "public" },
+              { id: "loss-retransmission-duplicates", label: "Loss, retransmission, and duplicates", access: "public" },
+              { id: "flow-control-receive-window", label: "Flow control and receive window", access: "public" },
+              { id: "graceful-closure-resets", label: "Graceful closure and resets", access: "public" },
+              { id: "interactive-tcp-udp-port-delivery", label: "Interactive TCP vs UDP port delivery", access: "public" },
+              { id: "common-service-ephemeral-ports", label: "Common service and ephemeral ports", access: "public" },
+              { id: "choosing-tcp-or-udp", label: "Choosing TCP or UDP", access: "public" },
+              { id: "inspect-transport-evidence", label: "Inspect transport evidence", access: "account" },
+              { id: "guided-transport-diagnosis", label: "Guided transport diagnosis", access: "account" },
+              { id: "troubleshoot-transport", label: "Troubleshoot transport", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Study congestion control, window scaling, SACK, QUIC, NAT/socket edge cases, and deeper transport analysis." },
+            ],
+          },
           plannedLesson({
             id: "lesson_dhcp_and_automatic_address_configuration", slug: "dhcp-and-automatic-address-configuration", title: "DHCP and Automatic Address Configuration",
             objective: "Trace address acquisition and identify the supplied address, prefix, gateway, DNS, and lease information.",

@@ -94,6 +94,10 @@ const lessonImports = {
     public: () => import("@/content/networking-foundations/icmp-ping-and-path-discovery.public.mdx"),
     account: () => import("@/content/networking-foundations/icmp-ping-and-path-discovery.account.mdx"),
   },
+  "networking-foundations/tcp-udp-and-ports": {
+    public: () => import("@/content/networking-foundations/tcp-udp-and-ports.public.mdx"),
+    account: () => import("@/content/networking-foundations/tcp-udp-and-ports.account.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),
