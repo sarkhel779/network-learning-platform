@@ -810,6 +810,17 @@ h1 {
 @media (prefers-reduced-motion: reduce) { .subnet-player * { animation: none !important; transition: none !important; } }
 
 .routing-decision-player { min-width: 0; }
+.ping-evidence-player { display: grid; gap: 1rem; min-width: 0; }
+.ping-evidence-player fieldset { display: flex; flex-wrap: wrap; gap: .55rem; }
+.ping-evidence-player fieldset label { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; }
+.icmp-topology { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; list-style: none; padding: 1rem; border: 1px solid var(--border); border-radius: .75rem; }
+.icmp-topology li { display: grid; gap: .25rem; text-align: center; }
+.icmp-topology li[data-active="true"] { outline: 3px solid var(--focus); outline-offset: 3px; }
+.icmp-topology span, .icmp-packet span { display: block; color: var(--muted); }
+.icmp-packet, .icmp-outcome { padding: .85rem; border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: .55rem; }
+.icmp-evidence-scroll { max-width: 100%; overflow-x: auto; }
+.icmp-evidence-scroll table { min-width: 34rem; }
+@media (max-width: 35rem) { .ping-evidence-player fieldset label { width: 100%; } .icmp-topology { grid-template-columns: 1fr; } }
 .routing-decision-player fieldset { display: flex; flex-wrap: wrap; gap: .5rem; }
 .routing-decision-player fieldset label { min-height: 44px; display: inline-flex; align-items: center; gap: .45rem; }
 .routing-table-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: .75rem; }
