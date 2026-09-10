@@ -83,6 +83,9 @@ vi.mock("@/content/networking-foundations/icmp-ping-and-path-discovery.public.md
 vi.mock("@/content/networking-foundations/icmp-ping-and-path-discovery.account.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/tcp-udp-and-ports.public.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/tcp-udp-and-ports.account.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/dhcp-and-automatic-address-configuration.public.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/dhcp-and-automatic-address-configuration.account.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/dhcp-and-automatic-address-configuration.pro.mdx", () => ({ default: () => null }));
 
 import {
   createAuthorizedLessonContentLoader,
@@ -301,6 +304,13 @@ describe("loadAuthorizedLessonContent", () => {
     expect(account.public).toBeDefined();
     expect(account.account).toBeDefined();
     expect(account.pro).toBeUndefined();
+  });
+
+  it("loads DHCP content according to anonymous, account, and Pro access", async () => {
+    const key = "networking-foundations/dhcp-and-automatic-address-configuration";
+    expect(await loadAuthorizedLessonContent(key, "anonymous")).toMatchObject({ public: expect.anything(), account: undefined, pro: undefined });
+    expect(await loadAuthorizedLessonContent(key, "account")).toMatchObject({ public: expect.anything(), account: expect.anything(), pro: undefined });
+    expect(await loadAuthorizedLessonContent(key, "pro")).toMatchObject({ public: expect.anything(), account: expect.anything(), pro: expect.anything() });
   });
 
   it("returns no OSI content to anonymous viewers", async () => {

@@ -38,6 +38,10 @@ import { PingEvidencePlayer } from "@/features/icmp/ping-evidence-player";
 import { TracerouteDiscoveryPlayer } from "@/features/icmp/traceroute-discovery-player";
 import { TcpConnectionPlayer } from "@/features/transport/tcp-connection-player";
 import { PortDeliveryPlayer } from "@/features/transport/port-delivery-player";
+import { DoraPlayer } from "@/features/dhcp/dora-player";
+import { DhcpRelayPlayer } from "@/features/dhcp/relay-player";
+import { LeaseTimingPlayer } from "@/features/dhcp/lease-timing-player";
+import { DhcpRfcCheck } from "@/features/dhcp/rfc-check";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -46,6 +50,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ConnectionMediaComparison,
     EncapsulationExperience,
     DeviceLayerScope,
+    DhcpRelayPlayer,
+    DhcpRfcCheck,
+    DoraPlayer,
     EdgeDevicePlayer,
     EthernetFrameExplorer,
     FirstPacketJourneyPlayer,
@@ -59,6 +66,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     Ipv6AddressExplorer,
     KnowledgeCheck,
     LayerModelComparison,
+    LeaseTimingPlayer,
     LearningObjective,
     NetworkCommunicationPacketFlow,
     NetworkDeviceSymbol,

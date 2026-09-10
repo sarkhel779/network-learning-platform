@@ -79,6 +79,7 @@ describe("catalog repository", () => {
       "access-points-modems-onts-and-firewalls",
       "arp-and-local-delivery",
       "cables-fibre-wireless-and-network-connections",
+      "dhcp-and-automatic-address-configuration",
       "ethernet-frames-and-mac-addresses",
       "first-packet-journey-through-a-small-network",
       "hosts-and-network-devices",
@@ -407,6 +408,7 @@ describe("catalog repository", () => {
       "routing-tables-and-default-routes",
       "icmp-ping-and-path-discovery",
       "tcp-udp-and-ports",
+      "dhcp-and-automatic-address-configuration",
     ]);
     expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
       title: "Cables, Fibre, Wireless and Network Connections",
@@ -467,7 +469,7 @@ describe("catalog repository", () => {
   it("keeps public foundations limited to published beginner lessons", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables, icmp, transport] = lessons;
+    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables, icmp, transport, dhcp] = lessons;
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
@@ -487,12 +489,13 @@ describe("catalog repository", () => {
     expect(routingTables.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(icmp.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(transport.sections?.some(({ access }) => access === "public")).toBe(true);
+    expect(dhcp.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(
-      lessons.slice(19).some(({ sections }) =>
+      lessons.slice(20).some(({ sections }) =>
         sections?.some(({ access }) => access === "public"),
       ),
     ).toBe(false);
-    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables, icmp, transport]) {
+    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables, icmp, transport, dhcp]) {
       expect(lesson.sections?.at(-1)).toEqual(expect.objectContaining({
         id: "pro-deep-dive",
         label: "Pro Deep Dive",
@@ -588,7 +591,25 @@ describe("catalog repository", () => {
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
       previous: { slug: "icmp-ping-and-path-discovery", published: true },
-      next: { slug: "dhcp-and-automatic-address-configuration", published: false },
+      next: { slug: "dhcp-and-automatic-address-configuration", published: true },
+    });
+  });
+
+  it("publishes DHCP between transport and DNS with the approved access sequence", () => {
+    const lesson = getLesson("networking-foundations", "dhcp-and-automatic-address-configuration");
+    expect(lesson).toMatchObject({ id: "lesson_dhcp_and_automatic_address_configuration", published: true, estimatedMinutes: 35 });
+    expect(lesson.sections?.map(({ id, access }) => [id, access])).toEqual([
+      ["why-automatic-configuration-exists", "public"], ["dhcp-roles", "public"], ["udp-ports-67-68", "public"],
+      ["broadcast-unicast-rules", "public"], ["dhcp-packet-structure", "public"], ["interactive-dora-journey", "public"],
+      ["lease-contents", "public"], ["lease-lifecycle", "public"], ["interactive-relay-helper", "public"],
+      ["dhcp-boundaries", "public"], ["dhcp-evidence", "public"], ["summary", "public"],
+      ["inspect-dhcp-evidence", "account"], ["guided-dora-diagnosis", "account"], ["guided-relay-diagnosis", "account"],
+      ["troubleshoot-dhcp", "account"], ["knowledge-check-summary", "account"],
+      ["lease-timing-diagram", "pro"], ["rfc-level-checks", "pro"], ["pro-deep-dive", "pro"],
+    ]);
+    expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
+      previous: { slug: "tcp-udp-and-ports", published: true },
+      next: { slug: "dns-and-name-resolution", published: false },
     });
   });
 

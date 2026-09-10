@@ -98,6 +98,11 @@ const lessonImports = {
     public: () => import("@/content/networking-foundations/tcp-udp-and-ports.public.mdx"),
     account: () => import("@/content/networking-foundations/tcp-udp-and-ports.account.mdx"),
   },
+  "networking-foundations/dhcp-and-automatic-address-configuration": {
+    public: () => import("@/content/networking-foundations/dhcp-and-automatic-address-configuration.public.mdx"),
+    account: () => import("@/content/networking-foundations/dhcp-and-automatic-address-configuration.account.mdx"),
+    pro: () => import("@/content/networking-foundations/dhcp-and-automatic-address-configuration.pro.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),
