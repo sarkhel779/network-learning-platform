@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(18);
+    expect(lessonProgressManifests).toHaveLength(19);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -59,6 +59,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609100001_add_ipv6_fundamentals_progress.sql",
       "supabase/migrations/202609100002_add_routing_tables_progress.sql",
       "supabase/migrations/202609100003_add_icmp_ping_path_progress.sql",
+      "supabase/migrations/202609100004_add_tcp_udp_ports_progress.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -97,6 +98,17 @@ describe("lessonProgressManifests", () => {
       ?.filter(({ access, id }) => access !== "pro" && id !== "knowledge-check-summary")
       .map(({ id }) => id);
     expect(manifest.items.slice(0, 15).map(({ anchor }) => anchor)).toEqual(expectedCatalogAnchors);
+  });
+
+  it("registers the transport lesson in catalog order with two players and three checks", () => {
+    const manifest = getLessonProgressManifest("path_networking_foundations", "lesson_tcp_udp_and_ports");
+    expect(manifest.items).toHaveLength(18);
+    expect(new Set(manifest.items.map(({ itemId }) => itemId)).size).toBe(18);
+    expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor))
+      .toEqual(["interactive-tcp-connection", "interactive-tcp-udp-port-delivery"]);
+    expect(manifest.items.filter(({ kind }) => kind === "knowledge_check").map(({ itemId }) => itemId))
+      .toEqual(["tcp_udp_and_ports_check_1", "tcp_udp_and_ports_check_2", "tcp_udp_and_ports_check_3"]);
+    expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
   });
 
   it("parenthesizes the CASE expression used by the progress event guard", () => {
