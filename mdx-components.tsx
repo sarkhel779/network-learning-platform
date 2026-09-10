@@ -47,6 +47,9 @@ import { DnsTroubleshootingPlayer } from "@/features/dns/troubleshooting-player"
 import { DnsTimingPlayer } from "@/features/dns/dns-timing-player";
 import { DnsRfcCheck } from "@/features/dns/dns-rfc-check";
 import { RootBootstrapPlayer } from "@/features/dns/root-bootstrap-player";
+import { ServiceJourneyPlayer } from "@/features/essential-services/service-journey-player";
+import { ProtocolMessageInspector } from "@/features/essential-services/protocol-message-inspector";
+import { PortTransportPanel } from "@/features/essential-services/port-transport-panel";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -63,6 +66,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     DnsTimingPlayer,
     DnsRfcCheck,
     RootBootstrapPlayer,
+    ServiceJourneyPlayer,
+    ProtocolMessageInspector,
+    PortTransportPanel,
     EdgeDevicePlayer,
     EthernetFrameExplorer,
     FirstPacketJourneyPlayer,
