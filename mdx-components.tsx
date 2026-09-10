@@ -51,6 +51,8 @@ import { ServiceJourneyPlayer } from "@/features/essential-services/service-jour
 import { ProtocolMessageInspector } from "@/features/essential-services/protocol-message-inspector";
 import { PortTransportPanel } from "@/features/essential-services/port-transport-panel";
 import { ServiceTroubleshootingLab } from "@/features/essential-services/service-troubleshooting-lab";
+import { CaptureAnalysisLab } from "@/features/essential-services/capture-analysis-lab";
+import { RfcValidationLab } from "@/features/essential-services/rfc-validation-lab";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -71,6 +73,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ProtocolMessageInspector,
     PortTransportPanel,
     ServiceTroubleshootingLab,
+    CaptureAnalysisLab,
+    RfcValidationLab,
     EdgeDevicePlayer,
     EthernetFrameExplorer,
     FirstPacketJourneyPlayer,
