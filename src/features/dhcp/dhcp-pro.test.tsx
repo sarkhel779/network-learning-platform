@@ -25,6 +25,14 @@ describe("advanced DHCP lease timing", () => {
     expect(screen.getByText(/lease valid/i)).toBeVisible();
     expect(screen.getByTestId("lease-timeline-marker")).toHaveStyle({ left: "0%" });
   });
+
+  it("provides working shared playback controls", async () => {
+    const user = userEvent.setup();
+    render(<LeaseTimingPlayer />);
+    expect(screen.getByRole("button", { name: "Play" }).closest(".player-controls")).not.toBeNull();
+    await user.click(screen.getByRole("button", { name: "Play" }));
+    expect(screen.getByRole("button", { name: "Pause" })).toBeVisible();
+  });
 });
 
 describe("RFC checks", () => {

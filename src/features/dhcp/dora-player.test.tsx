@@ -14,6 +14,8 @@ describe("DoraPlayer", () => {
     expect(screen.getAllByRole("radio")).toHaveLength(4);
     expect(screen.getByRole("status")).toHaveTextContent("DHCPDISCOVER");
     expect(screen.getByText("UDP 68 → 67")).toBeVisible();
+    expect(screen.getByRole("button", { name: "Next" }).closest(".player-controls")).not.toBeNull();
+    expect(screen.getByRole("img", { name: /direct DHCP packet traversal/i })).toHaveAttribute("viewBox", "0 0 800 210");
     await user.click(screen.getByRole("button", { name: "Next" }));
     expect(screen.getByRole("status")).toHaveTextContent("DHCPOFFER");
     expect(screen.getByText("UDP 67 → 68")).toBeVisible();

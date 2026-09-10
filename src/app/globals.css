@@ -893,5 +893,16 @@ h1 {
 .dhcp-inspector-region .table-scroll { max-width: 100%; overflow-x: auto; }
 .dhcp-inspector-region table { width: 100%; min-width: 38rem; border-collapse: collapse; }
 .dhcp-inspector-region th, .dhcp-inspector-region td { padding: .6rem; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+.lease-timeline { min-width: 0; max-width: 100%; padding: 1rem; border: 1px solid var(--border); border-radius: .6rem; background: var(--background); }
+.lease-timeline__track { position: relative; height: .55rem; margin: 1rem .55rem; border-radius: 999px; background: color-mix(in srgb, var(--accent) 25%, var(--border)); }
+.lease-timeline__track span { position: absolute; top: 50%; width: 1.1rem; height: 1.1rem; border: 3px solid var(--background); border-radius: 50%; background: var(--accent); transform: translate(-50%, -50%); }
+.lease-timeline ol { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .45rem 1rem; margin: 0; padding-inline-start: 1.25rem; }
+.dhcp-rfc-check { display: grid; gap: .75rem; min-width: 0; max-width: 100%; margin: 1rem 0; padding: 1rem; border: 1px solid var(--border); border-radius: .65rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); }
+.dhcp-rfc-check > h3, .dhcp-rfc-check > p { margin: 0; }
+.dhcp-rfc-check fieldset { display: grid; gap: .5rem; min-width: 0; margin: 0; border: 1px solid var(--border); border-radius: .55rem; }
+.dhcp-rfc-check fieldset label { display: flex; align-items: center; gap: .5rem; min-block-size: 44px; }
+.dhcp-rfc-check > button { justify-self: start; min-block-size: 44px; padding: .55rem .8rem; border: 1px solid var(--accent); border-radius: .45rem; background: var(--background); color: inherit; font: inherit; font-weight: 700; cursor: pointer; }
+.dhcp-rfc-check > button:disabled { cursor: not-allowed; opacity: .55; }
+.dhcp-rfc-check [role="status"]:not(:empty) { padding: .75rem; border-inline-start: .35rem solid var(--accent); background: var(--background); }
 @media (max-width: 35rem) { .dhcp-player fieldset label { width: 100%; } .dhcp-inspector-region dl { grid-template-columns: minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .dhcp-player * { animation: none !important; transition: none !important; } }
