@@ -74,7 +74,10 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /routing, routing tables and default routes/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/routing-tables-and-default-routes",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(17);
-    expect(screen.getAllByText("Coming later")).toHaveLength(7);
+    expect(screen.getByRole("link", { name: /icmp, ping and path discovery/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/icmp-ping-and-path-discovery",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(18);
+    expect(screen.getAllByText("Coming later")).toHaveLength(6);
   });
 });
