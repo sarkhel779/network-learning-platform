@@ -1,5 +1,73 @@
-<LearningObjective>Use IPv4 ICMP evidence to explain what ping and traceroute do and do not prove.</LearningObjective>
+<LearningObjective>Use IPv4 ICMP evidence to explain what ping and traceroute show, distinguish a response from silence, and make conclusions that the packets actually support.</LearningObjective>
 
 <h2 id="why-icmp-exists">Why ICMP exists</h2>
 
-ICMP carries network-layer control and error evidence alongside IPv4 traffic.
+IPv4 hosts and routers need a way to report network-layer conditions. The Internet Control Message Protocol, or **ICMP**, carries that control evidence inside IPv4 packets. It is not TCP or UDP application data. A message can confirm an authored exchange, report a forwarding problem, or reveal where a probe's lifetime ended.
+
+<SectionContinue itemId="icmp_ping_and_path_discovery_section_why_icmp_exists" anchor="why-icmp-exists" />
+
+<h2 id="icmp-message-anatomy">ICMP message anatomy</h2>
+
+An ICMP header begins with a **type** and **code** pair. The type identifies the broad message family; the code refines its meaning. A **checksum** protects the ICMP message. Error messages also include a **quoted** portion of the triggering IPv4 packet so the sender can associate the report with an earlier transmission.
+
+<SectionContinue itemId="icmp_ping_and_path_discovery_section_icmp_message_anatomy" anchor="icmp-message-anatomy" />
+
+<h2 id="informational-and-error-messages">Informational and error messages</h2>
+
+Echo messages are informational: an **Echo Request** uses type 8, code 0, and an **Echo Reply** uses type 0, code 0. Curated error examples in this lesson include **Destination Unreachable** type 3 and **Time Exceeded** type 11, code 0. These examples are not an exhaustive ICMP registry. An error identifies its reporting device separately from the intended destination.
+
+<SectionContinue itemId="icmp_ping_and_path_discovery_section_informational_and_error_messages" anchor="informational-and-error-messages" />
+
+<h2 id="echo-request-and-reply">Echo Request and Echo Reply</h2>
+
+IPv4 ping normally sends an Echo Request toward a destination and waits for a matching Echo Reply. The identifiers and sequence information associate replies with requests. Routers forward the IPv4 packets normally; ping does not reserve a special path or bypass routing policy.
+
+<SectionContinue itemId="icmp_ping_and_path_discovery_section_echo_request_and_reply" anchor="echo-request-and-reply" />
+
+<h2 id="interactive-ping-evidence">Interactive ping evidence</h2>
+
+Compare six outcomes: success, timeout, network unreachable, host unreachable, administratively prohibited, and TTL exceeded. Follow the request, any reporting device, the response type and code, and the evidence quoted from the triggering packet.
+
+<PingEvidencePlayer progressItemId="icmp_ping_and_path_discovery_interactive_interactive_ping_evidence" />
+
+<h2 id="what-successful-ping-proves">What successful ping proves</h2>
+
+A matching reply proves that the authored Echo Request reached a responding endpoint and its Echo Reply returned to the source. It **does not prove** that an application port works, that every packet succeeds, or that forward and return traffic used the same route. Ping establishes limited reachability evidence, not complete service health or path symmetry.
+
+<SectionContinue itemId="icmp_ping_and_path_discovery_section_what_successful_ping_proves" anchor="what-successful-ping-proves" />
+
+<h2 id="timeouts-loss-and-rtt">Timeouts, loss, and round-trip time</h2>
+
+A timeout means only that **no reply was observed** before the waiting deadline. The request, reply, or an intervening error may have been lost, filtered, rate-limited, or unable to return. Repeated probes can estimate observed loss. Their **round-trip time** measures the request-and-reply interval, not one-way delay, and can vary with congestion and device processing.
+
+<SectionContinue itemId="icmp_ping_and_path_discovery_section_timeouts_loss_and_rtt" anchor="timeouts-loss-and-rtt" />
+
+<h2 id="destination-unreachable">Destination Unreachable</h2>
+
+Destination Unreachable type 3 reports that a device could not deliver the triggering packet. This lesson uses code 0 for network unreachable, code 1 for host unreachable, and code 13 for communication administratively prohibited. Read the reporter, type, code, and quoted packet together. The reporting router can be different from the destination that ping intended to reach.
+
+<SectionContinue itemId="icmp_ping_and_path_discovery_section_destination_unreachable" anchor="destination-unreachable" />
+
+<h2 id="ttl-exceeded">TTL and Time Exceeded</h2>
+
+Each IPv4 router decrements the packet's TTL once. A router that receives a packet whose TTL expires discards it and may return Time Exceeded type 11, code 0 with quoted trigger evidence. That response names where this probe expired; filtering, rate limiting, or an unavailable return route can also leave the sender with silence.
+
+<SectionContinue itemId="icmp_ping_and_path_discovery_section_ttl_exceeded" anchor="ttl-exceeded" />
+
+<h2 id="interactive-traceroute-discovery">Interactive traceroute discovery</h2>
+
+Watch conceptual ICMP-based, Windows-style path discovery increase the IPv4 TTL one probe at a time. Compare a stable path, a silent hop followed by later replies, changing paths, destination unreachable, and a trace that stops incomplete.
+
+<TracerouteDiscoveryPlayer progressItemId="icmp_ping_and_path_discovery_interactive_interactive_traceroute_discovery" />
+
+<h2 id="why-traceroute-can-be-incomplete">Why traceroute can be incomplete</h2>
+
+A `*` is a **silent hop**: no response was observed for that probe within the waiting period. It does not prove that router failed to forward, especially when later TTL probes receive replies. Devices may filter or rate-limit ICMP, and implementations can use **different probe transports**. Load balancing can change the observed forward path, while an **asymmetric return path** can change response timing and visibility.
+
+<SectionContinue itemId="icmp_ping_and_path_discovery_section_why_traceroute_can_be_incomplete" anchor="why-traceroute-can-be-incomplete" />
+
+<h2 id="safe-conclusions">Safe conclusions</h2>
+
+Describe only what was observed: the source sent a probe, a named device responded with a specific type/code, a destination replied, or no response arrived before the deadline. Correlate several probes with routing and application evidence. Neither ping success nor a tidy traceroute proves application reachability, continuous loss-free service, or a symmetric end-to-end path.
+
+<SectionContinue itemId="icmp_ping_and_path_discovery_section_safe_conclusions" anchor="safe-conclusions" />
