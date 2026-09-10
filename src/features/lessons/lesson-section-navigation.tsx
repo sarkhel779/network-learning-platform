@@ -60,10 +60,8 @@ export function LessonSectionNavigation({ sections, presentation = "list", locke
   if (presentation === "dns-network-map" || presentation === "network-map") {
     const groups = mapGroups ?? dnsGroups;
     const toggleMap = () => {
-      setIsMapOpen((isOpen) => {
-        if (!isOpen) setRevealCycle((cycle) => cycle + 1);
-        return !isOpen;
-      });
+      if (!isMapOpen) setRevealCycle((cycle) => cycle + 1);
+      setIsMapOpen(!isMapOpen);
     };
 
     return (

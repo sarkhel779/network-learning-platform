@@ -63,6 +63,12 @@ describe("compiled lesson markup", () => {
       expect(components[name]).toBeTypeOf("function");
   });
 
+  it("registers every essential-service learning component for MDX", () => {
+    const components = getMDXComponents({});
+    for (const name of ["ServiceJourneyPlayer", "ServiceTroubleshootingLab", "CaptureAnalysisLab", "RfcValidationLab", "PortTransportPanel"])
+      expect(components[name]).toBeTypeOf("function");
+  });
+
   it.each([
     ["hosts-and-network-devices.public.mdx", "Network device roles", 4, 6],
     ["hosts-and-network-devices.account.mdx", "Hosts Wireshark display filters", 3, 6],
