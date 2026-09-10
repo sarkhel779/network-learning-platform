@@ -906,3 +906,31 @@ h1 {
 .dhcp-rfc-check [role="status"]:not(:empty) { padding: .75rem; border-inline-start: .35rem solid var(--accent); background: var(--background); }
 @media (max-width: 35rem) { .dhcp-player fieldset label { width: 100%; } .dhcp-inspector-region dl { grid-template-columns: minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .dhcp-player * { animation: none !important; transition: none !important; } }
+
+.dns-player { display: grid; gap: 1rem; min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+.dns-player, .dns-troubleshooting-player, .dns-timing-player, .dns-rfc-check, .root-bootstrap-player { margin: 2rem 0; padding: clamp(.8rem, 2.5vw, 1.4rem); border: 1px solid var(--border); border-radius: .75rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
+.dns-troubleshooting-player, .dns-timing-player, .dns-rfc-check, .root-bootstrap-player { display: grid; gap: 1rem; min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+.dns-player > h3, .dns-troubleshooting-player > h3, .dns-timing-player > h3, .dns-rfc-check > h3, .root-bootstrap-player > h3 { margin: 0; }
+.dns-player fieldset, .dns-troubleshooting-player fieldset, .dns-rfc-check fieldset { display: flex; flex-wrap: wrap; gap: .55rem; min-width: 0; margin: 0; padding: .75rem; border: 1px solid var(--border); border-radius: .6rem; }
+.dns-player fieldset label, .dns-troubleshooting-player fieldset label, .dns-rfc-check fieldset label { display: inline-flex; align-items: center; gap: .45rem; min-block-size: 44px; padding: .5rem .7rem; border: 1px solid var(--border); border-radius: .45rem; background: var(--background); cursor: pointer; }
+.dns-player fieldset label:has(input:checked), .dns-troubleshooting-player fieldset label:has(input:checked), .dns-rfc-check fieldset label:has(input:checked) { border-color: var(--accent); border-inline-start-width: .35rem; background: color-mix(in srgb, var(--accent) 12%, var(--background)); }
+.dns-topology { min-width: 0; max-width: 100%; padding: .85rem; border: 2px dashed var(--accent); border-radius: .7rem; background: var(--background); }
+.dns-active-exchange { margin: 0 0 .75rem; }
+.dns-role-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; margin: 0; padding: 0; list-style: none; }
+.dns-role-list li { display: grid; min-width: 0; min-height: 4.5rem; align-content: center; gap: .25rem; padding: .65rem; border: 1px solid var(--border); border-radius: .55rem; text-align: center; overflow-wrap: anywhere; }
+.dns-role-list li.is-active { border-color: var(--accent); border-inline-start-width: .35rem; background: color-mix(in srgb, var(--accent) 10%, var(--background)); }
+.dns-role-list small { color: var(--muted); font-weight: 700; }
+.dns-cache-state { min-width: 0; padding: .8rem; border-inline-start: .35rem solid var(--accent); background: var(--background); }
+.dns-message-inspector { display: grid; gap: .75rem; min-width: 0; max-width: 100%; }
+.dns-message-inspector .packet-table-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: .6rem; }
+.dns-message-inspector table { width: 100%; min-width: 38rem; border-collapse: collapse; }
+.dns-message-inspector th, .dns-message-inspector td { padding: .6rem; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+.dns-player .transport-player-controls { display: flex; flex-wrap: wrap; gap: .65rem; min-width: 0; margin: 0; }
+.dns-player .transport-player-controls button, .dns-player .transport-player-controls select, .dns-timing-player .transport-player-controls button, .root-bootstrap-player .transport-player-controls button { min-block-size: 44px; }
+.dns-troubleshooting-player > label, .dns-timing-player > label { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.dns-troubleshooting-player select, .dns-timing-player select { min-block-size: 44px; max-width: 100%; font: inherit; }
+.dns-troubleshooting-player button, .dns-rfc-check button { justify-self: start; min-block-size: 44px; padding: .55rem .8rem; border: 1px solid var(--accent); border-radius: .45rem; background: var(--background); color: inherit; font: inherit; font-weight: 700; cursor: pointer; }
+.dns-troubleshooting-player button:disabled, .dns-rfc-check button:disabled { cursor: not-allowed; opacity: .55; }
+.dns-troubleshooting-player [role="status"], .dns-rfc-check [role="status"] { min-width: 0; padding: .75rem; border-inline-start: .35rem solid var(--accent); background: var(--background); }
+@media (max-width: 35rem) { .dns-role-list { grid-template-columns: minmax(0, 1fr); } .dns-player fieldset label, .dns-troubleshooting-player fieldset label, .dns-rfc-check fieldset label { width: 100%; } .dns-player .transport-player-controls button, .dns-player .transport-player-controls label { flex: 1 1 8rem; } }
+@media (prefers-reduced-motion: reduce) { .dns-player * { animation: none !important; transition: none !important; } }

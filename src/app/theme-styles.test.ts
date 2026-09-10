@@ -76,6 +76,17 @@ describe("system theme and table styles", () => {
     expect(css).not.toMatch(/\.dhcp-player\s*\{[^}]*width:\s*\d{4}px/);
   });
 
+  it("keeps DNS players, topology, controls, and evidence responsive", () => {
+    expect(css).toMatch(/\.dns-player\s*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%[^}]*overflow-wrap:\s*anywhere/);
+    expect(css).toMatch(/\.dns-role-list\s*\{[^}]*grid-template-columns:/);
+    expect(css).toMatch(/\.dns-player \.transport-player-controls\s*\{[^}]*display:\s*flex[^}]*flex-wrap:\s*wrap[^}]*gap:/);
+    expect(css).toMatch(/\.dns-message-inspector\s*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%/);
+    expect(css).toMatch(/\.dns-message-inspector \.packet-table-scroll\s*\{[^}]*max-width:\s*100%[^}]*overflow-x:\s*auto/);
+    expect(css).toMatch(/\.dns-troubleshooting-player button[^\{]*\{[^}]*min-block-size:\s*44px/);
+    expect(css).toMatch(/@media\s*\(max-width:\s*35rem\)[\s\S]*\.dns-role-list\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
+    expect(css).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.dns-player \*\s*\{[^}]*animation:\s*none\s*!important/);
+  });
+
   it("renders shared player controls with the established outlined appearance", () => {
     const style = document.createElement("style");
     style.textContent = css;
