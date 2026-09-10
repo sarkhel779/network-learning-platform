@@ -1,0 +1,27 @@
+<h2 id="cold-warm-cache-practice">Cold-cache and warm-cache practice</h2>
+
+Compare the number of upstream exchanges and remaining TTL. A warm answer is valid only while its cached lifetime remains; a shorter path is evidence of reuse, not proof that authoritative servers disappeared.
+
+<SectionContinue itemId="dns_name_resolution_section_cold_warm_cache_practice" anchor="cold-warm-cache-practice" />
+
+<h2 id="record-selection-practice">Record-selection and delegation practice</h2>
+
+Choose the record that answers the actual question: A/AAAA for addresses, CNAME for an alias, MX for mail routing, SRV for service location, PTR for reverse data, and NS/SOA for delegation and authority evidence. Treat glue as reachability help rather than the original final answer.
+
+<SectionContinue itemId="dns_name_resolution_section_record_selection_practice" anchor="record-selection-practice" />
+
+<h2 id="dns-packet-capture-practice">DNS packet and capture practice</h2>
+
+Correlate `nslookup`, `Resolve-DnsName`, or `dig` output with Wireshark fields. Inspect `dns.id`, QR/AA/TC/RD/RA, RCODE, section counts, TTLs, UDP versus TCP port 53, retransmissions, and elapsed time.
+
+<DnsTroubleshootingPlayer access="account" progressItemId="dns_name_resolution_interactive_troubleshooting" />
+
+<SectionContinue itemId="dns_name_resolution_section_dns_packet_capture_practice" anchor="dns-packet-capture-practice" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="dns_name_resolution_check_1" question="Which component normally follows root and TLD referrals for a client?" options={["The recursive resolver", "The Ethernet switch", "The authoritative web server"]} correctIndex={0} explanation="The stub asks its configured recursive resolver for service; that resolver performs the upstream iterative work and returns the result." />
+
+<KnowledgeCheck progressItemId="dns_name_resolution_check_2" question="A name exists, but its authoritative response has NOERROR and no record of the requested type. What is this?" options={["NODATA", "NXDOMAIN", "A transport timeout"]} correctIndex={0} explanation="NODATA is a NOERROR response where the name exists but the requested record type is absent; NXDOMAIN means the name itself does not exist." />
+
+<KnowledgeCheck progressItemId="dns_name_resolution_check_3" question="What should be checked after a truncated UDP DNS response?" options={["Whether TCP port 53 succeeds", "Whether ARP contains the domain name", "Whether the response can be cached as complete"]} correctIndex={0} explanation="TC=1 signals an incomplete UDP response. The resolver may need TCP port 53 to retrieve the complete DNS message." />

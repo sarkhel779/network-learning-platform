@@ -1,0 +1,35 @@
+import { dnsRfcChecks, dnssecWalkthrough } from "@/features/dns/dns-pro.data"
+
+<h2 id="dns-timing-diagram">Interactive DNS timing diagram</h2>
+
+Compare cold and warm caches, delayed authority, truncation with TCP fallback, resolver timeout, and DNSSEC validation. Each event keeps elapsed time and cache state synchronized.
+
+<DnsTimingPlayer />
+
+<h2 id="rfc-level-dns-checks">Advanced RFC-level DNS checks</h2>
+
+Each answer immediately reveals the governing rule, exact evidence, operational consequence, and primary RFC reference.
+
+<DnsRfcCheck check={dnsRfcChecks[0]} />
+<DnsRfcCheck check={dnsRfcChecks[1]} />
+<DnsRfcCheck check={dnsRfcChecks[2]} />
+
+<h2 id="dnssec-and-advanced-wireshark">DNSSEC and advanced Wireshark analysis</h2>
+
+Trace the chain **DS → DNSKEY → RRSIG** and use **NSEC/NSEC3** for authenticated denial awareness. DNSSEC authenticates data; it does not encrypt the query. In Wireshark correlate IDs, streams, retransmissions, TC fallback, EDNS OPT data, DNSSEC records, delegation, and timing rather than trusting one flag alone.
+
+{dnssecWalkthrough.map((item) => <p key={item.record}><strong>{item.record}:</strong> {item.explanation}</p>)}
+
+<h2 id="advanced-dns-operations">Advanced DNS operations and failure boundaries</h2>
+
+Diagnose lame or cyclic delegation, missing or unsafe glue, bailiwick boundaries, cache-poisoning defenses, split-horizon answers, conditional-forwarding loops, and anycast path changes. AXFR and IXFR transfer zones over TCP; NOTIFY and dynamic updates have separate authorization and operational risks. EDNS can advertise larger UDP payloads, but fragmentation and path MTU still matter.
+
+Encrypted transports—DoT, DoH, and DoQ—protect specified hops. They do not make the selected resolver blind, guarantee encrypted upstream resolution, or substitute for DNSSEC validation.
+
+<h2 id="root-server-bootstrap-bonus">Bonus: the trailing root dot and root-server discovery</h2>
+
+The final dot makes an FQDN absolute and represents the DNS root. Follow configured root hints to a logical root identity, see how anycast distributes service, then observe referrals and cached delegation. A–M name logical identities, not thirteen physical machines.
+
+<RootBootstrapPlayer />
+
+Primary references: [RFC 1034](https://www.rfc-editor.org/rfc/rfc1034), [RFC 1035](https://www.rfc-editor.org/rfc/rfc1035), [RFC 2308](https://www.rfc-editor.org/rfc/rfc2308), [RFC 6891](https://www.rfc-editor.org/rfc/rfc6891), [RFC 7766](https://www.rfc-editor.org/rfc/rfc7766), [RFC 4033](https://www.rfc-editor.org/rfc/rfc4033), and [RFC 8499](https://www.rfc-editor.org/rfc/rfc8499).
