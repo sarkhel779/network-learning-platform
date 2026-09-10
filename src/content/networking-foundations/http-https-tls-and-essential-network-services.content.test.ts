@@ -16,4 +16,15 @@ describe("HTTP and essential network services content", () => {
     expect(lesson).toMatch(/SSL[\s\S]*obsolete[\s\S]*TLS/i);
     expect(lesson).not.toMatch(/key derivation|cipher-suite negotiation lab/i);
   });
+
+  it("provides one account journey and troubleshooting lab per service", () => {
+    const account = read("account");
+    expect(account.match(/<ServiceJourneyPlayer\b/g)).toHaveLength(6);
+    expect(account.match(/<ServiceTroubleshootingLab\b/g)).toHaveLength(6);
+    for (const service of ["web", "remote-access", "email", "file-transfer", "time", "monitoring"]) {
+      const id = service.replaceAll("-", "_");
+      expect(account).toContain(`progressItemId="essential_services_interactive_${id}"`);
+      expect(account).toContain(`progressItemId="essential_services_troubleshooting_${id}"`);
+    }
+  });
 });
