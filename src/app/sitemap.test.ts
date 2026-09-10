@@ -28,6 +28,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/networking-foundations/ipv6-fundamentals" },
       { url: "https://packetsecrets.com/learn/networking-foundations/routing-tables-and-default-routes" },
       { url: "https://packetsecrets.com/learn/networking-foundations/icmp-ping-and-path-discovery" },
+      { url: "https://packetsecrets.com/learn/networking-foundations/tcp-udp-and-ports" },
     ]);
     const urls = entries.map(({ url }) => url);
     for (const pathway of listPathways()) {
@@ -47,6 +48,6 @@ describe("public sitemap", () => {
     for (const unpublishedUrl of unpublishedSlugs) {
       expect(urls).not.toContain(unpublishedUrl);
     }
-    expect(unpublishedSlugs).toHaveLength(6);
+    expect(unpublishedSlugs).toHaveLength(5);
   });
 });

@@ -291,6 +291,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "icmp-ping-and-path-discovery",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "tcp-udp-and-ports",
+      },
     ]);
   });
 

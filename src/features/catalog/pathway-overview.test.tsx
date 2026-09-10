@@ -77,7 +77,10 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /icmp, ping and path discovery/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/icmp-ping-and-path-discovery",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(18);
-    expect(screen.getAllByText("Coming later")).toHaveLength(6);
+    expect(screen.getByRole("link", { name: /tcp, udp and ports/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/tcp-udp-and-ports",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(19);
+    expect(screen.getAllByText("Coming later")).toHaveLength(5);
   });
 });
