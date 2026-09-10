@@ -6,6 +6,7 @@ import type { LessonProgressManifest, ProgressManifestItem } from "./progress.ty
 
 type LessonProgressDefinition = Readonly<{
   lessonId: string;
+  itemPrefix?: string;
   interactiveAnchors: readonly string[];
   knowledgeCheckCount: number;
   knowledgeAnchor: string | null;
@@ -31,15 +32,16 @@ const definitions = [
   { lessonId: "lesson_routing_tables_and_default_routes", interactiveAnchors: ["interactive-route-selection", "interactive-hop-by-hop-forwarding"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_icmp_ping_and_path_discovery", interactiveAnchors: ["interactive-ping-evidence", "interactive-traceroute-discovery"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_tcp_udp_and_ports", interactiveAnchors: ["interactive-tcp-connection", "interactive-tcp-udp-port-delivery"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_dhcp_and_automatic_address_configuration", itemPrefix: "dhcp_automatic_address_configuration", interactiveAnchors: ["interactive-dora-journey", "interactive-relay-helper"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
 ] as const satisfies readonly LessonProgressDefinition[];
 
 function itemPrefix(lessonId: string) {
   return lessonId.replace(/^lesson_/, "");
 }
 
-function sectionItem(lessonId: string, section: LessonSection): ProgressManifestItem {
+function sectionItem(lessonId: string, section: LessonSection, prefix = itemPrefix(lessonId)): ProgressManifestItem {
   return {
-    itemId: `${itemPrefix(lessonId)}_section_${section.id.replaceAll("-", "_")}`,
+    itemId: `${prefix}_section_${section.id.replaceAll("-", "_")}`,
     kind: "section",
     label: section.label,
     anchor: section.id,
@@ -47,9 +49,9 @@ function sectionItem(lessonId: string, section: LessonSection): ProgressManifest
   };
 }
 
-function interactiveItem(lessonId: string, section: LessonSection): ProgressManifestItem {
+function interactiveItem(lessonId: string, section: LessonSection, prefix = itemPrefix(lessonId)): ProgressManifestItem {
   return {
-    itemId: `${itemPrefix(lessonId)}_interactive_${section.id.replaceAll("-", "_")}`,
+    itemId: `${prefix}_interactive_${section.id.replaceAll("-", "_")}`,
     kind: "interactive",
     label: section.label,
     anchor: section.id,
@@ -62,12 +64,12 @@ function buildItems(
   sections: readonly LessonSection[],
   definition: LessonProgressDefinition,
 ) {
-  const prefix = itemPrefix(lessonId);
+  const prefix = definition.itemPrefix ?? itemPrefix(lessonId);
   const items = sections
     .filter(({ access, id }) => access !== "pro" && id !== definition.knowledgeAnchor)
     .map((section) => definition.interactiveAnchors.includes(section.id)
-      ? interactiveItem(lessonId, section)
-      : sectionItem(lessonId, section));
+      ? interactiveItem(lessonId, section, prefix)
+      : sectionItem(lessonId, section, prefix));
 
   if (definition.knowledgeAnchor) {
     for (let index = 1; index <= definition.knowledgeCheckCount; index += 1) {
