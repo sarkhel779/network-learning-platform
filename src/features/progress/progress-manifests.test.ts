@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(20);
+    expect(lessonProgressManifests).toHaveLength(21);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -61,6 +61,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609100003_add_icmp_ping_path_progress.sql",
       "supabase/migrations/202609100004_add_tcp_udp_ports_progress.sql",
       "supabase/migrations/202609110001_add_dhcp_progress.sql",
+      "supabase/migrations/202609110002_add_dns_progress.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -120,6 +121,19 @@ describe("lessonProgressManifests", () => {
     expect(manifest.items.filter(({ kind }) => kind === "knowledge_check").map(({ itemId }) => itemId))
       .toEqual(["dhcp_automatic_address_configuration_check_1", "dhcp_automatic_address_configuration_check_2", "dhcp_automatic_address_configuration_check_3"]);
     expect(manifest.items.some(({ anchor }) => anchor === "lease-timing-diagram")).toBe(false);
+  });
+
+  it("registers DNS in catalog order with two players, three checks, and no Pro items", () => {
+    const manifest = getLessonProgressManifest("path_networking_foundations", "lesson_dns_and_name_resolution");
+    expect(manifest.contentVersion).toBe(1);
+    expect(manifest.items).toHaveLength(21);
+    expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ itemId, anchor }) => ({ itemId, anchor }))).toEqual([
+      { itemId: "dns_name_resolution_interactive_complete_resolution", anchor: "interactive-complete-resolution" },
+      { itemId: "dns_name_resolution_interactive_troubleshooting", anchor: "interactive-dns-troubleshooting" },
+    ]);
+    expect(manifest.items.filter(({ kind }) => kind === "knowledge_check").map(({ itemId }) => itemId))
+      .toEqual(["dns_name_resolution_check_1", "dns_name_resolution_check_2", "dns_name_resolution_check_3"]);
+    expect(manifest.items.some(({ anchor }) => anchor.includes("root-server"))).toBe(false);
   });
 
   it("parenthesizes the CASE expression used by the progress event guard", () => {
