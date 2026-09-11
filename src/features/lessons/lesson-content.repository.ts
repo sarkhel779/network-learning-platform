@@ -118,6 +118,11 @@ const lessonImports = {
     account: () => import("@/content/networking-foundations/nat-pat-and-the-complete-internet-packet-journey.account.mdx"),
     pro: () => import("@/content/networking-foundations/nat-pat-and-the-complete-internet-packet-journey.pro.mdx"),
   },
+  "networking-foundations/systematic-network-troubleshooting-capstone": {
+    public: () => import("@/content/networking-foundations/systematic-network-troubleshooting-capstone.public.mdx"),
+    account: () => import("@/content/networking-foundations/systematic-network-troubleshooting-capstone.account.mdx"),
+    pro: () => import("@/content/networking-foundations/systematic-network-troubleshooting-capstone.pro.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),

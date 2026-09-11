@@ -1,0 +1,49 @@
+<LearningObjective>Use a repeatable, evidence-first workflow to scope an outage, isolate the failing layer, restore the whole service, and communicate what happened.</LearningObjective>
+
+<h2 id="scope-the-incident">Scope: define the incident before touching the network</h2>
+
+A useful incident statement says **who**, **what**, **where**, **when**, and **how consistently**. “The network is down” is not a scope. “VLAN 20 users at the branch cannot open the portal, while other sites work, beginning after the morning change” gives you boundaries that tests can challenge.
+
+Record the last known good time, recent changes, affected users, unaffected controls, and business impact. Separate a symptom from a cause: a browser timeout proves only that a transaction did not finish.
+
+<SectionContinue itemId="capstone_section_scope_the_incident" anchor="scope-the-incident" />
+
+<h2 id="form-a-hypothesis">Hypothesis: make a falsifiable explanation</h2>
+
+A hypothesis links the observed symptom to one possible failure. Before running a command, write a **predicted result**: “If the access VLAN is wrong, the configured VLAN will disagree with the client subnet.” A prediction protects you from interpreting every output as confirmation.
+
+Keep several plausible explanations alive. Rank them by symptom fit, probability, test cost, and risk—not by which command you remember first.
+
+<SectionContinue itemId="capstone_section_form_a_hypothesis" anchor="form-a-hypothesis" />
+
+<h2 id="collect-evidence">Evidence: test from least destructive to most invasive</h2>
+
+Start with observation and read-only commands. Confirm addressing, neighbor state, switchport membership, route selection, name resolution, TCP establishment, TLS negotiation, and application response as separate layers. Prefer the **least-destructive** test that can distinguish two hypotheses.
+
+For every test, record the command, device or interface, timestamp, expected result, actual evidence, and interpretation. A packet capture is not a conclusion: flags, tuples, timing, retransmissions, and capture position must support the claim.
+
+<SectionContinue itemId="capstone_section_collect_evidence" anchor="collect-evidence" />
+
+<h2 id="isolate-the-fault">Isolation: change one variable at a time</h2>
+
+Compare failing and working paths. Move from broad boundaries toward the smallest component that explains all observations. When evidence contradicts your hypothesis, revise it openly. Do not stack speculative changes; each uncontrolled change destroys information and creates rollback risk.
+
+Before remediation, capture the faulty state and define the expected post-change result. Use a reversible change, a rollback condition, and an owner whenever the environment permits.
+
+<SectionContinue itemId="capstone_section_isolate_the_fault" anchor="isolate-the-fault" />
+
+<h2 id="restore-the-service">Restore: verify the complete transaction</h2>
+
+Restoration is broader than ping. Recheck addressing, ARP or neighbor discovery, VLAN membership, forward and return routing, DNS, TCP, TLS, and HTTP or the actual application protocol. Confirm both an affected user and an unaffected control. Watch long enough to detect cache, timeout, or failover effects.
+
+If safe authority, evidence, or specialist ownership is missing, **escalation** is a valid troubleshooting action. Send a compact handoff containing scope, timeline, hypotheses tested, evidence, changes, rollback state, and the precise help required.
+
+<SectionContinue itemId="capstone_section_restore_the_service" anchor="restore-the-service" />
+
+<h2 id="report-and-prevent">Report: preserve operational learning</h2>
+
+A strong incident report distinguishes impact, evidence, root cause, contributing conditions, correction, restoration proof, and prevention. It does not rewrite the timeline to make the final answer seem obvious.
+
+Reflection: What evidence would make you abandon your leading hypothesis? Which end-to-end checks would prove the user experience is restored? What threshold would make you escalate rather than continue alone?
+
+<SectionContinue itemId="capstone_section_report_and_prevent" anchor="report-and-prevent" />

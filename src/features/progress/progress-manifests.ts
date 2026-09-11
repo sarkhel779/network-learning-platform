@@ -14,6 +14,7 @@ type LessonProgressDefinition = Readonly<{
   knowledgeCheckItemIds?: readonly string[];
   knowledgeAnchor: string | null;
   knowledgeAnchors?: readonly string[];
+  extraItems?: readonly ProgressManifestItem[];
 }>;
 
 const definitions = [
@@ -65,6 +66,22 @@ const definitions = [
     knowledgeCheckItemIds: ["nat_pat_check_public_1", "nat_pat_check_public_2", "nat_pat_check_account_1", "nat_pat_check_account_2", "nat_pat_check_account_3"],
     knowledgeAnchor: "account-knowledge-checks",
     knowledgeAnchors: ["public-knowledge-check", "account-knowledge-checks"],
+  },
+  {
+    lessonId: "lesson_systematic_network_troubleshooting_capstone", itemPrefix: "capstone",
+    interactiveAnchors: ["guided-branch-incident"],
+    interactiveItemIds: { "guided-branch-incident": "capstone_guided_incident" },
+    knowledgeCheckCount: 0,
+    knowledgeAnchor: null,
+    extraItems: [
+      { itemId: "capstone_guided_vlan_check", kind: "interactive", label: "Diagnose the VLAN fault", anchor: "guided-vlan-check", required: true },
+      { itemId: "capstone_guided_route_check", kind: "interactive", label: "Diagnose the routing fault", anchor: "guided-route-check", required: true },
+      { itemId: "capstone_guided_dns_check", kind: "interactive", label: "Diagnose the DNS fault", anchor: "guided-dns-check", required: true },
+      { itemId: "capstone_restoration_verification", kind: "interactive", label: "Verify end-to-end restoration", anchor: "restoration-verification", required: true },
+      { itemId: "capstone_pro_evidence", kind: "interactive", label: "Pro sparse-evidence incident", anchor: "pro-sparse-incident", required: false },
+      { itemId: "capstone_pro_validation", kind: "interactive", label: "Pro packet and RFC validation", anchor: "pro-advanced-validation", required: false },
+      { itemId: "capstone_pro_report", kind: "interactive", label: "Pro incident report", anchor: "pro-incident-report", required: false },
+    ],
   },
 ] as const satisfies readonly LessonProgressDefinition[];
 
@@ -123,7 +140,7 @@ function buildItems(
     }
   }
 
-  return items;
+  return [...items, ...(definition.extraItems ?? [])];
 }
 
 function createManifests() {

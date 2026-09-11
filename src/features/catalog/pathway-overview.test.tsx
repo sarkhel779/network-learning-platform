@@ -92,7 +92,10 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /nat, pat and the complete internet packet journey/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/nat-pat-and-the-complete-internet-packet-journey",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(23);
-    expect(screen.getAllByText("Coming later")).toHaveLength(1);
+    expect(screen.getByRole("link", { name: /systematic network troubleshooting capstone/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/systematic-network-troubleshooting-capstone",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(24);
+    expect(screen.queryByText("Coming later")).not.toBeInTheDocument();
   });
 });

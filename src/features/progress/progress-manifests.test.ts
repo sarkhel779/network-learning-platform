@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(23);
+    expect(lessonProgressManifests).toHaveLength(24);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -64,6 +64,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609110002_add_dns_progress.sql",
       "supabase/migrations/202609110003_add_essential_services_progress.sql",
       "supabase/migrations/202609110004_add_nat_pat_progress.sql",
+      "supabase/migrations/202609110005_add_troubleshooting_capstone_progress.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -159,6 +160,20 @@ describe("lessonProgressManifests", () => {
       "nat_pat_check_public_1", "nat_pat_check_public_2", "nat_pat_check_account_1", "nat_pat_check_account_2", "nat_pat_check_account_3",
     ]);
     expect(manifest.items.some(({ anchor }) => anchor.startsWith("pro-"))).toBe(false);
+  });
+
+  it("registers guided milestones and optional Pro milestones without blocking Account completion", () => {
+    const manifest = getLessonProgressManifest("path_networking_foundations", "lesson_systematic_network_troubleshooting_capstone");
+    expect(manifest.contentVersion).toBe(1);
+    expect(manifest.items).toHaveLength(15);
+    expect(manifest.items.map(({ itemId }) => itemId)).toContain("capstone_guided_incident");
+    expect(manifest.items.filter(({ kind, required }) => kind === "interactive" && required).map(({ anchor }) => anchor)).toEqual([
+      "guided-branch-incident", "guided-vlan-check", "guided-route-check", "guided-dns-check", "restoration-verification",
+    ]);
+    expect(manifest.items.filter(({ required }) => required)).toHaveLength(12);
+    expect(manifest.items.filter(({ required }) => !required).map(({ itemId }) => itemId)).toEqual([
+      "capstone_pro_evidence", "capstone_pro_validation", "capstone_pro_report",
+    ]);
   });
 
   it("parenthesizes the CASE expression used by the progress event guard", () => {
