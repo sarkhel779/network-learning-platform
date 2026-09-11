@@ -104,6 +104,14 @@ describe("system theme and table styles", () => {
     expect(css).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.nat-journey-player \*\s*\{[^}]*animation:\s*none\s*!important/);
   });
 
+  it("keeps troubleshooting topology and evidence usable on narrow screens", () => {
+    expect(css).toMatch(/\.troubleshooting-topology[^{]*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%/);
+    expect(css).toMatch(/\.troubleshooting-topology__map\s*\{[^}]*overflow-x:\s*auto/);
+    expect(css).toMatch(/\.evidence-board__scroll\s*\{[^}]*max-width:\s*100%[^}]*overflow-x:\s*auto/);
+    expect(css).toMatch(/@media\s*\(max-width:\s*45rem\)[\s\S]*\.troubleshooting-topology__map\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
+    expect(css).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.troubleshooting-topology \*\s*\{[^}]*animation:\s*none\s*!important/);
+  });
+
   it("renders shared player controls with the established outlined appearance", () => {
     const style = document.createElement("style");
     style.textContent = css;

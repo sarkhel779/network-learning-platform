@@ -1022,3 +1022,30 @@ h1 {
 .nat-table-inspector tr[data-active="true"] { background: color-mix(in srgb, var(--accent) 14%, transparent); }
 @media (max-width: 45rem) { .nat-evidence-grid { grid-template-columns: minmax(0, 1fr); } .nat-journey-player .transport-player-controls button, .nat-journey-player .transport-player-controls label { flex: 1 1 8rem; } }
 @media (prefers-reduced-motion: reduce) { .nat-journey-player * { animation: none !important; transition: none !important; } .nat-topology__packet { left: 100%; transform: translate(-50%, -50%); } .nat-topology__packet[data-direction="reverse"] { left: 0; } }
+
+/* Troubleshooting capstone */
+.troubleshooting-topology, .evidence-board, .incident-timeline { display: grid; gap: 1rem; min-width: 0; max-width: 100%; padding: clamp(.9rem, 2.5vw, 1.4rem); border: 1px solid var(--border); border-radius: .85rem; background: color-mix(in srgb, var(--surface) 94%, transparent); }
+.troubleshooting-topology > h3, .evidence-board > h3, .incident-timeline > h3 { margin: 0; }
+.troubleshooting-topology__map { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(9rem, 1fr); align-items: center; max-width: 100%; overflow-x: auto; padding-block: .5rem; }
+.troubleshooting-topology__hop { display: contents; }
+.troubleshooting-topology__node { display: grid; place-items: center; gap: .3rem; min-height: 7rem; padding: .7rem; border: 1px solid var(--border); border-radius: .7rem; text-align: center; }
+.troubleshooting-topology__node[data-active="true"] { border-color: var(--accent); box-shadow: 0 0 1rem color-mix(in srgb, var(--accent) 28%, transparent); }
+.troubleshooting-topology__icon { display: grid; place-items: center; width: 2.3rem; height: 2.3rem; border-radius: .5rem; background: color-mix(in srgb, var(--accent) 20%, var(--background)); color: var(--accent); font-weight: 900; }
+.troubleshooting-topology__node small { color: var(--muted); }
+.troubleshooting-topology__link { display: grid; grid-template-columns: auto minmax(2rem, 1fr) auto; align-items: center; gap: .3rem; color: var(--muted); font-size: .72rem; white-space: nowrap; }
+.troubleshooting-topology__link i { height: 2px; background: var(--accent); }
+.evidence-board__tools { display: flex; flex-wrap: wrap; gap: .65rem; }
+.evidence-board__tools button { display: grid; gap: .2rem; min-block-size: 44px; padding: .6rem .8rem; border: 1px solid var(--accent); border-radius: .5rem; background: transparent; color: inherit; text-align: left; cursor: pointer; }
+.evidence-board__tools button small { color: var(--muted); }
+.evidence-board__result { min-width: 0; padding: .8rem; border-inline-start: .3rem solid var(--accent); background: var(--background); }
+.evidence-board__result pre { max-width: 100%; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+.evidence-board__scroll { max-width: 100%; overflow-x: auto; }
+.evidence-board__scroll table { width: 100%; min-width: 32rem; border-collapse: collapse; }
+.evidence-board__scroll th, .evidence-board__scroll td { padding: .6rem; border-bottom: 1px solid var(--border); text-align: left; }
+.incident-timeline ol { display: grid; gap: .75rem; margin: 0; padding-inline-start: 1.5rem; }
+.incident-timeline li { padding-inline-start: .4rem; }
+.incident-timeline li span, .incident-timeline li strong, .incident-timeline li small { display: block; }
+.incident-timeline li span { color: var(--accent); font-size: .78rem; font-weight: 800; text-transform: uppercase; }
+.incident-timeline li small { color: var(--muted); }
+@media (max-width: 45rem) { .troubleshooting-topology__map { grid-auto-flow: row; grid-template-columns: minmax(0, 1fr); gap: .5rem; } .troubleshooting-topology__hop { display: grid; gap: .5rem; } .troubleshooting-topology__link { grid-template-columns: minmax(0, 1fr); justify-items: center; white-space: normal; } .troubleshooting-topology__link i { width: 2px; height: 1.5rem; } .evidence-board__tools button { width: 100%; } }
+@media (prefers-reduced-motion: reduce) { .troubleshooting-topology * { animation: none !important; transition: none !important; } }
