@@ -10,6 +10,7 @@ import type { LessonProgressManifest, LessonProgressSummary } from "./progress.t
 type SaveState = "idle" | "saving" | "saved" | "error";
 type CompletionOptions = { eventType?: ProgressMutationInput["eventType"]; answerCorrect?: boolean };
 type ContextValue = {
+  learnerAttemptKey: string;
   authoritativeProgress: LessonProgressSummary | null;
   optimisticCompletionPercent: number;
   manifest: LessonProgressManifest;
@@ -114,8 +115,11 @@ export function LessonProgressProvider({ viewerId, manifest, initialProgress, ch
   for (const event of pending) {
     if (event.lessonId === manifest.lessonId && manifest.items.some(({ itemId }) => itemId === event.itemId)) completed.add(event.itemId);
   }
-  const optimisticCompletionPercent = Math.floor(completed.size * 100 / manifest.items.length);
-  const value = useMemo<ContextValue>(() => ({ authoritativeProgress, optimisticCompletionPercent, manifest, complete, retry: (itemId) => flush(itemId), restartLesson, states }), [authoritativeProgress, optimisticCompletionPercent, manifest, complete, flush, restartLesson, states]);
+  const requiredItems = manifest.items.filter(({ required }) => required);
+  const completedRequired = requiredItems.filter(({ itemId }) => completed.has(itemId)).length;
+  const optimisticCompletionPercent = Math.floor(completedRequired * 100 / requiredItems.length);
+  const learnerAttemptKey = `${viewerId}:${manifest.lessonId}:attempt-${authoritativeProgress?.attemptNumber ?? 1}`;
+  const value = useMemo<ContextValue>(() => ({ learnerAttemptKey, authoritativeProgress, optimisticCompletionPercent, manifest, complete, retry: (itemId) => flush(itemId), restartLesson, states }), [learnerAttemptKey, authoritativeProgress, optimisticCompletionPercent, manifest, complete, flush, restartLesson, states]);
   return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>;
 }
 

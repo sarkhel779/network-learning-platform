@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 
 import { scoreIncident, type IncidentState } from "./troubleshooting-engine";
 import type { TroubleshootingScenario } from "./troubleshooting-scenario.schema";
@@ -12,14 +13,16 @@ const fields: { key: keyof IncidentReport; label: string }[] = [
 ];
 const emptyReport: IncidentReport = { impact: "", evidence: "", rootCauses: "", correction: "", restoration: "", prevention: "" };
 
-export function IncidentReportBuilder({ state, scenario, onSubmit = () => undefined }: { state: IncidentState; scenario: TroubleshootingScenario; onSubmit?: (report: IncidentReport) => void }) {
+export function IncidentReportBuilder({ state, scenario, progressItemId, onSubmit = () => undefined }: { state: IncidentState; scenario: TroubleshootingScenario; progressItemId?: string; onSubmit?: (report: IncidentReport) => void }) {
   const [report, setReport] = useState(emptyReport);
   const [message, setMessage] = useState("");
-  const score = scoreIncident(state, scenario);
+  const [submitted, setSubmitted] = useState(false);
+  const progress = useProgressCompletionBoundary(progressItemId);
+  const score = scoreIncident(submitted ? { ...state, reportSubmitted: true } : state, scenario);
   const submit = () => {
     const missing = fields.filter(({ key }) => !report[key].trim()).map(({ label }) => label);
     if (missing.length) { setMessage(`Evidence and all report sections are required. Missing: ${missing.join(", ")}.`); return; }
-    onSubmit(report); setMessage("Incident report submitted for review.");
+    onSubmit(report); setSubmitted(true); progress.markTerminalStateReached(); setMessage("Incident report submitted for review.");
   };
   return <section className="incident-report-builder" aria-label="Structured incident report">
     <h3>Write the incident report</h3><p>Turn observations into an evidence-backed operational record.</p>

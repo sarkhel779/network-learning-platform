@@ -1,22 +1,3 @@
-import { proBranchPortalIncident } from "@/features/troubleshooting/troubleshooting-scenarios"
-import { createIncidentState } from "@/features/troubleshooting/troubleshooting-engine"
-import { troubleshootingValidationChecks } from "@/features/troubleshooting/advanced-validation-lab"
+The Pro capstone combines sparse asymmetric-routing evidence, Wireshark-style packet analysis, and RFC 9293 validation in one coordinated incident.
 
-<h2 id="pro-sparse-incident">Pro incident: sparse evidence and asymmetric routing</h2>
-
-Work the same enterprise topology with fewer prompts. Correlate forward and return routes, stateful firewall logs, DNS cache timing, interface counters, and Wireshark-style SYN retransmission evidence. Do not confuse a plausible distractor with a supported root cause.
-
-<TroubleshootingWorkspace scenario={proBranchPortalIncident} progressItemId="capstone_pro_incident" guidance="sparse" />
-
-<h2 id="pro-incident-report">Pro incident report</h2>
-
-Write a durable report that separates observed evidence from inference and proves service restoration.
-
-<IncidentReportBuilder state={createIncidentState(proBranchPortalIncident)} scenario={proBranchPortalIncident} />
-
-<h2 id="pro-advanced-validation">Pro packet and RFC validation</h2>
-
-Validate asymmetric stateful inspection, DNS caching, route symmetry, and TCP behavior. RFC 9293 provides the modern TCP reference used for the retransmission discussion.
-
-<AdvancedValidationLab checks={troubleshootingValidationChecks} />
-
+<TroubleshootingProExperience />

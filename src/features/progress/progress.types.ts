@@ -13,7 +13,7 @@ export type ProgressManifestItem = Readonly<{
   kind: ProgressItemKind;
   label: string;
   anchor: string;
-  required: true;
+  required: boolean;
 }>;
 
 export type LessonProgressManifest = Readonly<{

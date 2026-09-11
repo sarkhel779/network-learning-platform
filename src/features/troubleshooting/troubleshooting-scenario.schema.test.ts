@@ -16,7 +16,7 @@ const validScenario = {
     { id: "wrong-vlan", title: "Wrong access VLAN", explanation: "The access port is in VLAN 30.", unlocksFaultId: "wrong-route" },
     { id: "wrong-route", title: "Wrong route", explanation: "A host route selects the wrong next hop." },
   ],
-  hypotheses: [{ id: "vlan-mismatch", label: "VLAN mismatch", faultId: "wrong-vlan", predictions: [{ id: "port-vlan-30", label: "The port reports VLAN 30" }] }],
+  hypotheses: [{ id: "vlan-mismatch", label: "VLAN mismatch", faultId: "wrong-vlan", predictions: [{ id: "port-vlan-30", label: "The port reports VLAN 30", supportingTestIds: ["show-switchport"] }] }],
   tests: [{ id: "show-switchport", label: "Show interface switchport", command: "show interfaces Gi1/0/10 switchport", risk: "read-only", timeCost: 2, expectedFaultId: "wrong-vlan", evidence: { kind: "cli", title: "Switchport state", body: "Access Mode VLAN: 30" } }],
   remediations: [{ id: "set-vlan-20", label: "Set access VLAN 20", faultId: "wrong-vlan", requiresTestIds: ["show-switchport"], timeCost: 3 }],
   restorationChecks: [{ id: "verify-vlan", label: "Verify VLAN forwarding", testId: "show-switchport" }],
@@ -24,7 +24,7 @@ const validScenario = {
 
 describe("troubleshootingScenarioSchema", () => {
   it("accepts a strictly referenced sequential incident", () => {
-    expect(troubleshootingScenarioSchema.parse(validScenario)).toEqual(validScenario);
+    expect(troubleshootingScenarioSchema.parse(validScenario)).toEqual({ ...validScenario, tests: [{ ...validScenario.tests[0], phase: "diagnostic" }] });
   });
 
   it("rejects unknown and cyclic fault unlock references", () => {
@@ -39,6 +39,7 @@ describe("troubleshootingScenarioSchema", () => {
     expect(() => troubleshootingScenarioSchema.parse({ ...validScenario, hypotheses: [{ ...validScenario.hypotheses[0], faultId: "missing" }] })).toThrow(/fault reference/i);
     expect(() => troubleshootingScenarioSchema.parse({ ...validScenario, remediations: [{ ...validScenario.remediations[0], requiresTestIds: ["missing"] }] })).toThrow(/test reference/i);
     expect(() => troubleshootingScenarioSchema.parse({ ...validScenario, restorationChecks: [{ ...validScenario.restorationChecks[0], testId: "missing" }] })).toThrow(/test reference/i);
+    expect(() => troubleshootingScenarioSchema.parse({ ...validScenario, hypotheses: [{ ...validScenario.hypotheses[0], predictions: [{ ...validScenario.hypotheses[0].predictions[0], supportingTestIds: ["missing"] }] }] })).toThrow(/prediction test reference/i);
   });
 
   it("rejects unsafe risk labels and non-positive time costs", () => {

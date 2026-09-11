@@ -10,7 +10,7 @@ const progressManifestItemSchema = z.object({
   kind: z.enum(["section", "interactive", "knowledge_check"]),
   label: z.string().trim().min(1),
   anchor,
-  required: z.literal(true),
+  required: z.boolean(),
 }).strict();
 
 const lessonProgressManifestSchema = z.object({

@@ -28,7 +28,11 @@ const hypothesisSchema = z.object({
   id,
   label: z.string().trim().min(1),
   faultId: id,
-  predictions: z.array(z.object({ id, label: z.string().trim().min(1) }).strict()).min(1),
+  predictions: z.array(z.object({
+    id,
+    label: z.string().trim().min(1),
+    supportingTestIds: z.array(id),
+  }).strict()).min(1),
 }).strict();
 
 const evidenceSchema = z.object({
@@ -44,6 +48,7 @@ const troubleshootingTestSchema = z.object({
   risk: z.enum(["read-only", "reversible"]),
   timeCost: positiveMinutes,
   expectedFaultId: id.optional(),
+  phase: z.enum(["diagnostic", "restoration"]).default("diagnostic"),
   evidence: evidenceSchema,
 }).strict();
 
@@ -92,6 +97,9 @@ export const troubleshootingScenarioSchema = z.object({
   }
   if (scenario.remediations.some((remediation) => remediation.requiresTestIds.some((testId) => !testIds.has(testId))) || scenario.restorationChecks.some((check) => !testIds.has(check.testId))) {
     context.addIssue({ code: "custom", message: "Unknown test reference." });
+  }
+  if (scenario.hypotheses.some((hypothesis) => hypothesis.predictions.some((prediction) => prediction.supportingTestIds.some((testId) => !testIds.has(testId))))) {
+    context.addIssue({ code: "custom", message: "Unknown prediction test reference." });
   }
 
   const nextByFault = new Map(scenario.faults.map((fault) => [fault.id, fault.unlocksFaultId]));

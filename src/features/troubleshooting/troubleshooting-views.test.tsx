@@ -10,8 +10,11 @@ describe("troubleshooting evidence views", () => {
   it("renders an accessible topology and marks the active path", () => {
     render(<TroubleshootingTopology topology={guidedBranchPortalIncident.topology} activePath={["branch-client", "access-switch"]} />);
     expect(screen.getByRole("img", { name: /branch troubleshooting topology/i })).toBeVisible();
-    expect(screen.getByText("Branch client")).toHaveAttribute("data-active", "true");
-    expect(screen.getByText("Gi1/0/18")).toBeVisible();
+    expect(screen.getAllByText("Branch client")[0]).toHaveAttribute("data-active", "true");
+    const connections = screen.getByRole("list", { name: /topology connections/i });
+    expect(connections).toHaveTextContent("Gi1/0/18");
+    expect(connections).toHaveTextContent(/Edge firewall outside to Portal server eth0/i);
+    expect([...connections.children].map((item) => item.textContent)).not.toContain("DNS resolver eth0 to Portal server eth0");
   });
 
   it("runs tests and presents packet captures as tables", () => {
@@ -21,6 +24,12 @@ describe("troubleshooting evidence views", () => {
     fireEvent.click(screen.getByRole("button", { name: /inspect the firewall capture/i }));
     expect(onRunTest).toHaveBeenCalledWith("capture-flow");
     expect(screen.getByRole("table", { name: /packet capture evidence/i })).toBeVisible();
+  });
+
+  it("renders table evidence as an accessible structured table", () => {
+    const table = guidedBranchPortalIncident.tests.find(({ id }) => id === "inspect-route")!;
+    render(<EvidenceBoard tests={[table]} selectedEvidence={table.evidence} onRunTest={vi.fn()} />);
+    expect(screen.getByRole("table", { name: /route selection evidence/i })).toHaveTextContent(/203\.0\.113\.80\/32/);
   });
 
   it("announces an ordered incident timeline", () => {

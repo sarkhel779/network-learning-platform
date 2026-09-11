@@ -32,7 +32,7 @@ test("completes the guided sequential-fault incident only after full restoration
   await completeFault(page, /resolver has stale portal data/i, /DNS returns the old server/i, /resolve the portal name/i, /update and flush the portal record/i);
   await page.getByRole("button", { name: "Close incident" }).click();
   await expect(page.getByRole("status")).toContainText("restoration");
-  for (const label of ["Addressing is correct", "Gateway adjacency resolves", "Access VLAN is correct", "Portal route is correct", "DNS returns the active portal", "TLS handshake succeeds", "Portal returns HTTP 200"]) await page.getByLabel(label).check();
+  for (const label of ["Addressing is correct", "Gateway adjacency resolves", "Access VLAN is correct", "Portal route is correct", "DNS returns the active portal", "TLS handshake succeeds", "Portal returns HTTP 200"]) await page.getByRole("button", { name: `Run verification: ${label}` }).click();
   await page.getByRole("button", { name: "Close incident" }).click();
   await expect(page.getByRole("status")).toContainText("Incident resolved");
   await expect(page.getByRole("button", { name: "Incident closed" })).toBeDisabled();
@@ -51,8 +51,10 @@ test("restores authenticated access after a page reload", async ({ page }) => {
   await page.setExtraHTTPHeaders({ "x-packetsecrets-test-viewer": "capstone-resume-learner" });
   await page.goto(route);
   await expect(page.getByLabel("Restore the branch portal")).toBeVisible();
+  await completeFault(page, /access port is in the wrong VLAN/i, /switchport VLAN differs/i, /inspect client switchport/i, /move Gi1\/0\/18 to VLAN 20/i);
   await page.reload();
   await expect(page.getByLabel("Restore the branch portal")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Completed: Move Gi1\/0\/18 to VLAN 20/i })).toBeDisabled();
   await page.getByRole("button", { name: "Page contents" }).click();
   await expect(page.getByRole("link", { name: "Guided branch incident" })).toHaveAttribute("href", "#guided-branch-incident");
   await expect(page.getByRole("link", { name: /Sparse enterprise incident.*Pro.*Locked/ })).toBeVisible();

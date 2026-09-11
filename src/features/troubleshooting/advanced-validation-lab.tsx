@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 
 export type AdvancedValidationCheck = { id: string; title: string; evidence: string; question: string; options: string[]; correctIndex: number; explanation: string; referenceLabel: string; referenceUrl: string };
 
@@ -10,15 +11,24 @@ export const troubleshootingValidationChecks: AdvancedValidationCheck[] = [
   { id: "route-validation", title: "Forward and return route validation", evidence: "A more-specific route changes only the server-to-client direction.", question: "Which validation prevents a partial fix?", options: ["Verify both directions and the state table", "Verify only client ping", "Clear every routing protocol"], correctIndex: 0, explanation: "A successful one-way reachability test does not prove symmetric service delivery or valid stateful inspection.", referenceLabel: "RFC 1812", referenceUrl: "https://www.rfc-editor.org/rfc/rfc1812" },
 ];
 
-export function AdvancedValidationLab({ checks }: { checks: AdvancedValidationCheck[] }) {
+export function AdvancedValidationLab({ checks, progressItemId }: { checks: AdvancedValidationCheck[]; progressItemId?: string }) {
   const [index, setIndex] = useState(0); const [choice, setChoice] = useState<number | null>(null); const [submitted, setSubmitted] = useState(false);
+  const [passedIds, setPassedIds] = useState<string[]>([]);
+  const progress = useProgressCompletionBoundary(progressItemId);
   const check = checks[index];
+  const submit = () => {
+    setSubmitted(true);
+    if (choice !== check.correctIndex) return;
+    const next = passedIds.includes(check.id) ? passedIds : [...passedIds, check.id];
+    setPassedIds(next);
+    if (next.length === checks.length) progress.markTerminalStateReached();
+  };
   return <section className="advanced-validation-lab" aria-label="Advanced troubleshooting validation">
     <h3>Validate packet evidence and standards</h3>
     <label>Check <select value={index} onChange={(event) => { setIndex(Number(event.target.value)); setChoice(null); setSubmitted(false); }}>{checks.map((item, itemIndex) => <option value={itemIndex} key={item.id}>{item.title}</option>)}</select></label>
     <p><strong>Evidence:</strong> {check.evidence}</p>
     <fieldset><legend>{check.question}</legend>{check.options.map((option, optionIndex) => <label key={option}><input checked={choice === optionIndex} name={`${check.id}-decision`} onChange={() => { setChoice(optionIndex); setSubmitted(false); }} type="radio" />{option}</label>)}</fieldset>
-    <button disabled={choice === null} type="button" onClick={() => setSubmitted(true)}>Check advanced decision</button>
+    <button disabled={choice === null} type="button" onClick={submit}>Check advanced decision</button>
     {submitted ? <p role="status">{choice === check.correctIndex ? "Correct. " : "Recheck the evidence. "}{check.explanation}</p> : null}
     <a href={check.referenceUrl} rel="noreferrer" target="_blank">{check.referenceLabel}</a>
   </section>;

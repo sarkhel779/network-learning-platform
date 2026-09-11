@@ -24,11 +24,30 @@ describe("troubleshooting incident engine", () => {
     expect(() => reduceIncident(state, { type: "apply_remediation", remediationId: "remove-route" }, guidedBranchPortalIncident)).toThrow(/not exposed/i);
   });
 
+  it("does not authorize remediation when the test contradicts the selected prediction", () => {
+    let state = createIncidentState(guidedBranchPortalIncident);
+    state = reduceIncident(state, {
+      type: "run_test", hypothesisId: "guided-route", predictionId: "unexpected-next-hop", testId: "inspect-vlan", confidence: "overconfident",
+    }, guidedBranchPortalIncident);
+
+    expect(state.attempts[0]?.correct).toBe(false);
+    expect(() => reduceIncident(state, { type: "apply_remediation", remediationId: "fix-vlan" }, guidedBranchPortalIncident)).toThrow(/supporting evidence/i);
+  });
+
+  it("keeps future-fault and restoration tests unavailable until their incident phase", () => {
+    const state = createIncidentState(guidedBranchPortalIncident);
+    expect(() => reduceIncident(state, {
+      type: "run_test", hypothesisId: "guided-route", predictionId: "unexpected-next-hop", testId: "inspect-route", confidence: "calibrated",
+    }, guidedBranchPortalIncident)).toThrow(/not available/i);
+    expect(() => reduceIncident(state, { type: "run_restoration", checkId: "verify-http" }, guidedBranchPortalIncident)).toThrow(/remediation/i);
+  });
+
   it("records incorrect attempts and does not charge repeated tests twice", () => {
     let state = createIncidentState(guidedBranchPortalIncident);
     const action = { type: "run_test" as const, hypothesisId: "guided-route", predictionId: "unexpected-next-hop", testId: "inspect-vlan", confidence: "overconfident" as const };
     state = reduceIncident(state, action, guidedBranchPortalIncident);
     expect(state.attempts[0]).toMatchObject({ correct: false, confidence: "overconfident" });
+    expect(state.timeline[0]).toMatchObject({ hypothesis: "A more-specific route overrides the correct path", prediction: "Route lookup selects the retired WAN next hop.", confidence: "overconfident", conclusion: "refuted" });
     expect(state.elapsedMinutes).toBe(2);
 
     const repeated = reduceIncident(state, action, guidedBranchPortalIncident);
@@ -47,7 +66,7 @@ describe("troubleshooting incident engine", () => {
       state = reduceIncident(state, { type: "apply_remediation", remediationId }, guidedBranchPortalIncident);
     }
     for (const check of guidedBranchPortalIncident.restorationChecks) {
-      state = reduceIncident(state, { type: "record_restoration", checkId: check.id, passed: true }, guidedBranchPortalIncident);
+      state = reduceIncident(state, { type: "run_restoration", checkId: check.id }, guidedBranchPortalIncident);
     }
     state = reduceIncident(state, { type: "close_incident" }, guidedBranchPortalIncident);
     expect(state.closed).toBe(true);
@@ -56,6 +75,7 @@ describe("troubleshooting incident engine", () => {
 
   it("scores reasoning dimensions independently", () => {
     let state = createIncidentState(guidedBranchPortalIncident);
+    state = reduceIncident(state, { type: "confirm_scope" }, guidedBranchPortalIncident);
     state = reduceIncident(state, {
       type: "run_test", hypothesisId: "guided-vlan", predictionId: "wrong-vlan", testId: "inspect-vlan", confidence: "calibrated",
     }, guidedBranchPortalIncident);
@@ -64,5 +84,14 @@ describe("troubleshooting incident engine", () => {
     expect(Object.keys(score)).toEqual(["scope", "hypothesis", "prediction", "safety", "interpretation", "rootCause", "restoration", "report"]);
     expect(score.rootCause).toBeGreaterThan(score.restoration);
     expect(score.safety).toBeGreaterThanOrEqual(score.hypothesis);
+    expect(score.scope).toBe(100);
+    expect(Math.max(...Object.values(score))).toBeLessThanOrEqual(100);
+  });
+
+  it("awards report credit only when a report is explicitly submitted", () => {
+    const initial = createIncidentState(guidedBranchPortalIncident);
+    expect(scoreIncident(initial, guidedBranchPortalIncident).report).toBe(0);
+    const submitted = reduceIncident(initial, { type: "submit_report" }, guidedBranchPortalIncident);
+    expect(scoreIncident(submitted, guidedBranchPortalIncident).report).toBe(100);
   });
 });

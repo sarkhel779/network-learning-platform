@@ -24,6 +24,10 @@ function EvidenceResult({ evidence }: { evidence: Evidence }) {
     <h4 id={headingId}>{evidence.title}</h4>
     <div className="evidence-board__scroll"><table aria-label="Packet capture evidence"><thead><tr><th>Frame evidence</th><th>Interpretation</th></tr></thead><tbody><tr><td>SYN → 443</td><td>{evidence.body}</td></tr></tbody></table></div>
   </section>;
+  if (evidence.kind === "table") return <section className="evidence-board__result" aria-labelledby={headingId}>
+    <h4 id={headingId}>{evidence.title}</h4>
+    <div className="evidence-board__scroll"><table aria-label={`${evidence.title} evidence`}><thead><tr><th>Observed data</th><th>Interpretation</th></tr></thead><tbody><tr><td>{evidence.body}</td><td>Compare this result with the selected hypothesis and prediction.</td></tr></tbody></table></div>
+  </section>;
   return <section className="evidence-board__result" aria-labelledby={headingId}>
     <h4 id={headingId}>{evidence.title}</h4>
     {evidence.kind === "cli" || evidence.kind === "log" ? <pre><code>{evidence.body}</code></pre> : <p>{evidence.body}</p>}

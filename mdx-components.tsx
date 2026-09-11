@@ -61,6 +61,7 @@ import { NatTroubleshootingLab } from "@/features/nat/nat-troubleshooting-lab";
 import { AdvancedValidationLab } from "@/features/troubleshooting/advanced-validation-lab";
 import { IncidentReportBuilder } from "@/features/troubleshooting/incident-report-builder";
 import { TroubleshootingWorkspace } from "@/features/troubleshooting/troubleshooting-workspace";
+import { TroubleshootingProExperience } from "@/features/troubleshooting/troubleshooting-pro-experience";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -91,6 +92,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     AdvancedValidationLab,
     IncidentReportBuilder,
     TroubleshootingWorkspace,
+    TroubleshootingProExperience,
     EdgeDevicePlayer,
     EthernetFrameExplorer,
     FirstPacketJourneyPlayer,

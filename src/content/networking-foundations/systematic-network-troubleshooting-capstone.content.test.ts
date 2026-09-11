@@ -15,9 +15,7 @@ describe("systematic troubleshooting capstone content", () => {
     const account = read("account"); const pro = read("pro");
     expect(account).toMatch(/TroubleshootingWorkspace[\s\S]*guidance="guided"/);
     expect(account).toContain('progressItemId="capstone_guided_incident"');
-    expect(pro).toMatch(/TroubleshootingWorkspace[\s\S]*guidance="sparse"/);
-    expect(pro).toMatch(/IncidentReportBuilder/);
-    expect(pro).toMatch(/AdvancedValidationLab/);
+    expect(pro).toMatch(/TroubleshootingProExperience/);
     expect(pro).toMatch(/Wireshark|RFC 9293|asymmetric/i);
   });
 });

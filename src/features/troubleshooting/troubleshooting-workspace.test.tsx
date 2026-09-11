@@ -15,6 +15,9 @@ describe("TroubleshootingWorkspace", () => {
   it("explains premature remediation and records incorrect tests", async () => {
     const user = userEvent.setup();
     render(<TroubleshootingWorkspace scenario={guidedBranchPortalIncident} progressItemId="capstone" guidance="guided" />);
+    expect(screen.queryByRole("button", { name: /look up the portal route/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /verify portal response/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /remove the stale \/32 route/i })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /move Gi1\/0\/18 to VLAN 20/i }));
     expect(screen.getByRole("status")).toHaveTextContent(/evidence/i);
 
@@ -30,6 +33,7 @@ describe("TroubleshootingWorkspace", () => {
   it("unlocks sequential faults and completes only after restoration", async () => {
     const user = userEvent.setup();
     render(<TroubleshootingWorkspace scenario={guidedBranchPortalIncident} progressItemId="capstone" guidance="guided" />);
+    await user.click(screen.getByRole("button", { name: /confirm incident scope/i }));
     for (const step of [
       [/access port is in the wrong VLAN/i, /switchport VLAN differs/i, /inspect client switchport/i, /move Gi1\/0\/18 to VLAN 20/i],
       [/more-specific route overrides/i, /route lookup selects/i, /look up the portal route/i, /remove the stale \/32 route/i],
@@ -43,11 +47,11 @@ describe("TroubleshootingWorkspace", () => {
     }
     await user.click(screen.getByRole("button", { name: /close incident/i }));
     expect(screen.getByRole("status")).toHaveTextContent(/restoration/i);
-    expect(markTerminalStateReached).not.toHaveBeenCalled();
+    expect(markTerminalStateReached).toHaveBeenCalledTimes(3);
 
-    for (const check of guidedBranchPortalIncident.restorationChecks) await user.click(screen.getByLabelText(check.label));
+    for (const check of guidedBranchPortalIncident.restorationChecks) await user.click(screen.getByRole("button", { name: new RegExp(`run verification: ${check.label}`, "i") }));
     await user.click(screen.getByRole("button", { name: /close incident/i }));
     expect(screen.getByRole("status")).toHaveTextContent(/incident resolved/i);
-    expect(markTerminalStateReached).toHaveBeenCalledOnce();
+    expect(markTerminalStateReached).toHaveBeenCalledTimes(5);
   });
 });

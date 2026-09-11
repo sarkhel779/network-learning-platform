@@ -1032,6 +1032,8 @@ h1 {
 .troubleshooting-topology__node[data-active="true"] { border-color: var(--accent); box-shadow: 0 0 1rem color-mix(in srgb, var(--accent) 28%, transparent); }
 .troubleshooting-topology__icon { display: grid; place-items: center; width: 2.3rem; height: 2.3rem; border-radius: .5rem; background: color-mix(in srgb, var(--accent) 20%, var(--background)); color: var(--accent); font-weight: 900; }
 .troubleshooting-topology__node small { color: var(--muted); }
+.troubleshooting-topology__connections { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: .55rem; margin: 0; padding: 0; list-style: none; }
+.troubleshooting-topology__connections li { padding: .55rem .7rem; border-inline-start: 3px solid var(--accent); border-radius: .35rem; background: color-mix(in srgb, var(--accent) 7%, var(--background)); color: var(--muted); font-size: .82rem; }
 .troubleshooting-topology__link { display: grid; grid-template-columns: auto minmax(2rem, 1fr) auto; align-items: center; gap: .3rem; color: var(--muted); font-size: .72rem; white-space: nowrap; }
 .troubleshooting-topology__link i { height: 2px; background: var(--accent); }
 .evidence-board__tools { display: flex; flex-wrap: wrap; gap: .65rem; }
@@ -1058,11 +1060,11 @@ h1 {
 .hypothesis-journal fieldset { display: grid; gap: .45rem; margin: 0; padding: .75rem; border: 1px solid var(--border); border-radius: .6rem; }
 .hypothesis-journal label, .restoration-checklist label { display: flex; align-items: center; gap: .55rem; min-block-size: 44px; }
 .remediation-panel > div { display: flex; flex-wrap: wrap; gap: .65rem; }
-.remediation-panel button, .troubleshooting-workspace__close { min-block-size: 44px; padding: .6rem .85rem; border: 1px solid var(--accent); border-radius: .5rem; background: transparent; color: inherit; font: inherit; font-weight: 750; cursor: pointer; }
-.remediation-panel button:disabled, .troubleshooting-workspace__close:disabled { cursor: not-allowed; opacity: .55; }
+.remediation-panel button, .restoration-checklist button, .troubleshooting-workspace > button { min-block-size: 44px; padding: .6rem .85rem; border: 1px solid var(--accent); border-radius: .5rem; background: transparent; color: inherit; font: inherit; font-weight: 750; cursor: pointer; }
+.remediation-panel button:disabled, .restoration-checklist button:disabled, .troubleshooting-workspace > button:disabled { cursor: not-allowed; opacity: .55; }
 .troubleshooting-workspace__feedback { margin: 0; padding: .85rem 1rem; border-inline-start: .35rem solid var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--background)); }
 .troubleshooting-workspace__close { justify-self: start; }
-@media (max-width: 45rem) { .troubleshooting-workspace__grid { grid-template-columns: minmax(0, 1fr); } .remediation-panel button, .troubleshooting-workspace__close { width: 100%; } }
+@media (max-width: 45rem) { .troubleshooting-workspace__grid { grid-template-columns: minmax(0, 1fr); } .remediation-panel button, .restoration-checklist button, .troubleshooting-workspace > button { width: 100%; } }
 @media (prefers-reduced-motion: reduce) { .troubleshooting-workspace * { animation: none !important; transition: none !important; } }
 .incident-report-builder, .advanced-validation-lab { display: grid; gap: .9rem; min-width: 0; max-width: 100%; margin-block: 1.5rem; padding: clamp(1rem, 2.5vw, 1.4rem); border: 1px solid var(--border); border-radius: .85rem; background: color-mix(in srgb, var(--accent) 5%, var(--surface)); }
 .incident-report-builder h3, .advanced-validation-lab h3 { margin: 0; }

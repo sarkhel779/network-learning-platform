@@ -15,9 +15,14 @@ export type TimelineEntry = {
   label: string;
   elapsedMinutes: number;
   result: "correct" | "incorrect" | "passed" | "failed" | "complete";
+  hypothesis?: string;
+  prediction?: string;
+  confidence?: Confidence;
+  conclusion?: "supported" | "refuted";
 };
 
 export type IncidentState = {
+  scoped: boolean;
   exposedFaultIds: string[];
   correctedFaultIds: string[];
   attempts: AttemptRecord[];
@@ -25,12 +30,15 @@ export type IncidentState = {
   restorationResults: Record<string, boolean>;
   elapsedMinutes: number;
   closed: boolean;
+  reportSubmitted: boolean;
 };
 
 export type IncidentAction =
   | { type: "run_test"; hypothesisId: string; predictionId: string; testId: string; confidence: Confidence }
   | { type: "apply_remediation"; remediationId: string }
-  | { type: "record_restoration"; checkId: string; passed: boolean }
+  | { type: "confirm_scope" }
+  | { type: "run_restoration"; checkId: string }
+  | { type: "submit_report" }
   | { type: "close_incident" };
 
 export type IncidentScore = Record<"scope" | "hypothesis" | "prediction" | "safety" | "interpretation" | "rootCause" | "restoration" | "report", number>;
@@ -38,23 +46,25 @@ export type IncidentScore = Record<"scope" | "hypothesis" | "prediction" | "safe
 export function createIncidentState(scenario: TroubleshootingScenario): IncidentState {
   const unlockedByAnotherFault = new Set(scenario.faults.flatMap((fault) => fault.unlocksFaultId ? [fault.unlocksFaultId] : []));
   return {
-    exposedFaultIds: scenario.faults.filter((fault) => !unlockedByAnotherFault.has(fault.id)).map((fault) => fault.id),
-    correctedFaultIds: [], attempts: [], timeline: [], restorationResults: {}, elapsedMinutes: 0, closed: false,
+    scoped: false, exposedFaultIds: scenario.faults.filter((fault) => !unlockedByAnotherFault.has(fault.id)).map((fault) => fault.id),
+    correctedFaultIds: [], attempts: [], timeline: [], restorationResults: {}, elapsedMinutes: 0, closed: false, reportSubmitted: false,
   };
 }
 
 function runScenarioTest(state: IncidentState, action: Extract<IncidentAction, { type: "run_test" }>, scenario: TroubleshootingScenario): IncidentState {
   const test = scenario.tests.find(({ id }) => id === action.testId);
   const hypothesis = scenario.hypotheses.find(({ id }) => id === action.hypothesisId);
-  if (!test || !hypothesis || !hypothesis.predictions.some(({ id }) => id === action.predictionId)) throw new Error("Unknown troubleshooting selection.");
+  const prediction = hypothesis?.predictions.find(({ id }) => id === action.predictionId);
+  if (!test || !hypothesis || !prediction) throw new Error("Unknown troubleshooting selection.");
+  if (test.phase === "restoration" || (test.expectedFaultId && !state.exposedFaultIds.includes(test.expectedFaultId))) throw new Error("This test is not available in the current incident phase.");
   const duplicate = state.attempts.some((attempt) => attempt.hypothesisId === action.hypothesisId && attempt.predictionId === action.predictionId && attempt.testId === action.testId);
   if (duplicate) return state;
-  const correct = test.expectedFaultId === hypothesis.faultId && state.exposedFaultIds.includes(hypothesis.faultId);
+  const correct = test.expectedFaultId === hypothesis.faultId && prediction.supportingTestIds.includes(test.id) && state.exposedFaultIds.includes(hypothesis.faultId);
   const elapsedMinutes = state.elapsedMinutes + test.timeCost;
   return {
     ...state,
     attempts: [...state.attempts, { hypothesisId: action.hypothesisId, predictionId: action.predictionId, testId: action.testId, confidence: action.confidence, correct }],
-    timeline: [...state.timeline, { kind: "test", label: test.label, elapsedMinutes, result: correct ? "correct" : "incorrect" }],
+    timeline: [...state.timeline, { kind: "test", label: test.label, elapsedMinutes, result: correct ? "correct" : "incorrect", hypothesis: hypothesis.label, prediction: prediction.label, confidence: action.confidence, conclusion: correct ? "supported" : "refuted" }],
     elapsedMinutes,
   };
 }
@@ -64,8 +74,8 @@ function applyScenarioRemediation(state: IncidentState, action: Extract<Incident
   if (!remediation) throw new Error("Unknown remediation.");
   if (!state.exposedFaultIds.includes(remediation.faultId)) throw new Error("Fault is not exposed yet.");
   if (state.correctedFaultIds.includes(remediation.faultId)) return state;
-  const tested = new Set(state.attempts.map(({ testId }) => testId));
-  if (!remediation.requiresTestIds.every((testId) => tested.has(testId))) throw new Error("Collect required evidence before remediation.");
+  const supportingTests = new Set(state.attempts.filter((attempt) => attempt.correct).map(({ testId }) => testId));
+  if (!remediation.requiresTestIds.every((testId) => supportingTests.has(testId))) throw new Error("Collect supporting evidence before remediation.");
   const fault = scenario.faults.find(({ id }) => id === remediation.faultId);
   const elapsedMinutes = state.elapsedMinutes + remediation.timeCost;
   return {
@@ -77,15 +87,17 @@ function applyScenarioRemediation(state: IncidentState, action: Extract<Incident
   };
 }
 
-function recordRestorationResult(state: IncidentState, action: Extract<IncidentAction, { type: "record_restoration" }>, scenario: TroubleshootingScenario): IncidentState {
+function runRestorationCheck(state: IncidentState, action: Extract<IncidentAction, { type: "run_restoration" }>, scenario: TroubleshootingScenario): IncidentState {
   const check = scenario.restorationChecks.find(({ id }) => id === action.checkId);
   if (!check) throw new Error("Unknown restoration check.");
+  if (!scenario.faults.every(({ id }) => state.correctedFaultIds.includes(id))) throw new Error("Complete every remediation before restoration testing.");
+  if (state.restorationResults[check.id]) return state;
   const test = scenario.tests.find(({ id }) => id === check.testId);
   const elapsedMinutes = state.elapsedMinutes + (test?.timeCost ?? 0);
   return {
     ...state,
-    restorationResults: { ...state.restorationResults, [check.id]: action.passed },
-    timeline: [...state.timeline, { kind: "restoration", label: check.label, elapsedMinutes, result: action.passed ? "passed" : "failed" }],
+    restorationResults: { ...state.restorationResults, [check.id]: true },
+    timeline: [...state.timeline, { kind: "restoration", label: check.label, elapsedMinutes, result: "passed" }],
     elapsedMinutes,
   };
 }
@@ -101,9 +113,11 @@ function closeResolvedIncident(state: IncidentState, scenario: TroubleshootingSc
 export function reduceIncident(state: IncidentState, action: IncidentAction, scenario: TroubleshootingScenario): IncidentState {
   if (state.closed) return state;
   switch (action.type) {
+    case "confirm_scope": return { ...state, scoped: true };
     case "run_test": return runScenarioTest(state, action, scenario);
     case "apply_remediation": return applyScenarioRemediation(state, action, scenario);
-    case "record_restoration": return recordRestorationResult(state, action, scenario);
+    case "run_restoration": return runRestorationCheck(state, action, scenario);
+    case "submit_report": return { ...state, reportSubmitted: true };
     case "close_incident": return closeResolvedIncident(state, scenario);
     default: return assertNever(action);
   }
@@ -120,14 +134,14 @@ export function scoreIncident(state: IncidentState, scenario: TroubleshootingSce
   const restored = scenario.restorationChecks.filter(({ id }) => state.restorationResults[id]);
   const corrected = state.correctedFaultIds.length;
   return {
-    scope: percent(new Set(state.attempts.map(({ testId }) => testId)).size, scenario.tests.length),
+    scope: state.scoped ? 100 : 0,
     hypothesis: percent(correct.length, state.attempts.length),
-    prediction: percent(correct.filter(({ predictionId }) => Boolean(predictionId)).length, scenario.faults.length),
+    prediction: Math.min(100, percent(new Set(correct.map(({ predictionId }) => predictionId)).size, scenario.faults.length)),
     safety: percent(safe.length, state.attempts.length),
     interpretation: percent(calibrated.length, correct.length),
     rootCause: percent(corrected, scenario.faults.length),
     restoration: percent(restored.length, scenario.restorationChecks.length),
-    report: state.closed ? 100 : 0,
+    report: state.reportSubmitted ? 100 : 0,
   };
 }
 
