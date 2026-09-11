@@ -48,7 +48,7 @@ describe("GET /auth/callback", () => {
 
     expect(exchangeCodeForSession).not.toHaveBeenCalled();
     expect(response.headers.get("location")).toBe(
-      "https://packetsecrets.test/sign-in?error=authentication",
+      "https://packetsecrets.test/sign-in?error=authentication&returnTo=%2F",
     );
   });
 
@@ -62,8 +62,23 @@ describe("GET /auth/callback", () => {
     );
 
     expect(response.headers.get("location")).toBe(
-      "https://packetsecrets.test/sign-in?error=authentication",
+      "https://packetsecrets.test/sign-in?error=link_expired&returnTo=%2F",
     );
     expect(await response.text()).not.toContain("sensitive provider detail");
+  });
+
+  it("preserves a safe destination when a sign-in link is invalid or expired", async () => {
+    exchangeCodeForSession.mockResolvedValue({ error: new Error("expired token detail") });
+
+    const response = await GET(
+      new Request(
+        "https://packetsecrets.test/auth/callback?code=expired&next=%2Flearn%2Fnetworking-foundations%2Fsystematic-network-troubleshooting-capstone",
+      ),
+    );
+
+    expect(response.headers.get("location")).toBe(
+      "https://packetsecrets.test/sign-in?error=link_expired&returnTo=%2Flearn%2Fnetworking-foundations%2Fsystematic-network-troubleshooting-capstone",
+    );
+    expect(await response.text()).not.toContain("expired token detail");
   });
 });

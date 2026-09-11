@@ -25,7 +25,7 @@ afterEach(() => {
 
 describe("SignInForm", () => {
   it("renders Google and email passwordless options", () => {
-    render(<SignInForm returnTo="/" />);
+    render(<SignInForm googleEnabled returnTo="/" />);
 
     expect(
       screen.getByRole("button", { name: "Continue with Google" }),
@@ -40,7 +40,7 @@ describe("SignInForm", () => {
 
   it("rejects an invalid email without contacting Supabase", async () => {
     const user = userEvent.setup();
-    render(<SignInForm returnTo="/" />);
+    render(<SignInForm googleEnabled returnTo="/" />);
 
     await user.type(screen.getByLabelText("Email address"), "not-an-email");
     await user.click(
@@ -57,6 +57,7 @@ describe("SignInForm", () => {
     const user = userEvent.setup();
     render(
       <SignInForm
+        googleEnabled
         returnTo="/learn/networking-foundations/vlans-access-ports-and-trunks"
       />,
     );
@@ -76,7 +77,7 @@ describe("SignInForm", () => {
 
   it("requests a magic link without revealing account existence", async () => {
     const user = userEvent.setup();
-    render(<SignInForm returnTo="/paths/networking-foundations" />);
+    render(<SignInForm googleEnabled returnTo="/paths/networking-foundations" />);
 
     await user.type(
       screen.getByLabelText("Email address"),
@@ -95,14 +96,22 @@ describe("SignInForm", () => {
       },
     });
     expect(await screen.findByRole("status")).toHaveTextContent(
-      "If the address can receive mail, check it for your secure sign-in link.",
+      "If the address can receive mail, open its secure sign-in link on this device in the same browser.",
     );
+  });
+
+  it("does not offer Google when the provider is not configured", () => {
+    render(<SignInForm googleEnabled={false} returnTo="/" />);
+
+    expect(screen.queryByRole("button", { name: "Continue with Google" }))
+      .not.toBeInTheDocument();
+    expect(screen.getByText("Sign in with your email address.")).toBeVisible();
   });
 
   it("prevents repeat submission while a request is pending", async () => {
     signInWithOtp.mockReturnValue(new Promise(() => undefined));
     const user = userEvent.setup();
-    render(<SignInForm returnTo="/" />);
+    render(<SignInForm googleEnabled returnTo="/" />);
 
     await user.type(
       screen.getByLabelText("Email address"),
@@ -125,7 +134,7 @@ describe("SignInForm", () => {
   it("shows a neutral error when Supabase rejects a request", async () => {
     signInWithOAuth.mockResolvedValue({ error: new Error("provider details") });
     const user = userEvent.setup();
-    render(<SignInForm returnTo="/" />);
+    render(<SignInForm googleEnabled returnTo="/" />);
 
     await user.click(
       screen.getByRole("button", { name: "Continue with Google" }),
