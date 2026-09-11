@@ -10,7 +10,7 @@ describe("NAT, PAT and the complete Internet packet journey content", () => {
     for (const heading of ["The IPv4 translation boundary", "NAT vocabulary and address realms", "Static NAT and port forwarding", "Dynamic NAT and address pools", "PAT and translation-table state", "Complete Internet packet journey", "Return traffic, timeouts, and failure modes"]) expect(lesson).toContain(heading);
     for (const range of ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]) expect(lesson).toContain(range);
     for (const term of ["inside local", "inside global", "outside local", "outside global", "static NAT", "dynamic NAT", "PAT"]) expect(lesson.toLowerCase()).toContain(term.toLowerCase());
-    expect(lesson).toMatch(/DNS(.|\n)*TCP(.|\n)*HTTPS(.|\n)*443(.|\n)*reverse translation/i);
+    expect(lesson).toMatch(/DNS[\s\S]*TCP[\s\S]*HTTPS[\s\S]*443[\s\S]*reverse translation/i);
     expect(lesson).toContain("NAT is not a firewall");
     expect(lesson).toContain("NAT64 and NPTv6");
     expect(lesson).not.toMatch(/NatCaptureAnalysisLab|U-Turn NAT lab/);
