@@ -96,6 +96,14 @@ describe("system theme and table styles", () => {
     expect(css).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.service-player \*\s*\{[^}]*animation:\s*none\s*!important/);
   });
 
+  it("keeps NAT packet, tuple, table, and controls responsive with reduced motion", () => {
+    expect(css).toMatch(/\.nat-journey-player[^\{]*\{[^}]*min-width:\s*0/);
+    expect(css).toMatch(/\.nat-evidence-grid\s*\{[^}]*grid-template-columns:/);
+    expect(css).toMatch(/\.nat-table-scroll\s*\{[^}]*max-width:\s*100%[^}]*overflow-x:\s*auto/);
+    expect(css).toMatch(/@media\s*\(max-width:\s*45rem\)[\s\S]*\.nat-evidence-grid\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
+    expect(css).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.nat-journey-player \*\s*\{[^}]*animation:\s*none\s*!important/);
+  });
+
   it("renders shared player controls with the established outlined appearance", () => {
     const style = document.createElement("style");
     style.textContent = css;
