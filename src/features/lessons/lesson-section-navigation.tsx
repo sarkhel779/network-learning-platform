@@ -6,7 +6,7 @@ import type { LessonSection } from "@/features/catalog/catalog.types";
 
 type LessonSectionNavigationProps = {
   sections?: LessonSection[];
-  presentation?: "list" | "dns-network-map" | "network-map";
+  presentation?: "list" | "dns-network-map" | "network-map" | "nat-network-map";
   lockedReturnTo?: string;
   mapGroups?: readonly { label: string; node: string; ids: readonly string[] }[];
   panelId?: string;
@@ -17,6 +17,14 @@ const dnsGroups = [
   { label: "Messages and records", node: "Authority", ids: ["dns-message-header-structure", "record-types-selection-rules", "dns-transports", "caching-ttl-negative-caching", "response-codes-nodata", "reverse-dns"] },
   { label: "Evidence and troubleshooting", node: "Evidence", ids: ["interactive-dns-troubleshooting", "dns-command-capture-evidence", "common-dns-misconceptions", "summary-next-steps", "cold-warm-cache-practice", "record-selection-practice", "dns-packet-capture-practice", "knowledge-check-summary"] },
   { label: "Advanced DNS", node: "Pro", ids: ["dns-timing-diagram", "rfc-level-dns-checks", "dnssec-advanced-wireshark", "advanced-dns-operations", "root-server-bootstrap-bonus"] },
+] as const;
+
+const natGroups = [
+  { label: "Translation boundary", node: "Boundary", ids: ["ipv4-translation-boundary", "nat-vocabulary-address-realms"] },
+  { label: "Mappings and state", node: "PAT State", ids: ["static-nat-port-forwarding", "dynamic-nat-address-pools", "pat-translation-table-state"] },
+  { label: "Internet journey", node: "Journey", ids: ["complete-internet-packet-journey", "return-traffic-timeouts-failures", "public-knowledge-check"] },
+  { label: "Account practice", node: "Practice", ids: ["account-pat-journey", "account-mapping-lab", "account-troubleshooting-lab", "account-knowledge-checks"] },
+  { label: "Pro evidence and U-Turn NAT", node: "Hairpin", ids: ["pro-packet-analysis", "pro-rfc-validation", "pro-u-turn-nat-lab"] },
 ] as const;
 
 function SectionItem({
@@ -57,8 +65,8 @@ export function LessonSectionNavigation({ sections, presentation = "list", locke
 
   if (!sections?.length) return null;
 
-  if (presentation === "dns-network-map" || presentation === "network-map") {
-    const groups = mapGroups ?? dnsGroups;
+  if (presentation === "dns-network-map" || presentation === "network-map" || presentation === "nat-network-map") {
+    const groups = mapGroups ?? (presentation === "nat-network-map" ? natGroups : dnsGroups);
     const toggleMap = () => {
       if (!isMapOpen) setRevealCycle((cycle) => cycle + 1);
       setIsMapOpen(!isMapOpen);
