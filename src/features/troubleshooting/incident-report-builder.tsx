@@ -20,6 +20,7 @@ export function IncidentReportBuilder({ state, scenario, progressItemId, onSubmi
   const progress = useProgressCompletionBoundary(progressItemId);
   const score = scoreIncident(submitted ? { ...state, reportSubmitted: true } : state, scenario);
   const submit = () => {
+    if (!state.closed) { setMessage("Restore and close the incident before submitting the report."); return; }
     const missing = fields.filter(({ key }) => !report[key].trim()).map(({ label }) => label);
     if (missing.length) { setMessage(`Evidence and all report sections are required. Missing: ${missing.join(", ")}.`); return; }
     onSubmit(report); setSubmitted(true); progress.markTerminalStateReached(); setMessage("Incident report submitted for review.");
@@ -29,6 +30,6 @@ export function IncidentReportBuilder({ state, scenario, progressItemId, onSubmi
     <dl className="incident-report-builder__score"><div><dt>Root-cause score</dt><dd>{score.rootCause}%</dd></div><div><dt>Restoration score</dt><dd>{score.restoration}%</dd></div><div><dt>Report score</dt><dd>{score.report}%</dd></div></dl>
     {fields.map(({ key, label }) => <label key={key}>{label}<textarea value={report[key]} onChange={(event) => setReport((current) => ({ ...current, [key]: event.target.value }))} rows={3} /></label>)}
     <button type="button" onClick={submit}>Submit incident report</button>
-    {message ? <p role={message.startsWith("Evidence") ? "alert" : "status"}>{message}</p> : null}
+    {message ? <p role={message.includes("before submitting") || message.startsWith("Evidence") ? "alert" : "status"}>{message}</p> : null}
   </section>;
 }

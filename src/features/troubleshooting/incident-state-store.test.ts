@@ -36,4 +36,17 @@ describe("incident state store", () => {
     store.clear();
     expect(store.load()).toBeNull();
   });
+
+  it("rejects structurally plausible snapshots with unknown evidence references", () => {
+    const storage = memoryStorage();
+    const store = createIncidentStateStore(storage, "learner-1:attempt-1", guidedBranchPortalIncident);
+    const invalid = {
+      ...createIncidentState(guidedBranchPortalIncident),
+      attempts: [{ hypothesisId: "unknown", predictionId: "unknown", testId: "unknown", confidence: "calibrated", correct: true, hypothesisCorrect: true, predictionCorrect: true, timelineIndex: 0 }],
+      timeline: [{ kind: "test", label: "forged", elapsedMinutes: 1, result: "correct" }],
+    };
+    storage.setItem(store.key, JSON.stringify(invalid));
+    expect(store.load()).toBeNull();
+    expect(storage.getItem(store.key)).toBeNull();
+  });
 });

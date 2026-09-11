@@ -15,6 +15,10 @@ describe("troubleshooting evidence views", () => {
     expect(connections).toHaveTextContent("Gi1/0/18");
     expect(connections).toHaveTextContent(/Edge firewall outside to Portal server eth0/i);
     expect([...connections.children].map((item) => item.textContent)).not.toContain("DNS resolver eth0 to Portal server eth0");
+    const visualLink = screen.getByTestId("topology-link-firewall-portal");
+    expect(visualLink).toHaveAttribute("data-from", "edge-firewall");
+    expect(visualLink).toHaveAttribute("data-to", "portal-server");
+    expect(visualLink).toHaveTextContent(/outside.*eth0/i);
   });
 
   it("runs tests and presents packet captures as tables", () => {

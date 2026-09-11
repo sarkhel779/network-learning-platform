@@ -50,6 +50,7 @@ const troubleshootingTestSchema = z.object({
   expectedFaultId: id.optional(),
   phase: z.enum(["diagnostic", "restoration"]).default("diagnostic"),
   evidence: evidenceSchema,
+  restoredEvidence: evidenceSchema.optional(),
 }).strict();
 
 const remediationSchema = z.object({

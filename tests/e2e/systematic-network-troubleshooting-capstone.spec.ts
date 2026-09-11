@@ -7,6 +7,7 @@ async function completeFault(page: Page, hypothesis: RegExp, prediction: RegExp,
   await page.getByLabel(prediction).click();
   await page.getByLabel("calibrated").click();
   await page.getByRole("button", { name: testName }).click();
+  await page.getByRole("button", { name: "Evidence supports hypothesis" }).click();
   await page.getByRole("button", { name: remediation }).click();
 }
 
@@ -27,6 +28,7 @@ test("completes the guided sequential-fault incident only after full restoration
   await page.setExtraHTTPHeaders({ "x-packetsecrets-test-viewer": "capstone-account-learner" });
   await page.goto(`${route}#guided-branch-incident`);
   await expect(page.getByLabel("Restore the branch portal")).toBeVisible();
+  await page.getByRole("button", { name: "Confirm incident scope" }).click();
   await completeFault(page, /access port is in the wrong VLAN/i, /switchport VLAN differs/i, /inspect client switchport/i, /move Gi1\/0\/18 to VLAN 20/i);
   await completeFault(page, /more-specific route overrides/i, /route lookup selects/i, /look up the portal route/i, /remove the stale \/32 route/i);
   await completeFault(page, /resolver has stale portal data/i, /DNS returns the old server/i, /resolve the portal name/i, /update and flush the portal record/i);
@@ -51,6 +53,7 @@ test("restores authenticated access after a page reload", async ({ page }) => {
   await page.setExtraHTTPHeaders({ "x-packetsecrets-test-viewer": "capstone-resume-learner" });
   await page.goto(route);
   await expect(page.getByLabel("Restore the branch portal")).toBeVisible();
+  await page.getByRole("button", { name: "Confirm incident scope" }).click();
   await completeFault(page, /access port is in the wrong VLAN/i, /switchport VLAN differs/i, /inspect client switchport/i, /move Gi1\/0\/18 to VLAN 20/i);
   await page.reload();
   await expect(page.getByLabel("Restore the branch portal")).toBeVisible();

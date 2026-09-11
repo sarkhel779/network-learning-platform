@@ -41,6 +41,8 @@ export function TroubleshootingWorkspace({ scenario, progressItemId, guidance, o
   const [predictionId, setPredictionId] = useState(first.predictions[0].id);
   const [confidence, setConfidence] = useState<Confidence>("underconfident");
   const [selectedTestId, setSelectedTestId] = useState<string>();
+  const [selectedAttemptIndex, setSelectedAttemptIndex] = useState<number>();
+  const [selectedRestorationCheckId, setSelectedRestorationCheckId] = useState<string>();
   const [feedback, setFeedback] = useState("Form a hypothesis, predict the result, then collect evidence.");
   const [journalOpen, setJournalOpen] = useState(guidance === "guided");
   const progress = useProgressCompletionBoundary(progressItemId);
@@ -63,14 +65,23 @@ export function TroubleshootingWorkspace({ scenario, progressItemId, guidance, o
     const prediction = hypothesis.predictions.find(({ id }) => id === predictionId)!;
     const correct = test.expectedFaultId === hypothesis.faultId && prediction.supportingTestIds.includes(test.id) && state.exposedFaultIds.includes(hypothesis.faultId);
     dispatch({ type: "run_test", hypothesisId, predictionId, testId, confidence });
+    setSelectedAttemptIndex(state.attempts.length);
     setSelectedTestId(testId);
     setFeedback(correct ? `${test.evidence.title}: ${test.evidence.body}` : `${test.evidence.title}: this evidence does not support the selected hypothesis. Reconsider the layer and prediction.`);
+  };
+  const conclude = (conclusion: "supported" | "refuted") => {
+    if (selectedAttemptIndex === undefined) return;
+    dispatch({ type: "record_conclusion", attemptIndex: selectedAttemptIndex, conclusion });
+    setFeedback(conclusion === "supported" ? "Evidence accepted as supporting the hypothesis. The root cause is ready for remediation." : "Evidence recorded as refuting the hypothesis. Revise it before changing the network.");
   };
   const runRestoration = (checkId: string) => {
     try {
       const check = scenario.restorationChecks.find(({ id }) => id === checkId)!;
+      const verified = reduceIncident(state, { type: "run_restoration", checkId }, scenario);
       dispatch({ type: "run_restoration", checkId });
-      setFeedback(`${check.label}: verification passed and evidence was recorded.`);
+      setSelectedRestorationCheckId(checkId);
+      const evidence = verified.restorationEvidence[checkId];
+      setFeedback(`${check.label}: ${evidence.title} — ${evidence.body}`);
     } catch (error) { setFeedback(error instanceof Error ? error.message : "Restoration verification could not run."); }
   };
   const apply = (remediationId: string) => {
@@ -88,16 +99,21 @@ export function TroubleshootingWorkspace({ scenario, progressItemId, guidance, o
       if (closed.closed) { setFeedback("Incident resolved. Every required layer has been restored."); progress.markTerminalStateReached(); }
     } catch (error) { setFeedback(error instanceof Error ? error.message : "Incident cannot be closed."); }
   };
-  const restart = () => {
-    store?.clear();
-    dispatch({ type: "restart_workspace" });
-    setSelectedTestId(undefined);
-    setFeedback("Incident restarted. Confirm the scope before collecting new evidence.");
+  const restart = async () => {
+    try {
+      if (lessonProgress) await lessonProgress.restartLesson();
+      store?.clear();
+      dispatch({ type: "restart_workspace" });
+      setSelectedTestId(undefined);
+      setSelectedAttemptIndex(undefined);
+      setSelectedRestorationCheckId(undefined);
+      setFeedback("Incident restarted. Confirm the scope before collecting new evidence.");
+    } catch { setFeedback("The incident could not restart. Try again before continuing."); }
   };
-  const selectedEvidence = scenario.tests.find(({ id }) => id === selectedTestId)?.evidence;
+  const selectedEvidence = selectedRestorationCheckId ? state.restorationEvidence[selectedRestorationCheckId] : scenario.tests.find(({ id }) => id === selectedTestId)?.evidence;
   const restorationReady = state.correctedFaultIds.length === scenario.faults.length;
-  const visibleTests = scenario.tests.filter((test) => test.phase === "diagnostic" && (!test.expectedFaultId || state.exposedFaultIds.includes(test.expectedFaultId)));
-  const visibleRemediations = scenario.remediations.filter((item) => state.exposedFaultIds.includes(item.faultId));
+  const visibleTests = state.scoped ? scenario.tests.filter((test) => test.phase === "diagnostic" && (!test.expectedFaultId || state.exposedFaultIds.includes(test.expectedFaultId))) : [];
+  const visibleRemediations = state.scoped ? scenario.remediations.filter((item) => state.exposedFaultIds.includes(item.faultId)) : [];
   const activePath = state.correctedFaultIds.length === scenario.faults.length ? scenario.topology.nodes.map(({ id }) => id) : scenario.topology.nodes.slice(0, Math.min(state.correctedFaultIds.length + 2, scenario.topology.nodes.length)).map(({ id }) => id);
 
   return <section className="troubleshooting-workspace" data-guidance={guidance} aria-label={scenario.title}>
@@ -107,10 +123,11 @@ export function TroubleshootingWorkspace({ scenario, progressItemId, guidance, o
     {guidance === "sparse" ? <button aria-expanded={journalOpen} onClick={() => setJournalOpen((current) => !current)} type="button">{journalOpen ? "Close hypothesis worksheet" : "Open hypothesis worksheet"}</button> : null}
     <div className="troubleshooting-workspace__grid">{journalOpen ? <HypothesisJournal hypotheses={scenario.hypotheses} hypothesisId={hypothesisId} predictionId={predictionId} confidence={confidence} onHypothesisChange={setHypothesisId} onPredictionChange={setPredictionId} onConfidenceChange={setConfidence} /> : null}<EvidenceBoard tests={visibleTests} selectedEvidence={selectedEvidence} onRunTest={runTest} /></div>
     <p className="troubleshooting-workspace__feedback" role="status" aria-live="polite">{feedback}</p>
+    {selectedAttemptIndex !== undefined && !state.conclusions.some(({ attemptIndex }) => attemptIndex === selectedAttemptIndex) ? <div className="troubleshooting-workspace__conclusion"><button onClick={() => conclude("supported")} type="button">Evidence supports hypothesis</button><button onClick={() => conclude("refuted")} type="button">Evidence refutes hypothesis</button></div> : null}
     <RemediationPanel remediations={visibleRemediations} correctedFaultIds={state.correctedFaultIds} onApply={apply} />
     <RestorationChecklist checks={scenario.restorationChecks} results={state.restorationResults} enabled={restorationReady} onRun={runRestoration} />
     <button className="troubleshooting-workspace__close" disabled={state.closed} onClick={close} type="button">{state.closed ? "Incident closed" : "Close incident"}</button>
-    <button onClick={restart} type="button">Restart incident</button>
+    <button onClick={() => { void restart(); }} type="button">Restart incident</button>
     <IncidentTimeline entries={state.timeline} />
     {scenario.id === "guided-branch-portal" && state.correctedFaultIds.includes("wrong-access-vlan") ? <ProgressMilestone itemId="capstone_guided_vlan_check" /> : null}
     {scenario.id === "guided-branch-portal" && state.correctedFaultIds.includes("wrong-specific-route") ? <ProgressMilestone itemId="capstone_guided_route_check" /> : null}

@@ -6,18 +6,28 @@ import { guidedBranchPortalIncident } from "./troubleshooting-scenarios";
 import { TroubleshootingWorkspace } from "./troubleshooting-workspace";
 
 const markTerminalStateReached = vi.fn();
+const restartLesson = vi.fn(async () => undefined);
 vi.mock("@/features/progress/progress-completion-boundary", () => ({ useProgressCompletionBoundary: () => ({ markTerminalStateReached, state: "idle", retry: vi.fn() }) }));
+vi.mock("@/features/progress/lesson-progress-context", () => ({ useOptionalLessonProgress: () => ({ learnerAttemptKey: "learner:lesson:attempt-1", restartLesson }) }));
 
-beforeEach(() => markTerminalStateReached.mockClear());
+beforeEach(() => { markTerminalStateReached.mockClear(); restartLesson.mockClear(); localStorage.clear(); });
 afterEach(cleanup);
 
 describe("TroubleshootingWorkspace", () => {
+  it("restarts the server-backed lesson attempt before resetting the incident", async () => {
+    const user = userEvent.setup();
+    render(<TroubleshootingWorkspace scenario={guidedBranchPortalIncident} progressItemId="capstone" guidance="guided" />);
+    await user.click(screen.getByRole("button", { name: /restart incident/i }));
+    expect(restartLesson).toHaveBeenCalledOnce();
+    expect(screen.getByRole("status")).toHaveTextContent(/incident restarted/i);
+  });
   it("explains premature remediation and records incorrect tests", async () => {
     const user = userEvent.setup();
     render(<TroubleshootingWorkspace scenario={guidedBranchPortalIncident} progressItemId="capstone" guidance="guided" />);
     expect(screen.queryByRole("button", { name: /look up the portal route/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /verify portal response/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /remove the stale \/32 route/i })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /confirm incident scope/i }));
     await user.click(screen.getByRole("button", { name: /move Gi1\/0\/18 to VLAN 20/i }));
     expect(screen.getByRole("status")).toHaveTextContent(/evidence/i);
 
@@ -43,6 +53,7 @@ describe("TroubleshootingWorkspace", () => {
       await user.click(screen.getByLabelText(step[1]));
       await user.click(screen.getByLabelText(/calibrated/i));
       await user.click(screen.getByRole("button", { name: step[2] }));
+      await user.click(screen.getByRole("button", { name: /evidence supports hypothesis/i }));
       await user.click(screen.getByRole("button", { name: step[3] }));
     }
     await user.click(screen.getByRole("button", { name: /close incident/i }));
@@ -50,6 +61,7 @@ describe("TroubleshootingWorkspace", () => {
     expect(markTerminalStateReached).toHaveBeenCalledTimes(3);
 
     for (const check of guidedBranchPortalIncident.restorationChecks) await user.click(screen.getByRole("button", { name: new RegExp(`run verification: ${check.label}`, "i") }));
+    expect(screen.getByRole("status")).toHaveTextContent(/HTTP\/2 200 OK/i);
     await user.click(screen.getByRole("button", { name: /close incident/i }));
     expect(screen.getByRole("status")).toHaveTextContent(/incident resolved/i);
     expect(markTerminalStateReached).toHaveBeenCalledTimes(5);

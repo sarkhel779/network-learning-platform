@@ -19,6 +19,13 @@ export function TroubleshootingTopology({ topology, activePath = [] }: Props) {
         </article>
       </div>)}
     </div>
+    <div className="troubleshooting-topology__visual-links" aria-hidden="true">
+      {topology.links.map((link) => <div className="troubleshooting-topology__link" data-testid={`topology-link-${link.id}`} data-from={link.from} data-to={link.to} key={link.id}>
+        <strong>{nodes.get(link.from)?.label}</strong>
+        <span><small>{link.fromInterface}</small><i /><small>{link.toInterface}</small></span>
+        <strong>{nodes.get(link.to)?.label}</strong>
+      </div>)}
+    </div>
     <ul className="troubleshooting-topology__connections" aria-label="Topology connections">
       {topology.links.map((link) => <li key={link.id}><strong>{nodes.get(link.from)?.label}</strong> {link.fromInterface} to <strong>{nodes.get(link.to)?.label}</strong> {link.toInterface}</li>)}
     </ul>
