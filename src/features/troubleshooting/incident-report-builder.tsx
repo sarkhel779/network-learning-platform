@@ -12,7 +12,7 @@ const fields: { key: keyof IncidentReport; label: string }[] = [
 ];
 const emptyReport: IncidentReport = { impact: "", evidence: "", rootCauses: "", correction: "", restoration: "", prevention: "" };
 
-export function IncidentReportBuilder({ state, scenario, onSubmit }: { state: IncidentState; scenario: TroubleshootingScenario; onSubmit: (report: IncidentReport) => void }) {
+export function IncidentReportBuilder({ state, scenario, onSubmit = () => undefined }: { state: IncidentState; scenario: TroubleshootingScenario; onSubmit?: (report: IncidentReport) => void }) {
   const [report, setReport] = useState(emptyReport);
   const [message, setMessage] = useState("");
   const score = scoreIncident(state, scenario);

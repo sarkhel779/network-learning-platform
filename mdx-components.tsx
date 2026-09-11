@@ -58,6 +58,9 @@ import { NatJourneyPlayer } from "@/features/nat/nat-journey-player";
 import { NatMappingLab } from "@/features/nat/nat-mapping-lab";
 import { NatRfcValidationLab } from "@/features/nat/nat-rfc-validation-lab";
 import { NatTroubleshootingLab } from "@/features/nat/nat-troubleshooting-lab";
+import { AdvancedValidationLab } from "@/features/troubleshooting/advanced-validation-lab";
+import { IncidentReportBuilder } from "@/features/troubleshooting/incident-report-builder";
+import { TroubleshootingWorkspace } from "@/features/troubleshooting/troubleshooting-workspace";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -85,6 +88,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     NatMappingLab,
     NatRfcValidationLab,
     NatTroubleshootingLab,
+    AdvancedValidationLab,
+    IncidentReportBuilder,
+    TroubleshootingWorkspace,
     EdgeDevicePlayer,
     EthernetFrameExplorer,
     FirstPacketJourneyPlayer,

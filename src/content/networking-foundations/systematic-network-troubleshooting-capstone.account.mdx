@@ -1,0 +1,12 @@
+import { guidedBranchPortalIncident } from "@/features/troubleshooting/troubleshooting-scenarios"
+
+<h2 id="guided-branch-incident">Guided branch incident</h2>
+
+The branch portal has several sequential faults. State a hypothesis, predict what a safe test should show, collect evidence, and remediate only when the evidence supports the change. The next fault becomes visible only after the current layer is corrected.
+
+<TroubleshootingWorkspace scenario={guidedBranchPortalIncident} progressItemId="capstone_guided_incident" guidance="guided" />
+
+<h2 id="guided-incident-debrief">Guided incident debrief</h2>
+
+Review your timeline. Identify where an incorrect attempt still improved the investigation, whether your confidence matched the evidence, and why verifying DNS, TLS, and HTTP added information beyond a successful ping.
+
