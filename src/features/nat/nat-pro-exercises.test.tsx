@@ -10,11 +10,20 @@ afterEach(cleanup);
 
 describe("NAT Pro packet evidence", () => {
   it("provides interface, direction, tuple, flags, and evidence for each capture row", () => {
+    expect(natCaptureCases.map(({ id }) => id)).toEqual(["pat-two-sided-capture", "pat-return-path", "udp-timeout-reuse", "icmp-quoted-packet", "fragment-checksum-evidence"]);
     for (const capture of natCaptureCases) {
       for (const row of capture.rows) {
         expect(row).toEqual(expect.objectContaining({ interface: expect.any(String), direction: expect.any(String), tuple: expect.any(Object), flags: expect.any(String), evidence: expect.any(String) }));
       }
     }
+  });
+
+  it("switches capture evidence and resets the previous diagnosis", async () => {
+    const user = userEvent.setup();
+    render(<NatCaptureAnalysisLab />);
+    await user.selectOptions(screen.getByLabelText("Capture scenario"), "3");
+    expect(screen.getByText(/quotes the translated TCP tuple/i)).toBeVisible();
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
 
   it("immediately explains an attempted capture diagnosis", async () => {

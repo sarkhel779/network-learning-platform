@@ -16,8 +16,19 @@ describe("NatJourneyPlayer", () => {
     expect(screen.getByTestId("nat-packet")).toHaveAttribute("data-step", "private-request");
     await user.click(screen.getByRole("button", { name: "Next" }));
     expect(screen.getByTestId("nat-packet")).toHaveAttribute("data-step", "translated");
+    expect(screen.getByTestId("nat-packet")).toHaveAttribute("data-direction", "forward");
     expect(screen.getByRole("row", { name: /pat-https-1/i })).toHaveAttribute("data-active", "true");
     expect(screen.getByText("203.0.113.10", { selector: "mark" })).toBeVisible();
+  });
+
+  it("restarts packet motion and reverses it for return traffic", async () => {
+    const user = userEvent.setup();
+    render(<NatJourneyPlayer scenarios={[patInternetJourney]} initialScenarioId="pat-internet-journey" title="PAT journey" />);
+    const firstPacket = screen.getByTestId("nat-packet");
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    expect(screen.getByTestId("nat-packet")).not.toBe(firstPacket);
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    expect(screen.getByTestId("nat-packet")).toHaveAttribute("data-direction", "reverse");
   });
 
   it("restarts at step one and pauses playback", async () => {

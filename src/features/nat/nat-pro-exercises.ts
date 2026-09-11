@@ -13,6 +13,41 @@ export const natCaptureCases: NatCaptureCase[] = [{
   choices: ["The gateway translated the client source tuple", "The server changed its certificate", "DNS selected a different server"],
   correctIndex: 0,
   explanation: "The matching sequence and destination reveal one flow whose inside and outside tuples differ only at the NAT source boundary.",
+}, {
+  id: "pat-return-path",
+  title: "Reverse a returning HTTPS packet",
+  rows: [
+    { interface: "WAN", direction: "ingress from Internet", tuple: { protocol: "tcp", sourceIp: "198.51.100.20", sourcePort: 443, destinationIp: "203.0.113.10", destinationPort: 62001 }, flags: "SYN, ACK", evidence: "Reply targets the active public mapping" },
+    { interface: "LAN", direction: "egress toward client", tuple: { protocol: "tcp", sourceIp: "198.51.100.20", sourcePort: 443, destinationIp: "10.0.0.25", destinationPort: 51514 }, flags: "SYN, ACK", evidence: "Destination is restored from NAT state" },
+  ],
+  choices: ["The gateway reversed the destination tuple", "The client opened a second connection", "The server performed DNAT"], correctIndex: 0,
+  explanation: "The sequence and server source match while the gateway restores the public destination tuple to its private owner.",
+}, {
+  id: "udp-timeout-reuse",
+  title: "Identify a stale UDP mapping",
+  rows: [
+    { interface: "WAN", direction: "ingress", tuple: { protocol: "udp", sourceIp: "192.0.2.53", sourcePort: 53, destinationIp: "203.0.113.10", destinationPort: 53000 }, flags: "UDP response", evidence: "Response arrives after the UDP mapping expired" },
+  ],
+  choices: ["No live reverse owner exists for the public port", "TCP rejected the SYN", "The IPv4 header has no destination"], correctIndex: 0,
+  explanation: "Connectionless UDP still depends on timed translation state; an expired entry leaves the returning datagram without a private owner.",
+}, {
+  id: "icmp-quoted-packet",
+  title: "Inspect an ICMP error across NAT",
+  rows: [
+    { interface: "WAN", direction: "ingress", tuple: { protocol: "icmp", sourceIp: "192.0.2.1", destinationIp: "203.0.113.10" }, flags: "Destination unreachable", evidence: "ICMP payload quotes the translated TCP tuple" },
+    { interface: "LAN", direction: "egress", tuple: { protocol: "icmp", sourceIp: "192.0.2.1", destinationIp: "10.0.0.25" }, flags: "Destination unreachable", evidence: "Outer destination and quoted packet identify the private flow" },
+  ],
+  choices: ["The translator repaired both outer and quoted flow evidence", "ICMP bypassed translation", "The server allocated a PAT port"], correctIndex: 0,
+  explanation: "Useful ICMP delivery requires the NAT to translate the outer packet and the quoted tuple used by the client to associate the error.",
+}, {
+  id: "fragment-checksum-evidence",
+  title: "Validate fragment context and checksum repair",
+  rows: [
+    { interface: "LAN", direction: "ingress fragment 0", tuple: { protocol: "udp", sourceIp: "10.0.0.25", sourcePort: 40000, destinationIp: "198.51.100.30", destinationPort: 5000 }, flags: "MF=1, offset=0", evidence: "Initial fragment supplies ports and creates mapping context" },
+    { interface: "WAN", direction: "egress later fragment", tuple: { protocol: "udp", sourceIp: "203.0.113.10", destinationIp: "198.51.100.30" }, flags: "MF=0, offset=1480", evidence: "Later fragment reuses stored context; IPv4 checksum is updated" },
+  ],
+  choices: ["Fragment context links the portless fragment to the mapping", "Every fragment repeats the UDP header", "Checksums are unaffected by address rewrites"], correctIndex: 0,
+  explanation: "Only the initial fragment carries transport ports, so subsequent fragments need consistent stored context and repaired checksums after address translation.",
 }];
 
 export type NatRfcCheck = { topic: string; reference: string; url: string; prompt: string; choices: string[]; correctIndex: number; explanation: string; consequence: string };

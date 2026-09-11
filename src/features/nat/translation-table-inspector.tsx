@@ -1,3 +1,5 @@
+import { useId } from "react";
+
 import type { NatTableEntry } from "./nat-scenario.schema";
 
 type TranslationTableInspectorProps = {
@@ -6,9 +8,10 @@ type TranslationTableInspectorProps = {
 };
 
 export function TranslationTableInspector({ entries, activeEntryId }: TranslationTableInspectorProps) {
+  const headingId = useId();
   return (
-    <section className="nat-table-inspector" aria-labelledby="nat-table-heading">
-      <h3 id="nat-table-heading">Translation state</h3>
+    <section className="nat-table-inspector" aria-labelledby={headingId}>
+      <h3 id={headingId}>Translation state</h3>
       {entries.length === 0 ? <p>No active translation exists yet.</p> : (
         <div className="nat-table-scroll" tabIndex={0}>
           <table>

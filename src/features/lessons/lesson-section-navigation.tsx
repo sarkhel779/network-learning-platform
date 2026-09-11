@@ -10,6 +10,7 @@ type LessonSectionNavigationProps = {
   lockedReturnTo?: string;
   mapGroups?: readonly { label: string; node: string; ids: readonly string[] }[];
   panelId?: string;
+  viewerAccess?: "anonymous" | "account" | "pro";
 };
 
 const dnsGroups = [
@@ -30,10 +31,13 @@ const natGroups = [
 function SectionItem({
   section: { id, label, access, preview },
   lockedReturnTo,
+  viewerAccess = "anonymous",
 }: {
   section: LessonSection;
   lockedReturnTo?: string;
+  viewerAccess?: "anonymous" | "account" | "pro";
 }) {
+  const accessible = access === "public" || viewerAccess === "pro" || (viewerAccess === "account" && access === "account");
   const lockedContent = (
     <>
       <span>{label}</span>
@@ -43,7 +47,7 @@ function SectionItem({
     </>
   );
 
-  return <li>{access === "public" ? (
+  return <li>{accessible ? (
     <a href={`#${id}`}>{label}</a>
   ) : lockedReturnTo ? (
     <a
@@ -59,7 +63,7 @@ function SectionItem({
   )}</li>;
 }
 
-export function LessonSectionNavigation({ sections, presentation = "list", lockedReturnTo, mapGroups, panelId = "lesson-page-contents" }: LessonSectionNavigationProps) {
+export function LessonSectionNavigation({ sections, presentation = "list", lockedReturnTo, mapGroups, panelId = "lesson-page-contents", viewerAccess = "anonymous" }: LessonSectionNavigationProps) {
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [revealCycle, setRevealCycle] = useState(0);
 
@@ -98,7 +102,7 @@ export function LessonSectionNavigation({ sections, presentation = "list", locke
             <div className="dns-map__groups network-map__groups">
               {groups.map(({ label, ids }) => {
                 const grouped = sections.filter(({ id }) => (ids as readonly string[]).includes(id));
-                return grouped.length ? <section key={label}><h3>{label}</h3><ol>{grouped.map((section) => <SectionItem key={section.id} section={section} lockedReturnTo={lockedReturnTo} />)}</ol></section> : null;
+                return grouped.length ? <section key={label}><h3>{label}</h3><ol>{grouped.map((section) => <SectionItem key={section.id} section={section} lockedReturnTo={lockedReturnTo} viewerAccess={viewerAccess} />)}</ol></section> : null;
               })}
             </div>
           </div>

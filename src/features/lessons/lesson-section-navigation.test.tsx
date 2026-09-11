@@ -141,6 +141,17 @@ describe("LessonSectionNavigation", () => {
     expect(screen.getByTestId("network-map-route")).toHaveAttribute("data-reveal-cycle", "2");
   });
 
+  it("unlocks account anchors for authenticated learners while retaining Pro locks", async () => {
+    const user = userEvent.setup();
+    render(<LessonSectionNavigation presentation="nat-network-map" viewerAccess="account" lockedReturnTo="/learn/networking-foundations/nat-pat-and-the-complete-internet-packet-journey" sections={[
+      { id: "account-pat-journey", label: "Control the PAT journey", access: "account" },
+      { id: "pro-u-turn-nat-lab", label: "U-Turn NAT lab", access: "pro" },
+    ]} />);
+    await user.click(screen.getByRole("button", { name: "Page contents" }));
+    expect(screen.getByRole("link", { name: "Control the PAT journey" })).toHaveAttribute("href", "#account-pat-journey");
+    expect(screen.getByRole("link", { name: /U-Turn NAT lab.*Pro.*Locked/ })).toBeVisible();
+  });
+
   it("server-renders locked previews without paragraph nesting or parser repairs", () => {
     const html = renderToStaticMarkup(<LessonSectionNavigation sections={[
       { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore standards and diagnostic checks." },

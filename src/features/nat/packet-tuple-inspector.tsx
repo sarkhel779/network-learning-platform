@@ -1,3 +1,5 @@
+import { useId } from "react";
+
 import type { NatTranslation, NatTuple } from "./nat-scenario.schema";
 
 type PacketTupleInspectorProps = {
@@ -18,6 +20,7 @@ const fieldLabels: Record<NatTranslation["field"], string> = {
 };
 
 export function PacketTupleInspector({ tuple, translations, expectedTuple }: PacketTupleInspectorProps) {
+  const headingId = useId();
   const mismatches = expectedTuple
     ? (["sourceIp", "sourcePort", "destinationIp", "destinationPort"] as const)
         .filter((field) => tuple[field] !== expectedTuple[field])
@@ -25,8 +28,8 @@ export function PacketTupleInspector({ tuple, translations, expectedTuple }: Pac
     : [];
 
   return (
-    <section className="nat-tuple-inspector" aria-labelledby="nat-tuple-heading">
-      <h3 id="nat-tuple-heading">Packet tuple</h3>
+    <section className="nat-tuple-inspector" aria-labelledby={headingId}>
+      <h3 id={headingId}>Packet tuple</h3>
       <dl>
         <div><dt>Protocol</dt><dd>{tuple.protocol.toUpperCase()}</dd></div>
         <div><dt>Source</dt><dd>{endpoint(tuple.sourceIp, tuple.sourcePort)}</dd></div>

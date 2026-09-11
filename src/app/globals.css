@@ -1005,8 +1005,10 @@ h1 {
 .nat-topology__node > span { font-size: 1.6rem; color: var(--accent); }
 .nat-topology__link { position: relative; height: .3rem; margin: 1.25rem .5rem .75rem; border-radius: 999px; background: color-mix(in srgb, var(--accent) 30%, var(--border)); }
 .nat-topology__packet { position: absolute; top: 50%; left: 0; width: .75rem; height: .75rem; border: 2px solid var(--background); border-radius: 50%; background: var(--accent); box-shadow: 0 0 .8rem var(--accent); animation: nat-packet-travel 1.15s ease-out both; }
+.nat-topology__packet[data-direction="reverse"] { animation-name: nat-packet-return; }
 .nat-topology[data-outcome="failure"] .nat-topology__packet { background: #f59e0b; box-shadow: 0 0 .8rem #f59e0b; }
 @keyframes nat-packet-travel { from { left: 0; transform: translate(-50%, -50%) scale(.8); } to { left: 100%; transform: translate(-50%, -50%) scale(1); } }
+@keyframes nat-packet-return { from { left: 100%; transform: translate(-50%, -50%) scale(.8); } to { left: 0; transform: translate(-50%, -50%) scale(1); } }
 .nat-evidence-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 .nat-tuple-inspector, .nat-table-inspector { padding: 1rem; border: 1px solid var(--border); border-radius: .7rem; }
 .nat-tuple-inspector dl { display: grid; gap: .55rem; }
@@ -1019,4 +1021,4 @@ h1 {
 .nat-table-inspector th, .nat-table-inspector td { padding: .55rem; border-bottom: 1px solid var(--border); text-align: left; }
 .nat-table-inspector tr[data-active="true"] { background: color-mix(in srgb, var(--accent) 14%, transparent); }
 @media (max-width: 45rem) { .nat-evidence-grid { grid-template-columns: minmax(0, 1fr); } .nat-journey-player .transport-player-controls button, .nat-journey-player .transport-player-controls label { flex: 1 1 8rem; } }
-@media (prefers-reduced-motion: reduce) { .nat-journey-player * { animation: none !important; transition: none !important; } .nat-topology__packet { left: 100%; transform: translate(-50%, -50%); } }
+@media (prefers-reduced-motion: reduce) { .nat-journey-player * { animation: none !important; transition: none !important; } .nat-topology__packet { left: 100%; transform: translate(-50%, -50%); } .nat-topology__packet[data-direction="reverse"] { left: 0; } }

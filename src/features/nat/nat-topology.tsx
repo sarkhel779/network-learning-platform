@@ -10,6 +10,7 @@ const labels: Record<string, string> = {
 
 export function NatTopology({ step, outcome }: { step: NatStep; outcome?: "success" | "failure" }) {
   const nodes = Array.from(new Set(["client", "gateway", step.from, step.to, step.to === "internet" ? "remote-server" : ""])).filter(Boolean);
+  const direction = nodes.indexOf(step.from) <= nodes.indexOf(step.to) ? "forward" : "reverse";
   return (
     <div className="nat-topology" data-outcome={outcome} aria-label="NAT packet path">
       <div className="nat-topology__nodes">
@@ -21,7 +22,7 @@ export function NatTopology({ step, outcome }: { step: NatStep; outcome?: "succe
         ))}
       </div>
       <div className="nat-topology__link" aria-label={`${labels[step.from] ?? step.from} to ${labels[step.to] ?? step.to}`}>
-        <span className="nat-topology__packet" data-testid="nat-packet" data-step={step.id} aria-hidden="true" />
+        <span key={step.id} className="nat-topology__packet" data-direction={direction} data-testid="nat-packet" data-step={step.id} aria-hidden="true" />
       </div>
       <p><strong>Active path:</strong> {labels[step.from] ?? step.from} → {labels[step.to] ?? step.to}</p>
     </div>

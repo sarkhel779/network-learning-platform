@@ -120,6 +120,7 @@ export function LessonShell({
           panelId={lesson.slug === "http-https-tls-and-essential-network-services" ? "service-page-contents" : lesson.slug === "nat-pat-and-the-complete-internet-packet-journey" ? "nat-page-contents" : "dns-page-contents"}
           presentation={lesson.slug === "dns-and-name-resolution" ? "dns-network-map" : lesson.slug === "http-https-tls-and-essential-network-services" ? "network-map" : lesson.slug === "nat-pat-and-the-complete-internet-packet-journey" ? "nat-network-map" : "list"}
           sections={lesson.sections}
+          viewerAccess={viewer ? "account" : "anonymous"}
         />
 
         <div className="lesson-content">{lessonContent}</div>
