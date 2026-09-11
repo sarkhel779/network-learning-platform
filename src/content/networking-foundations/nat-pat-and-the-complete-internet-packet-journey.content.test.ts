@@ -18,9 +18,9 @@ describe("NAT, PAT and the complete Internet packet journey content", () => {
 
   it("provides controllable mapping and troubleshooting practice to account users", () => {
     const lesson = read("account");
-    expect(lesson).toContain("<NatJourneyPlayer");
-    expect(lesson).toContain("<NatMappingLab />");
-    expect(lesson).toContain("<NatTroubleshootingLab />");
+    expect(lesson).toContain('progressItemId="nat_pat_interactive_journey"');
+    expect(lesson).toContain('<NatMappingLab progressItemId="nat_pat_mapping_lab" />');
+    expect(lesson).toContain('<NatTroubleshootingLab progressItemId="nat_pat_troubleshooting_lab" />');
     expect(lesson.match(/<KnowledgeCheck\b/g)).toHaveLength(3);
     expect(lesson).not.toMatch(/NatCaptureAnalysisLab|hairpinBidirectionalJourney/);
   });

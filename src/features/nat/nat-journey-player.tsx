@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 import { TransportPlayerControls } from "@/features/transport/transport-player-controls";
 
 import type { NatScenario } from "./nat-scenario.schema";
@@ -12,10 +13,12 @@ import { TranslationTableInspector } from "./translation-table-inspector";
 type NatJourneyPlayerProps = {
   scenarios: NatScenario[];
   initialScenarioId: string;
+  progressItemId?: string;
   title: string;
 };
 
-export function NatJourneyPlayer({ scenarios, initialScenarioId, title }: NatJourneyPlayerProps) {
+export function NatJourneyPlayer({ scenarios, initialScenarioId, progressItemId, title }: NatJourneyPlayerProps) {
+  const { markTerminalStateReached, retry, state } = useProgressCompletionBoundary(progressItemId);
   const [scenarioId, setScenarioId] = useState(initialScenarioId);
   const [stepIndex, setStepIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -33,6 +36,10 @@ export function NatJourneyPlayer({ scenarios, initialScenarioId, title }: NatJou
   useEffect(() => {
     if (stepIndex >= finalIndex) setPlaying(false);
   }, [finalIndex, stepIndex]);
+
+  useEffect(() => {
+    if (stepIndex >= finalIndex) markTerminalStateReached();
+  }, [finalIndex, markTerminalStateReached, stepIndex]);
 
   if (!scenario || !step) return <p role="alert">This NAT journey is unavailable.</p>;
 
@@ -67,6 +74,7 @@ export function NatJourneyPlayer({ scenarios, initialScenarioId, title }: NatJou
         speed={speed}
         stepIndex={stepIndex}
       />
+      {state === "error" ? <button type="button" onClick={() => void retry()}>Retry saving progress</button> : null}
     </section>
   );
 }

@@ -4,15 +4,15 @@ import { patInternetJourney } from "@/features/nat/nat-scenarios"
 
 Advance one packet at a time and keep the active link, packet tuple, and translation-table entry synchronized.
 
-<NatJourneyPlayer scenarios={[patInternetJourney]} initialScenarioId="pat-internet-journey" title="PAT Internet journey" />
+<NatJourneyPlayer scenarios={[patInternetJourney]} initialScenarioId="pat-internet-journey" progressItemId="nat_pat_interactive_journey" title="PAT Internet journey" />
 
 <h2 id="account-mapping-lab">Account practice: classify and reverse mappings</h2>
 
-<NatMappingLab />
+<NatMappingLab progressItemId="nat_pat_mapping_lab" />
 
 <h2 id="account-troubleshooting-lab">Account practice: diagnose NAT failures</h2>
 
-<NatTroubleshootingLab />
+<NatTroubleshootingLab progressItemId="nat_pat_troubleshooting_lab" />
 
 <h2 id="account-knowledge-checks">Account knowledge checks</h2>
 
