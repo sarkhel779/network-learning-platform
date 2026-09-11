@@ -1,0 +1,23 @@
+import { patInternetJourney } from "@/features/nat/nat-scenarios"
+
+<h2 id="account-pat-journey">Account practice: control the complete PAT journey</h2>
+
+Advance one packet at a time and keep the active link, packet tuple, and translation-table entry synchronized.
+
+<NatJourneyPlayer scenarios={[patInternetJourney]} initialScenarioId="pat-internet-journey" title="PAT Internet journey" />
+
+<h2 id="account-mapping-lab">Account practice: classify and reverse mappings</h2>
+
+<NatMappingLab />
+
+<h2 id="account-troubleshooting-lab">Account practice: diagnose NAT failures</h2>
+
+<NatTroubleshootingLab />
+
+<h2 id="account-knowledge-checks">Account knowledge checks</h2>
+
+<KnowledgeCheck progressItemId="nat_pat_check_account_1" question="A return packet arrives after its dynamic entry expired. What happens first?" options={["The gateway has no matching reverse owner", "The gateway recreates the old port automatically", "The server changes the destination"]} correctIndex={0} explanation="Without live state, the translator cannot determine the private socket that owned the public tuple." />
+
+<KnowledgeCheck progressItemId="nat_pat_check_account_2" question="What prevents two PAT flows from owning an identical public tuple?" options={["Unique translated port allocation", "Duplicate private IP addresses", "Disabling transport checksums"]} correctIndex={0} explanation="PAT selects a unique protocol/address/port combination for each simultaneously active mapping." />
+
+<KnowledgeCheck progressItemId="nat_pat_check_account_3" question="Why can asymmetric routing break stateful translation?" options={["The return gateway may not own the forward mapping", "Routers cannot forward private addresses", "DNS always changes the service port"]} correctIndex={0} explanation="The second gateway cannot reverse state created only on the first gateway." />

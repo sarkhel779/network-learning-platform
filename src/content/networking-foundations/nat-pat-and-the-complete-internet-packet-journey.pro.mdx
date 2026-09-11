@@ -1,0 +1,21 @@
+import { hairpinBidirectionalJourney, hairpinDnatOnlyJourney } from "@/features/nat/nat-scenarios"
+
+<h2 id="pro-packet-analysis">Pro packet analysis with Wireshark evidence</h2>
+
+Correlate both interfaces by TCP sequence, flags, timing, and destination. The before/after views show which tuple fields the translator changed rather than treating two captures as unrelated conversations.
+
+<NatCaptureAnalysisLab />
+
+<h2 id="pro-rfc-validation">Pro RFC-level validation</h2>
+
+Validate terminology and behavior against RFC 2663, RFC 3022, RFC 4787, RFC 5382, RFC 5508, and RFC 7857. The checks cover TCP, UDP, ICMP, checksum repair, fragments, and ALG limitations.
+
+<NatRfcValidationLab />
+
+<h2 id="pro-u-turn-nat-lab">Pro U-Turn NAT lab</h2>
+
+An internal client opens `10.0.0.25:51514 → 203.0.113.10:443`, although the HTTPS service is actually `10.0.0.50:443`. In the broken path, DNAT delivers the request but preserves the private client source. The server recognizes a directly reachable local peer and replies from `10.0.0.50:443`, producing a **mismatched peer tuple** for the session opened to the public address.
+
+The working path uses **paired DNAT and SNAT**. DNAT selects the internal server, while SNAT makes the server return through the gateway. The gateway then reverses both translations so the client receives the response from `203.0.113.10:443`. Vendors may call this U-Turn NAT, hairpin NAT, NAT loopback, or NAT reflection.
+
+<NatJourneyPlayer scenarios={[hairpinDnatOnlyJourney, hairpinBidirectionalJourney]} initialScenarioId="hairpin-dnat-only" title="Broken versus working U-Turn NAT" />

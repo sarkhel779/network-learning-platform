@@ -53,6 +53,11 @@ import { PortTransportPanel } from "@/features/essential-services/port-transport
 import { ServiceTroubleshootingLab } from "@/features/essential-services/service-troubleshooting-lab";
 import { CaptureAnalysisLab } from "@/features/essential-services/capture-analysis-lab";
 import { RfcValidationLab } from "@/features/essential-services/rfc-validation-lab";
+import { NatCaptureAnalysisLab } from "@/features/nat/nat-capture-analysis-lab";
+import { NatJourneyPlayer } from "@/features/nat/nat-journey-player";
+import { NatMappingLab } from "@/features/nat/nat-mapping-lab";
+import { NatRfcValidationLab } from "@/features/nat/nat-rfc-validation-lab";
+import { NatTroubleshootingLab } from "@/features/nat/nat-troubleshooting-lab";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -75,6 +80,11 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ServiceTroubleshootingLab,
     CaptureAnalysisLab,
     RfcValidationLab,
+    NatCaptureAnalysisLab,
+    NatJourneyPlayer,
+    NatMappingLab,
+    NatRfcValidationLab,
+    NatTroubleshootingLab,
     EdgeDevicePlayer,
     EthernetFrameExplorer,
     FirstPacketJourneyPlayer,
