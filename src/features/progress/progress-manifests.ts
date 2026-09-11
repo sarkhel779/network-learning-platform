@@ -13,6 +13,7 @@ type LessonProgressDefinition = Readonly<{
   knowledgeCheckCount: number;
   knowledgeCheckItemIds?: readonly string[];
   knowledgeAnchor: string | null;
+  knowledgeAnchors?: readonly string[];
 }>;
 
 const definitions = [
@@ -51,6 +52,19 @@ const definitions = [
     knowledgeCheckCount: 6,
     knowledgeCheckItemIds: ["essential_services_check_web", "essential_services_check_remote_access", "essential_services_check_email", "essential_services_check_file_transfer", "essential_services_check_time", "essential_services_check_monitoring"],
     knowledgeAnchor: "knowledge-check-summary",
+  },
+  {
+    lessonId: "lesson_nat_pat_and_the_complete_internet_packet_journey", itemPrefix: "nat_pat",
+    interactiveAnchors: ["account-pat-journey", "account-mapping-lab", "account-troubleshooting-lab"],
+    interactiveItemIds: {
+      "account-pat-journey": "nat_pat_interactive_journey",
+      "account-mapping-lab": "nat_pat_mapping_lab",
+      "account-troubleshooting-lab": "nat_pat_troubleshooting_lab",
+    },
+    knowledgeCheckCount: 5,
+    knowledgeCheckItemIds: ["nat_pat_check_public_1", "nat_pat_check_public_2", "nat_pat_check_account_1", "nat_pat_check_account_2", "nat_pat_check_account_3"],
+    knowledgeAnchor: "account-knowledge-checks",
+    knowledgeAnchors: ["public-knowledge-check", "account-knowledge-checks"],
   },
 ] as const satisfies readonly LessonProgressDefinition[];
 
@@ -92,7 +106,7 @@ function buildItems(
 ) {
   const prefix = definition.itemPrefix ?? itemPrefix(lessonId);
   const items = sections
-    .filter(({ access, id }) => access !== "pro" && id !== definition.knowledgeAnchor)
+    .filter(({ access, id }) => access !== "pro" && !(definition.knowledgeAnchors ?? [definition.knowledgeAnchor]).includes(id))
     .map((section) => definition.interactiveAnchors.includes(section.id)
       ? interactiveItem(lessonId, section, prefix, definition.stripInteractiveAnchorPrefix, definition.interactiveItemIds?.[section.id])
       : sectionItem(lessonId, section, prefix));
