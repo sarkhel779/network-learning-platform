@@ -27,6 +27,11 @@ describe("launch trust pages", () => {
     expect(screen.getByText(/no analytics service/i)).toBeInTheDocument();
     expect(screen.getByText(/does not collect payments/i)).toBeInTheDocument();
     expect(screen.queryByText(/has no user accounts/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/waitlist status/i)).toBeInTheDocument();
+    expect(screen.getByText(/consent timestamp and version/i)).toBeInTheDocument();
+    expect(screen.getByText(/lesson attribution/i)).toBeInTheDocument();
+    expect(screen.getByText(/notification delivery is not configured/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /withdraw.*contact/i })).toHaveAttribute("href", "/contact");
   });
 
   it("describes account and content responsibilities without claiming paid access", () => {
@@ -35,6 +40,9 @@ describe("launch trust pages", () => {
     expect(screen.getByText(/passwordless account/i)).toBeInTheDocument();
     expect(screen.getByText(/learning progress/i)).toBeInTheDocument();
     expect(screen.getByText(/Pro access is not currently for sale/i)).toBeInTheDocument();
+    expect(screen.getByText(/joining.*free/i)).toBeInTheDocument();
+    expect(screen.getByText(/does not create.*Pro entitlement/i)).toBeInTheDocument();
+    expect(screen.getByText(/does not guarantee.*availability or price/i)).toBeInTheDocument();
   });
 
   it("presents the launch offering as free learning plus a future Pro waitlist", () => {
@@ -51,7 +59,7 @@ describe("launch trust pages", () => {
   });
 
   it("offers a waitlist contact path without publishing a personal email address", async () => {
-    render(await ContactPage());
+    render(await ContactPage({}));
 
     expect(screen.getByRole("heading", { name: "Founding Pro waitlist" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /sign in to join/i })).toHaveAttribute("href", "/sign-in?returnTo=%2Fcontact");

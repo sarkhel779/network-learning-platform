@@ -9,8 +9,8 @@ type PremiumPreviewProps = {
 
 export function PremiumPreview({
   children,
-  ctaLabel = "Explore premium learning options",
-  ctaHref = "/pricing",
+  ctaLabel = "Join the Pro Member Waitlist",
+  ctaHref = "/contact",
 }: PremiumPreviewProps) {
   return (
     <aside aria-label="Premium lesson preview" className="learning-block premium-preview">

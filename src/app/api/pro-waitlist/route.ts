@@ -37,7 +37,7 @@ export async function POST(request: Request) {
   return resultResponse(await joinWaitlist(viewer.id, input));
 }
 
-export async function DELETE(_request?: Request) {
+export async function DELETE(_request: Request) {
   const viewer = await authenticatedViewer();
   if (!viewer) return json({ error: "Authentication required." }, 401);
   return resultResponse(await leaveWaitlist(viewer.id));

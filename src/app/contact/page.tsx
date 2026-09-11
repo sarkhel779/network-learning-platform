@@ -7,7 +7,7 @@ type ContactPageProps = {
   searchParams?: Promise<{ source?: string | string[] }>;
 };
 
-export default async function ContactPage({ searchParams = Promise.resolve({}) }: ContactPageProps = {}) {
+export default async function ContactPage({ searchParams = Promise.resolve({}) }: ContactPageProps) {
   const viewer = await getViewer();
   const source = (await searchParams).source;
   const sourceLessonSlug = typeof source === "string" && isPublishedLessonSlug(source) ? source : undefined;
