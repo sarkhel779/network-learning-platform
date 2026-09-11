@@ -991,3 +991,32 @@ h1 {
 @keyframes service-packet-pulse { from { opacity: .5; transform: scale(.8); } to { opacity: 1; transform: scale(1.15); } }
 @media (max-width: 35rem) { .service-topology { grid-template-columns: minmax(0, 1fr); } .service-topology__service { grid-column: 1; } .service-troubleshooting-lab fieldset label, .capture-analysis-lab fieldset label, .rfc-validation-lab fieldset label { width: 100%; } .service-player .transport-player-controls button, .service-player .transport-player-controls label { flex: 1 1 8rem; } }
 @media (prefers-reduced-motion: reduce) { .service-player * { animation: none !important; transition: none !important; } .service-troubleshooting-lab *, .capture-analysis-lab *, .rfc-validation-lab * { animation: none !important; transition: none !important; } }
+
+/* NAT/PAT lesson */
+.nat-journey-player, .nat-tuple-inspector, .nat-table-inspector { min-width: 0; }
+.nat-journey-player { display: grid; gap: 1rem; padding: clamp(1rem, 2.5vw, 1.5rem); border: 1px solid var(--border); border-radius: .9rem; background: color-mix(in srgb, var(--surface) 92%, transparent); }
+.nat-scenario-switcher { display: flex; flex-wrap: wrap; gap: .65rem; }
+.nat-scenario-switcher button { min-block-size: 44px; padding: .55rem .8rem; border: 1px solid var(--accent); border-radius: .5rem; background: var(--background); color: inherit; font: inherit; font-weight: 700; cursor: pointer; }
+.nat-scenario-switcher button[aria-pressed="true"] { background: var(--accent); color: var(--background); }
+.nat-topology { overflow: hidden; padding: 1rem; border: 1px solid var(--border); border-radius: .75rem; }
+.nat-topology__nodes { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: .75rem; }
+.nat-topology__node { display: grid; place-items: center; gap: .35rem; min-height: 5.5rem; padding: .65rem; border: 1px solid var(--border); border-radius: .65rem; text-align: center; opacity: .72; }
+.nat-topology__node[data-active="true"] { border-color: var(--accent); box-shadow: 0 0 1rem color-mix(in srgb, var(--accent) 25%, transparent); opacity: 1; }
+.nat-topology__node > span { font-size: 1.6rem; color: var(--accent); }
+.nat-topology__link { position: relative; height: .3rem; margin: 1.25rem .5rem .75rem; border-radius: 999px; background: color-mix(in srgb, var(--accent) 30%, var(--border)); }
+.nat-topology__packet { position: absolute; top: 50%; left: 0; width: .75rem; height: .75rem; border: 2px solid var(--background); border-radius: 50%; background: var(--accent); box-shadow: 0 0 .8rem var(--accent); animation: nat-packet-travel 1.15s ease-out both; }
+.nat-topology[data-outcome="failure"] .nat-topology__packet { background: #f59e0b; box-shadow: 0 0 .8rem #f59e0b; }
+@keyframes nat-packet-travel { from { left: 0; transform: translate(-50%, -50%) scale(.8); } to { left: 100%; transform: translate(-50%, -50%) scale(1); } }
+.nat-evidence-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.nat-tuple-inspector, .nat-table-inspector { padding: 1rem; border: 1px solid var(--border); border-radius: .7rem; }
+.nat-tuple-inspector dl { display: grid; gap: .55rem; }
+.nat-tuple-inspector dl > div { display: flex; justify-content: space-between; gap: 1rem; }
+.nat-tuple-inspector dd { margin: 0; overflow-wrap: anywhere; text-align: right; }
+.nat-translation-evidence mark { padding: .1rem .3rem; border-radius: .25rem; background: color-mix(in srgb, var(--accent) 25%, transparent); color: inherit; }
+.nat-table-scroll { max-width: 100%; overflow-x: auto; }
+.nat-table-inspector table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+.nat-table-inspector caption { margin-bottom: .5rem; text-align: left; font-weight: 700; }
+.nat-table-inspector th, .nat-table-inspector td { padding: .55rem; border-bottom: 1px solid var(--border); text-align: left; }
+.nat-table-inspector tr[data-active="true"] { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+@media (max-width: 45rem) { .nat-evidence-grid { grid-template-columns: minmax(0, 1fr); } .nat-journey-player .transport-player-controls button, .nat-journey-player .transport-player-controls label { flex: 1 1 8rem; } }
+@media (prefers-reduced-motion: reduce) { .nat-journey-player * { animation: none !important; transition: none !important; } .nat-topology__packet { left: 100%; transform: translate(-50%, -50%); } }
