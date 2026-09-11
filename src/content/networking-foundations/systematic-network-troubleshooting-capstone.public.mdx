@@ -6,7 +6,7 @@ A useful incident statement says **who**, **what**, **where**, **when**, and **h
 
 Record the last known good time, recent changes, affected users, unaffected controls, and business impact. Separate a symptom from a cause: a browser timeout proves only that a transaction did not finish.
 
-<SectionContinue itemId="capstone_section_scope" anchor="scope-the-incident" />
+<SectionContinue itemId="capstone_section_scope_the_incident" anchor="scope-the-incident" />
 
 <h2 id="form-a-hypothesis">Hypothesis: make a falsifiable explanation</h2>
 
@@ -14,7 +14,7 @@ A hypothesis links the observed symptom to one possible failure. Before running 
 
 Keep several plausible explanations alive. Rank them by symptom fit, probability, test cost, and risk—not by which command you remember first.
 
-<SectionContinue itemId="capstone_section_hypothesis" anchor="form-a-hypothesis" />
+<SectionContinue itemId="capstone_section_form_a_hypothesis" anchor="form-a-hypothesis" />
 
 <h2 id="collect-evidence">Evidence: test from least destructive to most invasive</h2>
 
@@ -22,7 +22,7 @@ Start with observation and read-only commands. Confirm addressing, neighbor stat
 
 For every test, record the command, device or interface, timestamp, expected result, actual evidence, and interpretation. A packet capture is not a conclusion: flags, tuples, timing, retransmissions, and capture position must support the claim.
 
-<SectionContinue itemId="capstone_section_evidence" anchor="collect-evidence" />
+<SectionContinue itemId="capstone_section_collect_evidence" anchor="collect-evidence" />
 
 <h2 id="isolate-the-fault">Isolation: change one variable at a time</h2>
 
@@ -30,7 +30,7 @@ Compare failing and working paths. Move from broad boundaries toward the smalles
 
 Before remediation, capture the faulty state and define the expected post-change result. Use a reversible change, a rollback condition, and an owner whenever the environment permits.
 
-<SectionContinue itemId="capstone_section_isolation" anchor="isolate-the-fault" />
+<SectionContinue itemId="capstone_section_isolate_the_fault" anchor="isolate-the-fault" />
 
 <h2 id="restore-the-service">Restore: verify the complete transaction</h2>
 
@@ -38,7 +38,7 @@ Restoration is broader than ping. Recheck addressing, ARP or neighbor discovery,
 
 If safe authority, evidence, or specialist ownership is missing, **escalation** is a valid troubleshooting action. Send a compact handoff containing scope, timeline, hypotheses tested, evidence, changes, rollback state, and the precise help required.
 
-<SectionContinue itemId="capstone_section_restore" anchor="restore-the-service" />
+<SectionContinue itemId="capstone_section_restore_the_service" anchor="restore-the-service" />
 
 <h2 id="report-and-prevent">Report: preserve operational learning</h2>
 
@@ -46,3 +46,4 @@ A strong incident report distinguishes impact, evidence, root cause, contributin
 
 Reflection: What evidence would make you abandon your leading hypothesis? Which end-to-end checks would prove the user experience is restored? What threshold would make you escalate rather than continue alone?
 
+<SectionContinue itemId="capstone_section_report_and_prevent" anchor="report-and-prevent" />

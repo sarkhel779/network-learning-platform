@@ -66,6 +66,13 @@ const definitions = [
     knowledgeAnchor: "account-knowledge-checks",
     knowledgeAnchors: ["public-knowledge-check", "account-knowledge-checks"],
   },
+  {
+    lessonId: "lesson_systematic_network_troubleshooting_capstone", itemPrefix: "capstone",
+    interactiveAnchors: ["guided-branch-incident"],
+    interactiveItemIds: { "guided-branch-incident": "capstone_guided_incident" },
+    knowledgeCheckCount: 0,
+    knowledgeAnchor: null,
+  },
 ] as const satisfies readonly LessonProgressDefinition[];
 
 function itemPrefix(lessonId: string) {
