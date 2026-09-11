@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { guidedBranchPortalIncident } from "./troubleshooting-scenarios";
+import { guidedBranchPortalIncident, proBranchPortalIncident } from "./troubleshooting-scenarios";
 import { createIncidentState, reduceIncident, scoreIncident } from "./troubleshooting-engine";
 
 describe("troubleshooting incident engine", () => {
@@ -115,10 +115,27 @@ describe("troubleshooting incident engine", () => {
     expect(score.rootCause).toBe(0);
   });
 
+  it("scores a semantically false distractor as an incorrect hypothesis", () => {
+    let state = reduceIncident(createIncidentState(proBranchPortalIncident), { type: "confirm_scope" }, proBranchPortalIncident);
+    state = reduceIncident(state, { type: "run_test", hypothesisId: "pro-interface", predictionId: "interface-errors", testId: "check-interfaces", confidence: "calibrated" }, proBranchPortalIncident);
+    expect(scoreIncident(state, proBranchPortalIncident).hypothesis).toBe(0);
+  });
+
+  it("lets a learner revise an incorrect evidence conclusion", () => {
+    let state = reduceIncident(createIncidentState(guidedBranchPortalIncident), { type: "confirm_scope" }, guidedBranchPortalIncident);
+    state = reduceIncident(state, { type: "run_test", hypothesisId: "guided-vlan", predictionId: "wrong-vlan", testId: "inspect-vlan", confidence: "calibrated" }, guidedBranchPortalIncident);
+    state = reduceIncident(state, { type: "record_conclusion", attemptIndex: 0, conclusion: "refuted" }, guidedBranchPortalIncident);
+    expect(state.identifiedRootCauseIds).toEqual([]);
+    state = reduceIncident(state, { type: "record_conclusion", attemptIndex: 0, conclusion: "supported" }, guidedBranchPortalIncident);
+    expect(state.conclusions).toHaveLength(1);
+    expect(state.identifiedRootCauseIds).toEqual(["wrong-access-vlan"]);
+  });
+
   it("awards report credit only when a report is explicitly submitted", () => {
     const initial = createIncidentState(guidedBranchPortalIncident);
     expect(scoreIncident(initial, guidedBranchPortalIncident).report).toBe(0);
-    const submitted = reduceIncident(initial, { type: "submit_report" }, guidedBranchPortalIncident);
+    expect(() => reduceIncident(initial, { type: "submit_report" }, guidedBranchPortalIncident)).toThrow(/close/i);
+    const submitted = reduceIncident({ ...initial, closed: true }, { type: "submit_report" }, guidedBranchPortalIncident);
     expect(scoreIncident(submitted, guidedBranchPortalIncident).report).toBe(100);
   });
 });

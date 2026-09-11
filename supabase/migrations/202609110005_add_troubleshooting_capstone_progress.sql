@@ -27,4 +27,40 @@ on conflict (pathway_id, lesson_id, content_version, item_id) do update set
   ordinal = excluded.ordinal, kind = excluded.kind, label = excluded.label,
   anchor = excluded.anchor, required = excluded.required;
 
+create or replace function public.sync_optional_lesson_progress_items()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_completed text[];
+begin
+  if pg_trigger_depth() > 1 then return new; end if;
+  select coalesce(array_agg(completed.item_id order by completed.ordinal), array[]::text[])
+  into v_completed
+  from (
+    select distinct i.item_id, i.ordinal
+    from public.lesson_progress_items i
+    join public.learner_progress_events e on e.attempt_id = new.id and e.item_id = i.item_id
+    where i.pathway_id = new.pathway_id and i.lesson_id = new.lesson_id
+      and i.content_version = new.content_version and not i.required
+      and e.event_type in ('section_completed', 'interactive_completed', 'knowledge_check_attempted')
+  ) completed;
+  update public.learner_lesson_attempts
+  set completed_item_ids = array(
+    select distinct item_id from unnest(new.completed_item_ids || v_completed) item_id order by item_id
+  )
+  where id = new.id and completed_item_ids is distinct from array(
+    select distinct item_id from unnest(new.completed_item_ids || v_completed) item_id order by item_id
+  );
+  return new;
+end;
+$$;
+
+drop trigger if exists sync_optional_lesson_progress_items on public.learner_lesson_attempts;
+create trigger sync_optional_lesson_progress_items
+after update of completed_item_ids on public.learner_lesson_attempts
+for each row execute function public.sync_optional_lesson_progress_items();
+
 commit;

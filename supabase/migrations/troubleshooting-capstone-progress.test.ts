@@ -15,5 +15,6 @@ describe("troubleshooting capstone progress migration", () => {
       .toEqual(manifest.items.map((item, index) => ({ itemId: item.itemId, ordinal: index + 1, kind: item.kind, label: item.label, anchor: item.anchor, required: item.required })));
     expect(rows).toHaveLength(15);
     expect(rows.filter((row) => row[6] === "true")).toHaveLength(12);
+    expect(sql).toMatch(/sync_optional_lesson_progress_items[\s\S]*not i\.required[\s\S]*after update of completed_item_ids/i);
   });
 });

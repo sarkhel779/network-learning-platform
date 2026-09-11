@@ -23,4 +23,12 @@ describe("useProgressCompletionBoundary", () => {
     renderHook(() => useProgressCompletionBoundary("interactive_demo"));
     expect(complete).not.toHaveBeenCalled();
   });
+
+  it("allows one new terminal signal when the attempt key changes", () => {
+    const { result, rerender } = renderHook(({ attemptKey }) => useProgressCompletionBoundary("interactive_demo", attemptKey), { initialProps: { attemptKey: "attempt-1" } });
+    act(() => result.current.markTerminalStateReached());
+    rerender({ attemptKey: "attempt-2" });
+    act(() => result.current.markTerminalStateReached());
+    expect(complete).toHaveBeenCalledTimes(2);
+  });
 });

@@ -17,8 +17,8 @@ import { TroubleshootingTopology } from "./troubleshooting-topology";
 
 type Props = { scenario: TroubleshootingScenario; progressItemId?: string; guidance: "guided" | "sparse"; onStateChange?: (state: ReturnType<typeof createIncidentState>) => void };
 
-function ProgressMilestone({ itemId }: { itemId: string }) {
-  const progress = useProgressCompletionBoundary(itemId);
+function ProgressMilestone({ itemId, attemptKey }: { itemId: string; attemptKey: string }) {
+  const progress = useProgressCompletionBoundary(itemId, attemptKey);
   const triggered = useRef(false);
   useEffect(() => {
     if (triggered.current) return;
@@ -45,7 +45,7 @@ export function TroubleshootingWorkspace({ scenario, progressItemId, guidance, o
   const [selectedRestorationCheckId, setSelectedRestorationCheckId] = useState<string>();
   const [feedback, setFeedback] = useState("Form a hypothesis, predict the result, then collect evidence.");
   const [journalOpen, setJournalOpen] = useState(guidance === "guided");
-  const progress = useProgressCompletionBoundary(progressItemId);
+  const progress = useProgressCompletionBoundary(progressItemId, learnerAttemptKey);
 
   useEffect(() => {
     if (previousAttemptKey.current === learnerAttemptKey) return;
@@ -63,7 +63,7 @@ export function TroubleshootingWorkspace({ scenario, progressItemId, guidance, o
     const test = scenario.tests.find(({ id }) => id === testId)!;
     const hypothesis = scenario.hypotheses.find(({ id }) => id === hypothesisId)!;
     const prediction = hypothesis.predictions.find(({ id }) => id === predictionId)!;
-    const correct = test.expectedFaultId === hypothesis.faultId && prediction.supportingTestIds.includes(test.id) && state.exposedFaultIds.includes(hypothesis.faultId);
+    const correct = hypothesis.valid && test.expectedFaultId === hypothesis.faultId && prediction.supportingTestIds.includes(test.id) && state.exposedFaultIds.includes(hypothesis.faultId);
     dispatch({ type: "run_test", hypothesisId, predictionId, testId, confidence });
     setSelectedAttemptIndex(state.attempts.length);
     setSelectedTestId(testId);
@@ -123,16 +123,16 @@ export function TroubleshootingWorkspace({ scenario, progressItemId, guidance, o
     {guidance === "sparse" ? <button aria-expanded={journalOpen} onClick={() => setJournalOpen((current) => !current)} type="button">{journalOpen ? "Close hypothesis worksheet" : "Open hypothesis worksheet"}</button> : null}
     <div className="troubleshooting-workspace__grid">{journalOpen ? <HypothesisJournal hypotheses={scenario.hypotheses} hypothesisId={hypothesisId} predictionId={predictionId} confidence={confidence} onHypothesisChange={setHypothesisId} onPredictionChange={setPredictionId} onConfidenceChange={setConfidence} /> : null}<EvidenceBoard tests={visibleTests} selectedEvidence={selectedEvidence} onRunTest={runTest} /></div>
     <p className="troubleshooting-workspace__feedback" role="status" aria-live="polite">{feedback}</p>
-    {selectedAttemptIndex !== undefined && !state.conclusions.some(({ attemptIndex }) => attemptIndex === selectedAttemptIndex) ? <div className="troubleshooting-workspace__conclusion"><button onClick={() => conclude("supported")} type="button">Evidence supports hypothesis</button><button onClick={() => conclude("refuted")} type="button">Evidence refutes hypothesis</button></div> : null}
+    {selectedAttemptIndex !== undefined ? <div className="troubleshooting-workspace__conclusion"><button onClick={() => conclude("supported")} type="button">Evidence supports hypothesis</button><button onClick={() => conclude("refuted")} type="button">Evidence refutes hypothesis</button></div> : null}
     <RemediationPanel remediations={visibleRemediations} correctedFaultIds={state.correctedFaultIds} onApply={apply} />
     <RestorationChecklist checks={scenario.restorationChecks} results={state.restorationResults} enabled={restorationReady} onRun={runRestoration} />
     <button className="troubleshooting-workspace__close" disabled={state.closed} onClick={close} type="button">{state.closed ? "Incident closed" : "Close incident"}</button>
     <button onClick={() => { void restart(); }} type="button">Restart incident</button>
     <IncidentTimeline entries={state.timeline} />
-    {scenario.id === "guided-branch-portal" && state.correctedFaultIds.includes("wrong-access-vlan") ? <ProgressMilestone itemId="capstone_guided_vlan_check" /> : null}
-    {scenario.id === "guided-branch-portal" && state.correctedFaultIds.includes("wrong-specific-route") ? <ProgressMilestone itemId="capstone_guided_route_check" /> : null}
-    {scenario.id === "guided-branch-portal" && state.correctedFaultIds.includes("stale-portal-dns") ? <ProgressMilestone itemId="capstone_guided_dns_check" /> : null}
-    {scenario.id === "guided-branch-portal" && scenario.restorationChecks.every(({ id }) => state.restorationResults[id]) ? <ProgressMilestone itemId="capstone_restoration_verification" /> : null}
+    {scenario.id === "guided-branch-portal" && state.correctedFaultIds.includes("wrong-access-vlan") ? <ProgressMilestone attemptKey={learnerAttemptKey} itemId="capstone_guided_vlan_check" /> : null}
+    {scenario.id === "guided-branch-portal" && state.correctedFaultIds.includes("wrong-specific-route") ? <ProgressMilestone attemptKey={learnerAttemptKey} itemId="capstone_guided_route_check" /> : null}
+    {scenario.id === "guided-branch-portal" && state.correctedFaultIds.includes("stale-portal-dns") ? <ProgressMilestone attemptKey={learnerAttemptKey} itemId="capstone_guided_dns_check" /> : null}
+    {scenario.id === "guided-branch-portal" && scenario.restorationChecks.every(({ id }) => state.restorationResults[id]) ? <ProgressMilestone attemptKey={learnerAttemptKey} itemId="capstone_restoration_verification" /> : null}
     {progress.state === "error" ? <button onClick={progress.retry}>Retry saving progress</button> : null}
   </section>;
 }

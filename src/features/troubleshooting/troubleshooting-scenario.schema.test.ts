@@ -16,7 +16,7 @@ const validScenario = {
     { id: "wrong-vlan", title: "Wrong access VLAN", explanation: "The access port is in VLAN 30.", unlocksFaultId: "wrong-route" },
     { id: "wrong-route", title: "Wrong route", explanation: "A host route selects the wrong next hop." },
   ],
-  hypotheses: [{ id: "vlan-mismatch", label: "VLAN mismatch", faultId: "wrong-vlan", predictions: [{ id: "port-vlan-30", label: "The port reports VLAN 30", supportingTestIds: ["show-switchport"] }] }],
+  hypotheses: [{ id: "vlan-mismatch", label: "VLAN mismatch", faultId: "wrong-vlan", valid: true, predictions: [{ id: "port-vlan-30", label: "The port reports VLAN 30", supportingTestIds: ["show-switchport"] }] }],
   tests: [{ id: "show-switchport", label: "Show interface switchport", command: "show interfaces Gi1/0/10 switchport", risk: "read-only", timeCost: 2, expectedFaultId: "wrong-vlan", evidence: { kind: "cli", title: "Switchport state", body: "Access Mode VLAN: 30" } }],
   remediations: [{ id: "set-vlan-20", label: "Set access VLAN 20", faultId: "wrong-vlan", requiresTestIds: ["show-switchport"], timeCost: 3 }],
   restorationChecks: [{ id: "verify-vlan", label: "Verify VLAN forwarding", testId: "show-switchport" }],

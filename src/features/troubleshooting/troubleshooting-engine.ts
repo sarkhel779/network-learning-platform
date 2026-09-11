@@ -69,7 +69,7 @@ function runScenarioTest(state: IncidentState, action: Extract<IncidentAction, {
   if (test.phase === "restoration" || (test.expectedFaultId && !state.exposedFaultIds.includes(test.expectedFaultId))) throw new Error("This test is not available in the current incident phase.");
   const duplicate = state.attempts.some((attempt) => attempt.hypothesisId === action.hypothesisId && attempt.predictionId === action.predictionId && attempt.testId === action.testId);
   if (duplicate) return state;
-  const hypothesisCorrect = state.exposedFaultIds.includes(hypothesis.faultId);
+  const hypothesisCorrect = hypothesis.valid && state.exposedFaultIds.includes(hypothesis.faultId);
   const predictionCorrect = prediction.supportingTestIds.includes(test.id);
   const correct = test.expectedFaultId === hypothesis.faultId && hypothesisCorrect && predictionCorrect;
   const elapsedMinutes = state.elapsedMinutes + test.timeCost;
@@ -84,15 +84,18 @@ function runScenarioTest(state: IncidentState, action: Extract<IncidentAction, {
 function recordConclusion(state: IncidentState, action: Extract<IncidentAction, { type: "record_conclusion" }>, scenario: TroubleshootingScenario): IncidentState {
   const attempt = state.attempts[action.attemptIndex];
   if (!attempt) throw new Error("Collect evidence before recording a conclusion.");
-  if (state.conclusions.some(({ attemptIndex }) => attemptIndex === action.attemptIndex)) return state;
   const expected = attempt.correct ? "supported" : "refuted";
   const correct = action.conclusion === expected;
   const hypothesis = scenario.hypotheses.find(({ id }) => id === attempt.hypothesisId)!;
-  const identifiedRootCauseIds = correct && action.conclusion === "supported" && !state.identifiedRootCauseIds.includes(hypothesis.faultId)
-    ? [...state.identifiedRootCauseIds, hypothesis.faultId] : state.identifiedRootCauseIds;
+  const conclusions = [...state.conclusions.filter(({ attemptIndex }) => attemptIndex !== action.attemptIndex), { attemptIndex: action.attemptIndex, conclusion: action.conclusion, correct }];
+  const identifiedRootCauseIds = [...new Set(conclusions.flatMap((item) => {
+    const concludedAttempt = state.attempts[item.attemptIndex];
+    if (!item.correct || item.conclusion !== "supported" || !concludedAttempt) return [];
+    return [scenario.hypotheses.find(({ id }) => id === concludedAttempt.hypothesisId)!.faultId];
+  }))];
   return {
     ...state,
-    conclusions: [...state.conclusions, { attemptIndex: action.attemptIndex, conclusion: action.conclusion, correct }],
+    conclusions,
     identifiedRootCauseIds,
     timeline: state.timeline.map((entry, index) => index === attempt.timelineIndex ? { ...entry, conclusion: action.conclusion } : entry),
   };
@@ -144,14 +147,17 @@ function closeResolvedIncident(state: IncidentState, scenario: TroubleshootingSc
 }
 
 export function reduceIncident(state: IncidentState, action: IncidentAction, scenario: TroubleshootingScenario): IncidentState {
-  if (state.closed) return state;
+  if (state.closed && action.type !== "submit_report") return state;
   switch (action.type) {
     case "confirm_scope": return { ...state, scoped: true };
     case "run_test": return runScenarioTest(state, action, scenario);
     case "record_conclusion": return recordConclusion(state, action, scenario);
     case "apply_remediation": return applyScenarioRemediation(state, action, scenario);
     case "run_restoration": return runRestorationCheck(state, action, scenario);
-    case "submit_report": return { ...state, reportSubmitted: true };
+    case "submit_report": {
+      if (!state.closed) throw new Error("Close the restored incident before submitting its report.");
+      return { ...state, reportSubmitted: true };
+    }
     case "close_incident": return closeResolvedIncident(state, scenario);
     default: return assertNever(action);
   }

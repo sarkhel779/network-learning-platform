@@ -49,4 +49,11 @@ describe("incident state store", () => {
     expect(store.load()).toBeNull();
     expect(storage.getItem(store.key)).toBeNull();
   });
+
+  it("rejects a forged closed snapshot that bypasses the incident workflow", () => {
+    const storage = memoryStorage();
+    const store = createIncidentStateStore(storage, "learner-1:attempt-1", guidedBranchPortalIncident);
+    store.save({ ...createIncidentState(guidedBranchPortalIncident), closed: true });
+    expect(store.load()).toBeNull();
+  });
 });

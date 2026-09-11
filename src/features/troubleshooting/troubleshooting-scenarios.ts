@@ -36,9 +36,9 @@ export const guidedBranchPortalIncident = parse({
     { id: "stale-portal-dns", title: "Stale portal DNS", explanation: "The resolver still returns the retired portal address." },
   ],
   hypotheses: [
-    { id: "guided-vlan", label: "The access port is in the wrong VLAN", faultId: "wrong-access-vlan", predictions: [{ id: "wrong-vlan", label: "The switchport VLAN differs from the client subnet.", supportingTestIds: ["inspect-vlan"] }] },
-    { id: "guided-route", label: "A more-specific route overrides the correct path", faultId: "wrong-specific-route", predictions: [{ id: "unexpected-next-hop", label: "Route lookup selects the retired WAN next hop.", supportingTestIds: ["inspect-route"] }] },
-    { id: "guided-dns", label: "The resolver has stale portal data", faultId: "stale-portal-dns", predictions: [{ id: "retired-address", label: "DNS returns the old server address.", supportingTestIds: ["inspect-dns"] }] },
+    { id: "guided-vlan", label: "The access port is in the wrong VLAN", faultId: "wrong-access-vlan", valid: true, predictions: [{ id: "wrong-vlan", label: "The switchport VLAN differs from the client subnet.", supportingTestIds: ["inspect-vlan"] }] },
+    { id: "guided-route", label: "A more-specific route overrides the correct path", faultId: "wrong-specific-route", valid: true, predictions: [{ id: "unexpected-next-hop", label: "Route lookup selects the retired WAN next hop.", supportingTestIds: ["inspect-route"] }] },
+    { id: "guided-dns", label: "The resolver has stale portal data", faultId: "stale-portal-dns", valid: true, predictions: [{ id: "retired-address", label: "DNS returns the old server address.", supportingTestIds: ["inspect-dns"] }] },
   ],
   tests: [
     { id: "inspect-addressing", label: "Inspect client addressing", command: "ipconfig /all", risk: "read-only", timeCost: 1, evidence: { kind: "cli", title: "Client configuration", body: "10.20.20.42/24, gateway 10.20.20.1, DNS 10.20.50.53" } },
@@ -74,9 +74,9 @@ export const proBranchPortalIncident = parse({
     { id: "stale-dns-cache", title: "Stale client DNS cache", explanation: "The client retains a retired portal address after the authoritative record changes." },
   ],
   hypotheses: [
-    { id: "pro-asymmetry", label: "The forward and return paths cross different stateful devices", faultId: "asymmetric-stateful-return", predictions: [{ id: "syn-no-synack", label: "Repeated SYN packets leave, but the expected SYN-ACK never returns on the same path.", supportingTestIds: ["capture-flow", "compare-paths", "inspect-firewall-log"] }] },
-    { id: "pro-cache", label: "The client DNS cache is stale", faultId: "stale-dns-cache", predictions: [{ id: "cache-disagrees", label: "Client cache and authoritative answer disagree.", supportingTestIds: ["compare-dns"] }] },
-    { id: "pro-interface", label: "An interface duplex mismatch causes loss", faultId: "asymmetric-stateful-return", predictions: [{ id: "interface-errors", label: "Interface counters would show errors or late collisions.", supportingTestIds: [] }] },
+    { id: "pro-asymmetry", label: "The forward and return paths cross different stateful devices", faultId: "asymmetric-stateful-return", valid: true, predictions: [{ id: "syn-no-synack", label: "Repeated SYN packets leave, but the expected SYN-ACK never returns on the same path.", supportingTestIds: ["capture-flow", "compare-paths", "inspect-firewall-log"] }] },
+    { id: "pro-cache", label: "The client DNS cache is stale", faultId: "stale-dns-cache", valid: true, predictions: [{ id: "cache-disagrees", label: "Client cache and authoritative answer disagree.", supportingTestIds: ["compare-dns"] }] },
+    { id: "pro-interface", label: "An interface duplex mismatch causes loss", faultId: "asymmetric-stateful-return", valid: false, predictions: [{ id: "interface-errors", label: "Interface counters would show errors or late collisions.", supportingTestIds: [] }] },
   ],
   tests: [
     { id: "capture-flow", label: "Inspect the firewall capture", command: "capture portal-flow match tcp host 203.0.113.80 eq 443", risk: "read-only", timeCost: 3, expectedFaultId: "asymmetric-stateful-return", evidence: { kind: "capture", title: "TCP flow", body: "SYN retransmission repeats without a SYN-ACK on the stateful return path." } },

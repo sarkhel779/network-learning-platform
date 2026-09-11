@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useOptionalLessonProgress } from "@/features/progress/lesson-progress-context";
 
 import { AdvancedValidationLab, troubleshootingValidationChecks } from "./advanced-validation-lab";
 import { IncidentReportBuilder } from "./incident-report-builder";
@@ -8,7 +9,7 @@ import { createIncidentState, type IncidentState } from "./troubleshooting-engin
 import { proBranchPortalIncident } from "./troubleshooting-scenarios";
 import { TroubleshootingWorkspace } from "./troubleshooting-workspace";
 
-export function TroubleshootingProExperience() {
+function TroubleshootingProAttempt() {
   const [state, setState] = useState<IncidentState>(() => createIncidentState(proBranchPortalIncident));
   return <section aria-label="Pro troubleshooting experience">
     <h2 id="pro-sparse-incident">Pro incident: sparse evidence and asymmetric routing</h2>
@@ -19,4 +20,9 @@ export function TroubleshootingProExperience() {
     <h2 id="pro-advanced-validation">Pro packet and RFC validation</h2>
     <AdvancedValidationLab checks={troubleshootingValidationChecks} progressItemId="capstone_pro_validation" />
   </section>;
+}
+
+export function TroubleshootingProExperience() {
+  const attemptKey = useOptionalLessonProgress()?.learnerAttemptKey ?? "preview:attempt-1";
+  return <TroubleshootingProAttempt key={attemptKey} />;
 }

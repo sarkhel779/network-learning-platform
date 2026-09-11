@@ -28,6 +28,7 @@ const hypothesisSchema = z.object({
   id,
   label: z.string().trim().min(1),
   faultId: id,
+  valid: z.boolean(),
   predictions: z.array(z.object({
     id,
     label: z.string().trim().min(1),
