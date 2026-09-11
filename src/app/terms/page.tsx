@@ -19,8 +19,9 @@ export default function TermsPage() {
         learner&apos;s account or interfere with the service.
       </p>
       <p>
-        Pro access is not currently for sale. Joining an announced waitlist does not create a paid
-        entitlement, guarantee a launch date, or authorize a charge.
+        Pro access is not currently for sale. Joining the Founding Pro waitlist is free and does not
+        create a Pro entitlement or authorize a charge. It does not guarantee future availability or
+        price, a launch date, or acceptance into any paid offering.
       </p>
     </main>
   );

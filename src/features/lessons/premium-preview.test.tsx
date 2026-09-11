@@ -6,9 +6,10 @@ import { PremiumPreview } from "./premium-preview";
 afterEach(cleanup);
 
 describe("PremiumPreview", () => {
-  it("preserves the default action for existing lessons", () => {
+  it("sends the default action to the waitlist without checkout language", () => {
     render(<PremiumPreview><p>Upcoming lesson topics</p></PremiumPreview>);
-    expect(screen.getByRole("link", { name: "Explore premium learning options" })).toHaveAttribute("href", "/pricing");
+    expect(screen.getByRole("link", { name: "Join the Pro Member Waitlist" })).toHaveAttribute("href", "/contact");
+    expect(screen.getByRole("complementary")).not.toHaveTextContent(/checkout|buy now|purchase/i);
     expect(screen.getByText("Upcoming lesson topics")).toBeVisible();
   });
 
