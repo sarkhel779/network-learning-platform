@@ -112,6 +112,13 @@ describe("system theme and table styles", () => {
     expect(css).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.troubleshooting-topology \*\s*\{[^}]*animation:\s*none\s*!important/);
   });
 
+  it("keeps the waitlist responsive and its controls touch friendly", () => {
+    expect(css).toMatch(/\.waitlist-card\s*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%/);
+    expect(css).toMatch(/\.waitlist-consent\s*\{[^}]*min-block-size:\s*44px/);
+    expect(css).toMatch(/\.waitlist-primary-action[^{]*\{[^}]*min-block-size:\s*44px/);
+    expect(css).toMatch(/@media\s*\(max-width:\s*35rem\)[\s\S]*\.waitlist-card__heading\s*\{[^}]*align-items:\s*flex-start/);
+  });
+
   it("renders shared player controls with the established outlined appearance", () => {
     const style = document.createElement("style");
     style.textContent = css;

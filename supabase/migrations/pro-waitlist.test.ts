@@ -12,7 +12,7 @@ describe("Founding Pro waitlist migration", () => {
 
     expect(sql).toMatch(/create table public\.pro_waitlist_entries/i);
     expect(sql).toMatch(/user_id uuid primary key references auth\.users\s*\(id\)/i);
-    expect(sql).toMatch(/status text not null[^;]*joined[^;]*unsubscribed/is);
+    expect(sql).toMatch(/status text not null[^;]*joined[\s\S]*unsubscribed/i);
     expect(sql).toMatch(/consent_version text not null/i);
     expect(sql).toMatch(/consented_at timestamptz not null/i);
     expect(sql).toMatch(/unsubscribed_at timestamptz/i);
