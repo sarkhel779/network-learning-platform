@@ -115,10 +115,10 @@ export function LessonShell({
         <LearningObjective>{lesson.objective}</LearningObjective>
 
         <LessonSectionNavigation
-          lockedReturnTo={["dns-and-name-resolution", "http-https-tls-and-essential-network-services", "nat-pat-and-the-complete-internet-packet-journey"].includes(lesson.slug) ? `/learn/${pathway.slug}/${lesson.slug}` : undefined}
+          lockedReturnTo={["dns-and-name-resolution", "http-https-tls-and-essential-network-services", "nat-pat-and-the-complete-internet-packet-journey", "systematic-network-troubleshooting-capstone"].includes(lesson.slug) ? `/learn/${pathway.slug}/${lesson.slug}` : undefined}
           mapGroups={lesson.slug === "http-https-tls-and-essential-network-services" ? essentialServiceGroups : undefined}
-          panelId={lesson.slug === "http-https-tls-and-essential-network-services" ? "service-page-contents" : lesson.slug === "nat-pat-and-the-complete-internet-packet-journey" ? "nat-page-contents" : "dns-page-contents"}
-          presentation={lesson.slug === "dns-and-name-resolution" ? "dns-network-map" : lesson.slug === "http-https-tls-and-essential-network-services" ? "network-map" : lesson.slug === "nat-pat-and-the-complete-internet-packet-journey" ? "nat-network-map" : "list"}
+          panelId={lesson.slug === "http-https-tls-and-essential-network-services" ? "service-page-contents" : lesson.slug === "nat-pat-and-the-complete-internet-packet-journey" ? "nat-page-contents" : lesson.slug === "systematic-network-troubleshooting-capstone" ? "troubleshooting-page-contents" : "dns-page-contents"}
+          presentation={lesson.slug === "dns-and-name-resolution" ? "dns-network-map" : lesson.slug === "http-https-tls-and-essential-network-services" ? "network-map" : lesson.slug === "nat-pat-and-the-complete-internet-packet-journey" ? "nat-network-map" : lesson.slug === "systematic-network-troubleshooting-capstone" ? "troubleshooting-network-map" : "list"}
           sections={lesson.sections}
           viewerAccess={viewer ? "account" : "anonymous"}
         />

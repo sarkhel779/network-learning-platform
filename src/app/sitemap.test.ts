@@ -33,6 +33,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/networking-foundations/dns-and-name-resolution" },
       { url: "https://packetsecrets.com/learn/networking-foundations/http-https-tls-and-essential-network-services" },
       { url: "https://packetsecrets.com/learn/networking-foundations/nat-pat-and-the-complete-internet-packet-journey" },
+      { url: "https://packetsecrets.com/learn/networking-foundations/systematic-network-troubleshooting-capstone" },
     ]);
     const urls = entries.map(({ url }) => url);
     for (const pathway of listPathways()) {
@@ -52,6 +53,6 @@ describe("public sitemap", () => {
     for (const unpublishedUrl of unpublishedSlugs) {
       expect(urls).not.toContain(unpublishedUrl);
     }
-    expect(unpublishedSlugs).toHaveLength(1);
+    expect(unpublishedSlugs).toHaveLength(0);
   });
 });

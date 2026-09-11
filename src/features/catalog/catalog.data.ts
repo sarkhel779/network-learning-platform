@@ -554,11 +554,25 @@ const curriculum: Pathway[] = [
         id: "module_packet_analysis_and_troubleshooting", slug: "packet-analysis-and-troubleshooting", title: "Packet Analysis and Troubleshooting",
         description: "Apply evidence-driven, layer-aware troubleshooting to network faults.",
         lessons: [
-          plannedLesson({
+          {
             id: "lesson_systematic_network_troubleshooting_capstone", slug: "systematic-network-troubleshooting-capstone", title: "Systematic Network Troubleshooting Capstone",
             objective: "Apply a repeatable, layer-aware troubleshooting method and communicate evidence, scope, hypothesis, test, result, and next action.",
-            seo: { title: "Systematic Network Troubleshooting", description: "Practice a repeatable layer-aware troubleshooting method that documents evidence, scope, hypotheses, tests, results, and next actions." }, estimatedMinutes: 25,
-          }),
+            seo: { title: "Systematic Network Troubleshooting Capstone", description: "Practice an evidence-first troubleshooting method across VLAN, routing, DNS, TCP, TLS, HTTP, packet captures, restoration, and incident reporting." }, estimatedMinutes: 45,
+            published: true,
+            sections: [
+              { id: "scope-the-incident", label: "Scope the incident", access: "public" },
+              { id: "form-a-hypothesis", label: "Form a falsifiable hypothesis", access: "public" },
+              { id: "collect-evidence", label: "Collect least-destructive evidence", access: "public" },
+              { id: "isolate-the-fault", label: "Isolate the fault", access: "public" },
+              { id: "restore-the-service", label: "Restore the complete service", access: "public" },
+              { id: "report-and-prevent", label: "Report and prevent recurrence", access: "public" },
+              { id: "guided-branch-incident", label: "Guided branch incident", access: "account" },
+              { id: "guided-incident-debrief", label: "Guided incident debrief", access: "account" },
+              { id: "pro-sparse-incident", label: "Sparse enterprise incident", access: "pro", preview: "Diagnose asymmetric stateful routing and stale DNS with minimal guidance." },
+              { id: "pro-incident-report", label: "Structured incident report", access: "pro", preview: "Turn evidence, correction, restoration, and prevention into an operational record." },
+              { id: "pro-advanced-validation", label: "Packet and RFC validation", access: "pro", preview: "Validate TCP retransmission, DNS caching, and route symmetry against authoritative references." },
+            ],
+          },
         ],
       },
     ],

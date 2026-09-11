@@ -6,7 +6,7 @@ import type { LessonSection } from "@/features/catalog/catalog.types";
 
 type LessonSectionNavigationProps = {
   sections?: LessonSection[];
-  presentation?: "list" | "dns-network-map" | "network-map" | "nat-network-map";
+  presentation?: "list" | "dns-network-map" | "network-map" | "nat-network-map" | "troubleshooting-network-map";
   lockedReturnTo?: string;
   mapGroups?: readonly { label: string; node: string; ids: readonly string[] }[];
   panelId?: string;
@@ -26,6 +26,14 @@ const natGroups = [
   { label: "Internet journey", node: "Journey", ids: ["complete-internet-packet-journey", "return-traffic-timeouts-failures", "public-knowledge-check"] },
   { label: "Account practice", node: "Practice", ids: ["account-pat-journey", "account-mapping-lab", "account-troubleshooting-lab", "account-knowledge-checks"] },
   { label: "Pro evidence and U-Turn NAT", node: "Hairpin", ids: ["pro-packet-analysis", "pro-rfc-validation", "pro-u-turn-nat-lab"] },
+] as const;
+
+const troubleshootingGroups = [
+  { label: "Define the boundary", node: "Scope", ids: ["scope-the-incident", "form-a-hypothesis"] },
+  { label: "Collect proof", node: "Evidence", ids: ["collect-evidence", "guided-branch-incident"] },
+  { label: "Narrow the cause", node: "Isolation", ids: ["isolate-the-fault", "guided-incident-debrief", "pro-sparse-incident"] },
+  { label: "Verify service", node: "Restore", ids: ["restore-the-service"] },
+  { label: "Preserve learning", node: "Report", ids: ["report-and-prevent", "pro-incident-report", "pro-advanced-validation"] },
 ] as const;
 
 function SectionItem({
@@ -69,8 +77,8 @@ export function LessonSectionNavigation({ sections, presentation = "list", locke
 
   if (!sections?.length) return null;
 
-  if (presentation === "dns-network-map" || presentation === "network-map" || presentation === "nat-network-map") {
-    const groups = mapGroups ?? (presentation === "nat-network-map" ? natGroups : dnsGroups);
+  if (presentation === "dns-network-map" || presentation === "network-map" || presentation === "nat-network-map" || presentation === "troubleshooting-network-map") {
+    const groups = mapGroups ?? (presentation === "nat-network-map" ? natGroups : presentation === "troubleshooting-network-map" ? troubleshootingGroups : dnsGroups);
     const toggleMap = () => {
       if (!isMapOpen) setRevealCycle((cycle) => cycle + 1);
       setIsMapOpen(!isMapOpen);

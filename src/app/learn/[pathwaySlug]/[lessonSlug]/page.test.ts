@@ -110,6 +110,16 @@ vi.mock("@/content/networking-foundations/dns-and-name-resolution.account.mdx", 
 vi.mock("@/content/networking-foundations/dns-and-name-resolution.pro.mdx", () => {
   throw new Error("DNS_PRO_SENTINEL: anonymous route imported a protected body");
 });
+vi.mock("@/content/networking-foundations/systematic-network-troubleshooting-capstone.public.mdx", async () => {
+  const { createElement } = await import("react");
+  return { default: () => createElement("p", null, "Public troubleshooting method.") };
+});
+vi.mock("@/content/networking-foundations/systematic-network-troubleshooting-capstone.account.mdx", () => {
+  throw new Error("CAPSTONE_ACCOUNT_SENTINEL: anonymous route imported a protected body");
+});
+vi.mock("@/content/networking-foundations/systematic-network-troubleshooting-capstone.pro.mdx", () => {
+  throw new Error("CAPSTONE_PRO_SENTINEL: anonymous route imported a protected body");
+});
 
 import * as contentRepository from "@/features/lessons/lesson-content.repository";
 import { listPublishedLessons } from "@/features/catalog/catalog.repository";
@@ -331,7 +341,21 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "nat-pat-and-the-complete-internet-packet-journey",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "systematic-network-troubleshooting-capstone",
+      },
     ]);
+  });
+
+  it("renders the capstone public method without protected blocks for anonymous visitors", async () => {
+    const loader = vi.spyOn(contentRepository, "loadAuthorizedLessonContent");
+    const page = await lessonPage.default({ params: Promise.resolve({ pathwaySlug: "networking-foundations", lessonSlug: "systematic-network-troubleshooting-capstone" }) });
+    const { container } = render(page);
+    expect(screen.getByRole("heading", { level: 1, name: "Systematic Network Troubleshooting Capstone" })).toBeVisible();
+    expect(screen.getByText("Public troubleshooting method.")).toBeVisible();
+    expect(loader).toHaveBeenCalledWith("networking-foundations/systematic-network-troubleshooting-capstone", "anonymous");
+    expect(container.innerHTML).not.toMatch(/CAPSTONE_(?:ACCOUNT|PRO)_SENTINEL/);
   });
 
   it("renders the canonical DHCP route without protected blocks for anonymous visitors", async () => {

@@ -152,6 +152,22 @@ describe("LessonSectionNavigation", () => {
     expect(screen.getByRole("link", { name: /U-Turn NAT lab.*Pro.*Locked/ })).toBeVisible();
   });
 
+  it("renders and replays the troubleshooting Page contents route with tier-aware anchors", async () => {
+    const user = userEvent.setup();
+    render(<LessonSectionNavigation presentation="troubleshooting-network-map" viewerAccess="account" lockedReturnTo="/learn/networking-foundations/systematic-network-troubleshooting-capstone" sections={[
+      { id: "scope-the-incident", label: "Scope the incident", access: "public" },
+      { id: "guided-branch-incident", label: "Guided branch incident", access: "account" },
+      { id: "pro-sparse-incident", label: "Sparse enterprise incident", access: "pro" },
+    ]} />);
+    const button = screen.getByRole("button", { name: "Page contents" });
+    await user.click(button);
+    for (const node of ["Scope", "Evidence", "Isolation", "Restore", "Report"]) expect(screen.getByText(node)).toBeVisible();
+    expect(screen.getByRole("link", { name: "Guided branch incident" })).toHaveAttribute("href", "#guided-branch-incident");
+    expect(screen.getByRole("link", { name: /Sparse enterprise incident.*Pro.*Locked/ })).toHaveAttribute("href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fsystematic-network-troubleshooting-capstone%23pro-sparse-incident");
+    await user.click(button); await user.click(button);
+    expect(screen.getByTestId("network-map-route")).toHaveAttribute("data-reveal-cycle", "2");
+  });
+
   it("server-renders locked previews without paragraph nesting or parser repairs", () => {
     const html = renderToStaticMarkup(<LessonSectionNavigation sections={[
       { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore standards and diagnostic checks." },
