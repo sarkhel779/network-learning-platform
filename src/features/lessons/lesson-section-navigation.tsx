@@ -6,10 +6,11 @@ import type { LessonSection } from "@/features/catalog/catalog.types";
 
 type LessonSectionNavigationProps = {
   sections?: LessonSection[];
-  presentation?: "list" | "dns-network-map" | "network-map";
+  presentation?: "list" | "dns-network-map" | "network-map" | "nat-network-map";
   lockedReturnTo?: string;
   mapGroups?: readonly { label: string; node: string; ids: readonly string[] }[];
   panelId?: string;
+  viewerAccess?: "anonymous" | "account" | "pro";
 };
 
 const dnsGroups = [
@@ -19,13 +20,24 @@ const dnsGroups = [
   { label: "Advanced DNS", node: "Pro", ids: ["dns-timing-diagram", "rfc-level-dns-checks", "dnssec-advanced-wireshark", "advanced-dns-operations", "root-server-bootstrap-bonus"] },
 ] as const;
 
+const natGroups = [
+  { label: "Translation boundary", node: "Boundary", ids: ["ipv4-translation-boundary", "nat-vocabulary-address-realms"] },
+  { label: "Mappings and state", node: "PAT State", ids: ["static-nat-port-forwarding", "dynamic-nat-address-pools", "pat-translation-table-state"] },
+  { label: "Internet journey", node: "Journey", ids: ["complete-internet-packet-journey", "return-traffic-timeouts-failures", "public-knowledge-check"] },
+  { label: "Account practice", node: "Practice", ids: ["account-pat-journey", "account-mapping-lab", "account-troubleshooting-lab", "account-knowledge-checks"] },
+  { label: "Pro evidence and U-Turn NAT", node: "Hairpin", ids: ["pro-packet-analysis", "pro-rfc-validation", "pro-u-turn-nat-lab"] },
+] as const;
+
 function SectionItem({
   section: { id, label, access, preview },
   lockedReturnTo,
+  viewerAccess = "anonymous",
 }: {
   section: LessonSection;
   lockedReturnTo?: string;
+  viewerAccess?: "anonymous" | "account" | "pro";
 }) {
+  const accessible = access === "public" || viewerAccess === "pro" || (viewerAccess === "account" && access === "account");
   const lockedContent = (
     <>
       <span>{label}</span>
@@ -35,7 +47,7 @@ function SectionItem({
     </>
   );
 
-  return <li>{access === "public" ? (
+  return <li>{accessible ? (
     <a href={`#${id}`}>{label}</a>
   ) : lockedReturnTo ? (
     <a
@@ -51,14 +63,14 @@ function SectionItem({
   )}</li>;
 }
 
-export function LessonSectionNavigation({ sections, presentation = "list", lockedReturnTo, mapGroups, panelId = "lesson-page-contents" }: LessonSectionNavigationProps) {
+export function LessonSectionNavigation({ sections, presentation = "list", lockedReturnTo, mapGroups, panelId = "lesson-page-contents", viewerAccess = "anonymous" }: LessonSectionNavigationProps) {
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [revealCycle, setRevealCycle] = useState(0);
 
   if (!sections?.length) return null;
 
-  if (presentation === "dns-network-map" || presentation === "network-map") {
-    const groups = mapGroups ?? dnsGroups;
+  if (presentation === "dns-network-map" || presentation === "network-map" || presentation === "nat-network-map") {
+    const groups = mapGroups ?? (presentation === "nat-network-map" ? natGroups : dnsGroups);
     const toggleMap = () => {
       if (!isMapOpen) setRevealCycle((cycle) => cycle + 1);
       setIsMapOpen(!isMapOpen);
@@ -90,7 +102,7 @@ export function LessonSectionNavigation({ sections, presentation = "list", locke
             <div className="dns-map__groups network-map__groups">
               {groups.map(({ label, ids }) => {
                 const grouped = sections.filter(({ id }) => (ids as readonly string[]).includes(id));
-                return grouped.length ? <section key={label}><h3>{label}</h3><ol>{grouped.map((section) => <SectionItem key={section.id} section={section} lockedReturnTo={lockedReturnTo} />)}</ol></section> : null;
+                return grouped.length ? <section key={label}><h3>{label}</h3><ol>{grouped.map((section) => <SectionItem key={section.id} section={section} lockedReturnTo={lockedReturnTo} viewerAccess={viewerAccess} />)}</ol></section> : null;
               })}
             </div>
           </div>

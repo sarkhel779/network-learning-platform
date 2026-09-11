@@ -113,6 +113,11 @@ const lessonImports = {
     account: () => import("@/content/networking-foundations/http-https-tls-and-essential-network-services.account.mdx"),
     pro: () => import("@/content/networking-foundations/http-https-tls-and-essential-network-services.pro.mdx"),
   },
+  "networking-foundations/nat-pat-and-the-complete-internet-packet-journey": {
+    public: () => import("@/content/networking-foundations/nat-pat-and-the-complete-internet-packet-journey.public.mdx"),
+    account: () => import("@/content/networking-foundations/nat-pat-and-the-complete-internet-packet-journey.account.mdx"),
+    pro: () => import("@/content/networking-foundations/nat-pat-and-the-complete-internet-packet-journey.pro.mdx"),
+  },
   "networking-foundations/osi-and-tcp-ip-models": {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),

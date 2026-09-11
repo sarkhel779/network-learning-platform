@@ -89,7 +89,10 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /http, https, tls and essential network services/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/http-https-tls-and-essential-network-services",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(22);
-    expect(screen.getAllByText("Coming later")).toHaveLength(2);
+    expect(screen.getByRole("link", { name: /nat, pat and the complete internet packet journey/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/nat-pat-and-the-complete-internet-packet-journey",
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(23);
+    expect(screen.getAllByText("Coming later")).toHaveLength(1);
   });
 });

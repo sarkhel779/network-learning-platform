@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(22);
+    expect(lessonProgressManifests).toHaveLength(23);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -63,6 +63,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609110001_add_dhcp_progress.sql",
       "supabase/migrations/202609110002_add_dns_progress.sql",
       "supabase/migrations/202609110003_add_essential_services_progress.sql",
+      "supabase/migrations/202609110004_add_nat_pat_progress.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -147,6 +148,19 @@ describe("lessonProgressManifests", () => {
     expect(manifest.items.every(({ itemId }) => !itemId.includes("rfc") && !itemId.includes("capture"))).toBe(true);
   });
 
+  it("registers NAT public sections, three Account interactives, and five checks without Pro labs", () => {
+    const manifest = getLessonProgressManifest("path_networking_foundations", "lesson_nat_pat_and_the_complete_internet_packet_journey");
+    expect(manifest.contentVersion).toBe(1);
+    expect(manifest.items).toHaveLength(15);
+    expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ itemId }) => itemId)).toEqual([
+      "nat_pat_interactive_journey", "nat_pat_mapping_lab", "nat_pat_troubleshooting_lab",
+    ]);
+    expect(manifest.items.filter(({ kind }) => kind === "knowledge_check").map(({ itemId }) => itemId)).toEqual([
+      "nat_pat_check_public_1", "nat_pat_check_public_2", "nat_pat_check_account_1", "nat_pat_check_account_2", "nat_pat_check_account_3",
+    ]);
+    expect(manifest.items.some(({ anchor }) => anchor.startsWith("pro-"))).toBe(false);
+  });
+
   it("parenthesizes the CASE expression used by the progress event guard", () => {
     const migration = readFileSync(
       resolve("supabase/migrations/202609090002_create_learner_progress.sql"),
@@ -160,9 +174,9 @@ describe("lessonProgressManifests", () => {
   it("assigns every knowledge check its manifest ID in account content", () => {
     const seen = new Set<string>();
     for (const { pathway, lesson } of publishedLessons) {
-      const source = readFileSync(resolve(
-        `src/content/${pathway.slug}/${lesson.slug}.account.mdx`,
-      ), "utf8");
+      const source = ["public", "account"].map((tier) => resolve(
+        `src/content/${pathway.slug}/${lesson.slug}.${tier}.mdx`,
+      )).filter(existsSync).map((path) => readFileSync(path, "utf8")).join("\n");
       const contentIds = [...source.matchAll(/<KnowledgeCheck\s+progressItemId="([^"]+)"/g)]
         .map((match) => match[1]);
       const manifestIds = getLessonProgressManifest(pathway.id, lesson.id).items

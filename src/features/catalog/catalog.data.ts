@@ -525,11 +525,29 @@ const curriculum: Pathway[] = [
         id: "module_nat_and_internet_communication", slug: "nat-and-internet-communication", title: "NAT and Internet Communication",
         description: "Trace address translation through an end-to-end internet exchange.",
         lessons: [
-          plannedLesson({
+          {
             id: "lesson_nat_pat_and_the_complete_internet_packet_journey", slug: "nat-pat-and-the-complete-internet-packet-journey", title: "NAT, PAT and the Complete Internet Packet Journey",
-            objective: "Explain address/port translation and trace a browser exchange from a private host to an internet service and back.",
-            seo: { title: "NAT, PAT and the Internet Packet Journey", description: "Trace a browser exchange from a private host to an internet service and see how NAT and PAT translate addresses and ports." }, estimatedMinutes: 25,
-          }),
+            objective: "Trace IPv4 address and port translation in both directions, read translation state, and diagnose failed return paths.",
+            seo: { title: "NAT, PAT and the Internet Packet Journey", description: "Trace an IPv4 packet through NAT and PAT, inspect translation state, and compare broken and working U-Turn NAT paths." }, estimatedMinutes: 35,
+            published: true,
+            sections: [
+              { id: "ipv4-translation-boundary", label: "The IPv4 translation boundary", access: "public" },
+              { id: "nat-vocabulary-address-realms", label: "NAT vocabulary and address realms", access: "public" },
+              { id: "static-nat-port-forwarding", label: "Static NAT and port forwarding", access: "public" },
+              { id: "dynamic-nat-address-pools", label: "Dynamic NAT and address pools", access: "public" },
+              { id: "pat-translation-table-state", label: "PAT and translation-table state", access: "public" },
+              { id: "complete-internet-packet-journey", label: "Complete Internet packet journey", access: "public" },
+              { id: "return-traffic-timeouts-failures", label: "Return traffic, timeouts, and failures", access: "public" },
+              { id: "public-knowledge-check", label: "Check the packet path", access: "public" },
+              { id: "account-pat-journey", label: "Control the PAT journey", access: "account" },
+              { id: "account-mapping-lab", label: "Classify and reverse mappings", access: "account" },
+              { id: "account-troubleshooting-lab", label: "Diagnose NAT failures", access: "account" },
+              { id: "account-knowledge-checks", label: "Account knowledge checks", access: "account" },
+              { id: "pro-packet-analysis", label: "Wireshark packet analysis", access: "pro", preview: "Correlate before-and-after tuples across the translation boundary." },
+              { id: "pro-rfc-validation", label: "RFC-level NAT validation", access: "pro", preview: "Validate TCP, UDP, ICMP, fragment, checksum, and ALG behavior." },
+              { id: "pro-u-turn-nat-lab", label: "U-Turn NAT lab", access: "pro", preview: "Compare a broken DNAT-only return path with paired bidirectional translation." },
+            ],
+          },
         ],
       },
       {

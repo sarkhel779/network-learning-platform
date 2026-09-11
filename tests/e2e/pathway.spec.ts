@@ -23,8 +23,8 @@ test("shows the networking pathway and its published lesson links", async ({ pag
     .toHaveCount(0);
 
   const lessonLinks = page.locator(".lesson-list h3 a");
-  await expect(lessonLinks).toHaveCount(22);
-  await expect(page.locator(".lesson-list").getByText("Coming later", { exact: true })).toHaveCount(2);
+  await expect(lessonLinks).toHaveCount(23);
+  await expect(page.locator(".lesson-list").getByText("Coming later", { exact: true })).toHaveCount(1);
   await expect(lessonLinks.filter({ hasText: "Cables, Fibre, Wireless and Network Connections" })).toHaveAttribute(
     "href", "/learn/networking-foundations/cables-fibre-wireless-and-network-connections",
   );

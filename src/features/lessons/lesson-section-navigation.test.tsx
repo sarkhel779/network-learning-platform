@@ -116,6 +116,42 @@ describe("LessonSectionNavigation", () => {
     expect(screen.getByTestId("network-map-route")).toHaveAttribute("data-reveal-cycle", "2");
   });
 
+  it("renders the NAT packet route, preserves locked anchors, and replays on every open", async () => {
+    const user = userEvent.setup();
+    render(<LessonSectionNavigation
+      presentation="nat-network-map"
+      lockedReturnTo="/learn/networking-foundations/nat-pat-and-the-complete-internet-packet-journey"
+      sections={[
+        { id: "ipv4-translation-boundary", label: "The IPv4 translation boundary", access: "public" },
+        { id: "pat-translation-table-state", label: "PAT and translation-table state", access: "public" },
+        { id: "account-pat-journey", label: "Control the PAT journey", access: "account" },
+        { id: "pro-u-turn-nat-lab", label: "U-Turn NAT lab", access: "pro", preview: "Compare paths." },
+      ]}
+    />);
+    const button = screen.getByRole("button", { name: "Page contents" });
+    await user.click(button);
+    expect(screen.getByText("Boundary")).toBeVisible();
+    expect(screen.getByText("PAT State")).toBeVisible();
+    expect(screen.getByRole("link", { name: "The IPv4 translation boundary" })).toHaveAttribute("href", "#ipv4-translation-boundary");
+    expect(screen.getByRole("link", { name: /Control the PAT journey.*Locked/ })).toHaveAttribute("href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fnat-pat-and-the-complete-internet-packet-journey%23account-pat-journey");
+    expect(screen.getByRole("link", { name: /U-Turn NAT lab.*Pro.*Locked/ })).toHaveAttribute("href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fnat-pat-and-the-complete-internet-packet-journey%23pro-u-turn-nat-lab");
+    expect(screen.getByTestId("network-map-route")).toHaveAttribute("data-reveal-cycle", "1");
+    await user.click(button);
+    await user.click(button);
+    expect(screen.getByTestId("network-map-route")).toHaveAttribute("data-reveal-cycle", "2");
+  });
+
+  it("unlocks account anchors for authenticated learners while retaining Pro locks", async () => {
+    const user = userEvent.setup();
+    render(<LessonSectionNavigation presentation="nat-network-map" viewerAccess="account" lockedReturnTo="/learn/networking-foundations/nat-pat-and-the-complete-internet-packet-journey" sections={[
+      { id: "account-pat-journey", label: "Control the PAT journey", access: "account" },
+      { id: "pro-u-turn-nat-lab", label: "U-Turn NAT lab", access: "pro" },
+    ]} />);
+    await user.click(screen.getByRole("button", { name: "Page contents" }));
+    expect(screen.getByRole("link", { name: "Control the PAT journey" })).toHaveAttribute("href", "#account-pat-journey");
+    expect(screen.getByRole("link", { name: /U-Turn NAT lab.*Pro.*Locked/ })).toBeVisible();
+  });
+
   it("server-renders locked previews without paragraph nesting or parser repairs", () => {
     const html = renderToStaticMarkup(<LessonSectionNavigation sections={[
       { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Explore standards and diagnostic checks." },

@@ -1,0 +1,57 @@
+<LearningObjective>Trace an IPv4 packet through NAT and PAT in both directions, read its translation state, and identify where failed return traffic breaks.</LearningObjective>
+
+<h2 id="ipv4-translation-boundary">The IPv4 translation boundary</h2>
+
+RFC 1918 reserves `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16` for private networks. Those addresses are not globally routed on the public Internet, so an edge device translates a private endpoint into a usable public identity. NAT64 and NPTv6 are IPv6 mechanisms and are deliberately outside this IPv4 lesson.
+
+<SectionContinue itemId="nat_pat_section_ipv4_translation_boundary" anchor="ipv4-translation-boundary" />
+
+<h2 id="nat-vocabulary-address-realms">NAT vocabulary and address realms</h2>
+
+For client `10.0.0.25` using public address `203.0.113.10` to reach `198.51.100.20`, the **inside local** value is the client's private address and the **inside global** value is its translated public identity. The **outside global** value is the remote server as globally known. The **outside local** value is how that outside endpoint appears inside; in ordinary examples it equals the outside global value.
+
+NAT changes an address. PAT—also called NAT overload—changes an address and transport port so multiple sockets can share one public IPv4 address.
+
+<SectionContinue itemId="nat_pat_section_nat_vocabulary_address_realms" anchor="nat-vocabulary-address-realms" />
+
+<h2 id="static-nat-port-forwarding">Static NAT and port forwarding</h2>
+
+**Static NAT** maintains a predictable one-to-one address mapping. A port-forward rule is destination NAT: a packet for `203.0.113.10:443` can be rewritten toward `10.0.0.50:443`. Unsolicited inbound traffic normally has no dynamic mapping, so it needs an explicit publication rule. The rule exposes only the configured tuple; routing and security policy still make separate decisions.
+
+<SectionContinue itemId="nat_pat_section_static_nat_port_forwarding" anchor="static-nat-port-forwarding" />
+
+<h2 id="dynamic-nat-address-pools">Dynamic NAT and address pools</h2>
+
+**Dynamic NAT** temporarily selects an available public address from a pool. It remains one-to-one while allocated, and new sessions fail when no address is free. The mapping has state and a lifetime; it is not a permanent ownership record.
+
+<SectionContinue itemId="nat_pat_section_dynamic_nat_address_pools" anchor="dynamic-nat-address-pools" />
+
+<h2 id="pat-translation-table-state">PAT and translation-table state</h2>
+
+**PAT** distinguishes flows with protocol plus source/destination addresses and ports. For example, `10.0.0.25:51514` can become `203.0.113.10:62001`. The table records the inside local, inside global, outside local, outside global, protocol, and state. A second client receives a different translated port so its tuple remains unique.
+
+<SectionContinue itemId="nat_pat_section_pat_translation_table_state" anchor="pat-translation-table-state" />
+
+<h2 id="complete-internet-packet-journey">Complete Internet packet journey</h2>
+
+1. DNS supplies the remote IPv4 destination `198.51.100.20`.
+2. The client opens TCP from `10.0.0.25:51514` to HTTPS port `443`.
+3. The gateway creates PAT state and emits `203.0.113.10:62001 → 198.51.100.20:443`.
+4. The server responds to that public tuple.
+5. The gateway performs reverse translation and restores destination `10.0.0.25:51514`.
+
+The source changes outbound and the destination changes on return. The TCP peers remain logically consistent because both directions use the same stored mapping.
+
+<SectionContinue itemId="nat_pat_section_complete_internet_packet_journey" anchor="complete-internet-packet-journey" />
+
+<h2 id="return-traffic-timeouts-failures">Return traffic, timeouts, and failure modes</h2>
+
+A reply must match live state by protocol and tuple. Missing state, an expired timeout, a wrong port-forward target, exhausted addresses or ports, and asymmetric routing can all break the reverse lookup. Translators must also update affected checksums and handle ICMP errors and fragments carefully. Protocols that embed addresses in payload data may require limited application-aware handling.
+
+NAT conserves public IPv4 space and hides internal addressing details, but it adds state and complicates troubleshooting. **NAT is not a firewall**: translation and traffic authorization are different functions.
+
+<SectionContinue itemId="nat_pat_section_return_traffic_timeouts_failures" anchor="return-traffic-timeouts-failures" />
+
+<h2 id="public-knowledge-check">Check the packet path</h2>
+
+Before opening the account practice, trace these two questions using the tuple examples above: Which value identifies the private client before translation? What makes each PAT flow unique when many clients share one public IPv4 address?
