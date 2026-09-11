@@ -91,6 +91,7 @@ describe("catalog repository", () => {
       "icmp-ping-and-path-discovery",
       "ipv4-addressing",
       "ipv6-fundamentals",
+      "nat-pat-and-the-complete-internet-packet-journey",
       "osi-and-tcp-ip-models",
       "routers-default-gateways-and-network-boundaries",
       "routing-tables-and-default-routes",
@@ -413,6 +414,7 @@ describe("catalog repository", () => {
       "dhcp-and-automatic-address-configuration",
       "dns-and-name-resolution",
       "http-https-tls-and-essential-network-services",
+      "nat-pat-and-the-complete-internet-packet-journey",
     ]);
     expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
       title: "Cables, Fibre, Wireless and Network Connections",
@@ -473,7 +475,7 @@ describe("catalog repository", () => {
   it("keeps public foundations limited to published beginner lessons", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables, icmp, transport, dhcp, dns, essentialServices] = lessons;
+    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables, icmp, transport, dhcp, dns, essentialServices, nat] = lessons;
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
@@ -496,8 +498,9 @@ describe("catalog repository", () => {
     expect(dhcp.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(dns.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(essentialServices.sections?.some(({ access }) => access === "public")).toBe(true);
+    expect(nat.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(
-      lessons.slice(22).some(({ sections }) =>
+      lessons.slice(23).some(({ sections }) =>
         sections?.some(({ access }) => access === "public"),
       ),
     ).toBe(false);
@@ -654,6 +657,24 @@ describe("catalog repository", () => {
     expect(lesson.sections?.filter(({ access }) => access === "pro")).toHaveLength(12);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
       previous: { slug: "dns-and-name-resolution", published: true },
+    });
+  });
+
+  it("publishes the NAT packet journey with progressive access", () => {
+    const lesson = getLesson("networking-foundations", "nat-pat-and-the-complete-internet-packet-journey");
+    expect(lesson).toMatchObject({ id: "lesson_nat_pat_and_the_complete_internet_packet_journey", estimatedMinutes: 35, published: true });
+    expect(lesson.sections?.map(({ id, access }) => [id, access])).toEqual([
+      ["ipv4-translation-boundary", "public"], ["nat-vocabulary-address-realms", "public"],
+      ["static-nat-port-forwarding", "public"], ["dynamic-nat-address-pools", "public"],
+      ["pat-translation-table-state", "public"], ["complete-internet-packet-journey", "public"],
+      ["return-traffic-timeouts-failures", "public"], ["public-knowledge-check", "public"],
+      ["account-pat-journey", "account"], ["account-mapping-lab", "account"],
+      ["account-troubleshooting-lab", "account"], ["account-knowledge-checks", "account"],
+      ["pro-packet-analysis", "pro"], ["pro-rfc-validation", "pro"], ["pro-u-turn-nat-lab", "pro"],
+    ]);
+    expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
+      previous: { slug: "http-https-tls-and-essential-network-services", published: true },
+      next: { slug: "systematic-network-troubleshooting-capstone", published: false },
     });
   });
 
