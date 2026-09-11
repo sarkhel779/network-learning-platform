@@ -112,6 +112,8 @@ export function TroubleshootingWorkspace({ scenario, progressItemId, guidance, o
   };
   const selectedEvidence = selectedRestorationCheckId ? state.restorationEvidence[selectedRestorationCheckId] : scenario.tests.find(({ id }) => id === selectedTestId)?.evidence;
   const restorationReady = state.correctedFaultIds.length === scenario.faults.length;
+  const selectedAttempt = selectedAttemptIndex === undefined ? undefined : state.attempts[selectedAttemptIndex];
+  const selectedAttemptRemediated = selectedAttempt ? state.correctedFaultIds.includes(scenario.hypotheses.find(({ id }) => id === selectedAttempt.hypothesisId)!.faultId) : false;
   const visibleTests = state.scoped ? scenario.tests.filter((test) => test.phase === "diagnostic" && (!test.expectedFaultId || state.exposedFaultIds.includes(test.expectedFaultId))) : [];
   const visibleRemediations = state.scoped ? scenario.remediations.filter((item) => state.exposedFaultIds.includes(item.faultId)) : [];
   const activePath = state.correctedFaultIds.length === scenario.faults.length ? scenario.topology.nodes.map(({ id }) => id) : scenario.topology.nodes.slice(0, Math.min(state.correctedFaultIds.length + 2, scenario.topology.nodes.length)).map(({ id }) => id);
@@ -123,7 +125,7 @@ export function TroubleshootingWorkspace({ scenario, progressItemId, guidance, o
     {guidance === "sparse" ? <button aria-expanded={journalOpen} onClick={() => setJournalOpen((current) => !current)} type="button">{journalOpen ? "Close hypothesis worksheet" : "Open hypothesis worksheet"}</button> : null}
     <div className="troubleshooting-workspace__grid">{journalOpen ? <HypothesisJournal hypotheses={scenario.hypotheses} hypothesisId={hypothesisId} predictionId={predictionId} confidence={confidence} onHypothesisChange={setHypothesisId} onPredictionChange={setPredictionId} onConfidenceChange={setConfidence} /> : null}<EvidenceBoard tests={visibleTests} selectedEvidence={selectedEvidence} onRunTest={runTest} /></div>
     <p className="troubleshooting-workspace__feedback" role="status" aria-live="polite">{feedback}</p>
-    {selectedAttemptIndex !== undefined ? <div className="troubleshooting-workspace__conclusion"><button onClick={() => conclude("supported")} type="button">Evidence supports hypothesis</button><button onClick={() => conclude("refuted")} type="button">Evidence refutes hypothesis</button></div> : null}
+    {selectedAttemptIndex !== undefined && !selectedAttemptRemediated ? <div className="troubleshooting-workspace__conclusion"><button onClick={() => conclude("supported")} type="button">Evidence supports hypothesis</button><button onClick={() => conclude("refuted")} type="button">Evidence refutes hypothesis</button></div> : null}
     <RemediationPanel remediations={visibleRemediations} correctedFaultIds={state.correctedFaultIds} onApply={apply} />
     <RestorationChecklist checks={scenario.restorationChecks} results={state.restorationResults} enabled={restorationReady} onRun={runRestoration} />
     <button className="troubleshooting-workspace__close" disabled={state.closed} onClick={close} type="button">{state.closed ? "Incident closed" : "Close incident"}</button>

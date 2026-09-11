@@ -131,6 +131,14 @@ describe("troubleshooting incident engine", () => {
     expect(state.identifiedRootCauseIds).toEqual(["wrong-access-vlan"]);
   });
 
+  it("locks the accepted root-cause conclusion after remediation", () => {
+    let state = reduceIncident(createIncidentState(guidedBranchPortalIncident), { type: "confirm_scope" }, guidedBranchPortalIncident);
+    state = reduceIncident(state, { type: "run_test", hypothesisId: "guided-vlan", predictionId: "wrong-vlan", testId: "inspect-vlan", confidence: "calibrated" }, guidedBranchPortalIncident);
+    state = reduceIncident(state, { type: "record_conclusion", attemptIndex: 0, conclusion: "supported" }, guidedBranchPortalIncident);
+    state = reduceIncident(state, { type: "apply_remediation", remediationId: "fix-vlan" }, guidedBranchPortalIncident);
+    expect(() => reduceIncident(state, { type: "record_conclusion", attemptIndex: 0, conclusion: "refuted" }, guidedBranchPortalIncident)).toThrow(/locked/i);
+  });
+
   it("awards report credit only when a report is explicitly submitted", () => {
     const initial = createIncidentState(guidedBranchPortalIncident);
     expect(scoreIncident(initial, guidedBranchPortalIncident).report).toBe(0);

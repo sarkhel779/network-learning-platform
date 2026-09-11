@@ -85,6 +85,7 @@ function recordConclusion(state: IncidentState, action: Extract<IncidentAction, 
   const expected = attempt.correct ? "supported" : "refuted";
   const correct = action.conclusion === expected;
   const hypothesis = scenario.hypotheses.find(({ id }) => id === attempt.hypothesisId)!;
+  if (state.correctedFaultIds.includes(hypothesis.faultId)) throw new Error("Conclusions are locked after remediation.");
   const conclusions = [...state.conclusions.filter(({ attemptIndex }) => attemptIndex !== action.attemptIndex), { attemptIndex: action.attemptIndex, conclusion: action.conclusion, correct }];
   const identifiedRootCauseIds = [...new Set(conclusions.flatMap((item) => {
     const concludedAttempt = state.attempts[item.attemptIndex];
