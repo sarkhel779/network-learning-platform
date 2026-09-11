@@ -323,6 +323,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "dns-and-name-resolution",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "http-https-tls-and-essential-network-services",
+      },
     ]);
   });
 

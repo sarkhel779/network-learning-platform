@@ -86,6 +86,7 @@ describe("catalog repository", () => {
       "hosts-and-network-devices",
       "how-networks-communicate",
       "how-switches-learn-and-forward",
+      "http-https-tls-and-essential-network-services",
       "hubs-bridges-and-switches",
       "icmp-ping-and-path-discovery",
       "ipv4-addressing",
@@ -411,6 +412,7 @@ describe("catalog repository", () => {
       "tcp-udp-and-ports",
       "dhcp-and-automatic-address-configuration",
       "dns-and-name-resolution",
+      "http-https-tls-and-essential-network-services",
     ]);
     expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
       title: "Cables, Fibre, Wireless and Network Connections",
@@ -471,7 +473,7 @@ describe("catalog repository", () => {
   it("keeps public foundations limited to published beginner lessons", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables, icmp, transport, dhcp, dns] = lessons;
+    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables, icmp, transport, dhcp, dns, essentialServices] = lessons;
 
     expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
@@ -493,8 +495,9 @@ describe("catalog repository", () => {
     expect(transport.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(dhcp.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(dns.sections?.some(({ access }) => access === "public")).toBe(true);
+    expect(essentialServices.sections?.some(({ access }) => access === "public")).toBe(true);
     expect(
-      lessons.slice(21).some(({ sections }) =>
+      lessons.slice(22).some(({ sections }) =>
         sections?.some(({ access }) => access === "public"),
       ),
     ).toBe(false);
@@ -635,7 +638,22 @@ describe("catalog repository", () => {
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
       previous: { slug: "dhcp-and-automatic-address-configuration", published: true },
-      next: { slug: "http-https-tls-and-essential-network-services", published: false },
+      next: { slug: "http-https-tls-and-essential-network-services", published: true },
+    });
+  });
+
+  it("publishes essential services after DNS with equal tier depth", () => {
+    const lesson = getLesson("networking-foundations", "http-https-tls-and-essential-network-services");
+    expect(lesson).toMatchObject({
+      id: "lesson_http_https_tls_and_essential_network_services",
+      estimatedMinutes: 55,
+      published: true,
+    });
+    expect(lesson.sections?.filter(({ access }) => access === "public")).toHaveLength(6);
+    expect(lesson.sections?.filter(({ access }) => access === "account")).toHaveLength(13);
+    expect(lesson.sections?.filter(({ access }) => access === "pro")).toHaveLength(12);
+    expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
+      previous: { slug: "dns-and-name-resolution", published: true },
     });
   });
 

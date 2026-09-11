@@ -1,0 +1,97 @@
+<LearningObjective>Identify how six essential application services use ports, transports, messages, security, and packet evidence to deliver useful network functions.</LearningObjective>
+
+<h2 id="web-services">HTTP, HTTPS, and web services</h2>
+
+HTTP is a request-and-response application protocol. A client opens a TCP connection to a listening web service, sends a request such as `GET /guide HTTP/1.1` with a `Host` header, and receives a status line, headers, and an optional body. **80** is the conventional HTTP port, **443** is HTTPS, and **8080** is a common explicitly selected alternate HTTP port.
+
+<PortTransportPanel service="web" />
+
+The source port identifies this client connection while the destination port identifies the server listener. Routers forward the IP packets; the server TCP stack delivers the byte stream to the matching socket. A proxy or load balancer may terminate the connection and create another one toward the application.
+
+HTTPS means HTTP carried through modern TLS protection. The old name **SSL** remains common in product labels, but SSL protocols are obsolete; **TLS** provides the current confidentiality, integrity, and server-authentication layer. Detailed TLS negotiation belongs in the dedicated SSL/TLS lesson.
+
+If the TCP handshake fails, first check addressing, routing, filtering, and the listener. If TCP succeeds but HTTP returns `404`, `403`, or `500`, the application did respond—investigate the request target, authorization, or server logic rather than calling it a port failure.
+
+**Quick check:** Port 443 alone suggests an HTTPS listener, but packet evidence and configuration establish what actually runs there.
+
+<SectionContinue itemId="essential_services_section_web_services" anchor="web-services" />
+
+<h2 id="remote-access-services">SSH and Telnet remote access</h2>
+
+Remote terminal services let an administrator operate another system. SSH uses **TCP 22** and begins with protocol identification before negotiating protected authentication and session channels. Telnet uses **TCP 23** and negotiates terminal behavior, but it does not encrypt credentials or commands.
+
+<PortTransportPanel service="remote-access" />
+
+The administrator's client selects an ephemeral source port and connects to the managed device. Each router forwards the packets without interpreting the command session. The destination host maps TCP 22 or 23 to the listening process and returns traffic to the client's source port.
+
+Prefer SSH and validate the server host key; a changed key may indicate a rebuilt device or an interception risk. Telnet should be recognized as a legacy clear-text protocol, not selected for management across an untrusted network.
+
+`Connection refused` usually means the host is reachable but no permitted service is listening. A timeout can indicate routing, filtering, address, or return-path trouble. An SSH authentication rejection occurs later and should be investigated as an identity, method, or policy problem.
+
+**Quick check:** Seeing TCP 22 proves the selected port, not that host-key verification or user authentication succeeded.
+
+<SectionContinue itemId="essential_services_section_remote_access_services" anchor="remote-access-services" />
+
+<h2 id="email-services">SMTP, IMAP, and POP3 email services</h2>
+
+Email uses different protocols for different jobs. SMTP relays mail between servers on **TCP 25** and commonly accepts authenticated client submission on **TCP 587**; **TCP 465** starts protected SMTP submission with implicit TLS. SMTP commands and replies operate on an envelope before the message content is transferred.
+
+<PortTransportPanel service="email" />
+
+Mailbox retrieval is separate from delivery. IMAP synchronizes server-held mailboxes on **TCP 143**, or **993** with implicit TLS. POP3 offers a simpler download-oriented model on **TCP 110**, or **995** with implicit TLS. A sender can therefore submit successfully even when the recipient later has an IMAP problem.
+
+The client connects to a submission server, which may queue the message and create new SMTP connections to other mail servers. The recipient reads the stored message through an independent IMAP or POP3 connection. Each leg has its own addresses, ports, security, and result codes.
+
+Protect credentials and content with TLS and use authenticated submission rather than treating port 25 as a general user-login service. A `5xx` SMTP reply is a permanent rejection; a `4xx` reply normally asks the sender to retry. Retrieval login failure does not prove SMTP delivery failed.
+
+**Quick check:** SMTP sends or relays messages; IMAP and POP3 retrieve them. They are complementary, not interchangeable.
+
+<SectionContinue itemId="essential_services_section_email_services" anchor="email-services" />
+
+<h2 id="file-transfer-services">FTP, FTPS, and SFTP file transfer</h2>
+
+Classic FTP separates commands from file data. The persistent control connection normally reaches **TCP 21**. In active mode the server traditionally initiates a data connection from **TCP 20**; in passive mode the server advertises a negotiated high port and the client initiates the data connection.
+
+<PortTransportPanel service="file-transfer" />
+
+This two-connection design matters at firewalls and NAT devices: successful login proves only that the control path works. A directory listing or transfer can still fail when the negotiated data path is blocked.
+
+FTPS is FTP protected with TLS and retains FTP's separate-channel behavior; **TCP 990** is associated with implicit FTPS control. SFTP is not FTP with another security option: it is an SSH subsystem, normally over **TCP 22**, with a different message and channel design.
+
+Avoid unprotected FTP when credentials or data require confidentiality. When troubleshooting, determine the protocol first, then identify control versus data connections and active versus passive direction. Do not open TCP 20 for an SFTP problem.
+
+**Quick check:** FTPS uses FTP semantics with TLS; SFTP uses SSH semantics. Similar names do not mean wire compatibility.
+
+<SectionContinue itemId="essential_services_section_file_transfer_services" anchor="file-transfer-services" />
+
+<h2 id="time-services">NTP time synchronization</h2>
+
+NTP commonly uses **UDP 123** to compare clocks. A client exchange records four timestamps: `T1` client transmit, `T2` server receive, `T3` server transmit, and `T4` client receive. From them, the client estimates round-trip delay and clock offset instead of simply copying the server's visible time.
+
+<PortTransportPanel service="time" />
+
+The request travels from a client source port to UDP 123; the response returns with the server and client ports reversed. NTP also evaluates clock hierarchy and quality information so an apparently reachable source is not automatically a trustworthy synchronization source.
+
+Accurate time supports logs, certificates, authentication, distributed systems, and incident timelines. Restrict unnecessary NTP service exposure and use approved, trustworthy sources. A reply with an unacceptable stratum or leap state may be correctly transported but unsuitable for synchronization.
+
+If no reply arrives, check UDP filtering and return routing. If replies arrive but the clock stays unsynchronized, inspect offset, delay, source selection, stratum, leap indicator, and local service policy.
+
+**Quick check:** UDP 123 reachability is necessary, but the four timestamps and source-quality rules decide whether time can be corrected safely.
+
+<SectionContinue itemId="essential_services_section_time_services" anchor="time-services" />
+
+<h2 id="monitoring-services">SNMP monitoring and notifications</h2>
+
+SNMP separates a manager from agents on managed devices. A manager normally sends operations such as GetRequest to an agent on **UDP 161**. An agent sends event notifications to a manager's listener on **UDP 162**. A Trap is unacknowledged; an Inform expects a response.
+
+<PortTransportPanel service="monitoring" />
+
+An OID identifies a managed object in a hierarchical namespace, while a MIB supplies names, types, and meaning for those objects. The packet carries an operation plus identifiers and values; the MIB is not shipped inside every request. Polling and notifications therefore travel in opposite operational directions even though both support monitoring.
+
+Prefer SNMPv3 security features where supported and scope access to the minimum objects and managers required. Community strings in older versions are not equivalent to strong user authentication and privacy.
+
+A timeout may mean filtering, wrong address, missing agent, or mismatched security parameters. An error response proves the agent replied but could not perform the requested operation. A graph gap may also be a manager collection or OID-selection problem rather than device failure.
+
+**Quick check:** UDP 161 is normally the agent's request listener; UDP 162 is normally the manager's notification listener.
+
+<SectionContinue itemId="essential_services_section_monitoring_services" anchor="monitoring-services" />

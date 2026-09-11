@@ -6,8 +6,10 @@ import type { LessonSection } from "@/features/catalog/catalog.types";
 
 type LessonSectionNavigationProps = {
   sections?: LessonSection[];
-  presentation?: "list" | "dns-network-map";
+  presentation?: "list" | "dns-network-map" | "network-map";
   lockedReturnTo?: string;
+  mapGroups?: readonly { label: string; node: string; ids: readonly string[] }[];
+  panelId?: string;
 };
 
 const dnsGroups = [
@@ -49,44 +51,48 @@ function SectionItem({
   )}</li>;
 }
 
-export function LessonSectionNavigation({ sections, presentation = "list", lockedReturnTo }: LessonSectionNavigationProps) {
+export function LessonSectionNavigation({ sections, presentation = "list", lockedReturnTo, mapGroups, panelId = "lesson-page-contents" }: LessonSectionNavigationProps) {
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [revealCycle, setRevealCycle] = useState(0);
 
   if (!sections?.length) return null;
 
-  if (presentation === "dns-network-map") {
+  if (presentation === "dns-network-map" || presentation === "network-map") {
+    const groups = mapGroups ?? dnsGroups;
     const toggleMap = () => {
-      setIsMapOpen((isOpen) => {
-        if (!isOpen) setRevealCycle((cycle) => cycle + 1);
-        return !isOpen;
-      });
+      if (!isMapOpen) setRevealCycle((cycle) => cycle + 1);
+      setIsMapOpen(!isMapOpen);
     };
 
     return (
-      <nav aria-label="Page contents" className="lesson-section-navigation lesson-section-navigation--dns-map">
+      <nav aria-label="Page contents" className="lesson-section-navigation lesson-section-navigation--network-map">
         <button
-          aria-controls="dns-page-contents"
+          aria-controls={panelId}
           aria-expanded={isMapOpen}
-          className="dns-map__trigger"
+          className="dns-map__trigger network-map__trigger"
           onClick={toggleMap}
           type="button"
         >
             <strong>Page contents</strong>
-            <span className="dns-map__toggle" aria-hidden="true">⌄</span>
+          <span className="dns-map__toggle network-map__toggle" aria-hidden="true">⌄</span>
         </button>
         {isMapOpen ? (
-          <div className="dns-map__panel" id="dns-page-contents">
-          <div className="dns-map__route" key={revealCycle} aria-hidden="true">
-            <span className="dns-map__travelling-packet">◆</span>
-            {dnsGroups.map(({ node }, index) => <span key={node} className="dns-map__hop"><span>{node}</span>{index < dnsGroups.length - 1 ? <i /> : null}</span>)}
-          </div>
-          <div className="dns-map__groups">
-            {dnsGroups.map(({ label, ids }) => {
-              const grouped = sections.filter(({ id }) => (ids as readonly string[]).includes(id));
-              return grouped.length ? <section key={label}><h3>{label}</h3><ol>{grouped.map((section) => <SectionItem key={section.id} section={section} lockedReturnTo={lockedReturnTo} />)}</ol></section> : null;
-            })}
-          </div>
+          <div className="dns-map__panel network-map__panel" id={panelId}>
+            <div className="dns-map__route network-map__route" data-reveal-cycle={revealCycle} data-testid="network-map-route" key={revealCycle} aria-hidden="true">
+              <span className="dns-map__travelling-packet network-map__travelling-packet">◆</span>
+              {groups.map(({ node }, index) => (
+                <span key={node} className="dns-map__hop network-map__hop">
+                  <span>{node}</span>
+                  {index < groups.length - 1 ? <i /> : null}
+                </span>
+              ))}
+            </div>
+            <div className="dns-map__groups network-map__groups">
+              {groups.map(({ label, ids }) => {
+                const grouped = sections.filter(({ id }) => (ids as readonly string[]).includes(id));
+                return grouped.length ? <section key={label}><h3>{label}</h3><ol>{grouped.map((section) => <SectionItem key={section.id} section={section} lockedReturnTo={lockedReturnTo} />)}</ol></section> : null;
+              })}
+            </div>
           </div>
         ) : null}
       </nav>

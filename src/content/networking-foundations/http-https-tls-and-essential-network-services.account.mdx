@@ -1,0 +1,113 @@
+<h2 id="web-service-journey">Trace a web request and response</h2>
+
+Follow HTTP on 80, HTTPS on 443, and an alternate listener on 8080. At each step, connect the selected service port to the message fields and capture evidence.
+
+<ServiceJourneyPlayer service="web" progressItemId="essential_services_interactive_web" />
+
+<SectionContinue itemId="essential_services_section_web_service_journey" anchor="web-service-journey" />
+
+<h2 id="web-troubleshooting">Troubleshoot web-service evidence</h2>
+
+Separate transport failure from an application status response, then choose the next check supported by the evidence.
+
+<ServiceTroubleshootingLab service="web" progressItemId="essential_services_troubleshooting_web" />
+
+<KnowledgeCheck progressItemId="essential_services_check_web" question="A server returns HTTP 404. What has already succeeded?" options={["At least enough transport and HTTP processing to return a response", "The requested resource was found", "TLS certificate validation must have failed"]} correctIndex={0} explanation="A 404 is an application response. It proves the request reached an HTTP service capable of replying, while saying the selected resource was not found." />
+
+<SectionContinue itemId="essential_services_section_web_troubleshooting" anchor="web-troubleshooting" />
+
+<h2 id="remote-access-journey">Trace SSH and Telnet sessions</h2>
+
+Compare protected SSH on TCP 22 with clear-text Telnet on TCP 23, including the server identity and terminal negotiation evidence each exposes.
+
+<ServiceJourneyPlayer service="remote-access" progressItemId="essential_services_interactive_remote_access" />
+
+<SectionContinue itemId="essential_services_section_remote_access_journey" anchor="remote-access-journey" />
+
+<h2 id="remote-access-troubleshooting">Troubleshoot remote access</h2>
+
+Use connection results to distinguish routing or filtering, a closed listener, host-key concerns, and user-authentication policy.
+
+<ServiceTroubleshootingLab service="remote-access" progressItemId="essential_services_troubleshooting_remote_access" />
+
+<KnowledgeCheck progressItemId="essential_services_check_remote_access" question="Why is SSH preferred to Telnet for administration?" options={["SSH protects authentication and commands", "SSH does not use TCP", "Telnet cannot carry terminal text"]} correctIndex={0} explanation="SSH provides protected authentication and session channels. Telnet terminal traffic, including credentials, can be observed in clear text." />
+
+<SectionContinue itemId="essential_services_section_remote_access_troubleshooting" anchor="remote-access-troubleshooting" />
+
+<h2 id="email-journey">Trace submission, relay, and mailbox retrieval</h2>
+
+Follow SMTP submission and relay separately from IMAP and POP3 retrieval. Watch the role, port, command, and reply change across the complete mail path.
+
+<ServiceJourneyPlayer service="email" progressItemId="essential_services_interactive_email" />
+
+<SectionContinue itemId="essential_services_section_email_journey" anchor="email-journey" />
+
+<h2 id="email-troubleshooting">Troubleshoot email services</h2>
+
+Locate the failing leg before changing settings: submission, server relay, message acceptance, mailbox storage, or client retrieval.
+
+<ServiceTroubleshootingLab service="email" progressItemId="essential_services_troubleshooting_email" />
+
+<KnowledgeCheck progressItemId="essential_services_check_email" question="Which protocol normally synchronizes a server-held mailbox?" options={["IMAP", "SMTP relay", "NTP"]} correctIndex={0} explanation="IMAP synchronizes mailbox state. SMTP submits and relays messages; it is not the recipient's mailbox synchronization protocol." />
+
+<SectionContinue itemId="essential_services_section_email_troubleshooting" anchor="email-troubleshooting" />
+
+<h2 id="file-transfer-journey">Trace FTP, FTPS, and SFTP</h2>
+
+Observe FTP control and active/passive data connections, then compare FTPS protection with the different SSH-based SFTP design.
+
+<ServiceJourneyPlayer service="file-transfer" progressItemId="essential_services_interactive_file_transfer" />
+
+<SectionContinue itemId="essential_services_section_file_transfer_journey" anchor="file-transfer-journey" />
+
+<h2 id="file-transfer-troubleshooting">Troubleshoot file transfers</h2>
+
+Identify the actual protocol and determine whether authentication, the FTP control channel, or a separately negotiated data channel failed.
+
+<ServiceTroubleshootingLab service="file-transfer" progressItemId="essential_services_troubleshooting_file_transfer" />
+
+<KnowledgeCheck progressItemId="essential_services_check_file_transfer" question="What distinguishes SFTP from FTPS?" options={["SFTP is an SSH subsystem; FTPS applies TLS to FTP", "SFTP always uses UDP", "FTPS has no control channel"]} correctIndex={0} explanation="SFTP uses SSH protocol machinery, normally on TCP 22. FTPS retains FTP behavior and protects it with TLS." />
+
+<SectionContinue itemId="essential_services_section_file_transfer_troubleshooting" anchor="file-transfer-troubleshooting" />
+
+<h2 id="time-journey">Trace an NTP exchange</h2>
+
+Inspect T1 through T4 and connect each timestamp to the delay and offset evidence used for clock correction.
+
+<ServiceJourneyPlayer service="time" progressItemId="essential_services_interactive_time" />
+
+<SectionContinue itemId="essential_services_section_time_journey" anchor="time-journey" />
+
+<h2 id="time-troubleshooting">Troubleshoot time synchronization</h2>
+
+Distinguish UDP reachability from source-quality, excessive-offset, selection, and local clock-service problems.
+
+<ServiceTroubleshootingLab service="time" progressItemId="essential_services_troubleshooting_time" />
+
+<KnowledgeCheck progressItemId="essential_services_check_time" question="What do NTP's four timestamps help estimate?" options={["Round-trip delay and clock offset", "The server's TCP window", "A DNS record lifetime"]} correctIndex={0} explanation="The client combines its send/receive times with the server's receive/transmit times to estimate path delay and relative clock offset." />
+
+<SectionContinue itemId="essential_services_section_time_troubleshooting" anchor="time-troubleshooting" />
+
+<h2 id="monitoring-journey">Trace SNMP polling and notification</h2>
+
+Compare a manager poll to UDP 161 with Trap and Inform notifications toward UDP 162, while reading the operation and OID fields.
+
+<ServiceJourneyPlayer service="monitoring" progressItemId="essential_services_interactive_monitoring" />
+
+<SectionContinue itemId="essential_services_section_monitoring_journey" anchor="monitoring-journey" />
+
+<h2 id="monitoring-troubleshooting">Troubleshoot monitoring evidence</h2>
+
+Separate missing transport, mismatched security parameters, an unsupported OID, an agent error, and manager-side collection trouble.
+
+<ServiceTroubleshootingLab service="monitoring" progressItemId="essential_services_troubleshooting_monitoring" />
+
+<KnowledgeCheck progressItemId="essential_services_check_monitoring" question="Where are SNMP notifications normally sent?" options={["To the manager's UDP 162 listener", "To the agent's TCP 161 listener", "To the DNS resolver on UDP 53"]} correctIndex={0} explanation="Agents normally send Trap or Inform notifications to the manager on UDP 162; managers normally poll agents on UDP 161." />
+
+<SectionContinue itemId="essential_services_section_monitoring_troubleshooting" anchor="monitoring-troubleshooting" />
+
+<h2 id="knowledge-check-summary">Essential services checkpoint</h2>
+
+Match every symptom to a specific connection leg, transport, destination port, message field, and response. A familiar port is a strong clue, but the observed exchange is the evidence.
+
+<SectionContinue itemId="essential_services_section_knowledge_check_summary" anchor="knowledge-check-summary" />

@@ -1,0 +1,83 @@
+<h2 id="web-capture-analysis">Web-service Wireshark analysis</h2>
+
+Correlate the TCP conversation with the HTTP request line, `Host`, response status, framing headers, and proxy addresses. Decide whether a cache served the representation and whether the capture point is before or after a reverse proxy. For HTTPS, use connection metadata only as introductory evidence; encrypted HTTP and detailed TLS mechanics are treated in their dedicated lessons.
+
+<CaptureAnalysisLab service="web" />
+
+<h2 id="web-rfc-validation">Web-service RFC validation</h2>
+
+Apply HTTP semantics to framing and intermediary behavior. Distinguish a valid application response from a transport success, and explain how ambiguous message length can affect a reused connection.
+
+<RfcValidationLab service="web" />
+
+<SectionContinue itemId="essential_services_pro_web" anchor="web-rfc-validation" />
+
+<h2 id="remote-access-capture-analysis">Remote-access Wireshark analysis</h2>
+
+Identify the SSH protocol banner, negotiated direction, and host-key evidence without claiming that TCP 22 alone authenticates the server. Contrast this with readable Telnet negotiation and payload, and determine whether failure occurs before identification, during negotiation, or at user authentication.
+
+<CaptureAnalysisLab service="remote-access" />
+
+<h2 id="remote-access-rfc-validation">Remote-access RFC validation</h2>
+
+Evaluate SSH transport expectations around identification and server authentication. Explain why blindly accepting a changed host key defeats a critical identity check even when encryption is present.
+
+<RfcValidationLab service="remote-access" />
+
+<SectionContinue itemId="essential_services_pro_remote_access" anchor="remote-access-rfc-validation" />
+
+<h2 id="email-capture-analysis">Email-service Wireshark analysis</h2>
+
+Reconstruct SMTP envelope commands and replies, then keep that state separate from message content and later IMAP or POP3 retrieval. Identify whether the trace shows client submission, server relay, mailbox selection, synchronization, or download, and note where protection begins.
+
+<CaptureAnalysisLab service="email" />
+
+<h2 id="email-rfc-validation">Email-service RFC validation</h2>
+
+Classify reply codes by stage and persistence. Determine whether a sender should retry, correct the envelope, or investigate a later mailbox-access problem rather than treating every mail symptom as one SMTP failure.
+
+<RfcValidationLab service="email" />
+
+<SectionContinue itemId="essential_services_pro_email" anchor="email-rfc-validation" />
+
+<h2 id="file-transfer-capture-analysis">File-transfer Wireshark analysis</h2>
+
+Pair the FTP control dialogue with its active or passive data connection. Use direction, the `PORT` or `PASV` exchange, and negotiated endpoints to locate a NAT or firewall failure. Confirm whether the trace is FTP/FTPS or the distinct SFTP subsystem before interpreting ports.
+
+<CaptureAnalysisLab service="file-transfer" />
+
+<h2 id="file-transfer-rfc-validation">File-transfer RFC validation</h2>
+
+Validate the relationship between control state and transfer state. Explain why a successful login cannot prove that a separately created data connection is reachable, especially through address translation.
+
+<RfcValidationLab service="file-transfer" />
+
+<SectionContinue itemId="essential_services_pro_file_transfer" anchor="file-transfer-rfc-validation" />
+
+<h2 id="time-capture-analysis">NTP Wireshark analysis</h2>
+
+Read origin, receive, transmit, and destination timestamps as one exchange. Calculate what the trace can support about delay and offset, then inspect stratum, leap state, and reference information before declaring the source suitable.
+
+<CaptureAnalysisLab service="time" />
+
+<h2 id="time-rfc-validation">NTP RFC validation</h2>
+
+Apply clock-selection reasoning rather than choosing the first UDP 123 reply. Discuss asymmetric delay, implausible offset, unsynchronized sources, and why accurate local time is operationally more than a cosmetic setting.
+
+<RfcValidationLab service="time" />
+
+<SectionContinue itemId="essential_services_pro_time" anchor="time-rfc-validation" />
+
+<h2 id="monitoring-capture-analysis">SNMP Wireshark analysis</h2>
+
+Match request IDs, operations, error fields, OIDs, and values across polling and notifications. Distinguish a Trap from an acknowledged Inform, and determine whether a missing graph point originates at the agent, network, security model, OID selection, or manager.
+
+<CaptureAnalysisLab service="monitoring" />
+
+<h2 id="monitoring-rfc-validation">SNMP RFC validation</h2>
+
+Validate operation direction and response rules, then discuss SNMPv3 identity, integrity, privacy, engine context, and replay protection at an operational level. Use the MIB to interpret an OID without claiming the MIB travelled in the packet.
+
+<RfcValidationLab service="monitoring" />
+
+<SectionContinue itemId="essential_services_pro_monitoring" anchor="monitoring-rfc-validation" />

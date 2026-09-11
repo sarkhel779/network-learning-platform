@@ -224,7 +224,7 @@ a { color: inherit; }
 .lesson-section-navigation__locked .access-label, .lesson-section-navigation__status { font-size: 0.8rem; }
 .lesson-section-navigation__status { color: var(--muted); }
 .lesson-section-navigation__locked p { flex-basis: 100%; margin: 0; color: var(--muted); font-size: 0.875rem; }
-.lesson-section-navigation--dns-map { padding: 0; overflow: hidden; }
+.lesson-section-navigation--dns-map, .lesson-section-navigation--network-map { min-width: 0; padding: 0; overflow: hidden; }
 .dns-map__trigger { display: inline-grid; grid-template-columns: auto auto; align-items: center; gap: .65rem; min-block-size: 44px; margin: .75rem 1rem; padding: .6rem .9rem; border: 1px solid color-mix(in srgb, var(--accent) 70%, var(--border)); border-radius: .5rem; background: color-mix(in srgb, var(--accent) 14%, var(--background)); color: var(--foreground); box-shadow: 0 .2rem .7rem rgb(0 0 0 / 12%); font: inherit; text-align: start; cursor: pointer; transition: border-color 180ms ease, background 180ms ease, transform 180ms ease; }
 .dns-map__trigger:hover, .dns-map__trigger:focus-visible, .dns-map__trigger[aria-expanded="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 23%, var(--background)); }
 .dns-map__trigger:hover { transform: translateY(-1px); }
@@ -246,13 +246,17 @@ a { color: inherit; }
 .dns-map__groups section { min-width: 0; padding-block-start: 1rem; }
 .dns-map__groups h3 { margin: 0 0 .5rem; font-size: 1rem; }
 .lesson-section-navigation--dns-map .dns-map__groups ol { display: grid; gap: .4rem; margin: 0; padding-inline-start: 1.25rem; }
-@media (max-width: 35rem) { .dns-map__groups { grid-template-columns: minmax(0, 1fr); } }
+.lesson-section-navigation--network-map .network-map__route { flex-wrap: wrap; row-gap: .65rem; }
+.lesson-section-navigation--network-map .network-map__hop { min-width: 0; }
+.lesson-section-navigation--network-map .network-map__groups ol { display: grid; gap: .4rem; margin: 0; padding-inline-start: 1.25rem; }
+.network-map__groups section { min-width: 0; }
+@media (max-width: 35rem) { .dns-map__groups, .network-map__groups { grid-template-columns: minmax(0, 1fr); } .network-map__route { align-items: stretch; flex-direction: column; } .network-map__hop { width: 100%; } .network-map__hop > i { min-block-size: .75rem; inline-size: 2px; margin-inline-start: 1rem; } }
 .lesson-section-navigation__locked-link { padding: .2rem .3rem; border-radius: .35rem; color: var(--muted); text-decoration: none; }
 .lesson-section-navigation__locked-link:hover, .lesson-section-navigation__locked-link:focus-visible { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--foreground); }
 .lesson-section-navigation__locked-link > span:first-child { text-decoration: underline; text-decoration-style: dotted; text-underline-offset: .2em; }
 @keyframes dns-packet-route { 0% { inset-inline-start: 1rem; opacity: 0; transform: scale(.75); } 10% { opacity: 1; } 88% { opacity: 1; } 100% { inset-inline-start: calc(100% - 2rem); opacity: 0; transform: scale(1); } }
 @keyframes dns-node-reveal { from { opacity: .45; transform: translateY(.25rem); } to { opacity: 1; transform: translateY(0); } }
-@media (prefers-reduced-motion: reduce) { .dns-map__trigger, .dns-map__toggle { transition: none; } .dns-map__panel .dns-map__travelling-packet, .dns-map__panel .dns-map__hop > span { animation: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .dns-map__trigger, .dns-map__toggle, .network-map__trigger, .network-map__toggle { transition: none; } .dns-map__panel .dns-map__travelling-packet, .dns-map__panel .dns-map__hop > span, .network-map__panel .network-map__travelling-packet, .network-map__panel .network-map__hop > span { animation: none; opacity: 1; } }
 .access-card { min-width: 0; padding: clamp(1rem, 4vw, 1.5rem); overflow-wrap: anywhere; border: 1px solid var(--border); border-inline-start: 0.35rem solid var(--accent); border-radius: 0.5rem; background: color-mix(in srgb, var(--accent) 6%, var(--background)); }
 .access-card h2 { margin-top: 0; }
 .access-card > p:not(.eyebrow) { color: var(--muted); }
@@ -963,3 +967,27 @@ h1 {
 .dns-troubleshooting-player [role="status"], .dns-rfc-check [role="status"] { min-width: 0; padding: .75rem; border-inline-start: .35rem solid var(--accent); background: var(--background); }
 @media (max-width: 35rem) { .dns-role-list { grid-template-columns: minmax(0, 1fr); } .dns-player fieldset label, .dns-troubleshooting-player fieldset label, .dns-rfc-check fieldset label { width: 100%; } .dns-player .transport-player-controls button, .dns-player .transport-player-controls label { flex: 1 1 8rem; } }
 @media (prefers-reduced-motion: reduce) { .dns-player * { animation: none !important; transition: none !important; } }
+
+.service-player, .service-troubleshooting-lab, .capture-analysis-lab, .rfc-validation-lab { display: grid; gap: 1rem; min-width: 0; max-width: 100%; margin: 2rem 0; padding: clamp(.8rem, 2.5vw, 1.4rem); overflow-wrap: anywhere; border: 1px solid var(--border); border-radius: .75rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
+.service-player > h3, .service-player > p, .service-troubleshooting-lab > h3, .capture-analysis-lab > h3, .rfc-validation-lab > h3 { margin-block: 0; }
+.service-topology { position: relative; display: grid; grid-template-columns: minmax(7rem, 1fr) auto minmax(8rem, 2fr) minmax(7rem, 1fr); align-items: center; gap: .65rem; min-width: 0; max-width: 100%; padding: 1rem; border: 2px dashed var(--accent); border-radius: .7rem; background: var(--background); }
+.service-topology__endpoint, .service-topology__service { min-width: 0; padding: .65rem; border: 1px solid var(--border); border-radius: .55rem; text-align: center; font-weight: 800; overflow-wrap: anywhere; }
+.service-topology__packet { color: var(--accent); filter: drop-shadow(0 0 .25rem color-mix(in srgb, var(--accent) 70%, transparent)); animation: service-packet-pulse 1.2s ease-in-out infinite alternate; }
+.service-topology__link { min-width: 0; color: var(--muted); text-align: center; overflow-wrap: anywhere; }
+.service-topology__service { grid-column: 1 / -1; justify-self: center; border-color: var(--accent); }
+.port-transport-panel { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; min-width: 0; padding: .75rem; border-inline-start: .35rem solid var(--accent); background: var(--background); }
+.service-message-inspector { display: grid; gap: .75rem; min-width: 0; max-width: 100%; }
+.service-message-inspector h4 { margin: 0; }
+.service-table-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: .6rem; }
+.service-table-scroll table { width: 100%; min-width: 38rem; border-collapse: collapse; }
+.service-table-scroll th, .service-table-scroll td { padding: .6rem; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+.service-player .transport-player-controls { display: flex; flex-wrap: wrap; gap: .65rem; min-width: 0; }
+.service-player .transport-player-controls button, .service-player .transport-player-controls select, .service-troubleshooting-lab button, .capture-analysis-lab button, .rfc-validation-lab button { min-block-size: 44px; }
+.service-troubleshooting-lab fieldset, .capture-analysis-lab fieldset, .rfc-validation-lab fieldset { display: flex; flex-wrap: wrap; gap: .55rem; min-width: 0; margin: 0; padding: .75rem; border: 1px solid var(--border); border-radius: .6rem; }
+.service-troubleshooting-lab fieldset label, .capture-analysis-lab fieldset label, .rfc-validation-lab fieldset label { display: inline-flex; align-items: center; gap: .45rem; min-block-size: 44px; padding: .5rem .7rem; }
+.service-troubleshooting-lab > label { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.service-troubleshooting-lab select { min-block-size: 44px; max-width: 100%; font: inherit; }
+.service-troubleshooting-lab__feedback, .service-troubleshooting-lab [role="status"], .capture-analysis-lab [role="status"], .rfc-validation-lab [role="status"] { min-width: 0; padding: .75rem; border-inline-start: .35rem solid var(--accent); background: var(--background); }
+@keyframes service-packet-pulse { from { opacity: .5; transform: scale(.8); } to { opacity: 1; transform: scale(1.15); } }
+@media (max-width: 35rem) { .service-topology { grid-template-columns: minmax(0, 1fr); } .service-topology__service { grid-column: 1; } .service-troubleshooting-lab fieldset label, .capture-analysis-lab fieldset label, .rfc-validation-lab fieldset label { width: 100%; } .service-player .transport-player-controls button, .service-player .transport-player-controls label { flex: 1 1 8rem; } }
+@media (prefers-reduced-motion: reduce) { .service-player * { animation: none !important; transition: none !important; } .service-troubleshooting-lab *, .capture-analysis-lab *, .rfc-validation-lab * { animation: none !important; transition: none !important; } }

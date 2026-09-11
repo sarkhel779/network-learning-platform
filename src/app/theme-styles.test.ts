@@ -87,6 +87,15 @@ describe("system theme and table styles", () => {
     expect(css).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.dns-player \*\s*\{[^}]*animation:\s*none\s*!important/);
   });
 
+  it("keeps essential-service players and evidence inside mobile lesson width", () => {
+    expect(css).toMatch(/\.service-player[^\{]*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%/);
+    expect(css).toMatch(/\.service-topology\s*\{[^}]*grid-template-columns:/);
+    expect(css).toMatch(/\.service-table-scroll\s*\{[^}]*max-width:\s*100%[^}]*overflow-x:\s*auto/);
+    expect(css).toMatch(/\.service-troubleshooting-lab[^\{]*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%/);
+    expect(css).toMatch(/@media\s*\(max-width:\s*35rem\)[\s\S]*\.service-topology\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
+    expect(css).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.service-player \*\s*\{[^}]*animation:\s*none\s*!important/);
+  });
+
   it("renders shared player controls with the established outlined appearance", () => {
     const style = document.createElement("style");
     style.textContent = css;
