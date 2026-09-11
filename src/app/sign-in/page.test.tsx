@@ -1,10 +1,13 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import SignInPage from "./page";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.unstubAllEnvs();
+});
 
 describe("sign-in page", () => {
   it.each([
@@ -33,6 +36,7 @@ describe("sign-in page", () => {
   });
 
   it("offers Google and email passwordless sign-in without collecting a password", async () => {
+    vi.stubEnv("NEXT_PUBLIC_GOOGLE_AUTH_ENABLED", "true");
     const page = await SignInPage({ searchParams: Promise.resolve({}) });
     const { container } = render(page);
     expect(screen.getByRole("heading", { level: 1, name: "Sign in to Packetsecrets" })).toBeVisible();
@@ -60,5 +64,29 @@ describe("sign-in page", () => {
     expect(screen.getByRole("alert")).toHaveTextContent(
       "Your secure sign-in could not be completed. Please try again.",
     );
+  });
+
+  it("explains when a one-time link is expired and keeps the retry destination", async () => {
+    render(await SignInPage({
+      searchParams: Promise.resolve({
+        error: "link_expired",
+        returnTo: "/paths/networking-foundations",
+      }),
+    }));
+
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "This sign-in link is invalid, expired, or was already used. Request a new link below.",
+    );
+    expect(screen.getByRole("link", { name: "Back to your pathway" }))
+      .toHaveAttribute("href", "/paths/networking-foundations");
+  });
+
+  it("hides unavailable Google authentication while keeping email sign-in", async () => {
+    vi.stubEnv("NEXT_PUBLIC_GOOGLE_AUTH_ENABLED", "false");
+    render(await SignInPage({ searchParams: Promise.resolve({}) }));
+
+    expect(screen.queryByRole("button", { name: "Continue with Google" }))
+      .not.toBeInTheDocument();
+    expect(screen.getByLabelText("Email address")).toBeVisible();
   });
 });
