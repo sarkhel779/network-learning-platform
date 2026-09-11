@@ -6,24 +6,26 @@ export default function PricingPage() {
       <p className="eyebrow">Learning options</p>
       <h1>Pricing</h1>
       <p className="summary">
-        Start with the published free lessons, then choose the depth that fits your learning goals.
+        Learn the foundations now. Pro learning is still being prepared.
       </p>
       <div className="information-grid">
         <section>
-          <h2>Free lessons</h2>
-          <p>Learn the core concepts through the public beginner lessons at no cost.</p>
+          <h2>Free learning</h2>
+          <p>
+            Read the public introductions without an account, then create a free account to continue
+            the foundational lessons and save your progress.
+          </p>
         </section>
         <section>
-          <h2>Individual premium modules</h2>
-          <p>Focus on one deeper networking topic when those modules become available.</p>
-        </section>
-        <section>
-          <h2>Complete-pathway access</h2>
-          <p>Follow the full sequence of deeper modules when the complete pathway opens.</p>
+          <h2>Founding Pro waitlist</h2>
+          <p>
+            Register your interest in deeper RFC, Wireshark, troubleshooting, and interview-focused
+            material. Joining the waitlist does not purchase or unlock Pro access.
+          </p>
         </section>
       </div>
-      <p><strong>Premium modules are opening after the learning preview.</strong></p>
-      <p>Questions about the learning options? <Link href="/contact">Contact the instructor</Link>.</p>
+      <p><strong>No checkout is available and no payment will be taken.</strong></p>
+      <p><Link href="/contact">Join the Pro Member Waitlist</Link>.</p>
     </main>
   );
 }

@@ -13,6 +13,15 @@ export default function TermsPage() {
         Original lesson text and presentation belong to their respective creator. Do not republish
         substantial portions as your own work without permission.
       </p>
+      <p>
+        A passwordless account lets you access free-account lessons and save learning progress.
+        Keep control of the email account used to sign in, and do not attempt to access another
+        learner&apos;s account or interfere with the service.
+      </p>
+      <p>
+        Pro access is not currently for sale. Joining an announced waitlist does not create a paid
+        entitlement, guarantee a launch date, or authorize a charge.
+      </p>
     </main>
   );
 }
