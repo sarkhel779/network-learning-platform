@@ -1,4 +1,4 @@
-import { natScenarioSchema, type NatScenario, type NatTuple } from "./nat-scenario.schema";
+import { natScenarioSchema, type NatScenario, type NatScenarioInput, type NatTuple } from "./nat-scenario.schema";
 
 const clientRequest: NatTuple = {
   protocol: "tcp",
@@ -18,7 +18,7 @@ const patEntry = {
   state: "active" as const,
 };
 
-function scenario(input: NatScenario): NatScenario {
+function scenario(input: NatScenarioInput): NatScenario {
   return natScenarioSchema.parse(input);
 }
 

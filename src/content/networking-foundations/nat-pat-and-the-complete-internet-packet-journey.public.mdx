@@ -54,6 +54,4 @@ NAT conserves public IPv4 space and hides internal addressing details, but it ad
 
 <h2 id="public-knowledge-check">Check the packet path</h2>
 
-<KnowledgeCheck progressItemId="nat_pat_check_public_1" question="Which value identifies the private client before translation?" options={["Inside local", "Inside global", "Outside global"]} correctIndex={0} explanation="Inside local is the inside endpoint as addressed on the private network." />
-
-<KnowledgeCheck progressItemId="nat_pat_check_public_2" question="Why can many PAT sessions share one public IPv4 address?" options={["Each flow receives a unique translated transport tuple", "Every client uses the same source port", "PAT removes TCP state"]} correctIndex={0} explanation="The translator combines the public address with distinct protocol and port mappings so return packets can be demultiplexed." />
+Before opening the account practice, trace these two questions using the tuple examples above: Which value identifies the private client before translation? What makes each PAT flow unique when many clients share one public IPv4 address?

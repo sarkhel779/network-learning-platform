@@ -327,6 +327,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "http-https-tls-and-essential-network-services",
       },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "nat-pat-and-the-complete-internet-packet-journey",
+      },
     ]);
   });
 

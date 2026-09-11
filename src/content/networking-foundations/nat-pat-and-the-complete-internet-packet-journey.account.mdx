@@ -16,6 +16,10 @@ Advance one packet at a time and keep the active link, packet tuple, and transla
 
 <h2 id="account-knowledge-checks">Account knowledge checks</h2>
 
+<KnowledgeCheck progressItemId="nat_pat_check_public_1" question="Which value identifies the private client before translation?" options={["Inside local", "Inside global", "Outside global"]} correctIndex={0} explanation="Inside local is the inside endpoint as addressed on the private network." />
+
+<KnowledgeCheck progressItemId="nat_pat_check_public_2" question="Why can many PAT sessions share one public IPv4 address?" options={["Each flow receives a unique translated transport tuple", "Every client uses the same source port", "PAT removes TCP state"]} correctIndex={0} explanation="The translator combines the public address with distinct protocol and port mappings so return packets can be demultiplexed." />
+
 <KnowledgeCheck progressItemId="nat_pat_check_account_1" question="A return packet arrives after its dynamic entry expired. What happens first?" options={["The gateway has no matching reverse owner", "The gateway recreates the old port automatically", "The server changes the destination"]} correctIndex={0} explanation="Without live state, the translator cannot determine the private socket that owned the public tuple." />
 
 <KnowledgeCheck progressItemId="nat_pat_check_account_2" question="What prevents two PAT flows from owning an identical public tuple?" options={["Unique translated port allocation", "Duplicate private IP addresses", "Disabling transport checksums"]} correctIndex={0} explanation="PAT selects a unique protocol/address/port combination for each simultaneously active mapping." />

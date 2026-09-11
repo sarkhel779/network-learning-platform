@@ -21,7 +21,7 @@ describe("NAT, PAT and the complete Internet packet journey content", () => {
     expect(lesson).toContain('progressItemId="nat_pat_interactive_journey"');
     expect(lesson).toContain('<NatMappingLab progressItemId="nat_pat_mapping_lab" />');
     expect(lesson).toContain('<NatTroubleshootingLab progressItemId="nat_pat_troubleshooting_lab" />');
-    expect(lesson.match(/<KnowledgeCheck\b/g)).toHaveLength(3);
+    expect(lesson.match(/<KnowledgeCheck\b/g)).toHaveLength(5);
     expect(lesson).not.toMatch(/NatCaptureAnalysisLab|hairpinBidirectionalJourney/);
   });
 

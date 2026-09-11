@@ -68,3 +68,4 @@ export type NatTranslation = z.infer<typeof natTranslationSchema>;
 export type NatTableEntry = z.infer<typeof natTableEntrySchema>;
 export type NatStep = z.infer<typeof natStepSchema>;
 export type NatScenario = z.infer<typeof natScenarioSchema>;
+export type NatScenarioInput = z.input<typeof natScenarioSchema>;
