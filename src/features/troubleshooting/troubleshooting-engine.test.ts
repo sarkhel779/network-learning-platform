@@ -48,7 +48,7 @@ describe("troubleshooting incident engine", () => {
     expect(() => reduceIncident(state, { type: "run_restoration", checkId: "verify-http" }, guidedBranchPortalIncident)).toThrow(/remediation/i);
   });
 
-  it("records incorrect attempts and does not charge repeated tests twice", () => {
+  it("records repeated tests as genuine revisable attempts", () => {
     let state = createIncidentState(guidedBranchPortalIncident);
     state = reduceIncident(state, { type: "confirm_scope" }, guidedBranchPortalIncident);
     const action = { type: "run_test" as const, hypothesisId: "guided-route", predictionId: "unexpected-next-hop", testId: "inspect-vlan", confidence: "overconfident" as const };
@@ -59,8 +59,8 @@ describe("troubleshooting incident engine", () => {
     expect(state.elapsedMinutes).toBe(2);
 
     const repeated = reduceIncident(state, action, guidedBranchPortalIncident);
-    expect(repeated.attempts).toHaveLength(1);
-    expect(repeated.elapsedMinutes).toBe(2);
+    expect(repeated.attempts).toHaveLength(2);
+    expect(repeated.elapsedMinutes).toBe(4);
   });
 
   it("requires every restoration layer before closing", () => {

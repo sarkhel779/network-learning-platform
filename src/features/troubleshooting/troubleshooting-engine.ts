@@ -67,8 +67,6 @@ function runScenarioTest(state: IncidentState, action: Extract<IncidentAction, {
   const prediction = hypothesis?.predictions.find(({ id }) => id === action.predictionId);
   if (!test || !hypothesis || !prediction) throw new Error("Unknown troubleshooting selection.");
   if (test.phase === "restoration" || (test.expectedFaultId && !state.exposedFaultIds.includes(test.expectedFaultId))) throw new Error("This test is not available in the current incident phase.");
-  const duplicate = state.attempts.some((attempt) => attempt.hypothesisId === action.hypothesisId && attempt.predictionId === action.predictionId && attempt.testId === action.testId);
-  if (duplicate) return state;
   const hypothesisCorrect = hypothesis.valid && state.exposedFaultIds.includes(hypothesis.faultId);
   const predictionCorrect = prediction.supportingTestIds.includes(test.id);
   const correct = test.expectedFaultId === hypothesis.faultId && hypothesisCorrect && predictionCorrect;

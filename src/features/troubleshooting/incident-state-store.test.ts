@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createIncidentState } from "./troubleshooting-engine";
+import { createIncidentState, reduceIncident } from "./troubleshooting-engine";
 import { createIncidentStateStore } from "./incident-state-store";
 import { guidedBranchPortalIncident } from "./troubleshooting-scenarios";
 
@@ -53,7 +53,21 @@ describe("incident state store", () => {
   it("rejects a forged closed snapshot that bypasses the incident workflow", () => {
     const storage = memoryStorage();
     const store = createIncidentStateStore(storage, "learner-1:attempt-1", guidedBranchPortalIncident);
-    store.save({ ...createIncidentState(guidedBranchPortalIncident), closed: true });
+    store.save({
+      ...createIncidentState(guidedBranchPortalIncident), scoped: true, closed: true,
+      correctedFaultIds: guidedBranchPortalIncident.faults.map(({ id }) => id),
+      restorationResults: Object.fromEntries(guidedBranchPortalIncident.restorationChecks.map(({ id }) => [id, true])),
+      restorationEvidence: Object.fromEntries(guidedBranchPortalIncident.restorationChecks.map(({ id }) => [id, { kind: "observation", title: "Forged", body: "Forged pass" }])),
+    });
     expect(store.load()).toBeNull();
+  });
+
+  it("restores a legitimate incorrect attempt against a future-fault hypothesis", () => {
+    const storage = memoryStorage();
+    const store = createIncidentStateStore(storage, "learner-1:attempt-1", guidedBranchPortalIncident);
+    let state = reduceIncident(createIncidentState(guidedBranchPortalIncident), { type: "confirm_scope" }, guidedBranchPortalIncident);
+    state = reduceIncident(state, { type: "run_test", hypothesisId: "guided-route", predictionId: "unexpected-next-hop", testId: "inspect-addressing", confidence: "calibrated" }, guidedBranchPortalIncident);
+    store.save(state);
+    expect(store.load()).toEqual(state);
   });
 });

@@ -18,14 +18,15 @@ function isIncidentState(value: unknown, scenario: TroubleshootingScenario): val
     const hypothesis = typeof attempt.hypothesisId === "string" ? hypotheses.get(attempt.hypothesisId) : undefined;
     const prediction = typeof attempt.predictionId === "string" ? hypothesis?.predictions.find(({ id }) => id === attempt.predictionId) : undefined;
     const test = typeof attempt.testId === "string" ? tests.get(attempt.testId) : undefined;
-    const hypothesisCorrect = Boolean(hypothesis?.valid);
+    const hypothesisCorrectPossible = Boolean(hypothesis?.valid);
     const predictionCorrect = Boolean(prediction && test && prediction.supportingTestIds.includes(test.id));
-    const correct = Boolean(hypothesis && test && test.expectedFaultId === hypothesis.faultId && hypothesisCorrect && predictionCorrect);
+    const hypothesisCorrectValid = attempt.hypothesisCorrect === false || (attempt.hypothesisCorrect === true && hypothesisCorrectPossible);
+    const correct = Boolean(hypothesis && test && test.expectedFaultId === hypothesis.faultId && attempt.hypothesisCorrect && predictionCorrect);
     return Boolean(hypothesis)
       && typeof attempt.predictionId === "string" && hypothesis!.predictions.some(({ id }) => id === attempt.predictionId)
       && typeof attempt.testId === "string" && Boolean(test)
       && ["underconfident", "calibrated", "overconfident"].includes(attempt.confidence ?? "")
-      && attempt.hypothesisCorrect === hypothesisCorrect && attempt.predictionCorrect === predictionCorrect && attempt.correct === correct
+      && hypothesisCorrectValid && attempt.predictionCorrect === predictionCorrect && attempt.correct === correct
       && Number.isInteger(attempt.timelineIndex) && (attempt.timelineIndex ?? -1) >= 0
       && Array.isArray(state.timeline) && attempt.timelineIndex! < state.timeline.length && state.timeline[attempt.timelineIndex!]?.kind === "test";
   });
@@ -45,7 +46,12 @@ function isIncidentState(value: unknown, scenario: TroubleshootingScenario): val
   }) && new Set(conclusions.map(({ attemptIndex }) => attemptIndex)).size === conclusions.length;
   const derivedRootCauses = conclusionsValid ? new Set(conclusions.flatMap((item) => item.correct && item.conclusion === "supported" ? [hypotheses.get(attempts[item.attemptIndex]!.hypothesisId)!.faultId] : [])) : new Set<string>();
   const identifiedRootCausesValid = Array.isArray(state.identifiedRootCauseIds) && state.identifiedRootCauseIds.length === derivedRootCauses.size && state.identifiedRootCauseIds.every((id) => typeof id === "string" && derivedRootCauses.has(id));
-  const closedValid = state.closed !== true || (state.scoped === true && scenario.faults.every(({ id }) => state.correctedFaultIds?.includes(id)) && scenario.restorationChecks.every(({ id }) => state.restorationResults?.[id] === true));
+  const supportedFaults = new Set(conclusions.flatMap((item) => item.correct && item.conclusion === "supported" ? [hypotheses.get(attempts[item.attemptIndex]!.hypothesisId)!.faultId] : []));
+  const remediatedFaults = new Set(scenario.remediations.filter(({ label }) => state.timeline?.some((entry) => entry.kind === "remediation" && entry.label === label && entry.result === "correct")).map(({ faultId }) => faultId));
+  const restorationValid = scenario.restorationChecks.every(({ id, label }) => state.restorationResults?.[id] === true && evidenceValid(state.restorationEvidence?.[id]) && state.timeline?.some((entry) => entry.kind === "restoration" && entry.label === label && entry.result === "passed"));
+  const closedValid = state.closed !== true || (state.scoped === true
+    && scenario.faults.every(({ id }) => state.correctedFaultIds?.includes(id) === true && supportedFaults.has(id) && remediatedFaults.has(id))
+    && restorationValid && state.timeline?.some((entry) => entry.kind === "closure" && entry.result === "complete") === true);
   return typeof state.scoped === "boolean"
     && Array.isArray(state.exposedFaultIds) && state.exposedFaultIds.every((id) => typeof id === "string" && faultIds.has(id))
     && Array.isArray(state.correctedFaultIds) && state.correctedFaultIds.every((id) => typeof id === "string" && faultIds.has(id))
