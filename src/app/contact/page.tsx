@@ -1,12 +1,16 @@
+import Link from "next/link";
+
 export default function ContactPage() {
   return (
     <main className="informational-page" id="main-content">
-      <p className="eyebrow">Get in touch</p>
-      <h1>Contact</h1>
-      <p className="summary">Ask a question about the lessons or upcoming learning options.</p>
+      <p className="eyebrow">Coming next</p>
+      <h1>Founding Pro waitlist</h1>
+      <p className="summary">Pro learning is being shaped around real learner needs.</p>
       <p>
-        Email <a href="mailto:sarkhel779@gmail.com">sarkhel779@gmail.com</a>.
+        The dedicated waitlist form is being prepared. For now, create a free account and continue
+        learning; no payment is required and no Pro entitlement is being sold.
       </p>
+      <p><Link href="/sign-in">Create or open your free account</Link>.</p>
     </main>
   );
 }
