@@ -8,6 +8,7 @@
   --border: #2a3a50;
   --content-width: 72rem;
   --focus-ring: #72f4d6;
+  --paragraph-color: #8b98b8;
 }
 
 .ipv6-address-explorer {
@@ -78,7 +79,7 @@
   --focus-ring: #72f4d6;
 }
 
-:root[data-theme="light"] { color-scheme: light; --background: #f8fafc; --foreground: #172033; --muted: #526077; --accent: #087e69; --accent-foreground: #fff; --border: #d9e1ee; --focus-ring: #0b806b; }
+:root[data-theme="light"] { color-scheme: light; --background: #f8fafc; --foreground: #172033; --muted: #526077; --accent: #087e69; --accent-foreground: #fff; --border: #d9e1ee; --focus-ring: #0b806b; --paragraph-color: #526077; }
 
 * {
   box-sizing: border-box;
@@ -1193,3 +1194,7 @@ a,a:hover,a:focus-visible,a *,a:hover *{text-decoration:none!important}
 .sample-lab__tabs{display:flex;gap:.2rem;padding:.35rem .6rem 0;overflow-x:auto;border-bottom:1px solid #30435d}.sample-lab__tabs button{min-height:3rem;padding:.6rem .85rem;flex:none;border:0;border-bottom:3px solid transparent;background:transparent;color:#a8bdd3;font:inherit;font-weight:750;cursor:pointer}.sample-lab__tabs button[aria-selected="true"]{border-bottom-color:#23d6a8;color:#46ebc6}.sample-lab__tabs button:hover{color:#fff}.sample-lab__tabs button:focus-visible,.sample-lab button:focus-visible,.sample-lab input:focus-visible{outline:3px solid #69ecda;outline-offset:2px}
 .sample-lab__panel{min-height:15.5rem;padding:1.35rem;overflow-x:auto}.sample-lab__topology{display:flex;align-items:center;min-width:37rem;min-height:12rem}.sample-lab__segment{display:flex;align-items:center;flex:1;min-width:0}.sample-lab__segment:last-child{flex:0}.sample-lab__device{display:grid;justify-items:center;gap:.25rem;min-width:7rem;color:#a9bfd1;text-align:center}.sample-lab__device--active{color:#f5ffff}.sample-lab__device svg{width:3.6rem;height:3.6rem;fill:none;stroke:#529bff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px #3a8cff50)}.sample-lab__device--active svg{stroke:#58e4cb}.sample-lab__device strong{font-size:.85rem}.sample-lab__device small{font:.72rem/1.2 monospace;color:#8ca6bc}.sample-lab__link{position:relative;height:2px;min-width:2rem;flex:1;background:repeating-linear-gradient(90deg,#314960 0 7px,transparent 7px 13px)}.sample-lab__link--active{background:repeating-linear-gradient(90deg,#25dcb6 0 7px,transparent 7px 13px)}.sample-lab__packet{position:absolute;top:-.8rem;left:0;display:grid;place-items:center;width:1.7rem;height:1.7rem;border:1px solid #dcfffa;border-radius:.4rem;background:#24dcb3;color:#08261f;box-shadow:0 0 15px #29ebca;animation:sample-packet-forward 1.2s ease-in-out both}.sample-lab__packet--reverse{animation-name:sample-packet-reverse}@keyframes sample-packet-forward{from{left:0}to{left:calc(100% - 1.7rem)}}@keyframes sample-packet-reverse{from{left:calc(100% - 1.7rem)}to{left:0}}
 .switching-simple-summary{padding:.75rem 1rem;border-left:.3rem solid var(--accent);border-radius:.3rem;background:color-mix(in srgb,var(--accent) 8%,var(--background));font-weight:700}.switching-scroll-hint{display:none;color:var(--accent);font-size:.85rem;font-weight:800}@media(max-width:35rem){.switching-scroll-hint{display:block;margin:.8rem 0 -.4rem}}
+
+/* Paragraph copy is softer than headings; keep fixed dark surfaces readable in light mode. */
+:root p:not(.home-eyebrow) { color: var(--paragraph-color); }
+:root[data-theme="light"] :is(.home-refresh, .labs-page, .site-footer) p:not(.home-eyebrow) { color: #8b98b8; }
