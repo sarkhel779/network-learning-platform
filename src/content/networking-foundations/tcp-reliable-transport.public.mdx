@@ -72,7 +72,7 @@ The receiver advertises buffer space with its **receive window**. In a simple ex
 
 <h2 id="interactive-tcp-window">Interactive TCP sliding window</h2>
 
-Choose normal delivery, a gap with fast retransmit, or timer-based recovery. Watch the packet move while the ACK, sender edges, and SACK block edges change.
+Watch how a sender's byte window moves during normal delivery. The diagram separates acknowledged bytes, outstanding bytes, and bytes still waiting to be sent. Loss recovery is taught separately below.
 
 <TcpWindowPlayer progressItemId="tcp_udp_and_ports_interactive_interactive_tcp_window" />
 
@@ -87,6 +87,12 @@ Choose normal delivery, a gap with fast retransmit, or timer-based recovery. Wat
 When later data arrives but an earlier segment is missing, the receiver repeats the same cumulative ACK. In the example, **three duplicate ACKs** for 1101 trigger **fast retransmit** of bytes 1101–1200 without waiting for the retransmission timer. SACK tells the sender that later bytes are already held. Without enough duplicate ACKs, recovery may instead wait for a timeout. [RFC 5681](https://www.rfc-editor.org/rfc/rfc5681.html) describes the classic trigger.
 
 <SectionContinue itemId="tcp_udp_and_ports_section_fast_retransmit" anchor="fast-retransmit" />
+
+<h2 id="interactive-fast-retransmit">Interactive fast retransmit and SACK</h2>
+
+Follow the two endpoint lifelines from a lost segment through three duplicate ACKs. Each optional SACK block reports the later bytes held by the receiver using a left edge and an exclusive right edge; the cumulative ACK stays at the first missing byte until the retransmission fills the gap. The packet animation shows the direction of every step.
+
+<TcpFastRetransmitPlayer progressItemId="tcp_udp_and_ports_interactive_interactive_fast_retransmit" />
 
 <h2 id="graceful-closure-resets">Graceful closure and resets</h2>
 

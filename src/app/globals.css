@@ -919,6 +919,21 @@ h1 {
 .transport-topology span { color: var(--muted); overflow-wrap: anywhere; }
 .transport-topology [data-direction], .transport-topology [data-protocol] { border-color: var(--accent); border-inline-start-width: .35rem; }
 .transport-packet-track { position: relative; display: block; width: 100%; margin-top: .65rem; border-top: 2px dashed var(--accent); }
+.tcp-sequence { padding: 1rem; border: 1px dashed var(--accent); border-radius: .7rem; background: var(--background); }
+.tcp-sequence__heads { display: flex; justify-content: space-between; gap: 1rem; }
+.tcp-sequence__heads > div { display: grid; gap: .2rem; text-align: center; color: var(--foreground); }
+.tcp-sequence__heads span { color: var(--muted); font-size: .83rem; }
+.tcp-sequence__timeline { position: relative; display: grid; gap: .4rem; margin: .7rem 1rem; padding: .5rem 0; list-style: none; }
+.tcp-sequence__timeline::before, .tcp-sequence__timeline::after { content: ""; position: absolute; top: 0; bottom: 0; border-left: 1px solid #667993; }
+.tcp-sequence__timeline::before { left: 0; }.tcp-sequence__timeline::after { right: 0; }
+.tcp-sequence__timeline li { display: grid; gap: .2rem; min-height: 3.1rem; padding: .15rem 1rem; opacity: .45; }
+.tcp-sequence__timeline li[data-active="true"] { opacity: 1; color: var(--accent); }
+.tcp-sequence__label { text-align: center; font-size: .82rem; font-weight: 700; overflow-wrap: anywhere; }
+.tcp-sequence__arrow { position: relative; height: 1rem; border-top: 2px solid currentColor; }
+.tcp-sequence__arrow::after { content: ""; position: absolute; top: -.38rem; right: -.1rem; border: .32rem solid transparent; border-left-color: currentColor; }
+.tcp-sequence__timeline li[data-direction="server-to-client"] .tcp-sequence__arrow::after { right: auto; left: -.42rem; border-left-color: transparent; border-right-color: currentColor; }
+.tcp-sequence__arrow .transport-packet-track { margin-top: 0; border: 0; }
+.tcp-sequence__state { margin: .5rem 0 0; text-align: center; color: var(--muted); }
 .transport-packet-track__packet { position: absolute; top: -.95rem; left: 100%; display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border: 2px solid var(--background); border-radius: 50%; background: var(--accent); color: var(--background) !important; box-shadow: 0 0 .8rem var(--accent); transform: translateX(-50%); animation: transport-packet-forward 1s ease-in-out both; }
 .transport-packet-track[data-direction="reverse"] .transport-packet-track__packet { animation-name: transport-packet-reverse; }
 @keyframes transport-packet-forward { from { left: 0; } to { left: 100%; } }
@@ -941,12 +956,42 @@ h1 {
 .tcp-window-byte-strip__range { display: flex; justify-content: space-between; color: var(--muted); font-size: .8rem; }
 .tcp-window-byte-strip__bar { position: relative; block-size: 1.1rem; margin-block: .3rem .8rem; border-radius: 1rem; background: #182944; }
 .tcp-window-byte-strip__bar .tcp-window-byte-strip__active { position: absolute; block-size: 1.5rem; inset-block-start: -.2rem; border-inline: 3px solid #fff; border-radius: .3rem; background: linear-gradient(90deg, #148c86, #2ce0b3); box-shadow: 0 0 .7rem color-mix(in srgb, var(--accent) 40%, transparent); transition: left .4s ease, width .4s ease; }
+.tcp-window-byte-strip__cells { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 2px; margin-bottom: .65rem; }
+.tcp-window-byte-strip__cells span { min-width: 0; padding: .35rem .1rem; text-align: center; overflow: hidden; font-size: .58rem; color: #0c1828; transition: background .35s ease; }
+.tcp-window-byte-strip__cells [data-byte-state="acknowledged"] { background: #8b98b8; }
+.tcp-window-byte-strip__cells [data-byte-state="outstanding"] { background: #2ce0b3; }
+.tcp-window-byte-strip__cells [data-byte-state="waiting"] { background: #ffc68f; }
+.tcp-window-byte-strip__legend { display: flex; flex-wrap: wrap; gap: .75rem; color: var(--muted); font-size: .78rem; }
+.tcp-window-byte-strip__legend span::before { content: ""; display: inline-block; width: .65rem; height: .65rem; margin-right: .3rem; background: #8b98b8; }
+.tcp-window-byte-strip__legend span:nth-child(2)::before { background: #2ce0b3; }.tcp-window-byte-strip__legend span:nth-child(3)::before { background: #ffc68f; }
 .tcp-window-byte-strip dl, .tcp-window-sack dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: .5rem; margin: 0; }
 .tcp-window-byte-strip dl div, .tcp-window-sack dl div { padding: .5rem; border-radius: .4rem; background: color-mix(in srgb, var(--accent) 8%, var(--background)); }
 .tcp-window-byte-strip dt, .tcp-window-sack dt { color: var(--muted); }
 .tcp-window-byte-strip dd, .tcp-window-sack dd { margin: .1rem 0 0; font-weight: 700; }
 .tcp-window-sack { margin-top: .75rem; }
+.tcp-fast-timeline { padding: 1rem; border: 1px dashed var(--accent); border-radius: .7rem; background: var(--background); }
+.tcp-fast-timeline__heads { display: flex; justify-content: space-between; padding-inline: .7rem; }
+.tcp-fast-timeline ol { position: relative; display: grid; gap: .35rem; margin: .7rem .7rem 0; padding: .5rem 0; list-style: none; }
+.tcp-fast-timeline ol::before, .tcp-fast-timeline ol::after { content: ""; position: absolute; top: 0; bottom: 0; border-left: 1px solid #61748d; }
+.tcp-fast-timeline ol::before { left: 0; }.tcp-fast-timeline ol::after { right: 0; }
+.tcp-fast-timeline li { display: grid; gap: .1rem; padding: .1rem 1rem; opacity: .65; color: var(--foreground); }
+.tcp-fast-timeline li[data-active="true"] { opacity: 1; color: var(--accent); font-weight: 700; }
+.tcp-fast-timeline li > span:first-child { text-align: center; font-size: .8rem; }
+.tcp-fast-timeline__line { position: relative; height: .8rem; border-top: 2px solid currentColor; }
+.tcp-fast-timeline li[data-lost="true"] .tcp-fast-timeline__line { width: 55%; border-style: dashed; }
+.tcp-fast-timeline__line::after { content: ""; position: absolute; top: -.4rem; right: -.15rem; border: .35rem solid transparent; border-left-color: currentColor; }
+.tcp-fast-timeline li[data-direction="reverse"] .tcp-fast-timeline__line::after { right: auto; left: -.45rem; border-left-color: transparent; border-right-color: currentColor; }
+.tcp-fast-timeline__line .transport-packet-track { margin: 0; border: 0; }
+.tcp-fast-evidence { padding: .8rem; border: 1px solid var(--border); border-radius: .6rem; background: var(--background); }
+.tcp-fast-evidence dl { display: flex; flex-wrap: wrap; gap: 1rem; margin: 0 0 .5rem; }.tcp-fast-evidence dt { color: var(--muted); }.tcp-fast-evidence dd { margin: 0; font-weight: 700; }
+.tcp-fast-receiver { display: grid; gap: .4rem; margin-bottom: .8rem; }.tcp-fast-receiver > div { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .2rem; }
+.tcp-fast-receiver span { padding: .45rem .15rem; text-align: center; color: #0c1828; font-size: .72rem; font-weight: 700; }
+.tcp-fast-receiver [data-receiver-state="missing"] { background: #f48f9b; }.tcp-fast-receiver [data-receiver-state="buffered"] { background: #2ce0b3; }
+.tcp-fast-receiver [data-receiver-state="received"] { background: #8b98b8; }.tcp-fast-receiver [data-receiver-state="awaiting"] { background: #ffc68f; }
+.tcp-fast-receiver small { color: var(--muted); }
+.tcp-fast-player > .transport-player-controls { margin-block: .75rem 1rem; }
 @media (max-width: 35rem) { .tcp-window-topology { grid-template-columns: minmax(3rem, 1fr) minmax(6rem, 2fr) minmax(3rem, 1fr); gap: .3rem; padding: .5rem; } .tcp-window-device span { font-size: 1.7rem; } .tcp-window-byte-strip__range { font-size: .6rem; } }
+@media (prefers-reduced-motion: reduce) { .tcp-window-byte-strip__active, .tcp-window-byte-strip__cells span { transition: none; } }
 .transport-player-controls select { min-block-size: 44px; max-width: 100%; font: inherit; }
 @media (max-width: 35rem) { .transport-player fieldset label { width: 100%; } .transport-topology { grid-template-columns: minmax(0, 1fr); } .transport-player-controls button, .transport-player-controls label { flex: 1 1 8rem; } }
 @media (prefers-reduced-motion: reduce) { .transport-player * { animation: none !important; transition: none !important; } }

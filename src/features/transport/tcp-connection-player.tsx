@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useReducedMotionState } from "@/features/packet-flow/use-reduced-motion";
-import { TransportPacketTrack } from "./transport-packet-track";
+import { TcpSequenceDiagram } from "./tcp-sequence-diagram";
 import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 import { buildTcpJourney, tcpScenarios } from "./tcp-journeys";
 import { parseTcpScenario, type TcpScenario } from "./transport.schema";
@@ -51,11 +51,7 @@ export function TcpConnectionPlayer({ progressItemId, scenarios = tcpScenarios }
     <fieldset><legend>Choose a TCP journey</legend>{scenarios.map((item, index) => <label key={item.id}>
       <input checked={scenarioIndex === index} name="tcp-journey" onChange={() => chooseScenario(index)} type="radio" />{item.title}
     </label>)}</fieldset>
-    <div aria-label="TCP endpoint topology" className="transport-topology" role="group">
-      <div><strong>{scenario.client.label}</strong><span>Client: {step.clientState}</span></div>
-      <div aria-label="Packet direction" data-direction={step.direction}>{step.direction === "none" ? "No packet crossing" : step.direction === "client-to-server" ? "Client → Server" : "Server → Client"}<TransportPacketTrack direction={step.direction === "none" ? "none" : step.direction === "client-to-server" ? "forward" : "reverse"} stepId={step.id} /></div>
-      <div><strong>{scenario.server.label}</strong><span>Server: {step.serverState}</span></div>
-    </div>
+    <TcpSequenceDiagram steps={journey} activeIndex={stepIndex} clientState={step.clientState} serverState={step.serverState} />
     <p aria-live="polite" role="status">Step {stepIndex + 1} of {journey.length}: {step.title}</p>
     <p>{step.explanation}</p>
     <div aria-label="Scrollable TCP packet evidence" className="transport-evidence-scroll" role="region" tabIndex={0}>

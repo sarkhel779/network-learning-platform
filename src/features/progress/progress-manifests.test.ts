@@ -61,6 +61,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609100003_add_icmp_ping_path_progress.sql",
       "supabase/migrations/202609100004_add_tcp_udp_ports_progress.sql",
       "supabase/migrations/202609120001_split_tcp_udp_progress.sql",
+      "supabase/migrations/202609120002_add_tcp_fast_retransmit_progress.sql",
       "supabase/migrations/202609110001_add_dhcp_progress.sql",
       "supabase/migrations/202609110002_add_dns_progress.sql",
       "supabase/migrations/202609110003_add_essential_services_progress.sql",
@@ -107,11 +108,11 @@ describe("lessonProgressManifests", () => {
     expect(manifest.items.slice(0, 15).map(({ anchor }) => anchor)).toEqual(expectedCatalogAnchors);
   });
 
-  it("registers TCP in catalog order with two players and three checks", () => {
+  it("registers TCP in catalog order with separate connection, sliding-window, and fast-retransmit players", () => {
     const manifest = getLessonProgressManifest("path_networking_foundations", "lesson_tcp_udp_and_ports");
     expect(new Set(manifest.items.map(({ itemId }) => itemId)).size).toBe(manifest.items.length);
     expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor))
-      .toEqual(["interactive-tcp-connection", "interactive-tcp-window"]);
+      .toEqual(["interactive-tcp-connection", "interactive-tcp-window", "interactive-fast-retransmit"]);
     expect(manifest.items.filter(({ kind }) => kind === "knowledge_check").map(({ itemId }) => itemId))
       .toEqual(["tcp_reliable_transport_check_1", "tcp_reliable_transport_check_2", "tcp_reliable_transport_check_3"]);
     expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);

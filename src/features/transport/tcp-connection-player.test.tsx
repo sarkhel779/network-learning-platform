@@ -21,6 +21,27 @@ describe("TcpConnectionPlayer", () => {
     const { container } = render(<TcpConnectionPlayer />);
     expect(container.querySelector('[data-packet-envelope="true"]')).toBeInTheDocument();
   });
+  it("shows the graceful close as ordered animated FIN and ACK arrows", () => {
+    render(<TcpConnectionPlayer />);
+    fireEvent.click(screen.getByRole("radio", { name: "Graceful connection close" }));
+    const diagram = screen.getByRole("group", { name: "TCP packet sequence" });
+    expect(within(diagram).getAllByRole("listitem").map((item) => item.textContent)).toEqual([
+      expect.stringContaining("FIN, ACK"),
+      expect.stringContaining("ACK"),
+      expect.stringContaining("FIN, ACK"),
+      expect.stringContaining("ACK"),
+    ]);
+    expect(diagram.querySelectorAll('[data-direction="client-to-server"]')).toHaveLength(2);
+    expect(diagram.querySelectorAll('[data-direction="server-to-client"]')).toHaveLength(2);
+    expect(diagram.querySelector('[data-active="true"] [data-packet-envelope="true"]')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    expect(diagram.querySelector('[data-active="true"]')).toHaveTextContent("ACK 1102");
+  });
+  it("does not show a no-packet placeholder at a terminal step", () => {
+    render(<TcpConnectionPlayer />);
+    for (let i = 0; i < 3; i++) fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    expect(screen.queryByText("No packet crossing")).not.toBeInTheDocument();
+  });
   it("offers six scenarios and synchronizes transport and endpoint evidence", () => {
     render(<TcpConnectionPlayer />);
     for (const { title } of tcpScenarios) expect(screen.getByRole("radio", { name: title })).toBeVisible();

@@ -595,7 +595,7 @@ describe("catalog repository", () => {
       ["window-scaling", "public"], ["sequence-acknowledgements-ordered-delivery", "public"],
       ["loss-retransmission-duplicates", "public"], ["flow-control-receive-window", "public"],
       ["interactive-tcp-window", "public"], ["sack-permitted-and-blocks", "public"],
-      ["fast-retransmit", "public"], ["graceful-closure-resets", "public"],
+      ["fast-retransmit", "public"], ["interactive-fast-retransmit", "public"], ["graceful-closure-resets", "public"],
       ["inspect-transport-evidence", "account"], ["guided-transport-diagnosis", "account"],
       ["troubleshoot-transport", "account"], ["knowledge-check-summary", "account"],
       ["pro-deep-dive", "pro"],

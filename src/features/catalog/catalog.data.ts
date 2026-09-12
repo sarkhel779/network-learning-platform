@@ -414,6 +414,7 @@ const curriculum: Pathway[] = [
               { id: "interactive-tcp-window", label: "Interactive TCP sliding window", access: "public" },
               { id: "sack-permitted-and-blocks", label: "SACK permitted and received blocks", access: "public" },
               { id: "fast-retransmit", label: "Fast retransmit", access: "public" },
+              { id: "interactive-fast-retransmit", label: "Interactive fast retransmit and SACK", access: "public" },
               { id: "graceful-closure-resets", label: "Graceful closure and resets", access: "public" },
               { id: "inspect-transport-evidence", label: "Inspect transport evidence", access: "account" },
               { id: "guided-transport-diagnosis", label: "Guided transport diagnosis", access: "account" },

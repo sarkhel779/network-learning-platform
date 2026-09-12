@@ -39,6 +39,7 @@ import { TracerouteDiscoveryPlayer } from "@/features/icmp/traceroute-discovery-
 import { TcpConnectionPlayer } from "@/features/transport/tcp-connection-player";
 import { PortDeliveryPlayer, UdpPortDeliveryPlayer } from "@/features/transport/port-delivery-player";
 import { TcpWindowPlayer } from "@/features/transport/tcp-window-player";
+import { TcpFastRetransmitPlayer } from "@/features/transport/tcp-fast-retransmit-player";
 import { DoraPlayer } from "@/features/dhcp/dora-player";
 import { DhcpRelayPlayer } from "@/features/dhcp/relay-player";
 import { LeaseTimingPlayer } from "@/features/dhcp/lease-timing-player";
@@ -119,6 +120,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     TracerouteDiscoveryPlayer,
     TcpConnectionPlayer,
     TcpWindowPlayer,
+    TcpFastRetransmitPlayer,
     PortDeliveryPlayer,
     UdpPortDeliveryPlayer,
     RouteDecisionPlayer,

@@ -15,6 +15,8 @@ describe("TCP sliding window journey", () => {
   it("shows SACK's right-exclusive block edges before fast retransmit", () => {
     const steps = buildTcpWindowJourney("fast-retransmit");
     expect(steps.find((step) => step.id === "out-of-order")?.sackBlocks).toEqual([{ left: 1201, right: 1401 }]);
+    expect(steps.filter((step) => step.packet.includes("duplicate ACK")).map((step) => step.duplicateAcks)).toEqual([1, 2, 3]);
+    expect(steps.find((step) => step.id === "first-duplicate-ack")?.sackBlocks).toEqual([{ left: 1201, right: 1301 }]);
     expect(steps.find((step) => step.id === "third-duplicate-ack")?.duplicateAcks).toBe(3);
     expect(steps.findIndex((step) => step.id === "third-duplicate-ack"))
       .toBeLessThan(steps.findIndex((step) => step.id === "fast-retransmit"));

@@ -9,6 +9,8 @@ describe("separate TCP and UDP lessons", () => {
     const publicLesson = read("tcp-reliable-transport.public.mdx");
     expect(publicLesson).toContain('<TcpConnectionPlayer progressItemId="tcp_udp_and_ports_interactive_interactive_tcp_connection" />');
     expect(publicLesson).toContain('<TcpWindowPlayer progressItemId="tcp_udp_and_ports_interactive_interactive_tcp_window" />');
+    expect(publicLesson).toContain('<TcpFastRetransmitPlayer progressItemId="tcp_udp_and_ports_interactive_interactive_fast_retransmit" />');
+    expect(publicLesson.indexOf("<TcpWindowPlayer")).toBeLessThan(publicLesson.indexOf("<TcpFastRetransmitPlayer"));
     for (const phrase of ["MSS", "Window Scale", "SACK-Permitted", "left edge", "right edge", "fast retransmit", "three duplicate ACKs"])
       expect(publicLesson).toContain(phrase);
     expect(publicLesson).toContain("Client SYN");
