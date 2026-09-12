@@ -119,10 +119,11 @@ a { color: inherit; }
 .theme-control { display: inline-flex; min-height: 2.5rem; align-items: center; gap: 0.45rem; padding: 0.25rem 0.55rem; border: 1px solid var(--border); border-radius: 999px; background: color-mix(in srgb, var(--accent) 6%, var(--background)); color: var(--foreground); font: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
 .theme-control:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 .theme-control__label { color: var(--muted); transition: color 180ms ease; }
-.theme-control__label[data-active="true"] { color: var(--foreground); }
-.theme-control__track { position: relative; width: 2.25rem; height: 1.2rem; border: 1px solid var(--accent); border-radius: 999px; background: color-mix(in srgb, var(--accent) 28%, var(--background)); }
-.theme-control__thumb { position: absolute; top: 0.13rem; left: 0.13rem; width: 0.8rem; height: 0.8rem; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0.35rem color-mix(in srgb, var(--accent) 65%, transparent); transition: transform 180ms ease; }
-.theme-control[aria-checked="true"] .theme-control__thumb { transform: translateX(1rem); }
+.theme-control__label[data-active="true"] { color: var(--accent); }
+.theme-control__track { position: relative; width: 2.8rem; height: 1.45rem; border: 1px solid var(--accent); border-radius: 999px; background: color-mix(in srgb, var(--accent) 48%, var(--background)); }
+.theme-control__thumb { position: absolute; top: 0.12rem; left: 0.12rem; display: grid; place-items: center; width: 1.1rem; height: 1.1rem; border-radius: 50%; background: var(--accent); color: var(--accent-foreground); box-shadow: 0 0 0.4rem color-mix(in srgb, var(--accent) 70%, transparent); transition: transform 180ms ease; }
+.theme-control__thumb svg { width: 0.8rem; height: 0.8rem; }
+.theme-control[aria-checked="true"] .theme-control__thumb { transform: translateX(1.35rem); }
 @media (prefers-reduced-motion: reduce) { .theme-control__label, .theme-control__thumb { transition: none; } }
 .site-nav a:hover, .footer-nav a:hover { text-decoration: underline; }
 .skip-link { position: absolute; top: 0.5rem; left: 0.5rem; z-index: 1; padding: 0.5rem 0.75rem; background: var(--accent); color: var(--accent-foreground); transform: translateY(-150%); }

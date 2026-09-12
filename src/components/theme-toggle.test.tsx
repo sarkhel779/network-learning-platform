@@ -54,4 +54,13 @@ describe("ThemeToggle", () => {
     expect(toggle).toHaveAttribute("aria-checked", "false");
     expect(localStorage.getItem("packetsecrets-theme")).toBe("light");
   });
+
+  it("shows the active theme icon inside the slider thumb", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<ThemeToggle />);
+    const toggle = screen.getByRole("switch", { name: "Dark mode" });
+    expect(container.querySelector('.theme-control__thumb [data-theme-icon="moon"]')).toBeInTheDocument();
+    await user.click(toggle);
+    expect(container.querySelector('.theme-control__thumb [data-theme-icon="sun"]')).toBeInTheDocument();
+  });
 });
