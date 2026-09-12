@@ -4,7 +4,7 @@ const mocks = vi.hoisted(() => ({ createServerSupabaseClient: vi.fn(), rpc: vi.f
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/supabase/server", () => ({ createServerSupabaseClient: mocks.createServerSupabaseClient }));
 
-import { getLearnerDetail, listLearners, loadAdminOverview } from "./admin.repository";
+import { getLearnerDetail, listAudit, listLearners, loadAdminOverview } from "./admin.repository";
 
 beforeEach(() => {
   mocks.rpc.mockReset();
@@ -34,5 +34,12 @@ describe("admin repository", () => {
     mocks.rpc.mockResolvedValue({ data: learner, error: null });
     await expect(getLearnerDetail(learner.id)).resolves.toEqual(learner);
     expect(mocks.rpc).toHaveBeenCalledWith("admin_get_learner", { p_target_id: learner.id });
+  });
+
+  it("paginates the read-only audit log through a guarded RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: { total: 1, rows: [{ id: 8, action: "learner_profile_updated", actorId: "staff", targetId: "learner", createdAt: "2026-09-12T00:00:00Z", beforeValue: null, afterValue: null }] }, error: null });
+    const result = await listAudit({ offset: 0, limit: 20 });
+    expect(result.total).toBe(1);
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_list_audit", { p_offset: 0, p_limit: 20 });
   });
 });

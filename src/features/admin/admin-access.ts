@@ -7,20 +7,14 @@ import { getViewer } from "@/lib/supabase/session";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 import type { AdminPermission, StaffRole } from "./admin.types";
+import { canStaff } from "./admin-permissions";
 
-const permissions: Record<StaffRole, readonly AdminPermission[]> = {
-  super_admin: ["overview", "users_read", "users_write", "courses", "billing", "support", "roles", "audit", "settings"],
-  content_editor: ["overview", "courses"],
-  support_agent: ["overview", "users_read", "users_write", "support", "audit"],
-  finance: ["overview", "billing"],
-};
+export { canStaff } from "./admin-permissions";
+
+const staffRoles = ["super_admin", "content_editor", "support_agent", "finance"] as const;
 
 function isStaffRole(value: unknown): value is StaffRole {
-  return typeof value === "string" && Object.hasOwn(permissions, value);
-}
-
-export function canStaff(role: StaffRole, permission: AdminPermission): boolean {
-  return permissions[role].includes(permission);
+  return typeof value === "string" && staffRoles.some((role) => role === value);
 }
 
 export async function getStaffRole(): Promise<StaffRole | null> {

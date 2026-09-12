@@ -2,7 +2,7 @@ import "server-only";
 
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-import type { AdminOverview, LearnerDetail, LearnerRow } from "./admin.types";
+import type { AdminOverview, AuditRow, LearnerDetail, LearnerRow } from "./admin.types";
 
 function countOrNull(data: unknown): number | null {
   const value = typeof data === "number" ? data : typeof data === "string" ? Number(data) : NaN;
@@ -50,4 +50,16 @@ export async function getLearnerDetail(targetId: string): Promise<LearnerDetail 
   const { data, error } = await supabase.rpc("admin_get_learner", { p_target_id: targetId });
   if (error) throw new Error("Learner detail unavailable");
   return data ? data as LearnerDetail : null;
+}
+
+export async function listAudit({ offset = 0, limit = 20 }: { offset?: number; limit?: number } = {}): Promise<{ rows: AuditRow[]; total: number }> {
+  const p_offset = Math.max(0, Math.floor(offset || 0));
+  const p_limit = Math.min(50, Math.max(1, Math.floor(limit || 20)));
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.rpc("admin_list_audit", { p_offset, p_limit });
+  if (error || !data || typeof data !== "object") throw new Error("Audit log unavailable");
+  const result = data as { total?: unknown; rows?: unknown };
+  const total = countOrNull(result.total);
+  if (total === null || !Array.isArray(result.rows)) throw new Error("Audit log unavailable");
+  return { rows: result.rows as AuditRow[], total };
 }

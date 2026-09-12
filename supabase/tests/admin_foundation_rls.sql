@@ -48,6 +48,11 @@ begin
     raise exception 'learner can inspect page view totals';
   exception when insufficient_privilege then null;
   end;
+  begin
+    perform public.admin_list_audit(0, 20);
+    raise exception 'learner can inspect audit events';
+  exception when insufficient_privilege then null;
+  end;
 end $$;
 
 set local request.jwt.claim.sub = '00000000-0000-4000-8000-000000000101';
@@ -74,6 +79,9 @@ begin
   end if;
   if (select count(*) from public.admin_audit_events) <> 0 then
     raise exception 'staff can directly read audit rows';
+  end if;
+  if (public.admin_list_audit(0, 20) ->> 'total')::integer <> 1 then
+    raise exception 'authorized audit read omitted the profile edit';
   end if;
   perform public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing');
   perform public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing');

@@ -220,6 +220,39 @@ revoke all on function public.admin_update_learner(uuid, text, public.learning_l
 grant execute on function public.admin_get_learner(uuid) to authenticated;
 grant execute on function public.admin_update_learner(uuid, text, public.learning_level, text) to authenticated;
 
+create function public.admin_list_audit(p_offset integer default 0, p_limit integer default 20)
+returns jsonb
+language plpgsql stable security definer
+set search_path = ''
+as $$
+declare
+  v_role text := public.admin_staff_role();
+  v_total bigint;
+  v_rows jsonb;
+begin
+  if v_role not in ('super_admin', 'support_agent') or v_role is null then
+    raise insufficient_privilege;
+  end if;
+  select count(*) into v_total from public.admin_audit_events;
+  select coalesce(jsonb_agg(jsonb_build_object(
+    'id', e.id, 'actorId', e.actor_id, 'targetId', e.target_id,
+    'action', e.action, 'beforeValue', e.before_value,
+    'afterValue', e.after_value, 'createdAt', e.created_at
+  ) order by e.created_at desc), '[]'::jsonb)
+  into v_rows
+  from (
+    select * from public.admin_audit_events
+    order by created_at desc
+    offset greatest(coalesce(p_offset, 0), 0)
+    limit least(greatest(coalesce(p_limit, 20), 1), 50)
+  ) e;
+  return jsonb_build_object('total', v_total, 'rows', v_rows);
+end;
+$$;
+
+revoke all on function public.admin_list_audit(integer, integer) from public;
+grant execute on function public.admin_list_audit(integer, integer) to authenticated;
+
 create table public.page_views (
   event_id uuid primary key,
   path text not null check (char_length(path) between 1 and 200),

@@ -29,3 +29,13 @@ export type AdminOverview = {
   joinedWaitlist: number | null;
   pageViews: number | null;
 };
+
+export type AuditRow = {
+  id: number;
+  actorId: string;
+  targetId: string | null;
+  action: string;
+  beforeValue: unknown;
+  afterValue: unknown;
+  createdAt: string;
+};
