@@ -1,0 +1,35 @@
+name: Admin SQL authorization
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/admin-sql.yml"
+      - "supabase/migrations/**"
+      - "supabase/tests/admin_foundation_rls.sql"
+
+permissions:
+  contents: read
+
+jobs:
+  admin-sql:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v2
+        with:
+          version: 2.84.2
+          github-token: ${{ github.token }}
+
+      - name: Initialize disposable Supabase project
+        run: supabase init
+
+      - name: Apply migrations to fresh local database
+        run: supabase db start
+
+      - name: Install PostgreSQL client if needed
+        run: command -v psql >/dev/null || (sudo apt-get update && sudo apt-get install -y postgresql-client)
+
+      - name: Verify admin authorization and RLS
+        run: psql 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' -v ON_ERROR_STOP=1 -f supabase/tests/admin_foundation_rls.sql
