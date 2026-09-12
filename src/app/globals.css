@@ -342,6 +342,10 @@ a { color: inherit; }
 .network-topology__electrical-signal { fill: none; stroke: #66ffe0; stroke-width: 9; stroke-linecap: round; stroke-dasharray: 12 100; filter: drop-shadow(0 0 4px #37f6d3) drop-shadow(0 0 9px #20e7b9); animation: lease-electric-traverse 1.5s linear both; pointer-events: none; }
 .network-topology__electrical-signal[data-playing="false"] { animation-play-state: paused; }
 .network-topology--reduced-motion .network-topology__electrical-signal { animation: none; stroke-dasharray: none; stroke-width: 5; opacity: 1; }
+.network-topology__packet-marker--signal { animation: network-electrical-packet-travel 1.5s linear both; pointer-events: none; }
+.network-topology__packet-marker--signal[data-playing="false"] { animation-play-state: paused; }
+.network-topology--reduced-motion .network-topology__packet-marker--signal { animation: none; opacity: 1; }
+@keyframes network-electrical-packet-travel { 0% { transform: translate(var(--packet-start-x), var(--packet-start-y)); opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } 100% { transform: translate(var(--packet-end-x), var(--packet-end-y)); opacity: 0; } }
 .network-topology__active-text { margin: 1rem 0 0; color: var(--foreground); font-weight: 700; line-height: 1.5rem; }
 .packet-flow-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin: 1rem 0; }
 .packet-flow-controls button, .packet-flow-controls select { min-height: 2.75rem; border: 1px solid var(--accent); border-radius: 0.35rem; background: var(--background); color: var(--foreground); font: inherit; }

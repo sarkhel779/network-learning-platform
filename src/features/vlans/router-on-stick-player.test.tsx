@@ -49,25 +49,34 @@ describe("router-on-a-stick journey", () => {
     const user = userEvent.setup();
     const { container } = render(<RouterOnStickPlayer />);
     const signal = () => container.querySelector('[data-electrical-signal="true"]');
+    const packet = () => container.querySelector('[data-signal-packet="true"]');
     expect(signal()).toHaveAttribute("data-link-id", "vlan10-access");
     expect(signal()).toHaveAttribute("data-from", "red-host");
-    expect(container.querySelector('[data-packet-marker="true"]')).not.toBeInTheDocument();
+    expect(packet()).toHaveAttribute("data-link-id", "vlan10-access");
+    expect(packet()).toHaveStyle({ animationDuration: "1.5s" });
+    expect(packet()?.querySelector('[data-packet-envelope="true"]')).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Pause" }));
     expect(signal()).toHaveAttribute("data-playing", "false");
+    expect(packet()).toHaveAttribute("data-playing", "false");
     await user.selectOptions(screen.getByLabelText("Playback speed"), "2");
     expect(signal()).toHaveStyle({ animationDuration: "0.75s" });
+    expect(packet()).toHaveStyle({ animationDuration: "0.75s" });
 
     await user.click(screen.getByRole("button", { name: "Next" }));
     expect(signal()).toHaveAttribute("data-link-id", "shared-trunk");
     expect(signal()).toHaveAttribute("data-from", "switch");
     expect(signal()).toHaveAttribute("data-to", "router");
+    expect(packet()).toHaveAttribute("data-to", "router");
     await user.click(screen.getByRole("button", { name: "Next" }));
     expect(signal()).not.toBeInTheDocument();
+    expect(packet()).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Next" }));
     expect(signal()).toHaveAttribute("data-link-id", "shared-trunk");
     expect(signal()).toHaveAttribute("data-from", "router");
     expect(signal()).toHaveAttribute("data-to", "switch");
+    expect(packet()).toHaveAttribute("data-from", "router");
+    expect(packet()).toHaveAttribute("data-to", "switch");
     await user.click(screen.getByRole("button", { name: "Next" }));
     expect(signal()).toHaveAttribute("data-link-id", "vlan20-access");
   });

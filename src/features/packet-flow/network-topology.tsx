@@ -135,6 +135,29 @@ export function NetworkTopology({
             style={{ animationDuration: `${1.5 / electricalSignal.speed}s` }}
           />
         )) : null}
+        {electricalSignal && packet ? packetTravels.map(({ link, start, end }) => (
+          <g
+            key={`${step.id}-${link.id}-packet`}
+            className="network-topology__packet-marker network-topology__packet-marker--signal"
+            data-signal-packet="true"
+            data-link-id={link.id}
+            data-from={packet.from}
+            data-to={packet.to}
+            data-playing={electricalSignal.playing ? "true" : "false"}
+            aria-hidden="true"
+            transform={`translate(${end.x} ${end.y})`}
+            style={{
+              animationDuration: `${1.5 / electricalSignal.speed}s`,
+              "--packet-start-x": `${start.x}px`,
+              "--packet-start-y": `${start.y}px`,
+              "--packet-end-x": `${end.x}px`,
+              "--packet-end-y": `${end.y}px`,
+            } as React.CSSProperties}
+          >
+            <circle r="12" />
+            <path data-packet-envelope="true" d="M-7-5h14v10H-7zM-7-3l7 6 7-6" />
+          </g>
+        )) : null}
         {!electricalSignal && packet ? packetTravels.map(({ link, start, end }) => (
           <g
             key={`${step.id}-${link.id}`}
