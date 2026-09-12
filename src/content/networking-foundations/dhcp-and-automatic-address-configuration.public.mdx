@@ -32,8 +32,6 @@ This is the layout inside a DHCP message. Read from top to bottom: the fixed fie
 
 <p className="dhcp-packet-format-note">The address rows are separate fields, not four addresses every packet must use. For example, <code>yiaddr</code> is the address offered to the client, while <code>giaddr</code> identifies a relay when one forwards the request.</p>
 
-<SectionContinue itemId="dhcp_automatic_address_configuration_section_packet_format" anchor="packet-format" />
-
 <h2 id="dhcp-roles">DHCP roles: client, server, scope, lease, and relay</h2>
 
 The **client** requests configuration. The **server** selects values from a **scope**, a pool and policy for one subnet. A **lease** grants temporary use. A router or layer-3 switch acting as a **relay** (often configured with a helper address) carries client requests between broadcast domains; it does not replace the DHCP server.

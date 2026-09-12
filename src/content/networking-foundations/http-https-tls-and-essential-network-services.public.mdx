@@ -2,6 +2,12 @@
 
 <h2 id="web-services">HTTP, HTTPS, and web services</h2>
 
+<h3>HTTP/1.1 message format</h3>
+
+<ProtocolFormatDiagram kind="httpRequest" />
+
+<ProtocolFormatDiagram kind="httpResponse" />
+
 HTTP is a request-and-response application protocol. A client opens a TCP connection to a listening web service, sends a request such as `GET /guide HTTP/1.1` with a `Host` header, and receives a status line, headers, and an optional body. **80** is the conventional HTTP port, **443** is HTTPS, and **8080** is a common explicitly selected alternate HTTP port.
 
 <PortTransportPanel service="web" />

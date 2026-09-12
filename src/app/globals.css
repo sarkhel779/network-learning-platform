@@ -1135,6 +1135,14 @@ body:has(.labs-page) .site-header,body:has(.labs-page) .site-footer{background:#
 .dhcp-packet-format code{display:inline-block;margin-left:.3rem;color:#8eeed2;font-size:.78em;font-weight:600}
 .dhcp-packet-format-note{max-width:55rem;color:var(--muted)}
 .lesson-content #packet-format{scroll-margin-top:8rem}
+.protocol-format{max-width:100%;margin:1.15rem 0 1.5rem}
+.protocol-format__scroll{max-width:100%;overflow-x:auto;border:1px solid #31556b;border-radius:.8rem;background:#0c1d2b}
+.protocol-format__scroll:focus-visible{outline:3px solid #72f4d6;outline-offset:3px}
+.protocol-format table{width:100%;min-width:38rem;border-collapse:separate;border-spacing:3px;padding:3px;table-layout:fixed;color:#eaf8f6;text-align:center}
+.protocol-format td{padding:.65rem .5rem;border:1px solid #3b8b89;border-radius:.3rem;background:linear-gradient(135deg,#163d48,#1b4a46);font-weight:750;line-height:1.35;overflow-wrap:anywhere}
+.protocol-format tr:nth-child(even) td{background:linear-gradient(135deg,#194852,#1d5951)}
+.protocol-format figcaption{margin-top:.6rem;color:var(--muted);font-size:.9rem;line-height:1.5}
+.protocol-format__hint{display:none;margin:0 0 .35rem;color:#75dfca;font-size:.8rem;font-weight:700}@media(max-width:640px){.protocol-format__hint{display:block}}
 
 .site-header .site-nav a{display:inline-flex;align-items:center;min-height:2.7rem;padding:.5rem .15rem;border-bottom:2px solid transparent;text-decoration:none}
 .site-header .site-nav a[aria-current="page"]{border-bottom-color:#23d6a8;color:#23d6a8;font-weight:800}

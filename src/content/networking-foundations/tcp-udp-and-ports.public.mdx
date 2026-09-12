@@ -20,6 +20,14 @@ The destination port helps the receiving host find a listening or receiving appl
 
 <h2 id="tcp-udp-header-essentials">TCP and UDP header essentials</h2>
 
+<h3>TCP segment format</h3>
+
+<ProtocolFormatDiagram kind="tcp" />
+
+<h3>UDP datagram format</h3>
+
+<ProtocolFormatDiagram kind="udp" />
+
 Both headers carry source and destination ports plus a checksum. TCP additionally carries sequence and acknowledgement numbers, flags, a receive window, and options because it manages a byte stream and connection state. UDP carries length and checksum around a message-oriented datagram with a smaller transport contract. Smaller does not mean UDP is always faster, and TCP's transport reliability does not guarantee application-level success.
 
 <SectionContinue itemId="tcp_udp_and_ports_section_tcp_udp_header_essentials" anchor="tcp-udp-header-essentials" />

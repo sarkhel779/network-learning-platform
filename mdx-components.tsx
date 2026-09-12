@@ -62,6 +62,7 @@ import { AdvancedValidationLab } from "@/features/troubleshooting/advanced-valid
 import { IncidentReportBuilder } from "@/features/troubleshooting/incident-report-builder";
 import { TroubleshootingWorkspace } from "@/features/troubleshooting/troubleshooting-workspace";
 import { TroubleshootingProExperience } from "@/features/troubleshooting/troubleshooting-pro-experience";
+import { ProtocolFormatDiagram } from "@/features/packet-formats/protocol-format-diagram";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -112,6 +113,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     NetworkDeviceSymbol,
     NdpSlaacJourneyPlayer,
     PremiumPreview,
+    ProtocolFormatDiagram,
     PingEvidencePlayer,
     TracerouteDiscoveryPlayer,
     TcpConnectionPlayer,

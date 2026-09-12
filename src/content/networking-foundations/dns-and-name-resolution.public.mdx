@@ -32,6 +32,10 @@ Compare cold cache, warm cache, aliases, IPv6 records, TCP retry, and an authori
 
 <h2 id="dns-message-structure">DNS message and header structure</h2>
 
+<h3>DNS message format</h3>
+
+<ProtocolFormatDiagram kind="dns" />
+
 The header contains `ID`, `QR`, `OPCODE`, `AA`, `TC`, `RD`, `RA`, `AD`, `CD`, `RCODE`, and the four section counts `QDCOUNT`, `ANCOUNT`, `NSCOUNT`, and `ARCOUNT`. The Question, Answer, Authority, and Additional sections have different jobs. A compression pointer changes encoding, not the logical name.
 
 <SectionContinue itemId="dns_name_resolution_section_dns_message_header_structure" anchor="dns-message-header-structure" />

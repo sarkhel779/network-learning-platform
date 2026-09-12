@@ -33,6 +33,10 @@ Without JavaScript, remember the same rule: a frame entering an access port join
 
 <h2 id="trunks-and-802-1q">Trunks and 802.1Q</h2>
 
+<h3>Tagged frame format</h3>
+
+<ProtocolFormatDiagram kind="vlan" />
+
 One inter-switch link may need to carry VLAN 10, VLAN 20 and many other VLANs. A trunk does this while preserving each frame's VLAN identity. IEEE 802.1Q inserts a four-byte tag between the source MAC address and the original EtherType. The tag protocol identifier, or TPID, is commonly `0x8100`.
 
 The tag also carries priority (PCP), drop eligibility (DEI) and a 12-bit VLAN identifier. The original payload protocol remains identifiable by the encapsulated EtherType—for example `0x0800` for IPv4. Because inserting or removing a tag changes the transmitted frame, the switch generates a **new FCS** for the outgoing frame.
