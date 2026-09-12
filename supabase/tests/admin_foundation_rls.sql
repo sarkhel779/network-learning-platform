@@ -144,6 +144,16 @@ begin
     raise exception 'anonymous role can execute the unprotected page-view recorder';
   end if;
   begin
+    perform count(*) from public.page_view_ingest_config;
+    raise exception 'anonymous role can read the ingest token hash';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    perform count(*) from public.page_view_ingest_windows;
+    raise exception 'anonymous role can read ingest rate windows';
+  exception when insufficient_privilege then null;
+  end;
+  begin
     perform public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing', 'wrong-token');
     raise exception 'invalid ingest token was accepted';
   exception when insufficient_privilege then null;

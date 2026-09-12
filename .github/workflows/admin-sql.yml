@@ -80,4 +80,6 @@ jobs:
           echo 'Disposable URL and keys are present'
 
       - name: Verify live staff and learner browser boundaries
+        env:
+          PAGE_VIEW_INGEST_TOKEN: ci-only-ingest-token-with-32-chars-minimum
         run: pnpm exec playwright test --config=playwright.admin.config.ts

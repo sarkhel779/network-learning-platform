@@ -15,13 +15,20 @@ export async function POST(request: Request): Promise<Response> {
     return new Response(null, { status: 204 });
   }
 
+  const ingestToken = process.env.PAGE_VIEW_INGEST_TOKEN;
+  if (!ingestToken || ingestToken.length < 32) return new Response(null, { status: 503 });
+
   try {
     const supabase = await createServerSupabaseClient();
-    const { error } = await supabase.rpc("record_page_view", {
+    const { data, error } = await supabase.rpc("record_page_view", {
       p_event_id: input.eventId,
       p_path: input.path,
+      p_ingest_token: ingestToken,
     });
-    return new Response(null, { status: error ? 503 : 204 });
+    if (error) return new Response(null, { status: 503 });
+    if (data === "rate_limited") return new Response(null, { status: 429 });
+    if (data === "recorded" || data === "duplicate") return new Response(null, { status: 204 });
+    return new Response(null, { status: 503 });
   } catch {
     return new Response(null, { status: 503 });
   }

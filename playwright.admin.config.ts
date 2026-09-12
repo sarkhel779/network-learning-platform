@@ -14,6 +14,7 @@ export default defineConfig({
     env: {
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
       NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
+      PAGE_VIEW_INGEST_TOKEN: process.env.PAGE_VIEW_INGEST_TOKEN ?? "",
       PLAYWRIGHT_TEST_SESSION: "0",
     },
   },
