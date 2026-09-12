@@ -443,7 +443,7 @@ const curriculum: Pathway[] = [
               { id: "guided-relay-diagnosis", label: "Guided relay diagnosis", access: "account" },
               { id: "troubleshoot-dhcp", label: "Troubleshoot DHCP", access: "account" },
               { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
-              { id: "lease-timing-diagram", label: "Interactive lease timing diagram", access: "pro", preview: "Compare lease states and timer-driven behavior across normal, delayed, silent, and relayed exchanges." },
+              { id: "lease-timing-diagram", label: "Interactive DHCP lease state diagram", access: "pro", preview: "Follow DORA, renewal, rebinding, release, expiry, NAK, and decline with animated packet flow." },
               { id: "rfc-level-checks", label: "Advanced RFC-level packet checks", access: "pro", preview: "Classify DHCP packet behavior with immediate standards-based explanations." },
               { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Study DHCP security, Option 82, policy, high availability, advanced captures, and DHCPv6 boundaries." },
             ],

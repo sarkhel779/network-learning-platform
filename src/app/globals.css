@@ -1198,3 +1198,39 @@ a,a:hover,a:focus-visible,a *,a:hover *{text-decoration:none!important}
 /* Paragraph copy is softer than headings; keep fixed dark surfaces readable in light mode. */
 :root p:not(.home-eyebrow) { color: var(--paragraph-color); }
 :root[data-theme="light"] :is(.home-refresh, .labs-page, .site-footer) p:not(.home-eyebrow) { color: #8b98b8; }
+.lesson-content :is(ul, ol) > li { color: var(--paragraph-color); }
+.lesson-audit-notice { margin: 1rem 0; padding: .8rem 1rem; border: 1px solid var(--accent); border-radius: .65rem; background: color-mix(in srgb, var(--accent) 10%, var(--background)); color: var(--foreground); font-weight: 700; }
+
+/* Interactive DHCP state and packet-flow lab. */
+.lease-state-player{overflow:hidden;border:1px solid #31556b;border-radius:1rem;background:#0d1825;color:#eef8fb}
+.lease-state-player>h3,.lease-state-player>p,.lease-state-player>.player-controls{margin-left:1.2rem;margin-right:1.2rem}
+.lease-state-player>h3{margin-bottom:.35rem}.lease-state-player>p{max-width:48rem;color:#8b98b8}
+.lease-state-player__scenarios{display:flex;flex-wrap:wrap;gap:.55rem;margin:1.2rem;padding:1rem;border:1px solid #30445b;border-radius:.7rem}
+.lease-state-player__scenarios legend{padding:0 .4rem;color:#d4e7eb;font-weight:800}
+.lease-state-player__scenarios label{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .7rem;border:1px solid #38516b;border-radius:999px;background:#132334;color:#d7e9ed;cursor:pointer;font-size:.85rem}
+.lease-state-player__scenarios label:has(input:checked){border-color:#24dbb5;background:#103d3b;color:#eafffa}
+.lease-state-player__scenarios input{accent-color:#24dbb5}
+.lease-state-diagram__scroll{margin:1.2rem;overflow-x:auto;border:1px solid #30445b;border-radius:.8rem;background:radial-gradient(circle at 50% 38%,#143043,#0b1622 70%)}
+.lease-state-diagram{display:block;width:100%;min-width:650px;height:auto}
+.lease-state-diagram__links{fill:none;stroke:#5c8ca0;stroke-width:2.5}
+.lease-state-diagram__signal{fill:none;stroke:#66ffe0;stroke-width:7;stroke-linecap:round;stroke-dasharray:12 100;filter:drop-shadow(0 0 4px #37f6d3) drop-shadow(0 0 9px #20e7b9);animation:lease-electric-traverse 1.5s linear both}
+@keyframes lease-electric-traverse{0%{stroke-dashoffset:0;opacity:0}12%{opacity:1}88%{opacity:1}100%{stroke-dashoffset:-100;opacity:0}}
+.lease-state-diagram marker path{fill:#5c8ca0}
+.lease-state-diagram__labels{fill:#98b9c8;font-size:15px;font-weight:700}
+.lease-state-diagram__node rect{fill:#132b3a;stroke:#4b8c9b;stroke-width:2.5;transition:fill .25s,stroke .25s,filter .25s}
+.lease-state-diagram__node text{fill:#e6f7f7;font-size:20px;font-weight:850;letter-spacing:.04em}
+.lease-state-diagram__node[data-active="true"] rect{fill:#0d655d;stroke:#42ebc9;filter:drop-shadow(0 0 10px #24dcb58a)}
+.lease-state-diagram__node[data-active="true"] text{fill:#fff}
+.lease-packet-flow{display:flex;align-items:center;gap:.8rem;margin:1.2rem;padding:1.1rem;border:1px solid #30445b;border-radius:.8rem;background:#0a1420}
+.lease-packet-flow__device{display:grid;justify-items:center;gap:.15rem;min-width:5.5rem;color:#f3fcfd}.lease-packet-flow__device small{color:#8b98b8}
+.lease-packet-flow__track{position:relative;height:2.8rem;flex:1;min-width:2rem}.lease-packet-flow__line{position:absolute;top:50%;left:0;right:0;border-top:2px dashed #27dcb8}
+.lease-packet-flow__packet{position:absolute;top:.35rem;display:grid;place-items:center;width:2.2rem;height:2.2rem;border:2px solid #c8fff1;border-radius:.45rem;background:#24dcb5;color:#062c27;box-shadow:0 0 20px #24dcb5;animation:dhcp-packet-forward 1.5s ease-in-out both}
+.lease-packet-flow__packet--server-to-client{animation-name:dhcp-packet-reverse}.lease-packet-flow__relay{position:absolute;z-index:1;top:50%;left:50%;padding:.35rem .55rem;border:1px solid #4a89a3;border-radius:.4rem;background:#102838;color:#abcede;font-size:.8rem;transform:translate(-50%,-50%)}
+@keyframes dhcp-packet-forward{from{left:0}to{left:calc(100% - 2.2rem)}}@keyframes dhcp-packet-reverse{from{left:calc(100% - 2.2rem)}to{left:0}}
+.lease-state-player__explanation{margin:1.2rem;padding:1.15rem;border-left:4px solid #24dcb5;border-radius:.5rem;background:#132535}
+.lease-state-player__explanation strong{color:#f5fcfd}.lease-state-player__explanation p{margin:.55rem 0 0;color:#aebfd0;line-height:1.5}.lease-state-player__explanation .lease-state-player__message{color:#50ebca;font-weight:800}
+.lease-state-player>.player-controls{margin-bottom:1.2rem}
+.lease-state-player__scroll-hint{display:none;color:#56e8ca!important;font-size:.8rem;font-weight:800}
+@media(max-width:640px){.lease-state-player__scenarios,.lease-state-diagram__scroll,.lease-packet-flow,.lease-state-player__explanation{margin:1rem}.lease-packet-flow{gap:.35rem;padding:.7rem}.lease-packet-flow__device{min-width:4rem;font-size:.75rem}}
+@media(max-width:700px){.lease-state-player__scroll-hint{display:block}}
+@media(prefers-reduced-motion:reduce){.lease-packet-flow__packet{animation-duration:.01ms}.lease-state-diagram__node rect{transition:none}.lease-state-diagram__signal{animation:none;stroke-dasharray:none;stroke-width:4;opacity:1}}

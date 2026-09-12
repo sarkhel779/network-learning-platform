@@ -211,6 +211,18 @@ describe("lesson route generation", () => {
     expect(renderToStaticMarkup(page)).not.toMatch(/ACCOUNT_ONLY_SENTINEL|PRO_ONLY_SENTINEL/);
   });
 
+  it("does not honor an audit query outside local development", async () => {
+    const loader = vi.spyOn(contentRepository, "loadAuthorizedLessonContent");
+    const page = await lessonPage.default({
+      params: Promise.resolve({ pathwaySlug: "networking-foundations", lessonSlug: "how-networks-communicate" }),
+      searchParams: Promise.resolve({ audit: "1" }),
+    });
+    render(page);
+    expect(loader).toHaveBeenCalledWith("networking-foundations/how-networks-communicate", "anonymous");
+    expect(screen.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
+    expect(screen.queryByText(/Local audit preview/)).not.toBeInTheDocument();
+  });
+
   it("renders public and account content for an authenticated learner and loads progress", async () => {
     getViewer.mockResolvedValue({ id: "learner-1", displayName: "Pranita", avatarUrl: null });
     listPathwayProgress.mockResolvedValue([{

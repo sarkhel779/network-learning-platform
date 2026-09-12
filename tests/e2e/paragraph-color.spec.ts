@@ -33,3 +33,14 @@ test("paragraph copy stays consistent across public pages", async ({ page }) => 
     }
   }
 });
+
+test("lesson prose bullets match paragraphs without dimming headings", async ({ page }) => {
+  await page.goto("/learn/networking-foundations/how-networks-communicate");
+  const bullet = page.locator(".lesson-content li", { hasText: "decides whether the destination is local or remote" });
+  await expect(bullet).toHaveCSS("color", "rgb(139, 152, 184)");
+  await expect(page.getByRole("heading", { name: "The decisions behind communication" }))
+    .toHaveCSS("color", "rgb(245, 248, 252)");
+
+  await page.getByRole("switch", { name: "Dark mode" }).click();
+  await expect(bullet).toHaveCSS("color", "rgb(82, 96, 119)");
+});
