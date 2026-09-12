@@ -13,9 +13,13 @@ export function SiteHeader() {
         </Link>
         <div className="site-header__actions">
           <nav aria-label="Primary navigation" className="site-nav">
-            <Link href="/paths/networking-foundations">Learning Paths</Link>
+            <Link href="/">Home</Link>
+            <Link href="/paths/networking-foundations">Courses</Link>
+            <Link href="/labs">Labs</Link>
             <Link href="/pricing">Pricing</Link>
           </nav>
+          <Link className="site-header__sign-in" href="/sign-in">Sign in</Link>
+          <Link className="site-header__get-started" href="/paths/networking-foundations">Get started</Link>
           <ThemeToggle />
         </div>
       </div>

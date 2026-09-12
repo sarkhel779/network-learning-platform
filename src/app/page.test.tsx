@@ -14,6 +14,7 @@ describe("HomePage", () => {
     expect(html).toContain('href="/learn/networking-foundations/how-networks-communicate"');
     expect(html).toContain("Core Topics You’ll Learn");
     expect(html).toContain("Try the packet lab");
+    expect(html).toContain('href="/labs"');
     expect(html).toContain("Your learning journey");
   });
 
@@ -49,5 +50,10 @@ describe("HomePage", () => {
     expect(html).toContain("Internet");
     expect(html).toContain("Server");
     expect(html).toContain("Example terminal output");
+  });
+
+  it("previews the lab with recognizable device drawings", () => {
+    expect((html.match(/class="home-lab-device"/g) ?? []).length).toBe(5);
+    expect(html).toContain("Try a sample lab");
   });
 });

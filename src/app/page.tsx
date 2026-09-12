@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { pathways } from "@/features/catalog/catalog.data";
-import { RouteIllustration } from "@/features/home/route-illustration";
+import { DeviceIcon, RouteIllustration } from "@/features/home/route-illustration";
 
 const pathway = pathways.find((item) => item.slug === "networking-foundations")!;
 const firstLesson = "/learn/networking-foundations/how-networks-communicate";
@@ -39,7 +39,7 @@ export default function HomePage() {
         <div className="home-section-heading"><h2 id="core-heading">Core Topics You’ll Learn</h2><p>Focus on the fundamentals. Build a strong foundation.</p></div>
         <div className="home-topics">{topics.map((topic) => <Link key={topic.label} href={`/learn/${pathway.slug}/${topic.slug}`}><span className="home-topic-icon" aria-hidden="true">{topic.icon}</span><strong>{topic.label}</strong></Link>)}</div>
       </section>
-      <section className="home-section home-lab" aria-labelledby="lab-heading"><div><p className="home-eyebrow">Interactive packet lab</p><h2 id="lab-heading">Try the packet lab</h2><p>See a packet move through a network. Explore each hop and inspect what changes along the way.</p><Link className="home-button home-button-primary" href={`${firstLesson}#packet-journey`}>Explore the first packet journey →</Link></div><div className="home-lab-topology" aria-hidden="true"><span>Device</span><i /><span>Network</span><i /><span>Destination</span></div></section>
+      <section className="home-section home-lab" aria-labelledby="lab-heading"><div><p className="home-eyebrow">Interactive packet lab</p><h2 id="lab-heading">Try the packet lab</h2><p>Change a network setup, predict what happens, and watch each packet hop.</p><Link className="home-button home-button-primary" href="/labs">Try a sample lab →</Link></div><div className="home-lab-topology" aria-hidden="true">{(["laptop", "switch", "router", "cloud", "server"] as const).map((kind, index) => <div className="home-lab-segment" key={kind}><span className="home-lab-device"><DeviceIcon kind={kind} /><small>{["PC", "Switch", "Router", "Internet", "Server"][index]}</small></span>{index < 4 ? <i /> : null}</div>)}</div></section>
       <section className="home-section" aria-labelledby="journey-heading"><div className="home-section-heading"><h2 id="journey-heading">Your learning journey</h2><p>Build understanding one module at a time.</p></div><div className="home-journey">{pathway.modules.map((module, index) => <div key={module.id}><span>{String(index + 1).padStart(2, "0")}</span><strong>{module.title}</strong><small>{module.lessons.filter((lesson) => lesson.published).length} lessons</small></div>)}</div></section>
       <section className="home-final"><h2>Build your networking skills today</h2><p>Start with a free lesson and learn what really happens when devices communicate.</p><div className="home-actions"><Link className="home-button home-button-primary" href={firstLesson}>Start learning free →</Link><Link className="home-button home-button-secondary" href="/sign-in">Create a free account</Link></div></section>
     </main>

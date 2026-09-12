@@ -6,7 +6,7 @@ const devices: { kind: DeviceKind; label: string }[] = [
   { kind: "server", label: "Server" },
 ];
 
-function DeviceIcon({ kind }: { kind: DeviceKind }) {
+export function DeviceIcon({ kind }: { kind: DeviceKind }) {
   const common = { fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
   if (kind === "laptop") return <svg viewBox="0 0 48 48" aria-hidden="true" {...common}><rect x="7" y="9" width="34" height="24" rx="2" /><path d="M4 37h40l-3 4H7zM11 29h26" /></svg>;
   if (kind === "switch") return <svg viewBox="0 0 48 48" aria-hidden="true" {...common}><rect x="5" y="16" width="38" height="17" rx="2" /><path d="M9 29h30" /><circle cx="13" cy="23" r="1" /><circle cx="21" cy="23" r="1" /><circle cx="29" cy="23" r="1" /><circle cx="37" cy="23" r="1" /></svg>;
