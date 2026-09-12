@@ -58,5 +58,12 @@ jobs:
             --override-name auth.service_role_key=TEST_SUPABASE_SERVICE_ROLE_KEY \
             >> "$GITHUB_ENV"
 
+      - name: Validate disposable browser configuration
+        run: |
+          test "${NEXT_PUBLIC_SUPABASE_URL:-}" = 'http://127.0.0.1:54321' || { echo 'Disposable API URL missing or unexpected'; exit 1; }
+          test -n "${NEXT_PUBLIC_SUPABASE_ANON_KEY:-}" || { echo 'Disposable anon key missing'; exit 1; }
+          test -n "${TEST_SUPABASE_SERVICE_ROLE_KEY:-}" || { echo 'Disposable service role key missing'; exit 1; }
+          echo 'Disposable URL and keys are present'
+
       - name: Verify live staff and learner browser boundaries
         run: pnpm exec playwright test --config=playwright.admin.config.ts
