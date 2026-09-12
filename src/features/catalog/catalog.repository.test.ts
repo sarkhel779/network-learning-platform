@@ -606,7 +606,7 @@ describe("catalog repository", () => {
     const lesson = getLesson("networking-foundations", "dhcp-and-automatic-address-configuration");
     expect(lesson).toMatchObject({ id: "lesson_dhcp_and_automatic_address_configuration", published: true, estimatedMinutes: 35 });
     expect(lesson.sections?.map(({ id, access }) => [id, access])).toEqual([
-      ["why-automatic-configuration-exists", "public"], ["dhcp-roles", "public"], ["udp-ports-67-68", "public"],
+      ["why-automatic-configuration-exists", "public"], ["packet-format", "public"], ["dhcp-roles", "public"], ["udp-ports-67-68", "public"],
       ["broadcast-unicast-rules", "public"], ["dhcp-packet-structure", "public"], ["interactive-dora-journey", "public"],
       ["lease-contents", "public"], ["lease-lifecycle", "public"], ["interactive-relay-helper", "public"],
       ["dhcp-boundaries", "public"], ["dhcp-evidence", "public"], ["summary", "public"],

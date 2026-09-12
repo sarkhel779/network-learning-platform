@@ -6,6 +6,34 @@ An IPv4 host needs an address, prefix, gateway, and usually DNS information befo
 
 <SectionContinue itemId="dhcp_automatic_address_configuration_section_why_automatic_configuration_exists" anchor="why-automatic-configuration-exists" />
 
+<h2 id="packet-format">Packet Format</h2>
+
+This is the layout inside a DHCP message. Read from top to bottom: the fixed fields identify the transaction and carry address information; the options at the end supply the configuration details.
+
+<div className="dhcp-packet-format-scroll" role="region" aria-label="IPv4 DHCP packet format diagram" tabIndex="0">
+  <table className="dhcp-packet-format">
+    <caption className="sr-only">IPv4 DHCP packet format</caption>
+    <tbody>
+      <tr><td>Operation code <code>op</code></td><td>Hardware type <code>htype</code></td><td>Hardware length <code>hlen</code></td><td>Hop count <code>hops</code></td></tr>
+      <tr><td colSpan="4">Transaction ID <code>xid</code></td></tr>
+      <tr><td colSpan="2">Number of seconds <code>secs</code></td><td colSpan="2">Flags <code>flags</code></td></tr>
+      <tr><td colSpan="4">Client IP address <code>ciaddr</code></td></tr>
+      <tr><td colSpan="4">Your IP address <code>yiaddr</code></td></tr>
+      <tr><td colSpan="4">Server IP address <code>siaddr</code></td></tr>
+      <tr><td colSpan="4">Gateway IP address <code>giaddr</code></td></tr>
+      <tr><td colSpan="4">Client hardware address (16 bytes) <code>chaddr</code></td></tr>
+      <tr><td colSpan="4">Server name (64 bytes) <code>sname</code></td></tr>
+      <tr><td colSpan="4">Boot file name (128 bytes) <code>file</code></td></tr>
+      <tr><td colSpan="4">Magic cookie (4 bytes)</td></tr>
+      <tr><td colSpan="4">Options (variable length)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p className="dhcp-packet-format-note">The address rows are separate fields, not four addresses every packet must use. For example, <code>yiaddr</code> is the address offered to the client, while <code>giaddr</code> identifies a relay when one forwards the request.</p>
+
+<SectionContinue itemId="dhcp_automatic_address_configuration_section_packet_format" anchor="packet-format" />
+
 <h2 id="dhcp-roles">DHCP roles: client, server, scope, lease, and relay</h2>
 
 The **client** requests configuration. The **server** selects values from a **scope**, a pool and policy for one subnet. A **lease** grants temporary use. A router or layer-3 switch acting as a **relay** (often configured with a helper address) carries client requests between broadcast domains; it does not replace the DHCP server.

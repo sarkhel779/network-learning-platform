@@ -5,10 +5,10 @@ import { describe, expect, it } from "vitest";
 const read = (tier: string) => readFileSync(join(process.cwd(), "src/content/networking-foundations", `dhcp-and-automatic-address-configuration.${tier}.mdx`), "utf8");
 
 describe("DHCP automatic address configuration content", () => {
-  it("keeps twelve exact beginner-first sections and two players public", () => {
+  it("keeps thirteen exact beginner-first sections and two players public", () => {
     const lesson = read("public");
     expect([...lesson.matchAll(/<h2 id="([^"]+)">([^<]+)<\/h2>/g)].map((match) => match[2])).toEqual([
-      "Why automatic configuration exists", "DHCP roles: client, server, scope, lease, and relay", "UDP ports 67 and 68",
+      "Why automatic configuration exists", "Packet Format", "DHCP roles: client, server, scope, lease, and relay", "UDP ports 67 and 68",
       "Broadcast and unicast rules", "DHCP packet structure", "Interactive DHCP DORA journey",
       "Lease contents: address, prefix, gateway, DNS, and lease time", "Lease lifecycle: allocation, T1 renewal, T2 rebinding, and expiry",
       "Interactive DHCP relay and helper-address journey", "DHCP boundaries and DHCPv6/SLAAC", "Common DHCP evidence and terminology", "Summary",

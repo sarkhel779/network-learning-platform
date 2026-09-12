@@ -427,6 +427,7 @@ const curriculum: Pathway[] = [
             published: true,
             sections: [
               { id: "why-automatic-configuration-exists", label: "Why automatic configuration exists", access: "public" },
+              { id: "packet-format", label: "Packet Format", access: "public" },
               { id: "dhcp-roles", label: "DHCP roles", access: "public" },
               { id: "udp-ports-67-68", label: "UDP ports 67 and 68", access: "public" },
               { id: "broadcast-unicast-rules", label: "Broadcast and unicast rules", access: "public" },

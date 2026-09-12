@@ -1127,6 +1127,15 @@ body:has(.labs-page) .site-header,body:has(.labs-page) .site-footer{background:#
 .home-lab-topology{overflow-x:auto}.home-lab-segment{display:flex;align-items:center;flex:1;min-width:0}.home-lab-segment:last-child{flex:0}.home-lab-topology .home-lab-device{display:grid;justify-items:center;gap:.35rem;min-width:3.5rem;padding:.2rem;border:0;background:none}.home-lab-device svg{width:2.7rem;height:2.7rem;color:#529bff;filter:drop-shadow(0 0 6px #358dff55)}.home-lab-device small{color:#b5c8da;font-size:.68rem}.home-lab-segment>i{min-width:1rem;flex:1;height:2px;background:repeating-linear-gradient(90deg,#23d6a8 0 6px,transparent 6px 12px)}
 .home-lab-topology .home-lab-segment:last-child{flex:0 0 3.5rem}
 
+.dhcp-packet-format-scroll{max-width:100%;overflow-x:auto;margin:1.2rem 0;border:1px solid #31556b;border-radius:.8rem;background:#0c1d2b}
+.dhcp-packet-format-scroll:focus-visible{outline:3px solid #72f4d6;outline-offset:3px}
+.dhcp-packet-format{width:100%;min-width:40rem;table-layout:fixed;border-collapse:separate;border-spacing:3px;padding:3px;color:#eaf8f6;text-align:center}
+.dhcp-packet-format td{padding:.62rem .45rem;border:1px solid #3b8b89;border-radius:.3rem;background:linear-gradient(135deg,#163d48,#1b4a46);font-weight:750;line-height:1.3}
+.dhcp-packet-format tr:nth-child(2) td,.dhcp-packet-format tr:nth-child(5) td,.dhcp-packet-format tr:nth-child(7) td{background:linear-gradient(135deg,#194852,#1d5951)}
+.dhcp-packet-format code{display:inline-block;margin-left:.3rem;color:#8eeed2;font-size:.78em;font-weight:600}
+.dhcp-packet-format-note{max-width:55rem;color:var(--muted)}
+.lesson-content #packet-format{scroll-margin-top:8rem}
+
 .site-header .site-nav a{display:inline-flex;align-items:center;min-height:2.7rem;padding:.5rem .15rem;border-bottom:2px solid transparent;text-decoration:none}
 .site-header .site-nav a[aria-current="page"]{border-bottom-color:#23d6a8;color:#23d6a8;font-weight:800}
 
