@@ -33,6 +33,16 @@ begin
     raise exception 'learner can list accounts';
   exception when insufficient_privilege then null;
   end;
+  begin
+    perform public.admin_get_learner('00000000-0000-4000-8000-000000000101');
+    raise exception 'learner can inspect another account';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    perform public.admin_update_learner('00000000-0000-4000-8000-000000000101', 'Wrong', 'beginner', null);
+    raise exception 'learner can update another account';
+  exception when insufficient_privilege then null;
+  end;
 end $$;
 
 set local request.jwt.claim.sub = '00000000-0000-4000-8000-000000000101';
@@ -52,6 +62,24 @@ begin
   end if;
   if jsonb_array_length(public.admin_list_learners('', 0, 1) -> 'rows') <> 1 then
     raise exception 'directory pagination failed';
+  end if;
+  perform public.admin_update_learner('00000000-0000-4000-8000-000000000102', 'Ada', 'beginner', 'Requested help');
+  if (public.admin_get_learner('00000000-0000-4000-8000-000000000102') ->> 'displayName') <> 'Ada' then
+    raise exception 'authorized profile update was not persisted';
+  end if;
+  if (select count(*) from public.admin_audit_events) <> 0 then
+    raise exception 'staff can directly read audit rows';
+  end if;
+end $$;
+
+reset role;
+do $$
+begin
+  if (select count(*) from public.admin_audit_events where action = 'learner_profile_updated') <> 1 then
+    raise exception 'authorized edit did not create exactly one audit event';
+  end if;
+  if (select count(*) from public.admin_learner_notes where body = 'Requested help') <> 1 then
+    raise exception 'internal note was not appended';
   end if;
 end $$;
 

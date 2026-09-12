@@ -111,4 +111,113 @@ grant execute on function public.admin_account_count() to authenticated;
 grant execute on function public.admin_joined_waitlist_count() to authenticated;
 grant execute on function public.admin_list_learners(text, integer, integer) to authenticated;
 
+create table public.admin_learner_notes (
+  id bigint generated always as identity primary key,
+  target_id uuid not null references auth.users(id) on delete cascade,
+  author_id uuid not null references auth.users(id),
+  body text not null check (char_length(body) between 1 and 1000),
+  created_at timestamptz not null default now()
+);
+
+create table public.admin_audit_events (
+  id bigint generated always as identity primary key,
+  actor_id uuid not null references auth.users(id),
+  target_id uuid references auth.users(id),
+  action text not null,
+  before_value jsonb,
+  after_value jsonb,
+  created_at timestamptz not null default now()
+);
+
+alter table public.admin_learner_notes enable row level security;
+alter table public.admin_audit_events enable row level security;
+revoke all on public.admin_learner_notes from anon, authenticated;
+revoke all on public.admin_audit_events from anon, authenticated;
+
+create function public.admin_get_learner(p_target_id uuid)
+returns jsonb
+language plpgsql security definer
+set search_path = ''
+as $$
+declare
+  v_role text := public.admin_staff_role();
+  v_result jsonb;
+begin
+  if v_role not in ('super_admin', 'support_agent') or v_role is null then
+    raise insufficient_privilege;
+  end if;
+  select jsonb_build_object(
+    'id', u.id, 'email', u.email, 'createdAt', u.created_at,
+    'displayName', p.display_name, 'learningLevel', p.learning_level,
+    'waitlistStatus', w.status,
+    'notes', coalesce((select jsonb_agg(jsonb_build_object('id', n.id, 'body', n.body, 'createdAt', n.created_at, 'authorId', n.author_id) order by n.created_at desc)
+      from public.admin_learner_notes n where n.target_id = u.id), '[]'::jsonb)
+  ) into v_result
+  from auth.users u
+  left join public.learner_profiles p on p.id = u.id
+  left join public.pro_waitlist_entries w on w.user_id = u.id
+  where u.id = p_target_id;
+  return v_result;
+end;
+$$;
+
+create function public.admin_update_learner(
+  p_target_id uuid,
+  p_display_name text,
+  p_learning_level public.learning_level,
+  p_note text default null
+)
+returns jsonb
+language plpgsql security definer
+set search_path = ''
+as $$
+declare
+  v_actor uuid := auth.uid();
+  v_role text := public.admin_staff_role();
+  v_before jsonb;
+  v_after jsonb;
+  v_note text := nullif(btrim(p_note), '');
+begin
+  if v_role not in ('super_admin', 'support_agent') or v_role is null then
+    raise insufficient_privilege;
+  end if;
+  if p_target_id is null or not exists (select 1 from auth.users where id = p_target_id) then
+    raise exception 'learner_not_found';
+  end if;
+  if char_length(p_display_name) > 80 or char_length(v_note) > 1000 then
+    raise exception 'invalid_learner_edit';
+  end if;
+  if exists (select 1 from public.staff_roles where user_id = p_target_id) then
+    raise exception 'staff_profile_edit_not_supported';
+  end if;
+
+  select jsonb_build_object('displayName', display_name, 'learningLevel', learning_level)
+  into v_before from public.learner_profiles where id = p_target_id for update;
+
+  insert into public.learner_profiles(id, display_name, learning_level)
+  values (p_target_id, nullif(btrim(p_display_name), ''), p_learning_level)
+  on conflict (id) do update set display_name = excluded.display_name, learning_level = excluded.learning_level;
+
+  select jsonb_build_object('displayName', display_name, 'learningLevel', learning_level)
+  into v_after from public.learner_profiles where id = p_target_id;
+
+  if v_before is distinct from v_after or v_note is not null then
+    if v_note is not null then
+      insert into public.admin_learner_notes(target_id, author_id, body)
+      values (p_target_id, v_actor, v_note);
+    end if;
+    insert into public.admin_audit_events(actor_id, target_id, action, before_value, after_value)
+    values (v_actor, p_target_id, 'learner_profile_updated', v_before,
+      v_after || case when v_note is null then '{}'::jsonb else '{"noteAdded":true}'::jsonb end);
+  end if;
+
+  return public.admin_get_learner(p_target_id);
+end;
+$$;
+
+revoke all on function public.admin_get_learner(uuid) from public;
+revoke all on function public.admin_update_learner(uuid, text, public.learning_level, text) from public;
+grant execute on function public.admin_get_learner(uuid) to authenticated;
+grant execute on function public.admin_update_learner(uuid, text, public.learning_level, text) to authenticated;
+
 commit;

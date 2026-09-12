@@ -4,7 +4,7 @@ const mocks = vi.hoisted(() => ({ createServerSupabaseClient: vi.fn(), rpc: vi.f
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/supabase/server", () => ({ createServerSupabaseClient: mocks.createServerSupabaseClient }));
 
-import { listLearners, loadAdminOverview } from "./admin.repository";
+import { getLearnerDetail, listLearners, loadAdminOverview } from "./admin.repository";
 
 beforeEach(() => {
   mocks.rpc.mockReset();
@@ -27,5 +27,12 @@ describe("admin repository", () => {
     expect(mocks.rpc).toHaveBeenCalledWith("admin_list_learners", {
       p_query: "subnet", p_offset: 0, p_limit: 50,
     });
+  });
+
+  it("loads one authorized learner detail through a narrow RPC", async () => {
+    const learner = { id: "00000000-0000-4000-8000-000000000102", email: "learner@example.test", displayName: "Ada", learningLevel: "beginner", notes: [] };
+    mocks.rpc.mockResolvedValue({ data: learner, error: null });
+    await expect(getLearnerDetail(learner.id)).resolves.toEqual(learner);
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_get_learner", { p_target_id: learner.id });
   });
 });

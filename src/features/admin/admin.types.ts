@@ -20,6 +20,10 @@ export type LearnerRow = {
   waitlistStatus: "joined" | "unsubscribed" | null;
 };
 
+export type LearnerDetail = LearnerRow & {
+  notes: { id: number; body: string; createdAt: string; authorId: string }[];
+};
+
 export type AdminOverview = {
   accounts: number | null;
   joinedWaitlist: number | null;

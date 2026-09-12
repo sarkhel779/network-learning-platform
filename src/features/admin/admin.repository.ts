@@ -2,7 +2,7 @@ import "server-only";
 
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-import type { AdminOverview, LearnerRow } from "./admin.types";
+import type { AdminOverview, LearnerDetail, LearnerRow } from "./admin.types";
 
 function countOrNull(data: unknown): number | null {
   const value = typeof data === "number" ? data : typeof data === "string" ? Number(data) : NaN;
@@ -43,4 +43,11 @@ export async function listLearners({ query = "", offset = 0, limit = 20 }: Learn
   const total = countOrNull(result.total);
   if (total === null || !Array.isArray(result.rows)) throw new Error("Learner directory unavailable");
   return { rows: result.rows as LearnerRow[], total };
+}
+
+export async function getLearnerDetail(targetId: string): Promise<LearnerDetail | null> {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.rpc("admin_get_learner", { p_target_id: targetId });
+  if (error) throw new Error("Learner detail unavailable");
+  return data ? data as LearnerDetail : null;
 }
