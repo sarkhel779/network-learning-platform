@@ -8,6 +8,11 @@ values
 insert into public.staff_roles (user_id, role)
 values ('00000000-0000-4000-8000-000000000101', 'support_agent');
 
+insert into public.pro_waitlist_entries (user_id, email, status, consent_version, consented_at, unsubscribed_at)
+values
+  ('00000000-0000-4000-8000-000000000101', 'admin-test@example.test', 'unsubscribed', 'test-v1', now(), now()),
+  ('00000000-0000-4000-8000-000000000102', 'learner-test@example.test', 'joined', 'test-v1', now(), null);
+
 set local role authenticated;
 set local request.jwt.claim.sub = '00000000-0000-4000-8000-000000000102';
 do $$
@@ -53,6 +58,12 @@ begin
     raise exception 'learner can inspect audit events';
   exception when insufficient_privilege then null;
   end;
+  begin
+    insert into public.admin_audit_events(actor_id, action)
+    values ('00000000-0000-4000-8000-000000000102', 'forged');
+    raise exception 'learner can append audit events directly';
+  exception when insufficient_privilege then null;
+  end;
 end $$;
 
 set local request.jwt.claim.sub = '00000000-0000-4000-8000-000000000101';
@@ -67,6 +78,9 @@ begin
   if public.admin_account_count() < 2 then
     raise exception 'account count omitted users';
   end if;
+  if public.admin_joined_waitlist_count() <> 1 then
+    raise exception 'waitlist count included an unsubscribed member';
+  end if;
   if (public.admin_list_learners('', 0, 1) ->> 'total')::integer < 2 then
     raise exception 'directory count omitted users';
   end if;
@@ -77,9 +91,16 @@ begin
   if (public.admin_get_learner('00000000-0000-4000-8000-000000000102') ->> 'displayName') <> 'Ada' then
     raise exception 'authorized profile update was not persisted';
   end if;
-  if (select count(*) from public.admin_audit_events) <> 0 then
+  begin
+    perform count(*) from public.admin_audit_events;
     raise exception 'staff can directly read audit rows';
-  end if;
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    perform count(*) from public.admin_learner_notes;
+    raise exception 'staff can directly read internal notes';
+  exception when insufficient_privilege then null;
+  end;
   if (public.admin_list_audit(0, 20) ->> 'total')::integer <> 1 then
     raise exception 'authorized audit read omitted the profile edit';
   end if;
@@ -89,6 +110,11 @@ begin
   if public.admin_page_view_count(now() - interval '1 day', now() + interval '1 hour') <> 2 then
     raise exception 'page view retry was double-counted';
   end if;
+  begin
+    perform count(*) from public.page_views;
+    raise exception 'staff can directly read raw page views';
+  exception when insufficient_privilege then null;
+  end;
 end $$;
 
 reset role;
