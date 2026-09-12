@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const publicPath = /^(?:\/|\/(?:pricing|labs|contact|privacy|terms|sign-in)(?:\/[a-z0-9-]+)*|\/(?:paths|learn)\/[a-z0-9-]+(?:\/[a-z0-9-]+)*)$/;
+const publicPath = /^(?:\/|\/(?:about|pricing|labs|contact|privacy|terms|sign-in)(?:\/[a-z0-9-]+)*|\/(?:paths|learn)\/[a-z0-9-]+(?:\/[a-z0-9-]+)*)$/;
 
 export function isPublicPagePath(value: string): boolean {
   return value.length <= 200 && publicPath.test(value);

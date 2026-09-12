@@ -9,15 +9,17 @@ function countOrNull(data: unknown): number | null {
   return Number.isSafeInteger(value) && value >= 0 ? value : null;
 }
 
-export async function loadAdminOverview(): Promise<AdminOverview> {
+export async function loadAdminOverview(days: 7 | 30 | 90 = 30): Promise<AdminOverview> {
   try {
     const supabase = await createServerSupabaseClient();
+    const rangeDays = days === 7 || days === 90 ? days : 30;
+    const to = new Date();
     const [accounts, joinedWaitlist, pageViews] = await Promise.all([
       supabase.rpc("admin_account_count"),
       supabase.rpc("admin_joined_waitlist_count"),
       supabase.rpc("admin_page_view_count", {
-        p_from: new Date(Date.now() - 30 * 86400000).toISOString(),
-        p_to: new Date().toISOString(),
+        p_from: new Date(to.getTime() - rangeDays * 86400000).toISOString(),
+        p_to: to.toISOString(),
       }),
     ]);
     return {

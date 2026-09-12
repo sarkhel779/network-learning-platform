@@ -270,7 +270,7 @@ set search_path = ''
 as $$
 begin
   if p_event_id is null or p_path is null or char_length(p_path) > 200 or
-     p_path !~ '^(/|/(pricing|labs|contact|privacy|terms|sign-in)(/[a-z0-9-]+)*|/(paths|learn)/[a-z0-9-]+(/[a-z0-9-]+)*)$' then
+     p_path !~ '^(/|/(about|pricing|labs|contact|privacy|terms|sign-in)(/[a-z0-9-]+)*|/(paths|learn)/[a-z0-9-]+(/[a-z0-9-]+)*)$' then
     raise exception 'invalid_page_view';
   end if;
   insert into public.page_views(event_id, path)

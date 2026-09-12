@@ -21,6 +21,15 @@ describe("admin repository", () => {
     await expect(loadAdminOverview()).resolves.toMatchObject({ accounts: 0, joinedWaitlist: null, pageViews: 12 });
   });
 
+  it("uses a validated page-view range without changing account totals", async () => {
+    mocks.rpc.mockResolvedValue({ data: 5, error: null });
+    await loadAdminOverview(7);
+    const range = mocks.rpc.mock.calls.find(([name]) => name === "admin_page_view_count")?.[1];
+    expect(new Date(range.p_to).getTime() - new Date(range.p_from).getTime()).toBe(7 * 86400000);
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_account_count");
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_joined_waitlist_count");
+  });
+
   it("clamps pagination and trims learner search before calling the database", async () => {
     mocks.rpc.mockResolvedValue({ data: { total: 0, rows: [] }, error: null });
     await expect(listLearners({ query: "  subnet  ", offset: -2, limit: 999 })).resolves.toEqual({ rows: [], total: 0 });

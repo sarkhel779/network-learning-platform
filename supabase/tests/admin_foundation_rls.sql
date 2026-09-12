@@ -107,9 +107,10 @@ set local role anon;
 set local request.jwt.claim.sub = '';
 do $$
 begin
-  if public.admin_staff_role() is not null then
-    raise exception 'anonymous role lookup returned staff';
-  end if;
+  perform public.admin_staff_role();
+  raise exception 'anonymous role lookup was unexpectedly executable';
+exception
+  when insufficient_privilege then null;
 end $$;
 
 rollback;

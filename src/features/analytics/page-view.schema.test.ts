@@ -5,7 +5,7 @@ import { parsePageView } from "./page-view.schema";
 const eventId = "00000000-0000-4000-8000-000000000201";
 
 describe("page-view input", () => {
-  it.each(["/", "/pricing", "/paths/networking-foundations", "/learn/networking-foundations/dhcp-and-automatic-address-configuration", "/labs"])('accepts a public path %s', (path) => {
+  it.each(["/", "/about", "/pricing", "/paths/networking-foundations", "/learn/networking-foundations/dhcp-and-automatic-address-configuration", "/labs"])('accepts a public path %s', (path) => {
     expect(parsePageView({ path, eventId })).toEqual({ path, eventId });
   });
 

@@ -1518,6 +1518,9 @@ body:has(.admin-shell) .site-header,body:has(.admin-shell) .site-footer{display:
 .admin-panel{padding:1.3rem}.admin-panel h2{margin:0 0 1rem;color:#fff;font-size:1.08rem}.admin-panel p,.admin-panel dd,.admin-metric-note{color:#aab9d1;line-height:1.55}
 .admin-panel__heading{display:flex;align-items:center;justify-content:space-between;gap:1rem}.admin-panel__heading a,.admin-page a{color:#4ce9c0}
 .admin-metric-note{font-size:.83rem;margin-top:1rem}
+.admin-range{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin:0 0 1.25rem;color:#aab9d1;font-size:.88rem}
+.admin-range a{color:#aab9d1;text-decoration:none;border:1px solid #34465d;border-radius:.45rem;padding:.35rem .6rem;transition:border-color 150ms ease,color 150ms ease}
+.admin-range a:hover,.admin-range a:focus-visible,.admin-range a[aria-current="page"]{border-color:#32dcb4;color:#67efd2}
 .admin-search{display:flex;align-items:end;gap:.65rem;flex-wrap:wrap;margin:1rem 0}.admin-search label{width:100%;color:#aab9d1;font-size:.85rem}
 .admin-search input,.admin-learner-editor input,.admin-learner-editor select,.admin-learner-editor textarea{min-height:2.6rem;padding:.6rem .7rem;border:1px solid #35475e;border-radius:.5rem;background:#0c1523;color:#f5f8fc;font:inherit}
 .admin-search input{width:min(100%,24rem)}.admin-search button,.admin-learner-editor button{min-height:2.6rem;padding:.55rem 1rem;border:1px solid #31ddae;border-radius:.5rem;background:#27d4aa;color:#06251f;font:inherit;font-weight:800;cursor:pointer}
