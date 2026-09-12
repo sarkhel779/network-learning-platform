@@ -18,13 +18,14 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe("launch trust pages", () => {
-  it("accurately explains account data and the absence of analytics and payments", () => {
+  it("discloses minimal first-party page-view counting and the absence of payments", () => {
     render(<PrivacyPage />);
 
     expect(screen.getByRole("heading", { name: "Privacy" })).toBeInTheDocument();
     expect(screen.getByText(/Supabase/i)).toBeInTheDocument();
     expect(screen.getByText(/learning progress/i)).toBeInTheDocument();
-    expect(screen.getByText(/no analytics service/i)).toBeInTheDocument();
+    expect(screen.getByText(/total page views/i)).toBeInTheDocument();
+    expect(screen.getByText(/does not store.*IP address/i)).toBeInTheDocument();
     expect(screen.getByText(/does not collect payments/i)).toBeInTheDocument();
     expect(screen.queryByText(/has no user accounts/i)).not.toBeInTheDocument();
     expect(screen.getByText(/waitlist status/i)).toBeInTheDocument();

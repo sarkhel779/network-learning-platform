@@ -26,8 +26,15 @@ export default function PrivacyPage() {
         later rejoin with fresh consent.
       </p>
       <p>
-        No analytics service is configured, and Packetsecrets does not collect payments at this
-        stage. This notice will be updated before either capability is introduced.
+        Packetsecrets counts total page views using a first-party request when a public page is
+        opened. The page-view record contains a page path, timestamp, and random retry identifier.
+        It does not store an IP address, account ID, cookie, full query string, or browser fingerprint
+        in that record. The count is not a count of unique people and starts when this feature is
+        deployed; blocking scripts may prevent a view from being counted.
+      </p>
+      <p>
+        Packetsecrets does not collect payments at this stage. Billing information will be added
+        to this notice before payment collection begins.
       </p>
     </main>
   );

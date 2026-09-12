@@ -220,4 +220,51 @@ revoke all on function public.admin_update_learner(uuid, text, public.learning_l
 grant execute on function public.admin_get_learner(uuid) to authenticated;
 grant execute on function public.admin_update_learner(uuid, text, public.learning_level, text) to authenticated;
 
+create table public.page_views (
+  event_id uuid primary key,
+  path text not null check (char_length(path) between 1 and 200),
+  created_at timestamptz not null default now()
+);
+
+create index page_views_created_at_idx on public.page_views(created_at);
+alter table public.page_views enable row level security;
+revoke all on public.page_views from anon, authenticated;
+
+create function public.record_page_view(p_event_id uuid, p_path text)
+returns void
+language plpgsql security definer
+set search_path = ''
+as $$
+begin
+  if p_event_id is null or p_path is null or char_length(p_path) > 200 or
+     p_path !~ '^(/|/(pricing|labs|contact|privacy|terms|sign-in)(/[a-z0-9-]+)*|/(paths|learn)/[a-z0-9-]+(/[a-z0-9-]+)*)$' then
+    raise exception 'invalid_page_view';
+  end if;
+  insert into public.page_views(event_id, path)
+  values (p_event_id, p_path)
+  on conflict (event_id) do nothing;
+end;
+$$;
+
+create function public.admin_page_view_count(p_from timestamptz, p_to timestamptz)
+returns bigint
+language plpgsql stable security definer
+set search_path = ''
+as $$
+begin
+  if public.admin_staff_role() is null then
+    raise insufficient_privilege;
+  end if;
+  if p_from is null or p_to is null or p_to <= p_from or p_to > now() + interval '1 day' then
+    raise exception 'invalid_page_view_range';
+  end if;
+  return (select count(*) from public.page_views where created_at >= p_from and created_at < p_to);
+end;
+$$;
+
+revoke all on function public.record_page_view(uuid, text) from public;
+revoke all on function public.admin_page_view_count(timestamptz, timestamptz) from public;
+grant execute on function public.record_page_view(uuid, text) to anon, authenticated;
+grant execute on function public.admin_page_view_count(timestamptz, timestamptz) to authenticated;
+
 commit;

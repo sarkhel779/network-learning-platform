@@ -43,6 +43,11 @@ begin
     raise exception 'learner can update another account';
   exception when insufficient_privilege then null;
   end;
+  begin
+    perform public.admin_page_view_count(now() - interval '1 day', now());
+    raise exception 'learner can inspect page view totals';
+  exception when insufficient_privilege then null;
+  end;
 end $$;
 
 set local request.jwt.claim.sub = '00000000-0000-4000-8000-000000000101';
@@ -69,6 +74,12 @@ begin
   end if;
   if (select count(*) from public.admin_audit_events) <> 0 then
     raise exception 'staff can directly read audit rows';
+  end if;
+  perform public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing');
+  perform public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing');
+  perform public.record_page_view('00000000-0000-4000-8000-000000000202', '/labs');
+  if public.admin_page_view_count(now() - interval '1 day', now() + interval '1 hour') <> 2 then
+    raise exception 'page view retry was double-counted';
   end if;
 end $$;
 

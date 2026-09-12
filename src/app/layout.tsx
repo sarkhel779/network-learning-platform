@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { PageViewRecorder } from "@/features/analytics/page-view-recorder";
 import { listPathways } from "@/features/catalog/catalog.repository";
 import { getViewer } from "@/lib/supabase/session";
 
@@ -26,6 +27,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       </head>
       <body>
         <SiteHeader lessons={searchableLessons} signedIn={Boolean(viewer)} />
+        <PageViewRecorder />
         {children}
         <SiteFooter />
       </body>
