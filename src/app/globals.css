@@ -930,7 +930,15 @@ h1 {
 .dhcp-topology { max-width: 100%; margin: 0; padding: .75rem; overflow-x: auto; border: 2px dashed var(--accent); border-radius: .7rem; background: var(--background); }
 .dhcp-topology > p { min-width: max-content; margin: 0 0 .5rem; text-align: center; }
 .dhcp-topology svg { display: block; width: 100%; min-width: 42rem; height: auto; }
-.dhcp-topology line, .dhcp-topology circle, .dhcp-topology rect { stroke: var(--accent); stroke-width: 3; fill: color-mix(in srgb, var(--accent) 8%, var(--background)); }
+.dhcp-topology__link { fill: none; stroke: var(--accent); stroke-width: 3; stroke-dasharray: 8 7; }
+.dhcp-topology__device { fill: #14243a; stroke: #56a3ff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.dhcp-topology__device circle { fill: var(--accent); stroke: none; }
+.dhcp-topology__screen { fill: #101820; }
+.dhcp-topology__packet { animation: dhcp-packet-hop 1.25s ease-in-out both; filter: drop-shadow(0 0 8px var(--accent)); }
+.dhcp-topology__packet circle { fill: var(--accent); stroke: var(--background); stroke-width: 2; }
+.dhcp-topology__packet path { fill: none; stroke: var(--background); stroke-width: 1.5; }
+@keyframes dhcp-packet-hop { from { translate: 0 0; opacity: .5; } to { translate: var(--packet-distance) 0; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .dhcp-topology__packet { animation: none; translate: var(--packet-distance) 0; } }
 .dhcp-topology text { fill: var(--foreground); font-weight: 700; }
 .dhcp-packet-inspector { display: grid; gap: .75rem; min-width: 0; max-width: 100%; }
 .dhcp-inspector-region { min-width: 0; padding: .75rem; border: 1px solid var(--border); border-radius: .6rem; background: var(--background); }
