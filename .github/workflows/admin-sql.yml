@@ -8,6 +8,13 @@ on:
       - "supabase/tests/admin_foundation_rls.sql"
       - "tests/e2e/admin-live.spec.ts"
       - "playwright.admin.config.ts"
+      - "src/app/admin/**"
+      - "src/app/api/page-view/**"
+      - "src/app/dashboard/**"
+      - "src/features/admin/**"
+      - "src/features/analytics/**"
+      - "src/lib/env/public-env.ts"
+      - "src/lib/supabase/**"
 
 permissions:
   contents: read

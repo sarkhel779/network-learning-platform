@@ -1,4 +1,4 @@
-import { render, waitFor } from "@testing-library/react";
+import { act, render, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({ pathname: "/pricing" }));
@@ -27,5 +27,37 @@ describe("PageViewRecorder", () => {
     render(<PageViewRecorder />);
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it("retries a transient server failure with the same event id", async () => {
+    vi.useFakeTimers();
+    try {
+      vi.stubGlobal("fetch", vi.fn()
+        .mockResolvedValueOnce({ ok: false, status: 503 })
+        .mockResolvedValueOnce({ ok: true, status: 204 }));
+      render(<PageViewRecorder />);
+      await act(async () => { await Promise.resolve(); });
+      expect(fetch).toHaveBeenCalledTimes(1);
+      await act(async () => { await vi.advanceTimersByTimeAsync(1000); });
+      expect(fetch).toHaveBeenCalledTimes(2);
+      const first = JSON.parse(vi.mocked(fetch).mock.calls[0][1]?.body as string);
+      const second = JSON.parse(vi.mocked(fetch).mock.calls[1][1]?.body as string);
+      expect(second.eventId).toBe(first.eventId);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("does not retry a permanent bad-request response", async () => {
+    vi.useFakeTimers();
+    try {
+      vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 400 }));
+      render(<PageViewRecorder />);
+      await act(async () => { await Promise.resolve(); });
+      await act(async () => { await vi.advanceTimersByTimeAsync(3000); });
+      expect(fetch).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
