@@ -1133,9 +1133,9 @@ body:has(.labs-page) .site-header,body:has(.labs-page) .site-footer{background:#
 /* Underline-free navigation and lesson links; retain obvious hover and focus states. */
 a,a:hover,a:focus-visible,a *,a:hover *{text-decoration:none!important}
 .sign-in-form .sign-in-text-action{text-decoration:none;border-bottom:0}.sign-in-form .sign-in-text-action:hover{background:color-mix(in srgb,var(--accent) 10%,transparent)}
-.site-header .site-nav a{padding:.5rem .75rem;border:1px solid transparent;border-radius:.55rem;transition:background-color .16s,color .16s,border-color .16s}
-.site-header .site-nav a:hover{background:#183348;color:#56eac9}
-.site-header .site-nav a[aria-current="page"]{border-color:#2d9f8b;background:#174538;color:#6bf2ce;font-weight:800}
+.site-header .site-nav a{padding:.5rem .15rem;border:0;border-radius:0;background:transparent;transition:color .16s}
+.site-header .site-nav a:hover{background:transparent;color:#56eac9}
+.site-header .site-nav a[aria-current="page"]{border-color:transparent;background:transparent;color:#6bf2ce;font-weight:800}
 .curriculum-navigation__lesson>a:hover,.primary-link:hover{background:color-mix(in srgb,var(--accent) 10%,transparent)}
 .header-search{position:relative;display:flex;align-items:center;width:clamp(12rem,19vw,16rem);min-height:2.7rem;border:1px solid #30435d;border-radius:.55rem;background:#111c2c;color:#a9bbcb}
 .header-search:focus-within{border-color:#56eac9;box-shadow:0 0 0 2px #23d6a830}
@@ -1148,8 +1148,8 @@ a,a:hover,a:focus-visible,a *,a:hover *{text-decoration:none!important}
 .header-search__results a:hover,.header-search__results a:focus-visible{background:#1a4150}
 .header-search__results small{color:#b9cbd6;line-height:1.35}
 .header-search__results p{margin:.4rem;padding:.5rem;color:#b9cbd6}
-@media(min-width:1100px){.site-chrome{flex-wrap:nowrap;gap:1rem}.site-header__actions{flex-wrap:nowrap;gap:.55rem}.site-header .site-nav{flex-wrap:nowrap;gap:.1rem}.header-search{width:13.5rem;flex:none}}
-@media(max-width:700px){.site-header__actions{width:100%}.site-header .site-nav{width:100%;gap:.15rem}.header-search{order:2;width:100%}.site-header__sign-in,.site-header__get-started,.theme-control{order:3}}
+@media(min-width:1100px){.site-chrome{flex-wrap:nowrap;gap:1rem}.site-header__actions{flex-wrap:nowrap;gap:.55rem}.site-header .site-nav{flex-wrap:nowrap;gap:.9rem}.header-search{width:13.5rem;flex:none}}
+@media(max-width:700px){.site-header__actions{width:100%}.site-header .site-nav{width:100%;gap:.8rem}.header-search{order:2;width:100%}.site-header__sign-in,.site-header__get-started,.theme-control{order:3}}
 
 /* Packet Labs MVP */
 .labs-page{min-height:100vh;padding:3rem max(1rem,calc((100vw - 1200px)/2));background:#0b111c;color:#f5f8fc}

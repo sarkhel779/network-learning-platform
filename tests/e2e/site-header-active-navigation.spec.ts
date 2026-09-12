@@ -15,6 +15,15 @@ test("primary navigation highlights the current section as learners move through
     const navigation = page.getByRole("navigation", { name: "Primary navigation" });
     await expect(navigation.getByRole("link", { name: active })).toHaveAttribute("aria-current", "page");
     await expect(navigation.locator('a[aria-current="page"]')).toHaveCount(1);
-    await expect(navigation.getByRole("link", { name: active })).toHaveCSS("border-bottom-color", "rgb(35, 214, 168)");
+    const activeLink = navigation.getByRole("link", { name: active });
+    await expect(activeLink).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await expect(activeLink).toHaveCSS("border-top-color", "rgba(0, 0, 0, 0)");
+    await expect(activeLink).toHaveCSS("color", "rgb(107, 242, 206)");
   }
+
+  await page.goto("/labs", { waitUntil: "domcontentloaded" });
+  const courses = page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Courses" });
+  await courses.hover();
+  await expect(courses).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+  await expect(courses).toHaveCSS("color", "rgb(86, 234, 201)");
 });
