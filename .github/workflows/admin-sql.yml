@@ -6,6 +6,8 @@ on:
       - ".github/workflows/admin-sql.yml"
       - "supabase/migrations/**"
       - "supabase/tests/admin_foundation_rls.sql"
+      - "tests/e2e/admin-live.spec.ts"
+      - "playwright.admin.config.ts"
 
 permissions:
   contents: read
@@ -13,7 +15,7 @@ permissions:
 jobs:
   admin-sql:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
 
@@ -25,11 +27,36 @@ jobs:
       - name: Initialize disposable Supabase project
         run: supabase init
 
-      - name: Apply migrations to fresh local database
-        run: supabase db start
+      - name: Start disposable Supabase services and apply migrations
+        run: supabase start
 
       - name: Install PostgreSQL client if needed
         run: command -v psql >/dev/null || (sudo apt-get update && sudo apt-get install -y postgresql-client)
 
       - name: Verify admin authorization and RLS
         run: psql 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' -v ON_ERROR_STOP=1 -f supabase/tests/admin_foundation_rls.sql
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install app dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium for browser checks
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Export disposable Supabase keys for browser checks
+        run: |
+          supabase status -o env \
+            --override-name api.url=NEXT_PUBLIC_SUPABASE_URL \
+            --override-name auth.anon_key=NEXT_PUBLIC_SUPABASE_ANON_KEY \
+            --override-name auth.service_role_key=TEST_SUPABASE_SERVICE_ROLE_KEY \
+            >> "$GITHUB_ENV"
+
+      - name: Verify live staff and learner browser boundaries
+        run: pnpm exec playwright test --config=playwright.admin.config.ts
