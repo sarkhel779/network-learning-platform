@@ -5,6 +5,22 @@ import { describe, expect, it } from "vitest";
 const css = readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8");
 
 describe("system theme and table styles", () => {
+  it("uses the approved navy and teal as the default site palette", () => {
+    const root = css.match(/:root\s*\{([^}]+)\}/)?.[1] ?? "";
+    expect(root).toMatch(/--background:\s*#0b111c\s*;/);
+    expect(root).toMatch(/--foreground:\s*#f5f8fc\s*;/);
+    expect(root).toMatch(/--accent:\s*#23d6a8\s*;/);
+    expect(css).toMatch(/\.site-logo__packet\s*\{[^}]*color:\s*#fff/);
+    expect(css).toMatch(/\.site-logo__secrets\s*\{[^}]*color:\s*#23d6a8/);
+  });
+  it("gives the landing hero a gentle transition with a reduced-motion fallback", () => {
+    expect(css).toMatch(/@keyframes\s+home-ambient-shift/);
+    expect(css).toMatch(/\.home-hero::before\s*\{[^}]*animation:\s*home-ambient-shift/);
+    expect(css).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[^}]*\.home-hero::before\s*\{[^}]*animation:\s*none/);
+  });
+  it("keeps the sign-in brand heading within its card", () => {
+    expect(css).toMatch(/\.sign-in-card h1\s*\{[^}]*max-width:\s*none/);
+  });
   it("keeps connection panels and technical requirements inside their mobile containers", () => {
     const style = document.createElement("style");
     style.textContent = css;

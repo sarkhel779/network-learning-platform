@@ -48,6 +48,7 @@ export function PacketFlowPlayer({
   const currentStep = scenario.steps[state.stepIndex];
   const atFinalStep = state.stepIndex === state.stepCount - 1;
   const resolvedHeadingId = headingId ?? `${scenario.id}-title`;
+  const isFirstLesson = scenario.id === "network-communication-arp-icmp";
   const handleDeviceSelect = onDeviceSelect
     ? (deviceId: string) => {
         dispatch({ type: "pause" });
@@ -85,13 +86,15 @@ export function PacketFlowPlayer({
 
   return (
     <section
-      className="packet-flow"
+      className={isFirstLesson ? "packet-flow packet-flow--first-lesson" : "packet-flow"}
       {...(suppressHeading && !headingId
         ? { "aria-label": scenario.title }
         : { "aria-labelledby": resolvedHeadingId })}
     >
       {suppressHeading ? null : <h2 id={resolvedHeadingId}>Interactive packet journey</h2>}
       <p>{scenario.description}</p>
+      {isFirstLesson ? <nav aria-label="Packet lab sections" className="first-lesson-lab-nav"><a href="#first-packet-topology">Lab topology</a><a href="#first-packet-flow">Packet flow</a><a href="#first-packet-details">Packet details</a></nav> : null}
+      <div id={isFirstLesson ? "first-packet-topology" : undefined}>
       <NetworkTopology
         scenario={scenario}
         step={currentStep}
@@ -99,8 +102,11 @@ export function PacketFlowPlayer({
         selectedDeviceId={selectedDeviceId}
         onDeviceSelect={handleDeviceSelect}
       />
+      </div>
+      <div id={isFirstLesson ? "first-packet-flow" : undefined}>
       <PlaybackControls state={state} dispatch={dispatch} reducedMotion={reducedMotion} />
-      <div className="packet-flow-details">
+      </div>
+      <div className="packet-flow-details" id={isFirstLesson ? "first-packet-details" : undefined}>
         <section className="packet-flow-progress" aria-live="polite" aria-atomic="true">
           <p>Step {state.stepIndex + 1} of {state.stepCount}</p>
           <h3>{currentStep.title}</h3>
