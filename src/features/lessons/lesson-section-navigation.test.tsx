@@ -64,6 +64,7 @@ describe("LessonSectionNavigation", () => {
 
     const navigation = screen.getByRole("navigation", { name: "Page contents" });
     const disclosure = within(navigation).getByRole("button", { name: "Page contents" });
+    expect(disclosure).toHaveTextContent(/^Page contents$/);
     expect(within(disclosure).queryByText("▣")).not.toBeInTheDocument();
     expect(disclosure).toHaveAttribute("aria-expanded", "false");
     expect(within(navigation).queryByText("Resolver")).not.toBeInTheDocument();

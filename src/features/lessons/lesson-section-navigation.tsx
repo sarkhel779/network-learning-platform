@@ -107,8 +107,7 @@ export function LessonSectionNavigation({ sections, presentation = "list", locke
           onClick={toggleMap}
           type="button"
         >
-            <strong>Page contents</strong>
-          <span className="dns-map__toggle network-map__toggle" aria-hidden="true">⌄</span>
+          <strong>Page contents</strong>
         </button>
         {isMapOpen ? (
           <div className="dns-map__panel network-map__panel" id={panelId}>
