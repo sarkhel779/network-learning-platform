@@ -7,9 +7,15 @@ const allowedReturnPaths = new Set([
   "/",
   ...listPathways().flatMap(({ slug }) => [
     `/paths/${slug}`,
-    ...listPublishedLessons(slug).map(
-      (lesson) => `/learn/${slug}/${lesson.slug}`,
-    ),
+    ...listPublishedLessons(slug).flatMap((lesson) => {
+      const path = `/learn/${slug}/${lesson.slug}`;
+      return [
+        path,
+        ...(lesson.sections ?? [])
+          .filter((section) => section.id.includes("knowledge-check") || section.id === "knowledge-summary")
+          .map((section) => `${path}#${section.id}`),
+      ];
+    }),
   ]),
 ]);
 

@@ -30,3 +30,14 @@ test("desktop shows the whole packet path without clipping the server", async ({
   }));
   expect(bounds.serverRight).toBeLessThanOrEqual(bounds.panelRight);
 });
+
+test("account quiz link signs in before returning to its exact lesson check", async ({ page }) => {
+  await page.goto("/labs");
+  await page.getByText(/Show \d+ lesson checks/).click();
+  await page.getByRole("link", { name: /A Packet’s First Journey Through a Small Network.*Free account/i }).click();
+  await expect(page).toHaveURL(/\/sign-in\?returnTo=/);
+  await expect(page.getByRole("link", { name: "Back to your lesson" })).toHaveAttribute(
+    "href",
+    "/learn/networking-foundations/first-packet-journey-through-a-small-network#knowledge-check-summary",
+  );
+});

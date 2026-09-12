@@ -12,7 +12,7 @@ describe("Labs entry points", () => {
     expect(html).toContain("/learn/networking-foundations/first-packet-journey-through-a-small-network#complete-packet-journey");
     expect(html).toContain("/learn/networking-foundations/dhcp-and-automatic-address-configuration#interactive-dora-journey");
     expect(html).toContain("Browse lesson quizzes");
-    expect(html).toContain('href="/learn/networking-foundations/first-packet-journey-through-a-small-network#knowledge-check-summary"');
+    expect(html).toContain('href="/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Ffirst-packet-journey-through-a-small-network%23knowledge-check-summary"');
   });
 
   it("exposes Labs in real site navigation without placeholder sections", () => {

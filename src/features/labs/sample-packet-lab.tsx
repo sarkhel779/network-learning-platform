@@ -31,7 +31,10 @@ export function SamplePacketLab() {
 
   useEffect(() => {
     if (!playing || index >= journey.length - 1) return;
-    const timer = window.setTimeout(() => setIndex((current) => current + 1), 1650);
+    const timer = window.setTimeout(() => {
+      setIndex(index + 1);
+      if (index + 1 >= journey.length - 1) setPlaying(false);
+    }, 1650);
     return () => window.clearTimeout(timer);
   }, [index, journey.length, playing]);
 
@@ -70,6 +73,6 @@ export function SamplePacketLab() {
     </div>
     <p className="sample-lab__stage" role="status">Hop {index + 1} of {journey.length}: {step.title}{step.outcome === "blocked" ? " · blocked" : step.outcome === "delivered" ? " · delivered" : ""}</p>
     <div className="sample-lab__controls"><button type="button" onClick={() => setPlaying((value) => !value)} disabled={index >= journey.length - 1}>{playing ? "Pause" : "Play packet flow"}</button><button type="button" onClick={() => { setPlaying(false); setIndex((current) => Math.min(current + 1, journey.length - 1)); }} disabled={index >= journey.length - 1}>Next hop</button><button type="button" onClick={() => { setPlaying(false); setIndex(0); }}>Restart</button></div>
-    <fieldset className="sample-lab__quiz"><legend>Predict: for a remote destination, which device’s MAC is the destination of the PC’s first Ethernet frame?</legend><label><input type="radio" name={`${id}-prediction`} checked={prediction === "server"} onChange={() => { setPrediction("server"); setChecked(false); }} />The remote server directly</label><label><input type="radio" name={`${id}-prediction`} checked={prediction === "router"} onChange={() => { setPrediction("router"); setChecked(false); }} />The router (default gateway)</label><label><input type="radio" name={`${id}-prediction`} checked={prediction === "switch"} onChange={() => { setPrediction("switch"); setChecked(false); }} />The DNS resolver</label><button type="button" disabled={!prediction} onClick={() => setChecked(true)}>Check prediction</button>{checked ? <p role="status" aria-label="Prediction feedback">{prediction === "router" ? "Correct. The PC sends to its default gateway’s MAC; the switch forwards that frame." : "Not quite. The PC sends the frame toward its default gateway, while the IP destination stays the remote server."}</p> : null}</fieldset>
+    <fieldset className="sample-lab__quiz"><legend>Predict: for a remote destination, which device’s MAC is the destination of the PC’s first Ethernet frame?</legend><label><input type="radio" name={`${id}-prediction`} checked={prediction === "server"} onChange={() => { setPrediction("server"); setChecked(false); }} />The remote server directly</label><label><input type="radio" name={`${id}-prediction`} checked={prediction === "router"} onChange={() => { setPrediction("router"); setChecked(false); }} />The router (default gateway)</label><label><input type="radio" name={`${id}-prediction`} checked={prediction === "switch"} onChange={() => { setPrediction("switch"); setChecked(false); }} />The switch</label><button type="button" disabled={!prediction} onClick={() => setChecked(true)}>Check prediction</button>{checked ? <p role="status" aria-label="Prediction feedback">{prediction === "router" ? "Correct. The PC sends to its default gateway’s MAC; the switch forwards that frame." : "Not quite. The PC sends the frame toward its default gateway, while the IP destination stays the remote server."}</p> : null}</fieldset>
   </section>;
 }
