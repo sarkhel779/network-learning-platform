@@ -11,9 +11,7 @@ const allowedReturnPaths = new Set([
       const path = `/learn/${slug}/${lesson.slug}`;
       return [
         path,
-        ...(lesson.sections ?? [])
-          .filter((section) => section.id.includes("knowledge-check") || section.id === "knowledge-summary")
-          .map((section) => `${path}#${section.id}`),
+        ...(lesson.sections ?? []).map((section) => `${path}#${section.id}`),
       ];
     }),
   ]),

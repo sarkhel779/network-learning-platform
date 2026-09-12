@@ -16,6 +16,11 @@ describe("safeReturnPath", () => {
     expect(safeReturnPath(path)).toBe(path);
   });
 
+  it("returns to an exact locked topic in an ordinary lesson", () => {
+    const path = "/learn/networking-foundations/hosts-and-network-devices#windows-checks";
+    expect(safeReturnPath(path)).toBe(path);
+  });
+
   it.each([
     undefined,
     "",

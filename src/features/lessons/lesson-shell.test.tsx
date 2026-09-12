@@ -146,7 +146,12 @@ describe("LessonShell", () => {
       </LessonShell>,
     );
 
-    const sectionNavigation = screen.getByRole("navigation", { name: "On this page" });
+    const sectionNavigation = screen.getByRole("navigation", { name: "Page contents" });
+    const pageContentsButton = within(sectionNavigation).getByRole("button", { name: "Page contents" });
+    expect(pageContentsButton).toHaveAttribute("aria-expanded", "false");
+    await user.click(pageContentsButton);
+    expect(pageContentsButton).toHaveAttribute("aria-expanded", "true");
+    expect(within(sectionNavigation).getByTestId("network-map-route")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Course contents" }));
     const curriculumNavigation = screen.getByRole("navigation", { name: "Course curriculum" });
 
