@@ -8,6 +8,9 @@ values
 insert into public.staff_roles (user_id, role)
 values ('00000000-0000-4000-8000-000000000101', 'support_agent');
 
+insert into public.page_view_ingest_config (singleton, token_hash)
+values (true, pg_catalog.md5('ci-only-ingest-token-with-32-chars-minimum'));
+
 insert into public.pro_waitlist_entries (user_id, email, status, consent_version, consented_at, unsubscribed_at)
 values
   ('00000000-0000-4000-8000-000000000101', 'admin-test@example.test', 'unsubscribed', 'test-v1', now(), now()),
@@ -104,12 +107,6 @@ begin
   if (public.admin_list_audit(0, 20) ->> 'total')::integer <> 1 then
     raise exception 'authorized audit read omitted the profile edit';
   end if;
-  perform public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing');
-  perform public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing');
-  perform public.record_page_view('00000000-0000-4000-8000-000000000202', '/labs');
-  if public.admin_page_view_count(now() - interval '1 day', now() + interval '1 hour') <> 2 then
-    raise exception 'page view retry was double-counted';
-  end if;
   begin
     perform count(*) from public.page_views;
     raise exception 'staff can directly read raw page views';
@@ -132,6 +129,8 @@ reset role;
 set local role anon;
 set local request.jwt.claim.sub = '';
 do $$
+declare
+  i integer;
 begin
   if exists (
     select 1 from pg_catalog.pg_proc p
@@ -141,8 +140,27 @@ begin
   ) then
     raise exception 'anonymous role can execute an admin RPC';
   end if;
-  if not pg_catalog.has_function_privilege('anon', 'public.record_page_view(uuid,text)', 'EXECUTE') then
-    raise exception 'anonymous page-view recorder is not executable';
+  if pg_catalog.to_regprocedure('public.record_page_view(uuid,text)') is not null then
+    raise exception 'anonymous role can execute the unprotected page-view recorder';
+  end if;
+  begin
+    perform public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing', 'wrong-token');
+    raise exception 'invalid ingest token was accepted';
+  exception when insufficient_privilege then null;
+  end;
+  if public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing', 'ci-only-ingest-token-with-32-chars-minimum') <> 'recorded' then
+    raise exception 'authorized view was not recorded';
+  end if;
+  if public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing', 'ci-only-ingest-token-with-32-chars-minimum') <> 'duplicate' then
+    raise exception 'retry was not deduplicated';
+  end if;
+  for i in 1..119 loop
+    if public.record_page_view(pg_catalog.md5(i::text)::uuid, '/labs', 'ci-only-ingest-token-with-32-chars-minimum') <> 'recorded' then
+      raise exception 'rate window closed before 120 views';
+    end if;
+  end loop;
+  if public.record_page_view('00000000-0000-4000-8000-000000000202', '/labs', 'ci-only-ingest-token-with-32-chars-minimum') <> 'rate_limited' then
+    raise exception 'rate window did not cap ingestion';
   end if;
   perform public.admin_staff_role();
   raise exception 'anonymous role lookup was unexpectedly executable';
