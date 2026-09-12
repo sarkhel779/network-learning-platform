@@ -5,6 +5,7 @@ type NetworkTopologyProps = Readonly<{
   scenario: PacketFlowScenario;
   step: PacketFlowStep;
   reducedMotion: boolean;
+  electricalSignal?: Readonly<{ playing: boolean; speed: number }>;
   selectedDeviceId?: string;
   onDeviceSelect?: (deviceId: string) => void;
 }>;
@@ -59,6 +60,7 @@ export function NetworkTopology({
   scenario,
   step,
   reducedMotion,
+  electricalSignal,
   selectedDeviceId,
   onDeviceSelect,
 }: NetworkTopologyProps) {
@@ -80,8 +82,8 @@ export function NetworkTopology({
         const end = insetLinkPoint(from, to, true);
         return [{
           link,
-          start: { ...start, y: start.y - PACKET_MARKER_VERTICAL_OFFSET },
-          end: { ...end, y: end.y - PACKET_MARKER_VERTICAL_OFFSET },
+          start,
+          end,
         }];
       })
     : [];
@@ -118,7 +120,22 @@ export function NetworkTopology({
             );
           })}
         </g>
-        {packet ? packetTravels.map(({ link, start, end }) => (
+        {electricalSignal && packet ? packetTravels.map(({ link, start, end }) => (
+          <path
+            key={`${step.id}-${link.id}`}
+            className="network-topology__electrical-signal"
+            data-electrical-signal="true"
+            data-link-id={link.id}
+            data-from={packet.from}
+            data-to={packet.to}
+            data-playing={electricalSignal.playing ? "true" : "false"}
+            d={`M${start.x} ${start.y} L${end.x} ${end.y}`}
+            pathLength={100}
+            aria-hidden="true"
+            style={{ animationDuration: `${1.5 / electricalSignal.speed}s` }}
+          />
+        )) : null}
+        {!electricalSignal && packet ? packetTravels.map(({ link, start, end }) => (
           <g
             key={`${step.id}-${link.id}`}
             className={`network-topology__packet-marker${packet.broadcast ? " network-topology__packet-marker--broadcast" : ""}${reducedMotion ? " network-topology__packet-marker--discrete" : ""}`}
@@ -127,14 +144,14 @@ export function NetworkTopology({
             data-link-id={link.id}
             data-step-id={step.id}
             aria-hidden="true"
-            transform={`translate(${end.x} ${end.y})`}
+            transform={`translate(${end.x} ${end.y - PACKET_MARKER_VERTICAL_OFFSET})`}
           >
             {!reducedMotion ? (
               <animateTransform
                 attributeName="transform"
                 type="translate"
-                from={`${start.x} ${start.y}`}
-                to={`${end.x} ${end.y}`}
+                from={`${start.x} ${start.y - PACKET_MARKER_VERTICAL_OFFSET}`}
+                to={`${end.x} ${end.y - PACKET_MARKER_VERTICAL_OFFSET}`}
                 dur="600ms"
                 fill="freeze"
               />

@@ -13,6 +13,6 @@ export function RouterOnStickPlayer() {
     <h3 id="router-on-stick-title">Router on a stick: one interface, two VLANs</h3>
     <p>The red and green paths in the diagram share one switch-to-router trunk. Play the journey to see the tag change after the router makes its Layer 3 decision.</p>
     <div className="router-on-stick-player__legend" aria-label="VLAN path key"><span>VLAN 10 · red</span><span>VLAN 20 · green</span><span>Shared 802.1Q trunk</span></div>
-    <PacketFlowPlayer scenario={routerOnStickScenario} suppressHeading inspectionDepthControl onStepChange={setStepIndex} />
+    <PacketFlowPlayer scenario={routerOnStickScenario} suppressHeading inspectionDepthControl electricalSignal onStepChange={setStepIndex} />
   </section>;
 }

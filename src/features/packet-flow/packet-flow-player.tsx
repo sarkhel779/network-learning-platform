@@ -20,6 +20,7 @@ type PacketFlowPlayerProps = Readonly<{
   inspectionDepthControl?: boolean;
   progressItemId?: string;
   onStepChange?: (stepIndex: number, atFinalStep: boolean) => void;
+  electricalSignal?: boolean;
 }>;
 
 export function PacketFlowPlayer({
@@ -32,6 +33,7 @@ export function PacketFlowPlayer({
   inspectionDepthControl = false,
   progressItemId,
   onStepChange,
+  electricalSignal = false,
 }: PacketFlowPlayerProps) {
   const { markTerminalStateReached } = useProgressCompletionBoundary(progressItemId);
   const { reducedMotion, isHydrated } = useReducedMotionState();
@@ -99,6 +101,7 @@ export function PacketFlowPlayer({
         scenario={scenario}
         step={currentStep}
         reducedMotion={reducedMotion}
+        electricalSignal={electricalSignal ? { playing: state.playing, speed: state.speed } : undefined}
         selectedDeviceId={selectedDeviceId}
         onDeviceSelect={handleDeviceSelect}
       />
