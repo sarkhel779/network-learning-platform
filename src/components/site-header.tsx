@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { HeaderSearch, type HeaderSearchLesson } from "./header-search";
 import { ThemeToggle } from "./theme-toggle";
 
-export function SiteHeader() {
+export function SiteHeader({ lessons = [] }: { lessons?: HeaderSearchLesson[] }) {
   const pathname = usePathname() ?? "";
   const currentSection = pathname === "/" ? "Home" : pathname === "/labs" || pathname.startsWith("/labs/") ? "Labs" : pathname === "/pricing" || pathname.startsWith("/pricing/") ? "Pricing" : pathname.startsWith("/paths/") || pathname.startsWith("/learn/") ? "Courses" : null;
 
@@ -24,6 +25,7 @@ export function SiteHeader() {
             <Link href="/labs" aria-current={currentSection === "Labs" ? "page" : undefined}>Labs</Link>
             <Link href="/pricing" aria-current={currentSection === "Pricing" ? "page" : undefined}>Pricing</Link>
           </nav>
+          <HeaderSearch lessons={lessons} />
           <Link className="site-header__sign-in" href="/sign-in">Sign in</Link>
           <Link className="site-header__get-started" href="/paths/networking-foundations">Get started</Link>
           <ThemeToggle />
