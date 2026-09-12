@@ -59,6 +59,12 @@ A trunk's **allowed VLAN** set controls which VLAN identities may use that link.
 
 Switching inside one VLAN and routing between VLANs are separate decisions. Hosts in VLAN 10 and VLAN 20 need a **Layer 3 device**—such as a router or multilayer switch—to exchange IP packets. Each host sends the local frame toward its default gateway; the Layer 3 device routes the packet and builds a new Layer 2 frame for the destination VLAN.
 
+In this example, both gateway subinterfaces use the router's physical `Fa0/0` port. The switch-facing `Fa1/0/1` port is an 802.1Q trunk that allows VLANs 10 and 20. The red host sends to gateway `10.10.10.254` on `Fa0/0.10`; the router forwards toward `20.20.20.1` through `Fa0/0.20`. One physical trunk carries the tagged frame in both directions, with a different VLAN ID on the return trip.
+
+<RouterOnStickPlayer />
+
+Without JavaScript, trace the path as red host → VLAN 10 access port → VLAN 10 tagged trunk → router `Fa0/0.10` → Layer 3 routing → router `Fa0/0.20` → VLAN 20 tagged frame down the same trunk → VLAN 20 access port → green host. The router creates a new Ethernet frame for the destination VLAN.
+
 This lesson establishes the forwarding foundation. Later lessons will explain **Spanning Tree Protocol** for loop prevention and **link aggregation** for combining compatible physical links. Their control decisions affect which links can carry VLAN traffic, but they do not change the basic meaning of access membership or an 802.1Q VLAN ID.
 
 <SectionContinue itemId="vlans_access_ports_and_trunks_section_allowed_vlans_and_routing_boundary" anchor="allowed-vlans-and-routing-boundary" />

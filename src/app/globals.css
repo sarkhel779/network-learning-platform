@@ -557,6 +557,18 @@ a { color: inherit; }
 .switch-learning-player__choices input, .arp-local-delivery-player__choices input, .arp-variant-player__choices input, .vlan-membership-player input { flex: 0 0 auto; accent-color: var(--accent); }
 @media (max-width: 35rem) { .arp-local-delivery-player__choices label, .arp-variant-player__choices label, .vlan-membership-player__choices label, .vlan-membership-player__move { width: 100%; } }
 .vlan-tag-journey-player { min-width: 0; max-width: 100%; margin: 2rem 0; padding: clamp(0.8rem, 2.5vw, 1.4rem); overflow: hidden; border: 1px solid var(--border); border-radius: 0.75rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); }
+.router-on-stick-player { min-width: 0; margin: 1.5rem 0; padding: clamp(0.8rem, 2.5vw, 1.4rem); border: 1px solid var(--border); border-radius: 0.75rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); }
+.router-on-stick-player > h3 { margin-top: 0; }
+.router-on-stick-player > .packet-flow { margin: 1rem 0 0; }
+.router-on-stick-player__legend { display: flex; flex-wrap: wrap; gap: 0.7rem; margin: 0.8rem 0; font-size: 0.85rem; }
+.router-on-stick-player__legend span { padding: 0.35rem 0.6rem; border: 1px solid var(--border); border-radius: 99px; }
+.router-on-stick-player__legend span:first-child { border-color: #ef6a76; color: #ff9da6; }
+.router-on-stick-player__legend span:nth-child(2) { border-color: #30ba8b; color: #69dfae; }
+.router-on-stick-player .network-topology__link[data-link-id="vlan10-access"] { stroke: #a84d5b; }
+.router-on-stick-player .network-topology__link[data-link-id="vlan20-access"] { stroke: #268761; }
+.router-on-stick-player[data-active-vlan="10"] .network-topology__link[data-active="true"], .router-on-stick-player[data-active-vlan="10"] .network-topology__packet-marker { stroke: #ef6a76; fill: #ef6a76; }
+.router-on-stick-player[data-active-vlan="20"] .network-topology__link[data-active="true"], .router-on-stick-player[data-active-vlan="20"] .network-topology__packet-marker { stroke: #30ba8b; fill: #30ba8b; }
+.router-on-stick-player .network-topology__packet-marker path { stroke: var(--background); fill: none; }
 .vlan-tag-journey-player > h3 { margin-top: 0; }
 .vlan-tag-journey-player__choices, .vlan-tag-journey-player__inspection { display: flex; flex-wrap: wrap; gap: 0.5rem; min-width: 0; margin: 1rem 0; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; }
 .vlan-tag-journey-player__choices legend, .vlan-tag-journey-player__inspection legend { margin-bottom: 0.6rem; font-weight: 800; }
