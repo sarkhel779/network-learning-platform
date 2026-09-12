@@ -43,6 +43,11 @@ jobs:
       - name: Verify admin authorization and RLS
         run: psql 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' -v ON_ERROR_STOP=1 -f supabase/tests/admin_foundation_rls.sql
 
+      - name: Seed disposable page-view ingest token
+        run: |
+          psql 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' -v ON_ERROR_STOP=1 \
+            -c "insert into public.page_view_ingest_config (singleton, token_hash) values (true, md5('ci-only-ingest-token-with-32-chars-minimum'))"
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22

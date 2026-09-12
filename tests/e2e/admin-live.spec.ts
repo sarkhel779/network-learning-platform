@@ -65,6 +65,18 @@ test("an authenticated learner cannot open admin but can open their own dashboar
   await expect(page.getByRole("heading", { name: "Overview" })).toHaveCount(0);
 });
 
+test("public page-view requests use the guarded disposable ingester", async ({ request }) => {
+  const eventId = randomUUID();
+  const first = await request.post("/api/page-view", { data: { path: "/pricing", eventId } });
+  expect(first.status()).toBe(204);
+  const retry = await request.post("/api/page-view", { data: { path: "/pricing", eventId } });
+  expect(retry.status()).toBe(204);
+  const service = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } });
+  const { data, error } = await service.from("page_views").select("event_id").eq("event_id", eventId);
+  expect(error).toBeNull();
+  expect(data).toHaveLength(1);
+});
+
 test("staff sees real metrics and a learner edit appears in the audit log", async ({ page, context }) => {
   await signIn(context, staff);
   await page.goto("/admin");
