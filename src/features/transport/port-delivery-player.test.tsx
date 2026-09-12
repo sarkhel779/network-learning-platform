@@ -16,6 +16,10 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.useRealTimers(); });
 
 describe("PortDeliveryPlayer", () => {
+  it("shows the packet moving toward the receiving application", () => {
+    const { container } = render(<PortDeliveryPlayer />);
+    expect(container.querySelector('[data-packet-envelope="true"]')).toBeInTheDocument();
+  });
   it("offers five scenarios and shows tuple, header, socket, and application evidence", () => {
     render(<PortDeliveryPlayer />);
     for (const { title } of portDeliveryScenarios) expect(screen.getByRole("radio", { name: title })).toBeVisible();

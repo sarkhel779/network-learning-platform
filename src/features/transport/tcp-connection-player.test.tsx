@@ -17,6 +17,10 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.useRealTimers(); });
 
 describe("TcpConnectionPlayer", () => {
+  it("shows a moving envelope for active packet steps", () => {
+    const { container } = render(<TcpConnectionPlayer />);
+    expect(container.querySelector('[data-packet-envelope="true"]')).toBeInTheDocument();
+  });
   it("offers six scenarios and synchronizes transport and endpoint evidence", () => {
     render(<TcpConnectionPlayer />);
     for (const { title } of tcpScenarios) expect(screen.getByRole("radio", { name: title })).toBeVisible();

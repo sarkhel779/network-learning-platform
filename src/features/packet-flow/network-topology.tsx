@@ -29,12 +29,6 @@ function getActiveText(scenario: PacketFlowScenario, step: PacketFlowStep): stri
   return `Active: ${parts.join("; ") || "none"}`;
 }
 
-function packetKindLabel(label: string): string {
-  if (label.startsWith("ARP")) return "ARP";
-  if (label.startsWith("ICMP")) return "ICMP";
-  return "FRAME";
-}
-
 const PACKET_MARKER_VERTICAL_OFFSET = 30;
 
 function insetLinkPoint(
@@ -145,8 +139,8 @@ export function NetworkTopology({
                 fill="freeze"
               />
             ) : null}
-            <rect x="-44" y="-19" width="88" height="38" rx="9" />
-            <text textAnchor="middle" dy="0.35em">{packetKindLabel(packet.label)}</text>
+            <circle r="17" />
+            <path data-packet-envelope="true" d="M-9-6h18v12H-9zM-9-4l9 7 9-7" />
           </g>
         )) : null}
         <g className="network-topology__devices">

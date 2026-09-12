@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useReducedMotionState } from "@/features/packet-flow/use-reduced-motion";
+import { TransportPacketTrack } from "./transport-packet-track";
 import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 import { buildPortDeliveryJourney, portDeliveryScenarios } from "./port-delivery-journeys";
 import { parsePortDeliveryScenario, type PortDeliveryScenario } from "./transport.schema";
@@ -51,7 +52,7 @@ export function PortDeliveryPlayer({ progressItemId, scenarios = portDeliverySce
     </label>)}</fieldset>
     <div aria-label="Transport delivery path" className="transport-topology" role="group">
       <div><strong>Sending application</strong><span>{scenario.sourceIp}:{scenario.sourcePort}</span></div>
-      <div data-protocol={scenario.protocol}><strong>{scenario.protocol}</strong><span>{step.title}</span></div>
+      <div data-protocol={scenario.protocol}><strong>{scenario.protocol}</strong><span>{step.title}</span><TransportPacketTrack direction="forward" stepId={step.id} /></div>
       <div><strong>Receiving host</strong><span>{scenario.destinationIp}:{scenario.destinationPort}</span></div>
     </div>
     <p aria-live="polite" role="status">Step {stepIndex + 1} of {journey.length}: {step.title}</p>

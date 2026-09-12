@@ -18,6 +18,11 @@ export function DnsTopology({ step }: { step: DnsStep }) {
           return <li key={id} className={active ? "is-active" : undefined}><span>{label}</span>{active && <small>{id === step.roles.sender ? "Sends" : "Receives"}</small>}</li>;
         })}
       </ol>
+      <div className="dns-topology__transit" aria-label={`${direction}: packet in transit`}>
+        <span>{labelFor(step.roles.sender)}</span>
+        <span className="dns-topology__track"><span key={step.id} className="dns-topology__packet" data-packet-envelope="true" aria-hidden="true">✉</span></span>
+        <span>{labelFor(step.roles.receiver)}</span>
+      </div>
     </section>
   );
 }

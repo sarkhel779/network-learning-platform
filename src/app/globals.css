@@ -328,9 +328,9 @@ a { color: inherit; }
 .network-topology__device[role="button"]:focus-visible .network-topology__device-symbol { stroke: var(--accent); stroke-width: 5; }
 .network-topology__device[aria-pressed="true"] .network-topology__device-surface { fill: color-mix(in srgb, var(--accent) 12%, var(--background)); }
 .network-topology__device[aria-pressed="true"] .network-topology__device-symbol { stroke: var(--accent); stroke-width: 5; }
-.network-topology__packet-marker { fill: var(--accent); stroke: var(--foreground); stroke-width: 2; }
-.network-topology__packet-marker--broadcast { fill: #b45309; stroke-width: 3; }
-.network-topology__packet-marker text { fill: #000; stroke: none; font-size: 1rem; font-weight: 900; letter-spacing: 0.05em; }
+.network-topology__packet-marker { fill: var(--accent); stroke: var(--background); stroke-width: 2; filter: drop-shadow(0 0 9px var(--accent)); }
+.network-topology__packet-marker--broadcast { fill: #f59e0b; filter: drop-shadow(0 0 9px #f59e0b); }
+.network-topology__packet-marker path { fill: none; stroke: var(--background); stroke-width: 2; stroke-linejoin: round; }
 .network-topology__active-text { margin: 1rem 0 0; color: var(--foreground); font-weight: 700; line-height: 1.5rem; }
 .packet-flow-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin: 1rem 0; }
 .packet-flow-controls button, .packet-flow-controls select { min-height: 2.75rem; border: 1px solid var(--accent); border-radius: 0.35rem; background: var(--background); color: var(--foreground); font: inherit; }
@@ -758,7 +758,8 @@ h1 {
 .packet-journey-link { fill: none; stroke: var(--border); stroke-width: 5; stroke-dasharray: 10 8; }
 .packet-journey-link[data-active-link] { stroke: var(--accent); }
 .packet-journey-topology [data-active-device] .network-topology__device-surface { fill: color-mix(in srgb, var(--accent) 24%, var(--background)); }
-.packet-journey-marker { fill: var(--focus-ring); stroke: var(--background); stroke-width: 3; animation: packet-journey-pulse 900ms ease-in-out infinite alternate; }
+.packet-journey-marker { fill: var(--accent); stroke: var(--background); stroke-width: 2; filter: drop-shadow(0 0 8px var(--accent)); animation: packet-journey-pulse 900ms ease-in-out infinite alternate; }
+.packet-journey-marker path { fill: none; stroke: var(--background); stroke-width: 1.6; }
 .packet-journey-stage[data-position="on-link"] .packet-journey-marker[data-active-link="source-router"],
 .packet-journey-stage[data-position="on-link"] .packet-journey-marker[data-active-link="source-intermediary"],
 .packet-journey-stage[data-position="on-link"] .packet-journey-marker[data-active-link="router-destination"],
@@ -909,6 +910,12 @@ h1 {
 .transport-topology > div { display: grid; align-content: center; gap: .3rem; min-width: 0; min-height: 5rem; padding: .65rem; text-align: center; border: 1px solid var(--border); border-radius: .55rem; }
 .transport-topology span { color: var(--muted); overflow-wrap: anywhere; }
 .transport-topology [data-direction], .transport-topology [data-protocol] { border-color: var(--accent); border-inline-start-width: .35rem; }
+.transport-packet-track { position: relative; display: block; width: 100%; margin-top: .65rem; border-top: 2px dashed var(--accent); }
+.transport-packet-track__packet { position: absolute; top: -.95rem; left: 100%; display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border: 2px solid var(--background); border-radius: 50%; background: var(--accent); color: var(--background) !important; box-shadow: 0 0 .8rem var(--accent); transform: translateX(-50%); animation: transport-packet-forward 1s ease-in-out both; }
+.transport-packet-track[data-direction="reverse"] .transport-packet-track__packet { animation-name: transport-packet-reverse; }
+@keyframes transport-packet-forward { from { left: 0; } to { left: 100%; } }
+@keyframes transport-packet-reverse { from { left: 100%; } to { left: 0; } }
+@media (prefers-reduced-motion: reduce) { .transport-packet-track__packet { animation: none; } .transport-packet-track[data-direction="reverse"] .transport-packet-track__packet { left: 0; } }
 .transport-tuple { padding: .75rem; border-inline-start: .35rem solid var(--accent); background: var(--background); overflow-wrap: anywhere; }
 .transport-evidence-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: .6rem; }
 .transport-evidence-scroll table { width: 100%; min-width: 34rem; border-collapse: collapse; }
@@ -974,6 +981,10 @@ h1 {
 .dns-role-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; margin: 0; padding: 0; list-style: none; }
 .dns-role-list li { display: grid; min-width: 0; min-height: 4.5rem; align-content: center; gap: .25rem; padding: .65rem; border: 1px solid var(--border); border-radius: .55rem; text-align: center; overflow-wrap: anywhere; }
 .dns-role-list li.is-active { border-color: var(--accent); border-inline-start-width: .35rem; background: color-mix(in srgb, var(--accent) 10%, var(--background)); }
+.dns-topology__transit { display: grid; grid-template-columns: minmax(5rem, 1fr) minmax(3rem, 2fr) minmax(5rem, 1fr); align-items: center; gap: .5rem; margin-top: .8rem; text-align: center; color: var(--muted); font-size: .85rem; }
+.dns-topology__track { position: relative; border-top: 2px dashed var(--accent); }
+.dns-topology__packet { position: absolute; top: -.95rem; left: 100%; display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border: 2px solid var(--background); border-radius: 50%; background: var(--accent); color: var(--background); font-size: 1rem; box-shadow: 0 0 .8rem var(--accent); transform: translateX(-50%); animation: dns-packet-travel .9s ease-in-out both; }
+@keyframes dns-packet-travel { from { left: 0; } to { left: 100%; } }
 .dns-role-list small { color: var(--muted); font-weight: 700; }
 .dns-cache-state { min-width: 0; padding: .8rem; border-inline-start: .35rem solid var(--accent); background: var(--background); }
 .dns-message-inspector { display: grid; gap: .75rem; min-width: 0; max-width: 100%; }
@@ -992,10 +1003,10 @@ h1 {
 
 .service-player, .service-troubleshooting-lab, .capture-analysis-lab, .rfc-validation-lab { display: grid; gap: 1rem; min-width: 0; max-width: 100%; margin: 2rem 0; padding: clamp(.8rem, 2.5vw, 1.4rem); overflow-wrap: anywhere; border: 1px solid var(--border); border-radius: .75rem; background: color-mix(in srgb, var(--accent) 5%, var(--background)); }
 .service-player > h3, .service-player > p, .service-troubleshooting-lab > h3, .capture-analysis-lab > h3, .rfc-validation-lab > h3 { margin-block: 0; }
-.service-topology { position: relative; display: grid; grid-template-columns: minmax(7rem, 1fr) auto minmax(8rem, 2fr) minmax(7rem, 1fr); align-items: center; gap: .65rem; min-width: 0; max-width: 100%; padding: 1rem; border: 2px dashed var(--accent); border-radius: .7rem; background: var(--background); }
+.service-topology { position: relative; display: grid; grid-template-columns: minmax(7rem, 1fr) minmax(5rem, 2fr) minmax(7rem, 1fr); align-items: center; gap: .65rem; min-width: 0; max-width: 100%; padding: 1rem; border: 2px dashed var(--accent); border-radius: .7rem; background: var(--background); }
 .service-topology__endpoint, .service-topology__service { min-width: 0; padding: .65rem; border: 1px solid var(--border); border-radius: .55rem; text-align: center; font-weight: 800; overflow-wrap: anywhere; }
-.service-topology__packet { color: var(--accent); filter: drop-shadow(0 0 .25rem color-mix(in srgb, var(--accent) 70%, transparent)); animation: service-packet-pulse 1.2s ease-in-out infinite alternate; }
-.service-topology__link { min-width: 0; color: var(--muted); text-align: center; overflow-wrap: anywhere; }
+.service-topology__packet { position: absolute; top: -.95rem; left: 100%; display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border: 2px solid var(--background); border-radius: 50%; background: var(--accent); color: var(--background); box-shadow: 0 0 .8rem var(--accent); transform: translateX(-50%); animation: service-packet-travel 1.1s ease-in-out both; }
+.service-topology__link { position: relative; min-width: 0; border-top: 2px dashed var(--accent); }
 .service-topology__service { grid-column: 1 / -1; justify-self: center; border-color: var(--accent); }
 .port-transport-panel { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; min-width: 0; padding: .75rem; border-inline-start: .35rem solid var(--accent); background: var(--background); }
 .service-message-inspector { display: grid; gap: .75rem; min-width: 0; max-width: 100%; }
@@ -1010,7 +1021,7 @@ h1 {
 .service-troubleshooting-lab > label { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
 .service-troubleshooting-lab select { min-block-size: 44px; max-width: 100%; font: inherit; }
 .service-troubleshooting-lab__feedback, .service-troubleshooting-lab [role="status"], .capture-analysis-lab [role="status"], .rfc-validation-lab [role="status"] { min-width: 0; padding: .75rem; border-inline-start: .35rem solid var(--accent); background: var(--background); }
-@keyframes service-packet-pulse { from { opacity: .5; transform: scale(.8); } to { opacity: 1; transform: scale(1.15); } }
+@keyframes service-packet-travel { from { left: 0; } to { left: 100%; } }
 @media (max-width: 35rem) { .service-topology { grid-template-columns: minmax(0, 1fr); } .service-topology__service { grid-column: 1; } .service-troubleshooting-lab fieldset label, .capture-analysis-lab fieldset label, .rfc-validation-lab fieldset label { width: 100%; } .service-player .transport-player-controls button, .service-player .transport-player-controls label { flex: 1 1 8rem; } }
 @media (prefers-reduced-motion: reduce) { .service-player * { animation: none !important; transition: none !important; } .service-troubleshooting-lab *, .capture-analysis-lab *, .rfc-validation-lab * { animation: none !important; transition: none !important; } }
 
@@ -1026,7 +1037,7 @@ h1 {
 .nat-topology__node[data-active="true"] { border-color: var(--accent); box-shadow: 0 0 1rem color-mix(in srgb, var(--accent) 25%, transparent); opacity: 1; }
 .nat-topology__node > span { font-size: 1.6rem; color: var(--accent); }
 .nat-topology__link { position: relative; height: .3rem; margin: 1.25rem .5rem .75rem; border-radius: 999px; background: color-mix(in srgb, var(--accent) 30%, var(--border)); }
-.nat-topology__packet { position: absolute; top: 50%; left: 0; width: .75rem; height: .75rem; border: 2px solid var(--background); border-radius: 50%; background: var(--accent); box-shadow: 0 0 .8rem var(--accent); animation: nat-packet-travel 1.15s ease-out both; }
+.nat-topology__packet { position: absolute; top: 50%; left: 0; display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border: 2px solid var(--background); border-radius: 50%; background: var(--accent); color: var(--background); box-shadow: 0 0 .8rem var(--accent); animation: nat-packet-travel 1.15s ease-out both; }
 .nat-topology__packet[data-direction="reverse"] { animation-name: nat-packet-return; }
 .nat-topology[data-outcome="failure"] .nat-topology__packet { background: #f59e0b; box-shadow: 0 0 .8rem #f59e0b; }
 @keyframes nat-packet-travel { from { left: 0; transform: translate(-50%, -50%) scale(.8); } to { left: 100%; transform: translate(-50%, -50%) scale(1); } }
