@@ -13,10 +13,9 @@ describe("system theme and table styles", () => {
     expect(css).toMatch(/\.site-logo__packet\s*\{[^}]*color:\s*#fff/);
     expect(css).toMatch(/\.site-logo__secrets\s*\{[^}]*color:\s*#23d6a8/);
   });
-  it("gives the landing hero a gentle transition with a reduced-motion fallback", () => {
-    expect(css).toMatch(/@keyframes\s+home-ambient-shift/);
-    expect(css).toMatch(/\.home-hero::before\s*\{[^}]*animation:\s*home-ambient-shift/);
-    expect(css).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[^}]*\.home-hero::before\s*\{[^}]*animation:\s*none/);
+  it("keeps the landing glow static and unable to intercept clicks", () => {
+    expect(css).toMatch(/\.home-refresh::before\s*\{[^}]*radial-gradient\([^}]*pointer-events:\s*none/);
+    expect(css).not.toMatch(/@keyframes\s+home-ambient-shift/);
   });
   it("keeps the sign-in brand heading within its card", () => {
     expect(css).toMatch(/\.sign-in-card h1\s*\{[^}]*max-width:\s*none/);

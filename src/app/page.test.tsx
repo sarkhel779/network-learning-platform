@@ -44,6 +44,24 @@ describe("HomePage", () => {
     expect(html).not.toContain('href="/learn/networking-foundations/tcp-udp-and-ports"');
   });
 
+  it("renders distinct, consistent inline diagrams for every core topic", () => {
+    const root = document.createElement("div");
+    root.innerHTML = html;
+    const cards = [...root.querySelectorAll(".home-topics a")];
+    expect(cards).toHaveLength(11);
+    const icons = cards.map((card) => card.querySelector(".home-topic-icon svg"));
+    expect(icons.every(Boolean)).toBe(true);
+    for (const icon of icons) {
+      expect(icon?.getAttribute("viewBox")).toBe("0 0 24 24");
+      expect(icon?.getAttribute("fill")).toBe("none");
+      expect(icon?.getAttribute("stroke-width")).toBe("2");
+    }
+    expect(icons[0]?.querySelectorAll("rect")).toHaveLength(3);
+    expect(icons[1]?.querySelectorAll("line")).toHaveLength(7);
+    expect(icons[3]?.querySelectorAll("circle")).toHaveLength(3);
+    expect(icons[10]?.querySelectorAll("rect")).toHaveLength(2);
+  });
+
   it("shows the five-device route and example terminal", () => {
     expect(html).toContain("Your device");
     expect(html).toContain("Switch");

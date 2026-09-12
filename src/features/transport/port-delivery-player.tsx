@@ -56,6 +56,7 @@ export function PortDeliveryPlayer({ progressItemId, scenarios = portDeliverySce
       <div data-protocol={scenario.protocol}><strong>{scenario.protocol}</strong><span>{step.title}</span><TransportPacketTrack direction="forward" stepId={step.id} /></div>
       <div><strong>Receiving host</strong><span>{scenario.destinationIp}:{scenario.destinationPort}</span></div>
     </div>
+    <TransportPlayerControls finalIndex={finalIndex} onNext={() => { setPlaying(false); setStepIndex((current) => current + 1); }} onPrevious={() => { setPlaying(false); setStepIndex((current) => current - 1); }} onRestart={() => { setStepIndex(0); setPlaying(!reducedMotion); }} onSpeedChange={setSpeed} onTogglePlay={() => setPlaying((current) => !current)} playing={playing} speed={speed} stepIndex={stepIndex} />
     <p aria-live="polite" role="status">Step {stepIndex + 1} of {journey.length}: {step.title}</p>
     <p>{step.explanation}</p>
     <p className="transport-tuple"><strong>Transport tuple:</strong> {step.tuple}</p>
@@ -72,7 +73,6 @@ export function PortDeliveryPlayer({ progressItemId, scenarios = portDeliverySce
       <p>{step.application ? `${step.listener?.protocol} port ${step.listener?.port} → ${step.application}` : step.listener ? "Socket lookup pending" : stepIndex < 2 ? "Socket lookup pending" : `No ${scenario.protocol} listener on port ${scenario.destinationPort}`}</p>
     </div>
     {step.terminal ? <div className="transport-outcome"><strong>Conclusion</strong><p>{step.conclusion}</p></div> : null}
-    <TransportPlayerControls finalIndex={finalIndex} onNext={() => { setPlaying(false); setStepIndex((current) => current + 1); }} onPrevious={() => { setPlaying(false); setStepIndex((current) => current - 1); }} onRestart={() => { setStepIndex(0); setPlaying(!reducedMotion); }} onSpeedChange={setSpeed} onTogglePlay={() => setPlaying((current) => !current)} playing={playing} speed={speed} stepIndex={stepIndex} />
     {state === "error" ? <button onClick={retry}>Retry saving progress</button> : null}
   </section>;
 }

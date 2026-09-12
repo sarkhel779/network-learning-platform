@@ -10,6 +10,11 @@ import { DhcpRfcCheck } from "./rfc-check";
 afterEach(cleanup);
 
 describe("advanced DHCP lease timing", () => {
+  it("places playback controls immediately after the animated lease packet topology", () => {
+    const { container } = render(<LeaseTimingPlayer />);
+    const topology = container.querySelector(".lease-packet-flow");
+    expect(topology?.nextElementSibling).toContainElement(screen.getByRole("button", { name: "Restart" }));
+  });
   it("shows state transitions with an animated DHCP packet when a message is sent", async () => {
     const user = userEvent.setup();
     render(<LeaseTimingPlayer />);

@@ -17,6 +17,11 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.useRealTimers(); });
 
 describe("TcpConnectionPlayer", () => {
+  it("places playback controls immediately after the packet sequence", () => {
+    render(<TcpConnectionPlayer />);
+    const diagram = screen.getByRole("group", { name: "TCP packet sequence" });
+    expect(diagram.nextElementSibling).toContainElement(screen.getByRole("button", { name: "Restart" }));
+  });
   it("shows a moving envelope for active packet steps", () => {
     const { container } = render(<TcpConnectionPlayer />);
     expect(container.querySelector('[data-packet-envelope="true"]')).toBeInTheDocument();

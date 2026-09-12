@@ -81,12 +81,12 @@ export function LeaseTimingPlayer() {
       </div>
       <div className="lease-packet-flow__device"><strong>DHCP server</strong><small>UDP 67</small></div>
     </div>
+    <TransportPlayerControls finalIndex={finalIndex} onNext={() => { setPlaying(false); setStepIndex((value) => value + 1); }} onPrevious={() => { setPlaying(false); setStepIndex((value) => value - 1); }} onRestart={() => { setStepIndex(0); setPlaying(false); }} onSpeedChange={setSpeed} onTogglePlay={() => setPlaying((value) => !value)} playing={playing} speed={speed} stepIndex={stepIndex} />
     <div aria-live="polite" className="lease-state-player__explanation" role="status">
       <strong>Step {stepIndex + 1} of {scenario.steps.length} · {step.title} · {step.state}</strong>
       <p className="lease-state-player__message">{step.message ?? "No packet sent"} · {step.delivery}</p>
       <p>{step.explanation}</p>
       <p>Lease: {step.leaseValid ? "valid — address may be used" : "not valid — do not use the address"}</p>
     </div>
-    <TransportPlayerControls finalIndex={finalIndex} onNext={() => { setPlaying(false); setStepIndex((value) => value + 1); }} onPrevious={() => { setPlaying(false); setStepIndex((value) => value - 1); }} onRestart={() => { setStepIndex(0); setPlaying(false); }} onSpeedChange={setSpeed} onTogglePlay={() => setPlaying((value) => !value)} playing={playing} speed={speed} stepIndex={stepIndex} />
   </section>;
 }

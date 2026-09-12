@@ -9,6 +9,10 @@ beforeEach(() => { markTerminalStateReached.mockClear(); window.matchMedia = vi.
 afterEach(() => { cleanup(); vi.useRealTimers(); });
 
 describe("TracerouteDiscoveryPlayer", () => {
+  it("places controls immediately below the traceroute topology", () => {
+    render(<TracerouteDiscoveryPlayer />);
+    expect(screen.getByRole("list", { name: "Traceroute path topology" }).nextElementSibling).toContainElement(screen.getByRole("button", { name: "Restart" }));
+  });
   it("offers all outcomes and keeps earlier probe evidence in a labelled ledger", () => {
     render(<TracerouteDiscoveryPlayer />);
     for (const title of tracerouteScenarios.map(({ title }) => title)) expect(screen.getByRole("radio", { name: title })).toBeVisible();

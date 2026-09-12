@@ -52,6 +52,7 @@ export function TcpConnectionPlayer({ progressItemId, scenarios = tcpScenarios }
       <input checked={scenarioIndex === index} name="tcp-journey" onChange={() => chooseScenario(index)} type="radio" />{item.title}
     </label>)}</fieldset>
     <TcpSequenceDiagram steps={journey} activeIndex={stepIndex} clientState={step.clientState} serverState={step.serverState} />
+    <TransportPlayerControls finalIndex={finalIndex} onNext={() => { setPlaying(false); setStepIndex((current) => current + 1); }} onPrevious={() => { setPlaying(false); setStepIndex((current) => current - 1); }} onRestart={() => { setStepIndex(0); setPlaying(!reducedMotion); }} onSpeedChange={setSpeed} onTogglePlay={() => setPlaying((current) => !current)} playing={playing} speed={speed} stepIndex={stepIndex} />
     <p aria-live="polite" role="status">Step {stepIndex + 1} of {journey.length}: {step.title}</p>
     <p>{step.explanation}</p>
     <div aria-label="Scrollable TCP packet evidence" className="transport-evidence-scroll" role="region" tabIndex={0}>
@@ -65,7 +66,6 @@ export function TcpConnectionPlayer({ progressItemId, scenarios = tcpScenarios }
     </div>
     <p><strong>Observed state:</strong> {step.outcome}</p>
     {step.terminal ? <div className="transport-outcome"><strong>Conclusion</strong><p>{scenario.conclusion}</p></div> : null}
-    <TransportPlayerControls finalIndex={finalIndex} onNext={() => { setPlaying(false); setStepIndex((current) => current + 1); }} onPrevious={() => { setPlaying(false); setStepIndex((current) => current - 1); }} onRestart={() => { setStepIndex(0); setPlaying(!reducedMotion); }} onSpeedChange={setSpeed} onTogglePlay={() => setPlaying((current) => !current)} playing={playing} speed={speed} stepIndex={stepIndex} />
     {state === "error" ? <button onClick={retry}>Retry saving progress</button> : null}
   </section>;
 }
