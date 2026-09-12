@@ -1527,3 +1527,11 @@ body:has(.admin-shell) .site-header,body:has(.admin-shell) .site-footer{display:
 .admin-shell a:focus-visible,.admin-shell button:focus-visible,.admin-shell input:focus-visible,.admin-shell select:focus-visible,.admin-shell textarea:focus-visible{outline:3px solid #4ce9c0;outline-offset:2px}
 @media(max-width:900px){.admin-shell{grid-template-columns:1fr}.admin-sidebar{position:relative;height:auto;gap:1rem;padding:1rem}.admin-sidebar nav{display:flex;gap:1rem;flex-wrap:wrap}.admin-nav-group{margin:0}.admin-nav-group a{display:inline-flex}.admin-sidebar__back{margin:0}.admin-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.admin-shell__content{padding:1rem}.admin-metrics,.admin-overview-panels,.admin-detail-grid{grid-template-columns:1fr}.admin-nav-group{display:flex;flex-wrap:wrap}.admin-nav-group>p{width:100%}.admin-page__header{flex-direction:column}.admin-search input{width:100%}.admin-table{min-width:35rem}}
+
+/* Signed-in learner dashboard */
+.learner-dashboard{width:min(100% - 2rem,1100px);margin:0 auto;padding:clamp(2rem,5vw,4rem) 0 5rem}
+.learner-dashboard__intro{margin-bottom:2rem}.learner-dashboard__intro h1{margin:.4rem 0;font-size:clamp(2rem,4vw,3rem)}.learner-dashboard__intro>p:last-child{color:var(--muted)}
+.learner-dashboard__grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(15rem,1fr);gap:1.3rem;align-items:start}
+.learner-dashboard__main,.learner-dashboard__side{min-width:0;padding:1.4rem;border:1px solid var(--border);border-radius:1rem;background:var(--surface)}
+.learner-dashboard__side h2{margin-top:0}.learner-dashboard__side p{color:var(--muted);line-height:1.55}.learner-dashboard__side a{color:var(--accent);font-weight:750}
+@media(max-width:750px){.learner-dashboard__grid{grid-template-columns:1fr}}

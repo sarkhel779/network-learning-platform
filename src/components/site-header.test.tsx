@@ -55,4 +55,10 @@ describe("SiteHeader", () => {
     expect(screen.getByRole("button", { name: "Open menu" })).toHaveAttribute("aria-expanded", "false");
     expect(container.querySelector(".site-header__backdrop")).toBeNull();
   });
+
+  it("offers a learner dashboard entry without exposing an admin link", () => {
+    render(<SiteHeader />);
+    expect(screen.getByRole("link", { name: "My dashboard" })).toHaveAttribute("href", "/dashboard");
+    expect(screen.queryByRole("link", { name: /admin/i })).not.toBeInTheDocument();
+  });
 });
