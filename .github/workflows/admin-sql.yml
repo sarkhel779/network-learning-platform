@@ -60,6 +60,9 @@ jobs:
 
       - name: Validate disposable browser configuration
         run: |
+          echo "Exported API URL: ${NEXT_PUBLIC_SUPABASE_URL:-<missing>}"
+          echo 'Supabase status variable names:'
+          supabase status -o env | cut -d= -f1
           test "${NEXT_PUBLIC_SUPABASE_URL:-}" = 'http://127.0.0.1:54321' || { echo 'Disposable API URL missing or unexpected'; exit 1; }
           test -n "${NEXT_PUBLIC_SUPABASE_ANON_KEY:-}" || { echo 'Disposable anon key missing'; exit 1; }
           test -n "${TEST_SUPABASE_SERVICE_ROLE_KEY:-}" || { echo 'Disposable service role key missing'; exit 1; }
