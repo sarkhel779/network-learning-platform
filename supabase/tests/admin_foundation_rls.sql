@@ -18,6 +18,21 @@ begin
   if exists (select 1 from public.staff_roles) then
     raise exception 'learner can read staff role rows';
   end if;
+  begin
+    perform public.admin_account_count();
+    raise exception 'learner can count accounts';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    perform public.admin_joined_waitlist_count();
+    raise exception 'learner can count waitlist members';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    perform public.admin_list_learners('', 0, 20);
+    raise exception 'learner can list accounts';
+  exception when insufficient_privilege then null;
+  end;
 end $$;
 
 set local request.jwt.claim.sub = '00000000-0000-4000-8000-000000000101';
@@ -28,6 +43,15 @@ begin
   end if;
   if (select count(*) from public.staff_roles) <> 1 then
     raise exception 'staff cannot read own role';
+  end if;
+  if public.admin_account_count() < 2 then
+    raise exception 'account count omitted users';
+  end if;
+  if (public.admin_list_learners('', 0, 1) ->> 'total')::integer < 2 then
+    raise exception 'directory count omitted users';
+  end if;
+  if jsonb_array_length(public.admin_list_learners('', 0, 1) -> 'rows') <> 1 then
+    raise exception 'directory pagination failed';
   end if;
 end $$;
 

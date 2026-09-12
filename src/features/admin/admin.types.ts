@@ -10,3 +10,18 @@ export type AdminPermission =
   | "roles"
   | "audit"
   | "settings";
+
+export type LearnerRow = {
+  id: string;
+  email: string;
+  displayName: string | null;
+  learningLevel: string | null;
+  createdAt: string;
+  waitlistStatus: "joined" | "unsubscribed" | null;
+};
+
+export type AdminOverview = {
+  accounts: number | null;
+  joinedWaitlist: number | null;
+  pageViews: number | null;
+};
