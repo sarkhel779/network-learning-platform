@@ -2,24 +2,23 @@
 
 import { useEffect, useState } from "react";
 
-type ThemePreference = "system" | "light" | "dark";
+type ThemePreference = "light" | "dark";
 const storageKey = "packetsecrets-theme";
 
 function applyTheme(theme: ThemePreference) {
-  if (theme === "system") document.documentElement.removeAttribute("data-theme");
-  else document.documentElement.setAttribute("data-theme", theme);
+  document.documentElement.setAttribute("data-theme", theme);
 }
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<ThemePreference>("system");
+  const [theme, setTheme] = useState<ThemePreference>("dark");
 
   useEffect(() => {
-    let preference: ThemePreference = "system";
+    let preference: ThemePreference = "dark";
     try {
       const saved = localStorage.getItem(storageKey);
       if (saved === "light" || saved === "dark") preference = saved;
     } catch {
-      // Storage can be unavailable; system styling remains usable.
+      // Storage can be unavailable; the dark default remains usable.
     }
     setTheme(preference);
     applyTheme(preference);
@@ -36,14 +35,17 @@ export function ThemeToggle() {
   }
 
   return (
-    <label className="theme-control">
-      <span aria-hidden="true">◐</span>
-      <span className="sr-only">Color theme</span>
-      <select value={theme} onChange={(event) => updateTheme(event.target.value as ThemePreference)} aria-label="Color theme">
-        <option value="system">System</option>
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-      </select>
-    </label>
+    <button
+      type="button"
+      className="theme-control"
+      role="switch"
+      aria-label="Dark mode"
+      aria-checked={theme === "dark"}
+      onClick={() => updateTheme(theme === "dark" ? "light" : "dark")}
+    >
+      <span className="theme-control__label" data-active={theme === "light"}>Light</span>
+      <span className="theme-control__track" aria-hidden="true"><span className="theme-control__thumb" /></span>
+      <span className="theme-control__label" data-active={theme === "dark"}>Dark</span>
+    </button>
   );
 }
