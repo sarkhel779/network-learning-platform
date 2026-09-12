@@ -133,6 +133,17 @@ set local role anon;
 set local request.jwt.claim.sub = '';
 do $$
 begin
+  if exists (
+    select 1 from pg_catalog.pg_proc p
+    join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'public' and p.proname like 'admin_%'
+      and pg_catalog.has_function_privilege('anon', p.oid, 'EXECUTE')
+  ) then
+    raise exception 'anonymous role can execute an admin RPC';
+  end if;
+  if not pg_catalog.has_function_privilege('anon', 'public.record_page_view(uuid,text)', 'EXECUTE') then
+    raise exception 'anonymous page-view recorder is not executable';
+  end if;
   perform public.admin_staff_role();
   raise exception 'anonymous role lookup was unexpectedly executable';
 exception

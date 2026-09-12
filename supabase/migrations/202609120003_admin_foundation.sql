@@ -23,7 +23,7 @@ as $$
   select role from public.staff_roles where user_id = (select auth.uid());
 $$;
 
-revoke all on function public.admin_staff_role() from public;
+revoke all on function public.admin_staff_role() from public, anon, authenticated;
 grant execute on function public.admin_staff_role() to authenticated;
 
 create function public.admin_account_count()
@@ -104,9 +104,9 @@ begin
 end;
 $$;
 
-revoke all on function public.admin_account_count() from public;
-revoke all on function public.admin_joined_waitlist_count() from public;
-revoke all on function public.admin_list_learners(text, integer, integer) from public;
+revoke all on function public.admin_account_count() from public, anon, authenticated;
+revoke all on function public.admin_joined_waitlist_count() from public, anon, authenticated;
+revoke all on function public.admin_list_learners(text, integer, integer) from public, anon, authenticated;
 grant execute on function public.admin_account_count() to authenticated;
 grant execute on function public.admin_joined_waitlist_count() to authenticated;
 grant execute on function public.admin_list_learners(text, integer, integer) to authenticated;
@@ -215,8 +215,8 @@ begin
 end;
 $$;
 
-revoke all on function public.admin_get_learner(uuid) from public;
-revoke all on function public.admin_update_learner(uuid, text, public.learning_level, text) from public;
+revoke all on function public.admin_get_learner(uuid) from public, anon, authenticated;
+revoke all on function public.admin_update_learner(uuid, text, public.learning_level, text) from public, anon, authenticated;
 grant execute on function public.admin_get_learner(uuid) to authenticated;
 grant execute on function public.admin_update_learner(uuid, text, public.learning_level, text) to authenticated;
 
@@ -250,7 +250,7 @@ begin
 end;
 $$;
 
-revoke all on function public.admin_list_audit(integer, integer) from public;
+revoke all on function public.admin_list_audit(integer, integer) from public, anon, authenticated;
 grant execute on function public.admin_list_audit(integer, integer) to authenticated;
 
 create table public.page_views (
@@ -295,8 +295,8 @@ begin
 end;
 $$;
 
-revoke all on function public.record_page_view(uuid, text) from public;
-revoke all on function public.admin_page_view_count(timestamptz, timestamptz) from public;
+revoke all on function public.record_page_view(uuid, text) from public, anon, authenticated;
+revoke all on function public.admin_page_view_count(timestamptz, timestamptz) from public, anon, authenticated;
 grant execute on function public.record_page_view(uuid, text) to anon, authenticated;
 grant execute on function public.admin_page_view_count(timestamptz, timestamptz) to authenticated;
 
