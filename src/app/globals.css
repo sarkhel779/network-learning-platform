@@ -1127,6 +1127,9 @@ body:has(.labs-page) .site-header,body:has(.labs-page) .site-footer{background:#
 .home-lab-topology{overflow-x:auto}.home-lab-segment{display:flex;align-items:center;flex:1;min-width:0}.home-lab-segment:last-child{flex:0}.home-lab-topology .home-lab-device{display:grid;justify-items:center;gap:.35rem;min-width:3.5rem;padding:.2rem;border:0;background:none}.home-lab-device svg{width:2.7rem;height:2.7rem;color:#529bff;filter:drop-shadow(0 0 6px #358dff55)}.home-lab-device small{color:#b5c8da;font-size:.68rem}.home-lab-segment>i{min-width:1rem;flex:1;height:2px;background:repeating-linear-gradient(90deg,#23d6a8 0 6px,transparent 6px 12px)}
 .home-lab-topology .home-lab-segment:last-child{flex:0 0 3.5rem}
 
+.site-header .site-nav a{display:inline-flex;align-items:center;min-height:2.7rem;padding:.5rem .15rem;border-bottom:2px solid transparent;text-decoration:none}
+.site-header .site-nav a[aria-current="page"]{border-bottom-color:#23d6a8;color:#23d6a8;font-weight:800}
+
 /* Packet Labs MVP */
 .labs-page{min-height:100vh;padding:3rem max(1rem,calc((100vw - 1200px)/2));background:#0b111c;color:#f5f8fc}
 .labs-page__intro{max-width:46rem;margin-bottom:2rem}.labs-page__intro h1{margin:.4rem 0;font-size:clamp(2.2rem,5vw,4rem);line-height:1.08}.labs-page__intro>p:last-child,.labs-page__practice p,.labs-page__checks>p{color:#b4c4d7;line-height:1.6}
