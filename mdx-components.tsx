@@ -37,7 +37,8 @@ import { HopByHopForwardingPlayer } from "@/features/routing/hop-by-hop-forwardi
 import { PingEvidencePlayer } from "@/features/icmp/ping-evidence-player";
 import { TracerouteDiscoveryPlayer } from "@/features/icmp/traceroute-discovery-player";
 import { TcpConnectionPlayer } from "@/features/transport/tcp-connection-player";
-import { PortDeliveryPlayer } from "@/features/transport/port-delivery-player";
+import { PortDeliveryPlayer, UdpPortDeliveryPlayer } from "@/features/transport/port-delivery-player";
+import { TcpWindowPlayer } from "@/features/transport/tcp-window-player";
 import { DoraPlayer } from "@/features/dhcp/dora-player";
 import { DhcpRelayPlayer } from "@/features/dhcp/relay-player";
 import { LeaseTimingPlayer } from "@/features/dhcp/lease-timing-player";
@@ -117,7 +118,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     PingEvidencePlayer,
     TracerouteDiscoveryPlayer,
     TcpConnectionPlayer,
+    TcpWindowPlayer,
     PortDeliveryPlayer,
+    UdpPortDeliveryPlayer,
     RouteDecisionPlayer,
     RouteDecisionExperience,
     RoutingTableDecisionPlayer,

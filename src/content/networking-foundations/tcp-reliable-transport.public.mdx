@@ -1,0 +1,95 @@
+<LearningObjective>Follow a TCP connection and use packet evidence to explain reliable byte delivery, MSS, sliding windows, SACK, fast retransmit, and closure.</LearningObjective>
+
+<h2 id="why-transport-protocols-exist">Why transport protocols exist</h2>
+
+IP gets a packet to a host; TCP gets an ordered byte stream to an application on that host. TCP uses ports to identify the application conversation and sequence numbers to track bytes.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_why_transport_protocols_exist" anchor="why-transport-protocols-exist" />
+
+<h2 id="segments-datagrams-ports-sockets">Segments, ports, and sockets</h2>
+
+A TCP **segment** carries a portion of the byte stream. A port is a number in the TCP header, not a physical connector. A socket is an operating-system endpoint; a connected TCP conversation is identified by protocol and the two IP-address/port pairs. UDP uses datagrams and is covered in the next lesson.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_segments_datagrams_ports_sockets" anchor="segments-datagrams-ports-sockets" />
+
+<h2 id="source-destination-ports-multiplexing">Source and destination ports</h2>
+
+The destination port helps find a service; the source port identifies the client's side. Several clients can reach the same server port at once because the complete endpoint pairs differ.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_source_destination_ports_multiplexing" anchor="source-destination-ports-multiplexing" />
+
+<h2 id="tcp-udp-header-essentials">TCP header essentials</h2>
+
+<ProtocolFormatDiagram kind="tcp" />
+
+Alongside ports, the header carries sequence and acknowledgement numbers, flags, an advertised receive window, checksum, and optional fields. SYN begins negotiation; ACK acknowledges bytes; FIN and RST close in different ways.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_tcp_udp_header_essentials" anchor="tcp-udp-header-essentials" />
+
+<h2 id="interactive-tcp-connection">Interactive TCP connection journey</h2>
+
+Play setup, delivery, loss, graceful closure, refusal, and timeout. Read packet direction and endpoint state together.
+
+<TcpConnectionPlayer progressItemId="tcp_udp_and_ports_interactive_interactive_tcp_connection" />
+
+<h2 id="mss-and-segment-sizing">MSS and segment sizing</h2>
+
+**MSS** (Maximum Segment Size) limits TCP payload bytes per segment, not the whole IP packet. Each peer can advertise its receive MSS in a SYN; a sender chooses a payload size that also fits the path and its own limits. In our example, MSS is 100 bytes so segment 1001–1100 carries 100 payload bytes. MSS is not the same as MTU.
+
+Here is a separate handshake example showing where TCP options appear:
+
+| Packet | Options offered | What the sender learns |
+| --- | --- | --- |
+| Client SYN | MSS 1460; Window Scale shift 2; SACK-Permitted | The client can receive payloads up to 1460 bytes and offers a 4× scale for its later advertised receive windows. |
+| Server SYN-ACK | MSS 1360; Window Scale shift 3; SACK-Permitted | The server can receive payloads up to 1360 bytes and offers an 8× scale for its later advertised receive windows. |
+| Client ACK | No new negotiation | Both endpoints know whether window scaling and SACK were offered in both directions. The client should not exceed the server's advertised MSS when sending toward it. |
+
+<SectionContinue itemId="tcp_udp_and_ports_section_mss_and_segment_sizing" anchor="mss-and-segment-sizing" />
+
+<h2 id="window-scaling">Window scaling</h2>
+
+The TCP header's window field is 16 bits. A **Window Scale** option in SYN segments negotiates a power-of-two multiplier for later advertised receive windows. For example, a displayed window value of 1,000 with scale factor 4 means 4,000 bytes of advertised space. The SYN's own window field is not scaled. This is receive-side flow control, not the congestion window. [RFC 7323](https://www.rfc-editor.org/rfc/rfc7323.html) defines the option.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_window_scaling" anchor="window-scaling" />
+
+<h2 id="sequence-acknowledgements-ordered-delivery">Sequence numbers and acknowledgements</h2>
+
+TCP numbers **bytes**, not packets. Segment 1001–1100 carries 100 bytes; ACK 1101 means the receiver next expects byte 1101. An ACK confirms transport receipt, not that the application has processed the data. TCP can buffer out-of-order bytes until the missing gap is filled.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_sequence_acknowledgements_ordered_delivery" anchor="sequence-acknowledgements-ordered-delivery" />
+
+<h2 id="loss-retransmission-duplicates">Loss, retransmission, and duplicates</h2>
+
+If bytes go missing, TCP may resend the missing sequence range. If the original was only delayed, the receiver can use sequence numbers to discard duplicate bytes. A retransmission can follow duplicate ACK evidence or a timer; neither guarantees eventual delivery.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_loss_retransmission_duplicates" anchor="loss-retransmission-duplicates" />
+
+<h2 id="flow-control-receive-window">Flow control and receive window</h2>
+
+The receiver advertises buffer space with its **receive window**. In a simple example, the sender's window left edge is the oldest unacknowledged byte; the right edge is the first byte beyond the current sending limit. As cumulative ACKs move the left edge, the sender can send more. Real sending is also constrained by congestion control, which responds to the network rather than receiver buffer space.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_flow_control_receive_window" anchor="flow-control-receive-window" />
+
+<h2 id="interactive-tcp-window">Interactive TCP sliding window</h2>
+
+Choose normal delivery, a gap with fast retransmit, or timer-based recovery. Watch the packet move while the ACK, sender edges, and SACK block edges change.
+
+<TcpWindowPlayer progressItemId="tcp_udp_and_ports_interactive_interactive_tcp_window" />
+
+<h2 id="sack-permitted-and-blocks">SACK-Permitted and SACK blocks</h2>
+
+**SACK-Permitted** can be offered in a SYN. Later, a receiver may use a **SACK** option to report contiguous bytes received *beyond* a missing gap. If bytes 1101–1200 are missing but 1201–1400 arrived, the cumulative ACK remains 1101 while the SACK block has **left edge** 1201 and **right edge** 1401. The right edge is exclusive: byte 1401 is not in that block. These SACK block edges are different from the sender window's left and right edges. [RFC 2018](https://www.rfc-editor.org/rfc/rfc2018.html) defines both options.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_sack_permitted_and_blocks" anchor="sack-permitted-and-blocks" />
+
+<h2 id="fast-retransmit">Fast retransmit</h2>
+
+When later data arrives but an earlier segment is missing, the receiver repeats the same cumulative ACK. In the example, **three duplicate ACKs** for 1101 trigger **fast retransmit** of bytes 1101–1200 without waiting for the retransmission timer. SACK tells the sender that later bytes are already held. Without enough duplicate ACKs, recovery may instead wait for a timeout. [RFC 5681](https://www.rfc-editor.org/rfc/rfc5681.html) describes the classic trigger.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_fast_retransmit" anchor="fast-retransmit" />
+
+<h2 id="graceful-closure-resets">Graceful closure and resets</h2>
+
+FIN closes one sending direction gracefully; TCP is full duplex, so the other direction closes separately. RST rejects or abruptly ends a connection. A SYN timeout means no response was observed, not that a particular firewall or host was definitely responsible.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_graceful_closure_resets" anchor="graceful-closure-resets" />

@@ -1,0 +1,37 @@
+<h2 id="inspect-transport-evidence">Inspect TCP evidence</h2>
+
+Filter a capture with `tcp`. Inspect `tcp.flags.syn == 1` for opening attempts and `tcp.analysis.retransmission` as a lead, then verify sequence ranges and ACKs yourself. On Linux, compare the capture with `ss -tulpen`; on Windows, use `Get-NetTCPConnection` or `netstat -ano`.
+
+<WiresharkCheck displayFilter="tcp">Capture one TCP exchange. Record the endpoint tuple, MSS and Window Scale offered in SYN packets, advertised receive windows, sequence ranges, cumulative ACKs, any SACK blocks, and the observed recovery path.</WiresharkCheck>
+
+<SectionContinue itemId="tcp_udp_and_ports_section_inspect_transport_evidence" anchor="inspect-transport-evidence" />
+
+<h2 id="guided-transport-diagnosis">Guided TCP diagnosis</h2>
+
+A completed handshake proves transport setup, not application success. Repeated SYNs without a reply indicate an incomplete attempt but not which direction or policy caused the silence. Three duplicate ACKs can support fast retransmit; a single duplicate ACK does not establish that trigger.
+
+<InterviewScenario title="A download pauses after one lost segment">Identify the missing byte range, cumulative ACK, SACK block edges, duplicate ACK count, and whether recovery used fast retransmit or a timer. Keep receiver-window flow control separate from congestion control.</InterviewScenario>
+
+<SectionContinue itemId="tcp_udp_and_ports_section_guided_transport_diagnosis" anchor="guided-transport-diagnosis" />
+
+<h2 id="troubleshoot-transport">Troubleshoot TCP methodically</h2>
+
+1. Verify the address, port, listener, and return path.
+2. Capture SYN, SYN-ACK, ACK, payload, and closing packets in both directions.
+3. Check MSS and Window Scale only where negotiated, in SYN packets.
+4. Compare cumulative ACKs and SACK blocks to find missing versus buffered bytes.
+5. Distinguish RST, fast retransmit, timeout retransmit, and application-level errors.
+
+<SectionContinue itemId="tcp_udp_and_ports_section_troubleshoot_transport" anchor="troubleshoot-transport" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="tcp_reliable_transport_check_1" question="What does ACK 1101 mean after bytes 1001–1100 arrive?" options={["The next expected byte is 1101", "The application processed 1101 messages", "The MSS is 1101 bytes"]} correctIndex={0} explanation="TCP acknowledges byte positions; 1101 is the next expected byte." />
+
+<KnowledgeCheck progressItemId="tcp_reliable_transport_check_2" question="A SACK block is [1201, 1401). Which bytes does it report?" options={["1201 through 1401", "1201 through 1400", "1101 through 1400"]} correctIndex={1} explanation="The SACK right edge is exclusive, so byte 1401 is not included." />
+
+<KnowledgeCheck progressItemId="tcp_reliable_transport_check_3" question="What triggers classic TCP fast retransmit in this lesson?" options={["Three duplicate ACKs for the same missing byte", "Any single ACK", "A zero receive window"]} correctIndex={0} explanation="Three duplicate ACKs provide the classic fast-retransmit loss signal; a timer can provide a different recovery path." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">Compare receive-window flow control with congestion-window limits, multiple losses, RTT and timer behavior, SACK-based recovery, and deeper captures. A transport ACK still does not prove application success.</PremiumPreview>

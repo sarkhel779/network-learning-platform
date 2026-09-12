@@ -34,13 +34,14 @@ describe("HomePage", () => {
       ["ARP & MAC", "arp-and-local-delivery"],
       ["DNS", "dns-and-name-resolution"],
       ["DHCP", "dhcp-and-automatic-address-configuration"],
-      ["TCP & UDP", "tcp-udp-and-ports"],
       ["HTTP/HTTPS", "http-https-tls-and-essential-network-services"],
     ];
     for (const [label, destination] of topics) {
       expect(html).toContain(label.replaceAll("&", "&amp;"));
       expect(html).toContain(`/learn/networking-foundations/${destination}`);
     }
+    expect(html).toContain("TCP &amp; UDP");
+    expect(html).not.toContain('href="/learn/networking-foundations/tcp-udp-and-ports"');
   });
 
   it("shows the five-device route and example terminal", () => {

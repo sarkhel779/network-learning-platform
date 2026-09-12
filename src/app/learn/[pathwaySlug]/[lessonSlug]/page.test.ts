@@ -335,7 +335,11 @@ describe("lesson route generation", () => {
       },
       {
         pathwaySlug: "networking-foundations",
-        lessonSlug: "tcp-udp-and-ports",
+        lessonSlug: "tcp-reliable-transport",
+      },
+      {
+        pathwaySlug: "networking-foundations",
+        lessonSlug: "udp-datagrams-and-ports",
       },
       {
         pathwaySlug: "networking-foundations",

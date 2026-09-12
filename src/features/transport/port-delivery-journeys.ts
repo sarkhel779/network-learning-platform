@@ -25,7 +25,10 @@ export const portDeliveryScenarios = [
   make({ ...base, id: "ephemeral-clients", title: "Two ephemeral client ports", description: "Keep simultaneous conversations distinct.", protocol: "TCP", destinationPort: 443, headerFields: [{ label: "Flags", value: "ACK" }, { label: "Conversations", value: "2" }], listener: { protocol: "TCP", port: 443, application: "HTTPS service" }, outcome: "delivered", conclusion: "Different ephemeral source ports keep the two TCP conversations distinct." }),
   make({ ...base, id: "tcp-no-listener", title: "TCP port has no listener", description: "Observe explicit rejection evidence.", protocol: "TCP", destinationPort: 8443, headerFields: [{ label: "Flags", value: "SYN" }], listener: null, outcome: "reset", conclusion: "A reachable host with no TCP listener commonly returns RST, explicitly refusing the connection." }),
   make({ ...base, id: "udp-no-listener", title: "UDP port has no listener", description: "Keep the outcome conditional.", protocol: "UDP", destinationPort: 9999, headerFields: [{ label: "Length", value: "32 bytes" }], listener: null, outcome: "unreachable-or-silent", conclusion: "A host may return ICMP Port Unreachable, while filtering or policy can leave the sender observing silence." }),
+  make({ ...base, id: "udp-ephemeral-clients", title: "Two UDP client ports", description: "Keep two DNS requests distinct.", protocol: "UDP", destinationPort: 53, headerFields: [{ label: "Length", value: "40 bytes" }], listener: { protocol: "UDP", port: 53, application: "DNS service" }, outcome: "delivered", conclusion: "Different ephemeral source ports distinguish the two UDP client endpoints." }),
 ] as const;
+
+export const udpPortDeliveryScenarios = portDeliveryScenarios.filter((scenario) => scenario.protocol === "UDP");
 
 function tupleOf(scenario: PortDeliveryScenario, sourcePort = scenario.sourcePort) {
   return `${scenario.protocol} ${scenario.sourceIp}:${sourcePort} → ${scenario.destinationIp}:${scenario.destinationPort}`;
@@ -34,7 +37,7 @@ function tupleOf(scenario: PortDeliveryScenario, sourcePort = scenario.sourcePor
 export function buildPortDeliveryJourney(input: PortDeliveryScenario): readonly PortDeliveryStep[] {
   const scenario = parsePortDeliveryScenario(input);
   const tuple = tupleOf(scenario);
-  const relatedTuples = scenario.id === "ephemeral-clients"
+  const relatedTuples = scenario.id === "ephemeral-clients" || scenario.id === "udp-ephemeral-clients"
     ? [tupleOf(scenario, 49152), tupleOf(scenario, 49153)]
     : [tuple];
   const common = { tuple, headerFields: scenario.headerFields, listener: scenario.listener, relatedTuples };
