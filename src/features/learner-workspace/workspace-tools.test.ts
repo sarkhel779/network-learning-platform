@@ -10,17 +10,10 @@ describe("getVisibleWorkspaceTools", () => {
     expect(getVisibleWorkspaceTools(null).map(({ id }) => id)).toEqual(["course"]);
   });
 
-  it("keeps every signed-in tool in the approved order", () => {
+  it("shows only working tools to signed-in learners", () => {
     expect(getVisibleWorkspaceTools(viewer).map(({ id }) => id)).toEqual([
       "course",
       "learning",
-      "notes",
-      "bookmarks",
-      "practice",
-      "glossary",
-      "feedback",
-      "account",
-      "pro",
     ]);
   });
 });

@@ -615,6 +615,16 @@ a { color: inherit; }
 .informational-page { width: min(100% - 2rem, 52rem); margin: 0 auto; padding: clamp(3rem, 8vw, 6rem) 0; }
 .informational-page h1 { max-width: 20ch; }
 .informational-page h2 { margin-top: 2rem; line-height: 1.2; }
+.dashboard-page { display: grid; gap: 1.25rem; }
+.dashboard-page > h1, .dashboard-page > p { margin: 0; }
+.dashboard-account, .dashboard-progress { min-width: 0; padding: clamp(1rem, 3vw, 1.5rem); border: 1px solid var(--border); border-radius: 0.8rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); }
+.dashboard-account { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
+.dashboard-account h2, .dashboard-progress > h2 { margin: 0 0 0.6rem; }
+.dashboard-account p { margin: 0; }
+.dashboard-sign-out button { min-block-size: 44px; padding: 0.6rem 0.9rem; border: 1px solid var(--border); border-radius: 0.5rem; background: var(--background); color: var(--foreground); font: inherit; font-weight: 700; cursor: pointer; }
+.dashboard-sign-out button:disabled { opacity: 0.65; cursor: wait; }
+.dashboard-sign-out [role="alert"] { margin-top: 0.5rem; color: var(--foreground); }
+.dashboard-progress .my-learning { margin-top: 1rem; }
 .waitlist-card { display: grid; gap: 1.25rem; min-width: 0; max-width: 100%; margin-top: 2rem; padding: clamp(1.25rem, 4vw, 2rem); border: 1px solid var(--border); border-radius: 1rem; background: var(--surface); box-shadow: 0 1rem 3rem color-mix(in srgb, var(--foreground) 8%, transparent); }
 .waitlist-card__heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .waitlist-card__heading h2 { margin: .2rem 0 0; }

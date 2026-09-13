@@ -5,6 +5,7 @@ import {
 
 const allowedReturnPaths = new Set([
   "/",
+  "/dashboard",
   ...listPathways().flatMap(({ slug }) => [
     `/paths/${slug}`,
     ...listPublishedLessons(slug).map(

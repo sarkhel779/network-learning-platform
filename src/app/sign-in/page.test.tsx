@@ -10,8 +10,14 @@ afterEach(() => {
 });
 
 describe("sign-in page", () => {
+  it("labels the dashboard return destination clearly", async () => {
+    render(await SignInPage({ searchParams: Promise.resolve({ returnTo: "/dashboard" }) }));
+    expect(screen.getByRole("link", { name: "Back to dashboard" })).toHaveAttribute("href", "/dashboard");
+  });
+
   it.each([
     "/",
+    "/dashboard",
     "/paths/networking-foundations",
     "/learn/networking-foundations/how-networks-communicate",
     "/learn/networking-foundations/hosts-and-network-devices",

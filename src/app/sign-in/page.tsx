@@ -15,7 +15,9 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
   const returnTo = safeReturnPath(params.returnTo);
   const returnLabel = returnTo.startsWith("/learn/")
     ? "Back to your lesson"
-    : returnTo.startsWith("/paths/")
+    : returnTo === "/dashboard"
+      ? "Back to dashboard"
+      : returnTo.startsWith("/paths/")
       ? "Back to your pathway"
       : "Back to Packetsecrets";
   const googleEnabled = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true";

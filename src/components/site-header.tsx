@@ -14,6 +14,7 @@ export function SiteHeader() {
         <div className="site-header__actions">
           <nav aria-label="Primary navigation" className="site-nav">
             <Link href="/paths/networking-foundations">Learning Paths</Link>
+            <Link href="/dashboard">My dashboard</Link>
             <Link href="/pricing">Pricing</Link>
           </nav>
           <ThemeToggle />

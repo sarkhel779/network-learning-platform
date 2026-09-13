@@ -18,17 +18,6 @@ type LearnerWorkspaceProps = Readonly<{
   progressUnavailable?: boolean;
 }>;
 
-const placeholderCopy: Record<Exclude<WorkspaceToolId, "course">, string> = {
-  learning: "Your progress and next learning steps will appear here when progress tracking is added.",
-  notes: "Your lesson notes will appear here when Notes is added in the personal-tools stage.",
-  bookmarks: "Saved lessons and Save for later items will appear here when Bookmarks is added.",
-  practice: "Your practice history will appear here when the Practice workspace is added.",
-  glossary: "Saved networking terms will appear here when the personal Glossary is added.",
-  feedback: "The learner feedback form will appear here in the feedback stage.",
-  account: "Profile and account controls will appear here in the account-settings stage.",
-  pro: "Pro previews and waitlist details will appear here when the entitlement-ready stage is added.",
-};
-
 function ToolIcon() {
   return (
     <svg aria-hidden="true" viewBox="0 0 20 20" width="20" height="20">
@@ -135,7 +124,7 @@ export function LearnerWorkspace({ pathway, currentLessonSlug, viewer, myLearnin
             ) : activeTool.id === "learning" && myLearning ? (
               <MyLearning model={myLearning} unavailable={progressUnavailable} />
             ) : (
-              <p>{placeholderCopy[activeTool.id]}</p>
+              <p role="status">Your learning progress is temporarily unavailable. Please try again later.</p>
             )}
           </>
         ) : null}
