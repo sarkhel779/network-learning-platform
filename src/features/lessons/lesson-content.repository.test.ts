@@ -81,8 +81,10 @@ vi.mock("@/content/networking-foundations/routing-tables-and-default-routes.publ
 vi.mock("@/content/networking-foundations/routing-tables-and-default-routes.account.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/icmp-ping-and-path-discovery.public.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/icmp-ping-and-path-discovery.account.mdx", () => ({ default: () => null }));
-vi.mock("@/content/networking-foundations/tcp-udp-and-ports.public.mdx", () => ({ default: () => null }));
-vi.mock("@/content/networking-foundations/tcp-udp-and-ports.account.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/tcp-reliable-transport.public.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/tcp-reliable-transport.account.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/udp-datagrams-and-ports.public.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/udp-datagrams-and-ports.account.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/dhcp-and-automatic-address-configuration.public.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/dhcp-and-automatic-address-configuration.account.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/dhcp-and-automatic-address-configuration.pro.mdx", () => ({ default: () => null }));
@@ -307,15 +309,16 @@ describe("loadAuthorizedLessonContent", () => {
     expect(account.pro).toBeUndefined();
   });
 
-  it("keeps transport practice protected while serving both players publicly", async () => {
-    const key = "networking-foundations/tcp-udp-and-ports";
-    const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
-    expect(anonymous.public).toBeDefined();
-    expect(anonymous.account).toBeUndefined();
-    const account = await loadAuthorizedLessonContent(key, "account");
-    expect(account.public).toBeDefined();
-    expect(account.account).toBeDefined();
-    expect(account.pro).toBeUndefined();
+  it("keeps TCP and UDP practice protected while serving their players publicly", async () => {
+    for (const key of ["networking-foundations/tcp-reliable-transport", "networking-foundations/udp-datagrams-and-ports"] as const) {
+      const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
+      expect(anonymous.public).toBeDefined();
+      expect(anonymous.account).toBeUndefined();
+      const account = await loadAuthorizedLessonContent(key, "account");
+      expect(account.public).toBeDefined();
+      expect(account.account).toBeDefined();
+      expect(account.pro).toBeUndefined();
+    }
   });
 
   it("loads DHCP content according to anonymous, account, and Pro access", async () => {

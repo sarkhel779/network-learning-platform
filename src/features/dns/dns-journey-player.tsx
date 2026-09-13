@@ -50,12 +50,12 @@ export function DnsJourneyPlayer({ progressItemId, scenarios, buildJourney }: {
       return candidate ? <label key={candidate.id}><input checked={scenarioIndex === index} name="dns-resolution-scenario" onChange={() => choose(index)} type="radio" />{candidate.title}</label> : null;
     })}</fieldset>
     <DnsTopology step={current} />
+    <TransportPlayerControls finalIndex={finalIndex} onNext={() => { setPlaying(false); setStepIndex((value) => value + 1); }} onPrevious={() => { setPlaying(false); setStepIndex((value) => value - 1); }} onRestart={() => { setStepIndex(0); setPlaying(!reducedMotion); }} onSpeedChange={setSpeed} onTogglePlay={() => setPlaying((value) => !value)} playing={playing} speed={speed} stepIndex={stepIndex} />
     <p aria-live="polite" role="status">Step {stepIndex + 1} of {journey.length}: {current.title}</p>
     <p>{current.explanation}</p><p><strong>Evidence:</strong> {current.evidence}</p>
     <section className="dns-cache-state" aria-label="Resolver cache state"><strong>Cache: {current.cache.result}</strong><p>{current.cache.explanation}</p>{current.cache.entries.map((entry) => <p key={`${entry.name}-${entry.type}`}>{entry.name} {entry.type}: {entry.remainingTtl}s of {entry.originalTtl}s remaining</p>)}</section>
     <DnsMessageInspector message={current.message} />
     {current.terminal ? <div className="transport-outcome"><strong>Conclusion</strong><p>{scenario.conclusion}</p></div> : null}
-    <TransportPlayerControls finalIndex={finalIndex} onNext={() => { setPlaying(false); setStepIndex((value) => value + 1); }} onPrevious={() => { setPlaying(false); setStepIndex((value) => value - 1); }} onRestart={() => { setStepIndex(0); setPlaying(!reducedMotion); }} onSpeedChange={setSpeed} onTogglePlay={() => setPlaying((value) => !value)} playing={playing} speed={speed} stepIndex={stepIndex} />
     {state === "error" ? <button onClick={retry}>Retry saving progress</button> : null}
   </section>;
 }

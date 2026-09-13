@@ -24,6 +24,19 @@ export function SwitchingComparison({ progressItemId }: { progressItemId?: strin
   const journey = createSwitchingJourney(deviceId, dimensionId);
   const inspected = deviceId === "hub" ? "The physical signal; it does not read MAC addresses." : "The source and destination MAC addresses in the Ethernet frame.";
   const egress = deviceId === "hub" ? "P2 and P3, because a hub repeats toward every other port." : deviceId === "bridge" ? "Only the segment required by its learned MAC information." : "The selected port for known unicast, or all eligible ports when flooding is required.";
+  const simpleAction = deviceId === "hub"
+    ? "Hub copies the signal to both Host B and Host C"
+    : deviceId === "bridge"
+      ? "Bridge checks whether the other segment needs it"
+      : "Switch sends a known destination to its learned port";
+  const simpleResult = deviceId === "hub"
+    ? "Host B accepts it; Host C ignores it"
+    : "Host B receives it; unnecessary ports are skipped";
+  const simpleSummary = deviceId === "hub"
+    ? "In simple terms, a hub is like a loudspeaker: everyone hears Host A, but only Host B keeps the message."
+    : deviceId === "bridge"
+      ? "In simple terms, a bridge is a doorway between two groups: it passes the message across only when needed."
+      : "In simple terms, a switch is more selective: it uses the destination address to choose the right port when it knows where Host B is.";
 
   return (
     <section aria-labelledby="switching-comparison-title" className="switching-comparison">
@@ -60,6 +73,13 @@ export function SwitchingComparison({ progressItemId }: { progressItemId?: strin
         <article aria-labelledby={`switching-device-${device.id}`} className="switching-device-card" data-behavior={detail.behavior}>
           <h4 id={`switching-device-${device.id}`}>{device.name}</h4>
           <p>{device.summary}</p>
+          <p className="switching-simple-summary">{simpleSummary}</p>
+          <p className="switching-scroll-hint">Swipe sideways to follow the packet →</p>
+          <div className="switching-simple-topology" role="group" aria-label={`${device.name} in plain English`}>
+            <div><span>1</span><strong>Host A sends</strong><small>A message meant for Host B enters on P1.</small></div>
+            <div><span>2</span><strong>{simpleAction}</strong><small>{deviceId === "hub" ? "A hub does not read the destination address." : "The device decides which link needs the frame."}</small></div>
+            <div><span>3</span><strong>{simpleResult}</strong><small>The intended host handles the message.</small></div>
+          </div>
           <PacketJourneyPlayer journey={journey} progressItemId={progressItemId} />
           <section className="switching-what-changed" aria-label="What changed?">
             <h5>What changed?</h5>

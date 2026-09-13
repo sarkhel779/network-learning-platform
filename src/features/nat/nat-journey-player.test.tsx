@@ -8,6 +8,11 @@ import { hairpinBidirectionalJourney, hairpinDnatOnlyJourney, patInternetJourney
 afterEach(cleanup);
 
 describe("NatJourneyPlayer", () => {
+  it("places playback controls immediately after the NAT topology", () => {
+    const { container } = render(<NatJourneyPlayer scenarios={[patInternetJourney]} initialScenarioId="pat-internet-journey" title="PAT journey" />);
+    const topology = container.querySelector(".nat-topology");
+    expect(topology?.nextElementSibling).toContainElement(screen.getByRole("button", { name: "Restart" }));
+  });
   it("keeps packet, tuple, and translation state synchronized during manual playback", async () => {
     const user = userEvent.setup();
     render(<NatJourneyPlayer scenarios={[patInternetJourney]} initialScenarioId="pat-internet-journey" title="PAT journey" />);

@@ -36,6 +36,20 @@ const troubleshootingGroups = [
   { label: "Preserve learning", node: "Report", ids: ["report-and-prevent", "pro-incident-report", "pro-advanced-validation"] },
 ] as const;
 
+function lessonGroups(sections: LessonSection[]) {
+  const count = Math.min(4, sections.length);
+  return Array.from({ length: count }, (_, index) => {
+    const start = Math.floor(index * sections.length / count);
+    const end = Math.floor((index + 1) * sections.length / count);
+    const group = sections.slice(start, end);
+    return {
+      label: start + 1 === end ? `Topic ${end}` : `Topics ${start + 1}–${end}`,
+      node: `Hop ${index + 1}`,
+      ids: group.map(({ id }) => id),
+    };
+  });
+}
+
 function SectionItem({
   section: { id, label, access, preview },
   lockedReturnTo,
@@ -78,7 +92,7 @@ export function LessonSectionNavigation({ sections, presentation = "list", locke
   if (!sections?.length) return null;
 
   if (presentation === "dns-network-map" || presentation === "network-map" || presentation === "nat-network-map" || presentation === "troubleshooting-network-map") {
-    const groups = mapGroups ?? (presentation === "nat-network-map" ? natGroups : presentation === "troubleshooting-network-map" ? troubleshootingGroups : dnsGroups);
+    const groups = mapGroups ?? (presentation === "nat-network-map" ? natGroups : presentation === "troubleshooting-network-map" ? troubleshootingGroups : presentation === "dns-network-map" ? dnsGroups : lessonGroups(sections));
     const toggleMap = () => {
       if (!isMapOpen) setRevealCycle((cycle) => cycle + 1);
       setIsMapOpen(!isMapOpen);
@@ -93,8 +107,7 @@ export function LessonSectionNavigation({ sections, presentation = "list", locke
           onClick={toggleMap}
           type="button"
         >
-            <strong>Page contents</strong>
-          <span className="dns-map__toggle network-map__toggle" aria-hidden="true">⌄</span>
+          <strong>Page contents</strong>
         </button>
         {isMapOpen ? (
           <div className="dns-map__panel network-map__panel" id={panelId}>

@@ -91,8 +91,7 @@ describe("sign-in page", () => {
     vi.stubEnv("NEXT_PUBLIC_GOOGLE_AUTH_ENABLED", "false");
     render(await SignInPage({ searchParams: Promise.resolve({}) }));
 
-    expect(screen.queryByRole("button", { name: "Continue with Google" }))
-      .not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Continue with Google" })).toBeDisabled();
     expect(screen.getByLabelText("Email address")).toBeVisible();
   });
 });

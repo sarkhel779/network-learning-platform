@@ -25,6 +25,8 @@ describe("packet-flow lesson integration", () => {
     expect(screen.getByText(/Step 1 of \d+/)).toBeVisible();
     expect(screen.getByRole("button", { name: "Previous" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Next" })).toBeVisible();
+    expect(screen.getByRole("navigation", { name: "Packet lab sections" })).toBeVisible();
+    expect(screen.getByRole("link", { name: "Packet details" })).toHaveAttribute("href", "#first-packet-details");
   });
 
   it("uses the MDX lesson heading as the packet player accessible name", () => {

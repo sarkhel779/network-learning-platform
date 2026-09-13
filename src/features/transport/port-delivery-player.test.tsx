@@ -1,7 +1,7 @@
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { PortDeliveryPlayer } from "./port-delivery-player";
+import { PortDeliveryPlayer, UdpPortDeliveryPlayer } from "./port-delivery-player";
 import { portDeliveryScenarios } from "./port-delivery-journeys";
 
 const markTerminalStateReached = vi.fn();
@@ -16,6 +16,17 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.useRealTimers(); });
 
 describe("PortDeliveryPlayer", () => {
+  it("uses a UDP-specific title and does not show an unresolved socket as null", () => {
+    render(<UdpPortDeliveryPlayer />);
+    expect(screen.getByRole("heading", { name: "UDP Port Delivery" })).toBeVisible();
+    expect(screen.queryByText(/TCP vs UDP and Port Delivery/)).not.toBeInTheDocument();
+    expect(screen.getByText(/Socket lookup pending/)).toBeVisible();
+    expect(screen.queryByText(/→ null/)).not.toBeInTheDocument();
+  });
+  it("shows the packet moving toward the receiving application", () => {
+    const { container } = render(<PortDeliveryPlayer />);
+    expect(container.querySelector('[data-packet-envelope="true"]')).toBeInTheDocument();
+  });
   it("offers five scenarios and shows tuple, header, socket, and application evidence", () => {
     render(<PortDeliveryPlayer />);
     for (const { title } of portDeliveryScenarios) expect(screen.getByRole("radio", { name: title })).toBeVisible();

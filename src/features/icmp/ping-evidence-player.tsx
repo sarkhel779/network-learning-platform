@@ -51,6 +51,13 @@ export function PingEvidencePlayer({ progressItemId, scenarios = pingScenarios }
       <input checked={index === scenarioIndex} name="ping-evidence-scenario" onChange={() => chooseScenario(index)} type="radio" />{item.title}
     </label>)}</fieldset>
     <ol aria-label="Ping path topology" className="icmp-topology">{parsed.devices.map((device) => <li data-active={step.activeDeviceIds.includes(device.id)} key={device.id}><strong>{device.label}</strong><span>{device.role}</span></li>)}</ol>
+    <div className="player-controls">
+      <button disabled={stepIndex === 0} onClick={() => { setPlaying(false); setStepIndex((current) => current - 1); }}>Previous</button>
+      <button disabled={stepIndex === finalIndex} onClick={() => setPlaying((current) => !current)}>{playing ? "Pause" : "Play"}</button>
+      <button disabled={stepIndex === finalIndex} onClick={() => { setPlaying(false); setStepIndex((current) => current + 1); }}>Next</button>
+      <button onClick={() => { setStepIndex(0); setPlaying(!reducedMotion); }}>Restart</button>
+      <label>Playback speed <select aria-label="Playback speed" onChange={(event) => setSpeed(Number(event.target.value))} value={speed}>{PLAYBACK_SPEEDS.map((value) => <option key={value} value={value}>{value}×</option>)}</select></label>
+    </div>
     <p aria-live="polite" role="status">Step {stepIndex + 1} of {journey.length}: {step.title}</p>
     {!step.terminal ? <p>{step.explanation}</p> : null}
     {step.packet ? <p className="icmp-packet"><strong>{step.packet.label}</strong><span>{step.packet.direction === "request" ? "Outbound request" : "Returning response"}</span></p> : null}
@@ -60,13 +67,6 @@ export function PingEvidencePlayer({ progressItemId, scenarios = pingScenarios }
         <tbody>{step.evidence.map((field) => <tr key={field.label}><th scope="row">{field.label}</th><td>{field.value}</td><td>{field.layer}</td></tr>)}</tbody></table>
     </div>
     {step.terminal ? <div className="icmp-outcome"><strong>Conclusion</strong><p>{parsed.conclusion}</p></div> : null}
-    <div className="player-controls">
-      <button disabled={stepIndex === 0} onClick={() => { setPlaying(false); setStepIndex((current) => current - 1); }}>Previous</button>
-      <button disabled={stepIndex === finalIndex} onClick={() => setPlaying((current) => !current)}>{playing ? "Pause" : "Play"}</button>
-      <button disabled={stepIndex === finalIndex} onClick={() => { setPlaying(false); setStepIndex((current) => current + 1); }}>Next</button>
-      <button onClick={() => { setStepIndex(0); setPlaying(!reducedMotion); }}>Restart</button>
-      <label>Playback speed <select aria-label="Playback speed" onChange={(event) => setSpeed(Number(event.target.value))} value={speed}>{PLAYBACK_SPEEDS.map((value) => <option key={value} value={value}>{value}×</option>)}</select></label>
-    </div>
     {state === "error" ? <button onClick={retry}>Retry saving progress</button> : null}
   </section>;
 }

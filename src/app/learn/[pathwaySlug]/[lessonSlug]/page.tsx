@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
 import {
@@ -23,6 +24,7 @@ import { isExpectedCatalogError } from "./catalog-error";
 
 type LessonPageProps = {
   params: Promise<{ pathwaySlug: string; lessonSlug: string }>;
+  searchParams?: Promise<{ audit?: string }>;
 };
 
 export const dynamicParams = false;
@@ -73,24 +75,31 @@ export async function generateMetadata({ params }: LessonPageProps): Promise<Met
   };
 }
 
-export default async function LessonPage({ params }: LessonPageProps) {
+export default async function LessonPage({ params, searchParams }: LessonPageProps) {
   const { pathwaySlug, lessonSlug } = await params;
   const lesson = findPublishedLesson(pathwaySlug, lessonSlug);
   const pathway = getPathway(pathwaySlug);
   const { previous, next } = getAdjacentLessons(pathwaySlug, lessonSlug);
   const viewer = await getViewer();
+  const auditRequested = (await searchParams)?.audit === "1";
+  const requestHost = auditRequested && process.env.NODE_ENV === "development"
+    ? (await headers()).get("host")
+    : null;
+  const auditMode = requestHost !== null && /^(?:localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/.test(requestHost);
   const key: LessonContentKey = `${pathway.slug}/${lesson.slug}`;
 
   let PublicContent: LessonContentModule["default"] | undefined;
   let AccountContent: LessonContentModule["default"] | undefined;
+  let ProContent: LessonContentModule["default"] | undefined;
   let initialProgress: LessonProgressSummary | null = null;
   let progressUnavailable = false;
   let myLearning: MyLearningModel | undefined;
 
   try {
-    const content = await loadAuthorizedLessonContent(key, viewer ? "account" : "anonymous");
+    const content = await loadAuthorizedLessonContent(key, auditMode ? "pro" : viewer ? "account" : "anonymous");
     PublicContent = content.public?.default;
     AccountContent = content.account?.default;
+    ProContent = content.pro?.default;
   } catch (error) {
     if (error instanceof Error && error.message === "LESSON_CONTENT_NOT_FOUND") {
       notFound();
@@ -120,6 +129,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
         previous={previous}
         next={next}
         viewer={viewer}
+        auditMode={auditMode}
         progressManifest={progressManifest}
         initialProgress={initialProgress}
         progressUnavailable={progressUnavailable}
@@ -127,6 +137,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
       >
         {PublicContent ? <PublicContent /> : null}
         {AccountContent ? <AccountContent /> : null}
+        {ProContent ? <ProContent /> : null}
       </LessonShell>
     </>
   );

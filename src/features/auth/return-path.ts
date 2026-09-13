@@ -8,9 +8,13 @@ const allowedReturnPaths = new Set([
   "/dashboard",
   ...listPathways().flatMap(({ slug }) => [
     `/paths/${slug}`,
-    ...listPublishedLessons(slug).map(
-      (lesson) => `/learn/${slug}/${lesson.slug}`,
-    ),
+    ...listPublishedLessons(slug).flatMap((lesson) => {
+      const path = `/learn/${slug}/${lesson.slug}`;
+      return [
+        path,
+        ...(lesson.sections ?? []).map((section) => `${path}#${section.id}`),
+      ];
+    }),
   ]),
 ]);
 

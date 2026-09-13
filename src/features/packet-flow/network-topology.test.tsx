@@ -53,6 +53,16 @@ describe("NetworkTopology semantics", () => {
     expect(markerY).toBeLessThanOrEqual(140);
   });
 
+  it("shows an envelope travelling along the active packet link", () => {
+    const step = scenario.steps.find((candidate) => candidate.packet && candidate.activeLinkIds.length);
+    expect(step).toBeDefined();
+    const { container } = render(<NetworkTopology scenario={scenario} step={step!} reducedMotion={false} />);
+    const marker = container.querySelector('[data-packet-marker="true"]');
+    expect(marker).toBeInTheDocument();
+    expect(marker?.querySelector('[data-packet-envelope="true"]')).toBeInTheDocument();
+    expect(marker?.querySelector('animateTransform')).toHaveAttribute('to');
+  });
+
   it.each(["{Enter}", " "])("activates a focused device with %s", async (key) => {
     const user = userEvent.setup();
     const onDeviceSelect = vi.fn();

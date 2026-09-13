@@ -6,6 +6,8 @@ export function SiteFooter() {
       <div className="site-chrome footer-content">
         <p>Packetsecrets</p>
         <nav aria-label="Footer navigation" className="footer-nav">
+          <Link href="/paths/networking-foundations">Courses</Link>
+          <Link href="/labs">Labs</Link>
           <Link href="/about">About</Link>
           <Link href="/contact">Contact</Link>
           <Link href="/privacy">Privacy</Link>

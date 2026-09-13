@@ -13,7 +13,12 @@ describe("DhcpRelayPlayer", () => {
     render(<DhcpRelayPlayer />);
     expect(screen.getByText("Client broadcast domain")).toBeVisible();
     expect(screen.getByText("Server subnet")).toBeVisible();
-    expect(screen.getByRole("img", { name: /relayed DHCP packet traversal/i })).toHaveAttribute("viewBox", "0 0 900 250");
+    const topology = screen.getByRole("figure", { name: "Relayed DHCP topology" });
+    expect(topology.querySelector("svg")).toHaveAttribute("viewBox", "0 0 900 250");
+    expect(topology.nextElementSibling).toContainElement(screen.getByRole("button", { name: "Play" }));
+    await user.click(screen.getByRole("button", { name: "Play" }));
+    expect(topology.nextElementSibling).toContainElement(screen.getByRole("button", { name: "Pause" }));
+    await user.click(screen.getByRole("button", { name: "Pause" }));
     expect(screen.getByText("UDP 68 → 67")).toBeVisible();
     await user.click(screen.getByRole("button", { name: "Next" }));
     expect(screen.getByText("UDP 67 → 67")).toBeVisible();

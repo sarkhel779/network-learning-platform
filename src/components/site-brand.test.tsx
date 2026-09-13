@@ -29,19 +29,14 @@ describe("Packetsecrets site branding", () => {
     expect(metadata.metadataBase?.href).toBe("https://packetsecrets.com/");
   });
 
-  it("lets learners choose and retain system, light, or dark appearance", async () => {
+  it("lets learners toggle and retain light or dark appearance", async () => {
     const user = userEvent.setup();
     render(<SiteHeader />);
 
-    const themeControl = screen.getByRole("combobox", { name: "Color theme" });
-    expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual([
-      "System",
-      "Light",
-      "Dark",
-    ]);
-
-    await user.selectOptions(themeControl, "dark");
-    expect(document.documentElement).toHaveAttribute("data-theme", "dark");
-    expect(localStorage.getItem("packetsecrets-theme")).toBe("dark");
+    const themeControl = screen.getByRole("switch", { name: "Dark mode" });
+    expect(themeControl).toHaveAttribute("aria-checked", "true");
+    await user.click(themeControl);
+    expect(document.documentElement).toHaveAttribute("data-theme", "light");
+    expect(localStorage.getItem("packetsecrets-theme")).toBe("light");
   });
 });

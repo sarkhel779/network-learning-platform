@@ -14,7 +14,7 @@ describe("PathwayOverview", () => {
       screen.getByRole("heading", { name: "Networking Foundations" }),
     ).toBeVisible();
     expect(screen.getByText(/complete beginners/i)).toBeVisible();
-    expect(screen.getAllByRole("listitem")).toHaveLength(24);
+    expect(screen.getAllByRole("listitem")).toHaveLength(25);
   });
 
   it("links published lessons and marks unpublished lessons as coming later", () => {
@@ -77,8 +77,11 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /icmp, ping and path discovery/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/icmp-ping-and-path-discovery",
     );
-    expect(screen.getByRole("link", { name: /tcp, udp and ports/i })).toHaveAttribute(
-      "href", "/learn/networking-foundations/tcp-udp-and-ports",
+    expect(screen.getByRole("link", { name: /tcp: reliable transport/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/tcp-reliable-transport",
+    );
+    expect(screen.getByRole("link", { name: /udp: datagrams and ports/i })).toHaveAttribute(
+      "href", "/learn/networking-foundations/udp-datagrams-and-ports",
     );
     expect(screen.getByRole("link", { name: /dhcp and automatic address configuration/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/dhcp-and-automatic-address-configuration",
@@ -95,7 +98,7 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /systematic network troubleshooting capstone/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/systematic-network-troubleshooting-capstone",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(24);
+    expect(screen.getAllByRole("link")).toHaveLength(25);
     expect(screen.queryByText("Coming later")).not.toBeInTheDocument();
   });
 });

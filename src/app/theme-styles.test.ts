@@ -5,6 +5,21 @@ import { describe, expect, it } from "vitest";
 const css = readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8");
 
 describe("system theme and table styles", () => {
+  it("uses the approved navy and teal as the default site palette", () => {
+    const root = css.match(/:root\s*\{([^}]+)\}/)?.[1] ?? "";
+    expect(root).toMatch(/--background:\s*#0b111c\s*;/);
+    expect(root).toMatch(/--foreground:\s*#f5f8fc\s*;/);
+    expect(root).toMatch(/--accent:\s*#23d6a8\s*;/);
+    expect(css).toMatch(/\.site-logo__packet\s*\{[^}]*color:\s*#fff/);
+    expect(css).toMatch(/\.site-logo__secrets\s*\{[^}]*color:\s*#23d6a8/);
+  });
+  it("keeps the landing glow static and unable to intercept clicks", () => {
+    expect(css).toMatch(/\.home-refresh::before\s*\{[^}]*radial-gradient\([^}]*pointer-events:\s*none/);
+    expect(css).not.toMatch(/@keyframes\s+home-ambient-shift/);
+  });
+  it("keeps the sign-in brand heading within its card", () => {
+    expect(css).toMatch(/\.sign-in-card h1\s*\{[^}]*max-width:\s*none/);
+  });
   it("keeps connection panels and technical requirements inside their mobile containers", () => {
     const style = document.createElement("style");
     style.textContent = css;
@@ -39,10 +54,10 @@ describe("system theme and table styles", () => {
     expect(region).toMatch(/max-width:\s*100%\s*;/);
   });
 
-  it("uses pure black text in the animated packet marker", () => {
-    const markerText = css.match(/\.network-topology__packet-marker text\s*\{([^}]+)\}/)?.[1];
-    expect(markerText).toMatch(/fill:\s*#000\s*;/);
-    expect(markerText).toMatch(/stroke:\s*none\s*;/);
+  it("draws a visible envelope inside the animated packet marker", () => {
+    const envelope = css.match(/\.network-topology__packet-marker path\s*\{([^}]+)\}/)?.[1];
+    expect(envelope).toMatch(/fill:\s*none\s*;/);
+    expect(envelope).toMatch(/stroke:\s*var\(--background\)\s*;/);
   });
 
   it("defines a desktop workspace rail and mobile bottom sheet", () => {

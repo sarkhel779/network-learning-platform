@@ -64,6 +64,7 @@ describe("LessonSectionNavigation", () => {
 
     const navigation = screen.getByRole("navigation", { name: "Page contents" });
     const disclosure = within(navigation).getByRole("button", { name: "Page contents" });
+    expect(disclosure).toHaveTextContent(/^Page contents$/);
     expect(within(disclosure).queryByText("▣")).not.toBeInTheDocument();
     expect(disclosure).toHaveAttribute("aria-expanded", "false");
     expect(within(navigation).queryByText("Resolver")).not.toBeInTheDocument();
@@ -114,6 +115,24 @@ describe("LessonSectionNavigation", () => {
     await user.click(button);
     await user.click(button);
     expect(screen.getByTestId("network-map-route")).toHaveAttribute("data-reveal-cycle", "2");
+  });
+
+  it("groups every section of an ordinary lesson into a short packet route", async () => {
+    const user = userEvent.setup();
+    const ordinarySections: LessonSection[] = Array.from({ length: 9 }, (_, index) => ({
+      id: `topic-${index + 1}`,
+      label: `Topic ${index + 1}`,
+      access: index < 3 ? "public" : "account",
+    }));
+    render(<LessonSectionNavigation presentation="network-map" lockedReturnTo="/learn/networking-foundations/hosts-and-network-devices" sections={ordinarySections} />);
+    const navigation = screen.getByRole("navigation", { name: "Page contents" });
+    const button = within(navigation).getByRole("button", { name: "Page contents" });
+    expect(button).toHaveAttribute("aria-expanded", "false");
+    await user.click(button);
+    expect(within(navigation).getAllByText(/^Hop [1-4]$/)).toHaveLength(4);
+    expect(within(navigation).getByRole("link", { name: "Topic 1" })).toHaveAttribute("href", "#topic-1");
+    expect(within(navigation).getByRole("link", { name: /Topic 9.*Locked/ })).toHaveAttribute("href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fhosts-and-network-devices%23topic-9");
+    expect(within(navigation).getAllByRole("listitem")).toHaveLength(9);
   });
 
   it("renders the NAT packet route, preserves locked anchors, and replays on every open", async () => {
