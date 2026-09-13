@@ -8,6 +8,10 @@ IPv4 hosts and routers need a way to report network-layer conditions. The Intern
 
 <h2 id="icmp-message-anatomy">ICMP message anatomy</h2>
 
+<h3>Echo message format</h3>
+
+<ProtocolFormatDiagram kind="icmp" />
+
 An ICMP header begins with a **type** and **code** pair. The type identifies the broad message family; the code refines its meaning. A **checksum** protects the ICMP message. Error messages also include a **quoted** portion of the triggering IPv4 packet so the sender can associate the report with an earlier transmission.
 
 <SectionContinue itemId="icmp_ping_and_path_discovery_section_icmp_message_anatomy" anchor="icmp-message-anatomy" />

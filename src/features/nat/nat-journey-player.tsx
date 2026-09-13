@@ -58,11 +58,6 @@ export function NatJourneyPlayer({ scenarios, initialScenarioId, progressItemId,
         </div>
       ) : null}
       <NatTopology step={step} outcome={scenario.outcome} />
-      <p role="status" aria-live="polite">Step {stepIndex + 1} of {scenario.steps.length}: {step.explanation}</p>
-      <div className="nat-evidence-grid">
-        <PacketTupleInspector tuple={step.tuple} translations={step.translations} />
-        <TranslationTableInspector entries={step.tableEntries} activeEntryId={step.activeEntryId} />
-      </div>
       <TransportPlayerControls
         finalIndex={finalIndex}
         onNext={() => { setPlaying(false); setStepIndex((value) => Math.min(finalIndex, value + 1)); }}
@@ -74,6 +69,11 @@ export function NatJourneyPlayer({ scenarios, initialScenarioId, progressItemId,
         speed={speed}
         stepIndex={stepIndex}
       />
+      <p role="status" aria-live="polite">Step {stepIndex + 1} of {scenario.steps.length}: {step.explanation}</p>
+      <div className="nat-evidence-grid">
+        <PacketTupleInspector tuple={step.tuple} translations={step.translations} />
+        <TranslationTableInspector entries={step.tableEntries} activeEntryId={step.activeEntryId} />
+      </div>
       {state === "error" ? <button type="button" onClick={() => void retry()}>Retry saving progress</button> : null}
     </section>
   );

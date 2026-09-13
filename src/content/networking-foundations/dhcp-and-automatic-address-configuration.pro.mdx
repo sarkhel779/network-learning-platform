@@ -1,8 +1,8 @@
 import { dhcpRfcChecks } from "@/features/dhcp/dhcp-pro.data"
 
-<h2 id="lease-timing-diagram">Interactive lease timing diagram</h2>
+<h2 id="lease-timing-diagram">Interactive DHCP lease state diagram</h2>
 
-Compare normal renewal, delayed response, retry/silence, and relay delay. Every point derives its position from elapsed seconds and keeps state, destination behavior, evidence, and lease validity synchronized.
+Follow the client from INIT through DORA and BOUND, then experiment with renewal, rebinding, release, expiry, NAK, and decline. Play each scenario to see the real DHCP message travel between client and server. A timer or unanswered request is shown without inventing a packet.
 
 <LeaseTimingPlayer />
 

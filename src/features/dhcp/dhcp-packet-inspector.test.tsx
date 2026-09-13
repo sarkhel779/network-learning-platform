@@ -35,4 +35,13 @@ describe("DHCP inspection views", () => {
     expect(screen.getByLabelText("Relayed DHCP topology")).toHaveTextContent("Client broadcast domain");
     expect(screen.getByLabelText("Relayed DHCP topology")).toHaveTextContent("Server subnet");
   });
+
+  it("shows recognizable devices and a packet on the correct active leg", () => {
+    const { rerender, container } = render(<DhcpTopology step={doraScenarios[0].steps[0]} mode="direct" />);
+    expect(screen.getByRole("img", { name: /direct DHCP packet traversal/i }).querySelectorAll('[data-device]')).toHaveLength(2);
+    expect(container.querySelector('[data-packet-leg="client-to-server"]')).not.toBeNull();
+    rerender(<DhcpTopology step={relayScenarios[0].steps[1]} mode="relay" />);
+    expect(container.querySelectorAll('svg[aria-label*="relayed DHCP packet traversal"] [data-device]')).toHaveLength(3);
+    expect(container.querySelector('[data-packet-leg="relay-to-server"]')).not.toBeNull();
+  });
 });

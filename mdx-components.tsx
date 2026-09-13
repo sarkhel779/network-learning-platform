@@ -25,6 +25,7 @@ import { ArpLocalDeliveryPlayer } from "@/features/arp/arp-local-delivery-player
 import { ArpVariantPlayer } from "@/features/arp/arp-variant-player";
 import { VlanMembershipPlayer } from "@/features/vlans/vlan-membership-player";
 import { VlanTagJourneyPlayer } from "@/features/vlans/vlan-tag-journey-player";
+import { RouterOnStickPlayer } from "@/features/vlans/router-on-stick-player";
 import { SectionContinue } from "@/features/progress/section-continue";
 import { Ipv4AddressBoundaryPlayer } from "@/features/ipv4/ipv4-address-boundary-player";
 import { Ipv4BinaryExplorer } from "@/features/ipv4/ipv4-binary-explorer";
@@ -37,7 +38,9 @@ import { HopByHopForwardingPlayer } from "@/features/routing/hop-by-hop-forwardi
 import { PingEvidencePlayer } from "@/features/icmp/ping-evidence-player";
 import { TracerouteDiscoveryPlayer } from "@/features/icmp/traceroute-discovery-player";
 import { TcpConnectionPlayer } from "@/features/transport/tcp-connection-player";
-import { PortDeliveryPlayer } from "@/features/transport/port-delivery-player";
+import { PortDeliveryPlayer, UdpPortDeliveryPlayer } from "@/features/transport/port-delivery-player";
+import { TcpWindowPlayer } from "@/features/transport/tcp-window-player";
+import { TcpFastRetransmitPlayer } from "@/features/transport/tcp-fast-retransmit-player";
 import { DoraPlayer } from "@/features/dhcp/dora-player";
 import { DhcpRelayPlayer } from "@/features/dhcp/relay-player";
 import { LeaseTimingPlayer } from "@/features/dhcp/lease-timing-player";
@@ -62,6 +65,7 @@ import { AdvancedValidationLab } from "@/features/troubleshooting/advanced-valid
 import { IncidentReportBuilder } from "@/features/troubleshooting/incident-report-builder";
 import { TroubleshootingWorkspace } from "@/features/troubleshooting/troubleshooting-workspace";
 import { TroubleshootingProExperience } from "@/features/troubleshooting/troubleshooting-pro-experience";
+import { ProtocolFormatDiagram } from "@/features/packet-formats/protocol-format-diagram";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -112,10 +116,14 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     NetworkDeviceSymbol,
     NdpSlaacJourneyPlayer,
     PremiumPreview,
+    ProtocolFormatDiagram,
     PingEvidencePlayer,
     TracerouteDiscoveryPlayer,
     TcpConnectionPlayer,
+    TcpWindowPlayer,
+    TcpFastRetransmitPlayer,
     PortDeliveryPlayer,
+    UdpPortDeliveryPlayer,
     RouteDecisionPlayer,
     RouteDecisionExperience,
     RoutingTableDecisionPlayer,
@@ -127,6 +135,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     WiresharkCheck,
     VlanMembershipPlayer,
     VlanTagJourneyPlayer,
+    RouterOnStickPlayer,
     ...components,
   };
 }

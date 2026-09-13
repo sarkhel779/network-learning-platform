@@ -2,24 +2,23 @@
 
 import { useEffect, useState } from "react";
 
-type ThemePreference = "system" | "light" | "dark";
+type ThemePreference = "light" | "dark";
 const storageKey = "packetsecrets-theme";
 
 function applyTheme(theme: ThemePreference) {
-  if (theme === "system") document.documentElement.removeAttribute("data-theme");
-  else document.documentElement.setAttribute("data-theme", theme);
+  document.documentElement.setAttribute("data-theme", theme);
 }
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<ThemePreference>("system");
+  const [theme, setTheme] = useState<ThemePreference>("dark");
 
   useEffect(() => {
-    let preference: ThemePreference = "system";
+    let preference: ThemePreference = "dark";
     try {
       const saved = localStorage.getItem(storageKey);
       if (saved === "light" || saved === "dark") preference = saved;
     } catch {
-      // Storage can be unavailable; system styling remains usable.
+      // Storage can be unavailable; the dark default remains usable.
     }
     setTheme(preference);
     applyTheme(preference);
@@ -36,14 +35,25 @@ export function ThemeToggle() {
   }
 
   return (
-    <label className="theme-control">
-      <span aria-hidden="true">◐</span>
-      <span className="sr-only">Color theme</span>
-      <select value={theme} onChange={(event) => updateTheme(event.target.value as ThemePreference)} aria-label="Color theme">
-        <option value="system">System</option>
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-      </select>
-    </label>
+    <button
+      type="button"
+      className="theme-control"
+      role="switch"
+      aria-label="Dark mode"
+      aria-checked={theme === "dark"}
+      onClick={() => updateTheme(theme === "dark" ? "light" : "dark")}
+    >
+      <span className="theme-control__label" data-active={theme === "light"}>Light</span>
+      <span className="theme-control__track" aria-hidden="true">
+        <span className="theme-control__thumb">
+          {theme === "dark" ? (
+            <svg data-theme-icon="moon" viewBox="0 0 20 20" fill="none"><path d="M15.8 12.8A6.4 6.4 0 0 1 7.2 4.2 6.4 6.4 0 1 0 15.8 12.8Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /></svg>
+          ) : (
+            <svg data-theme-icon="sun" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3.1" stroke="currentColor" strokeWidth="1.6" /><path d="M10 1.8v2M10 16.2v2M1.8 10h2M16.2 10h2M4.2 4.2l1.4 1.4m8.8 8.8 1.4 1.4m0-11.6-1.4 1.4m-8.8 8.8-1.4 1.4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+          )}
+        </span>
+      </span>
+      <span className="theme-control__label" data-active={theme === "dark"}>Dark</span>
+    </button>
   );
 }

@@ -16,6 +16,10 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.useRealTimers(); });
 
 describe("PingEvidencePlayer", () => {
+  it("places controls immediately below the ping topology", () => {
+    render(<PingEvidencePlayer />);
+    expect(screen.getByRole("list", { name: "Ping path topology" }).nextElementSibling).toContainElement(screen.getByRole("button", { name: "Restart" }));
+  });
   it("offers every approved outcome with synchronized topology and packet evidence", () => {
     render(<PingEvidencePlayer />);
     for (const title of pingScenarios.map(({ title }) => title)) expect(screen.getByRole("radio", { name: title })).toBeVisible();

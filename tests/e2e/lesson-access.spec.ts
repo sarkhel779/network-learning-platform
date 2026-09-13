@@ -289,15 +289,15 @@ test("edge-device journey labels interfaces, unfolds the packet, and fits mobile
   )).toBe(true);
 });
 
-test("system dark preference applies the native dark color scheme with a working light override", async ({ page }) => {
+test("dark preference applies the native dark color scheme with a working light override", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "dark" });
   await page.goto(lessonPath);
-  const theme = page.getByRole("combobox", { name: "Color theme" });
-  await theme.selectOption("system");
+  const theme = page.getByRole("switch", { name: "Dark mode" });
+  await expect(theme).toHaveAttribute("aria-checked", "true");
   await expect(page.locator("html")).toHaveCSS("color-scheme", "dark");
-  await theme.selectOption("light");
+  await theme.click();
   await expect(page.locator("html")).toHaveCSS("color-scheme", "light");
-  await theme.selectOption("system");
+  await theme.click();
   await expect(page.locator("html")).toHaveCSS("color-scheme", "dark");
 });
 

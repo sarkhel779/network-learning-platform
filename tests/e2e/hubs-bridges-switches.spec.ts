@@ -77,10 +77,10 @@ test("hydrates cleanly in both themes", async ({ page }) => {
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
   await page.goto(lessonPath);
-  const theme = page.getByRole("combobox", { name: "Color theme" });
-  await theme.selectOption("dark");
+  const theme = page.getByRole("switch", { name: "Dark mode" });
+  await expect(theme).toHaveAttribute("aria-checked", "true");
   await expect(page.locator("html")).toHaveCSS("color-scheme", "dark");
-  await theme.selectOption("light");
+  await theme.click();
   await expect(page.locator("html")).toHaveCSS("color-scheme", "light");
   expect(errors).toEqual([]);
 });

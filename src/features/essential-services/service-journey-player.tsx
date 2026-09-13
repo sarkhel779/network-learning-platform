@@ -45,6 +45,7 @@ export function ServiceJourneyPlayer({ service, progressItemId, scenario: suppli
   return <section className="service-player" aria-label={`${serviceLabel(service)} service journey`}>
     <h3>{scenario.title}</h3>
     <ServiceTopology service={service} step={current} />
+    <TransportPlayerControls finalIndex={finalIndex} onNext={() => { setPlaying(false); setStepIndex((value) => Math.min(finalIndex, value + 1)); }} onPrevious={() => { setPlaying(false); setStepIndex((value) => Math.max(0, value - 1)); }} onRestart={() => { setStepIndex(0); setPlaying(!reducedMotion); }} onSpeedChange={setSpeed} onTogglePlay={() => setPlaying((value) => !value)} playing={playing} speed={speed} stepIndex={stepIndex} />
     <p aria-live="polite" role="status">Step {stepIndex + 1} of {scenario.steps.length}: {current.title}</p>
     <p>{current.explanation}</p>
     <p><strong>Active transport:</strong> {current.transport} {current.sourcePort} → {current.destinationPort}</p>
@@ -52,7 +53,6 @@ export function ServiceJourneyPlayer({ service, progressItemId, scenario: suppli
     <PortTransportPanel service={service} />
     <ProtocolMessageInspector message={current.message} />
     {current.terminal ? <div className="transport-outcome"><strong>Conclusion</strong><p>{scenario.conclusion}</p></div> : null}
-    <TransportPlayerControls finalIndex={finalIndex} onNext={() => { setPlaying(false); setStepIndex((value) => Math.min(finalIndex, value + 1)); }} onPrevious={() => { setPlaying(false); setStepIndex((value) => Math.max(0, value - 1)); }} onRestart={() => { setStepIndex(0); setPlaying(!reducedMotion); }} onSpeedChange={setSpeed} onTogglePlay={() => setPlaying((value) => !value)} playing={playing} speed={speed} stepIndex={stepIndex} />
     {state === "error" ? <button onClick={retry}>Retry saving progress</button> : null}
   </section>;
 }

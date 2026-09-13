@@ -26,6 +26,10 @@ describe("SwitchingComparison", () => {
     render(<SwitchingComparison />);
     expect(screen.getAllByRole("article")).toHaveLength(1);
     expect(screen.getByRole("heading", { name: "Hub" })).toBeVisible();
+    expect(screen.getByText("Host A sends")).toBeVisible();
+    expect(screen.getByText(/Hub copies the signal to both Host B and Host C/i)).toBeVisible();
+    expect(screen.getByText(/a hub is like a loudspeaker/i)).toBeVisible();
+    expect(screen.getByText(/swipe sideways to follow the packet/i)).toBeVisible();
     for (const question of ["What entered?", "Where did it leave?", "What did it inspect or learn?"]) {
       expect(screen.getByText(question)).toBeVisible();
     }
@@ -34,6 +38,7 @@ describe("SwitchingComparison", () => {
     await user.click(screen.getByRole("radio", { name: "Delivery scope" }));
     expect(screen.getAllByRole("article")).toHaveLength(1);
     expect(screen.getByRole("heading", { name: "Switch" })).toBeVisible();
+    expect(screen.getByText(/a switch is more selective/i)).toBeVisible();
     expect(screen.queryByRole("heading", { name: "Hub" })).not.toBeInTheDocument();
     expect(screen.getByRole("img", { name: /switch.*delivery scope/i })).toBeVisible();
   });

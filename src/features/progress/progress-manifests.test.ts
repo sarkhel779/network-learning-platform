@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(24);
+    expect(lessonProgressManifests).toHaveLength(25);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -60,6 +60,8 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609100002_add_routing_tables_progress.sql",
       "supabase/migrations/202609100003_add_icmp_ping_path_progress.sql",
       "supabase/migrations/202609100004_add_tcp_udp_ports_progress.sql",
+      "supabase/migrations/202609120001_split_tcp_udp_progress.sql",
+      "supabase/migrations/202609120002_add_tcp_fast_retransmit_progress.sql",
       "supabase/migrations/202609110001_add_dhcp_progress.sql",
       "supabase/migrations/202609110002_add_dns_progress.sql",
       "supabase/migrations/202609110003_add_essential_services_progress.sql",
@@ -70,11 +72,12 @@ describe("lessonProgressManifests", () => {
       items.map(({ itemId }) => itemId));
 
     for (const itemId of itemIds) {
-      expect(migration.split(`'${itemId}'`)).toHaveLength(2);
+      expect(migration).toContain(`'${itemId}'`);
     }
 
-    expect(migration.match(/^  \('path_networking_foundations', 'lesson_[^']+', 1, \d+\)[,;]?$/gm))
-      .toHaveLength(lessonProgressManifests.length);
+    const registeredLessons = [...migration.matchAll(/^  \('path_networking_foundations', '(lesson_[^']+)', 1, \d+\)[,;]?$/gm)]
+      .map((match) => match[1]);
+    expect(new Set(registeredLessons)).toEqual(new Set(lessonProgressManifests.map(({ lessonId }) => lessonId)));
   });
 
   it("registers the routing lesson players and three checks as 18 required items", () => {
@@ -105,15 +108,23 @@ describe("lessonProgressManifests", () => {
     expect(manifest.items.slice(0, 15).map(({ anchor }) => anchor)).toEqual(expectedCatalogAnchors);
   });
 
-  it("registers the transport lesson in catalog order with two players and three checks", () => {
+  it("registers TCP in catalog order with separate connection, sliding-window, and fast-retransmit players", () => {
     const manifest = getLessonProgressManifest("path_networking_foundations", "lesson_tcp_udp_and_ports");
-    expect(manifest.items).toHaveLength(18);
-    expect(new Set(manifest.items.map(({ itemId }) => itemId)).size).toBe(18);
+    expect(new Set(manifest.items.map(({ itemId }) => itemId)).size).toBe(manifest.items.length);
     expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor))
-      .toEqual(["interactive-tcp-connection", "interactive-tcp-udp-port-delivery"]);
+      .toEqual(["interactive-tcp-connection", "interactive-tcp-window", "interactive-fast-retransmit"]);
     expect(manifest.items.filter(({ kind }) => kind === "knowledge_check").map(({ itemId }) => itemId))
-      .toEqual(["tcp_udp_and_ports_check_1", "tcp_udp_and_ports_check_2", "tcp_udp_and_ports_check_3"]);
+      .toEqual(["tcp_reliable_transport_check_1", "tcp_reliable_transport_check_2", "tcp_reliable_transport_check_3"]);
     expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
+  });
+
+  it("keeps TCP completions and starts a distinct UDP manifest", () => {
+    const tcp = getLessonProgressManifest("path_networking_foundations", "lesson_tcp_udp_and_ports");
+    const udp = getLessonProgressManifest("path_networking_foundations", "lesson_udp_datagrams_and_ports");
+    expect(tcp.items.some(({ itemId }) => itemId === "tcp_udp_and_ports_interactive_interactive_tcp_connection")).toBe(true);
+    expect(tcp.items.some(({ anchor }) => anchor === "interactive-tcp-window")).toBe(true);
+    expect(udp.items.some(({ anchor }) => anchor === "interactive-udp-port-delivery")).toBe(true);
+    expect(udp.items.every(({ itemId }) => itemId.startsWith("udp_datagrams_and_ports_"))).toBe(true);
   });
 
   it("registers DHCP in catalog order while excluding Pro sections", () => {

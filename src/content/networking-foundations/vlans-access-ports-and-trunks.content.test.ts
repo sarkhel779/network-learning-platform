@@ -14,6 +14,10 @@ describe("VLAN lesson content contract", () => {
     expect(publicLesson).toContain("<VlanTagJourneyPlayer progressItemId=");
   });
 
+  it("places the router-on-a-stick journey beside the routing boundary explanation", () => {
+    expect(publicLesson).toContain("<RouterOnStickPlayer />");
+  });
+
   it("keeps account evidence in the protected block", () => {
     expect(accountLesson).toContain("VLAN_ACCOUNT_SENTINEL");
     expect(publicLesson).not.toContain("VLAN_ACCOUNT_SENTINEL");

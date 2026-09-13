@@ -8,6 +8,10 @@ Think of an IP address as the final street address and a MAC address as the labe
 
 <h2 id="read-an-ethernet-frame">Read an Ethernet frame</h2>
 
+<h3>Packet format</h3>
+
+<ProtocolFormatDiagram kind="ethernet" />
+
 An Ethernet transmission begins with synchronization information, followed by destination and source MAC addresses. The type/length field explains what follows, the payload carries upper-layer data, optional padding satisfies the minimum frame size, and the frame check sequence helps detect corruption.
 
 In common Ethernet II captures, `0x0800` means IPv4, `0x0806` means ARP, and `0x86DD` means IPv6. A normal packet capture often omits the preamble, start-frame delimiter, and FCS because the network adapter processes them before software sees the frame.

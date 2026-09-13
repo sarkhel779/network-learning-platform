@@ -45,7 +45,8 @@ describe("catalog repository", () => {
     {
       title: "Transport and Application Services",
       lessons: [
-        "TCP, UDP and Ports",
+        "TCP: Reliable Transport",
+        "UDP: Datagrams and Ports",
         "DHCP and Automatic Address Configuration",
         "DNS and Name Resolution",
         "HTTP, HTTPS, TLS and Essential Network Services",
@@ -68,7 +69,7 @@ describe("catalog repository", () => {
       title,
       lessons: lessons.map((lesson) => lesson.title),
     }))).toEqual(approvedCurriculum);
-    expect(pathway.modules.flatMap(({ lessons }) => lessons)).toHaveLength(24);
+    expect(pathway.modules.flatMap(({ lessons }) => lessons)).toHaveLength(25);
   });
 
   it("preserves implemented routes and removes security lessons", () => {
@@ -97,7 +98,8 @@ describe("catalog repository", () => {
       "routing-tables-and-default-routes",
       "subnetting-fundamentals",
       "systematic-network-troubleshooting-capstone",
-      "tcp-udp-and-ports",
+      "tcp-reliable-transport",
+      "udp-datagrams-and-ports",
       "unicast-broadcast-and-multicast-communication",
       "vlans-access-ports-and-trunks",
     ]);
@@ -411,7 +413,8 @@ describe("catalog repository", () => {
       "ipv6-fundamentals",
       "routing-tables-and-default-routes",
       "icmp-ping-and-path-discovery",
-      "tcp-udp-and-ports",
+      "tcp-reliable-transport",
+      "udp-datagrams-and-ports",
       "dhcp-and-automatic-address-configuration",
       "dns-and-name-resolution",
       "http-https-tls-and-essential-network-services",
@@ -578,28 +581,39 @@ describe("catalog repository", () => {
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
       previous: { slug: "routing-tables-and-default-routes", published: true },
-      next: { slug: "tcp-udp-and-ports", published: true },
+      next: { slug: "tcp-reliable-transport", published: true },
     });
   });
 
-  it("publishes TCP, UDP and Ports after ICMP with the approved access sequence", () => {
-    const lesson = getLesson("networking-foundations", "tcp-udp-and-ports");
-    expect(lesson).toMatchObject({ id: "lesson_tcp_udp_and_ports", published: true, estimatedMinutes: 25 });
+  it("publishes TCP after ICMP with UDP following it", () => {
+    const lesson = getLesson("networking-foundations", "tcp-reliable-transport");
+    expect(lesson).toMatchObject({ id: "lesson_tcp_udp_and_ports", published: true, estimatedMinutes: 40 });
     expect(lesson.sections?.map(({ id, access }) => [id, access])).toEqual([
       ["why-transport-protocols-exist", "public"], ["segments-datagrams-ports-sockets", "public"],
       ["source-destination-ports-multiplexing", "public"], ["tcp-udp-header-essentials", "public"],
-      ["interactive-tcp-connection", "public"], ["sequence-acknowledgements-ordered-delivery", "public"],
+      ["interactive-tcp-connection", "public"], ["mss-and-segment-sizing", "public"],
+      ["window-scaling", "public"], ["sequence-acknowledgements-ordered-delivery", "public"],
       ["loss-retransmission-duplicates", "public"], ["flow-control-receive-window", "public"],
-      ["graceful-closure-resets", "public"], ["interactive-tcp-udp-port-delivery", "public"],
-      ["common-service-ephemeral-ports", "public"], ["choosing-tcp-or-udp", "public"],
+      ["interactive-tcp-window", "public"], ["sack-permitted-and-blocks", "public"],
+      ["fast-retransmit", "public"], ["interactive-fast-retransmit", "public"], ["graceful-closure-resets", "public"],
       ["inspect-transport-evidence", "account"], ["guided-transport-diagnosis", "account"],
       ["troubleshoot-transport", "account"], ["knowledge-check-summary", "account"],
       ["pro-deep-dive", "pro"],
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
       previous: { slug: "icmp-ping-and-path-discovery", published: true },
-      next: { slug: "dhcp-and-automatic-address-configuration", published: true },
+      next: { slug: "udp-datagrams-and-ports", published: true },
     });
+  });
+
+  it("offers focused TCP and UDP lessons consecutively while retaining the TCP identity", () => {
+    const tcp = getLesson("networking-foundations", "tcp-reliable-transport");
+    const udp = getLesson("networking-foundations", "udp-datagrams-and-ports");
+    expect(tcp.id).toBe("lesson_tcp_udp_and_ports");
+    expect(udp.id).toBe("lesson_udp_datagrams_and_ports");
+    expect(getAdjacentLessons("networking-foundations", tcp.slug).next?.slug).toBe(udp.slug);
+    expect(tcp.sections?.some(({ id }) => id === "interactive-tcp-window")).toBe(true);
+    expect(udp.sections?.some(({ id }) => id === "interactive-udp-port-delivery")).toBe(true);
   });
 
   it("publishes DHCP between transport and DNS with the approved access sequence", () => {
@@ -615,7 +629,7 @@ describe("catalog repository", () => {
       ["lease-timing-diagram", "pro"], ["rfc-level-checks", "pro"], ["pro-deep-dive", "pro"],
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
-      previous: { slug: "tcp-udp-and-ports", published: true },
+      previous: { slug: "udp-datagrams-and-ports", published: true },
       next: { slug: "dns-and-name-resolution", published: true },
     });
   });

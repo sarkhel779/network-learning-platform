@@ -22,7 +22,7 @@ export function NatTopology({ step, outcome }: { step: NatStep; outcome?: "succe
         ))}
       </div>
       <div className="nat-topology__link" aria-label={`${labels[step.from] ?? step.from} to ${labels[step.to] ?? step.to}`}>
-        <span key={step.id} className="nat-topology__packet" data-direction={direction} data-testid="nat-packet" data-step={step.id} aria-hidden="true" />
+        <span key={step.id} className="nat-topology__packet" data-direction={direction} data-testid="nat-packet" data-step={step.id} data-packet-envelope="true" aria-hidden="true">✉</span>
       </div>
       <p><strong>Active path:</strong> {labels[step.from] ?? step.from} → {labels[step.to] ?? step.to}</p>
     </div>

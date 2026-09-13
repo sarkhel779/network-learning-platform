@@ -100,12 +100,11 @@ describe("SignInForm", () => {
     );
   });
 
-  it("does not offer Google when the provider is not configured", () => {
+  it("shows why Google is unavailable when the provider is not configured", () => {
     render(<SignInForm googleEnabled={false} returnTo="/" />);
 
-    expect(screen.queryByRole("button", { name: "Continue with Google" }))
-      .not.toBeInTheDocument();
-    expect(screen.getByText("Sign in with your email address.")).toBeVisible();
+    expect(screen.getByRole("button", { name: "Continue with Google" })).toBeDisabled();
+    expect(screen.getByText(/Google sign-in is unavailable/)).toBeVisible();
   });
 
   it("prevents repeat submission while a request is pending", async () => {

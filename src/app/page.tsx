@@ -27,7 +27,7 @@ const topicCandidates: { label: string; slug: string; icon: TopicIconKind; ancho
 ];
 const published = new Set(pathway.modules.flatMap((module) => module.lessons)
   .filter((lesson) => lesson.published).map((lesson) => lesson.slug));
-const topics = topicCandidates.filter((topic) => published.has(topic.slug));
+const topics = topicCandidates.filter((topic) => published.has(topic.slug) || topic.slug === "tcp-udp-and-ports");
 
 export default function HomePage() {
   return <main id="main-content" className="home-refresh">
@@ -46,10 +46,10 @@ export default function HomePage() {
     </section>
     <section className="home-section" aria-labelledby="core-heading">
       <div className="home-section-heading"><h2 id="core-heading">Core Topics You’ll Learn</h2><p>Focus on the fundamentals. Build a strong foundation.</p></div>
-      <div className="home-topics">{topics.map((topic) => <Link key={topic.label} href={`/learn/${pathway.slug}/${topic.slug}${topic.anchor ? `#${topic.anchor}` : ""}`}><span className="home-topic-icon"><TopicIcon kind={topic.icon} /></span><strong>{topic.label}</strong></Link>)}</div>
+      <div className="home-topics">{topics.map((topic) => <Link key={topic.label} href={topic.slug === "tcp-udp-and-ports" ? `/paths/${pathway.slug}` : `/learn/${pathway.slug}/${topic.slug}${topic.anchor ? `#${topic.anchor}` : ""}`}><span className="home-topic-icon" aria-hidden="true"><TopicIcon kind={topic.icon} /></span><strong>{topic.label}</strong></Link>)}</div>
     </section>
     <section className="home-section home-lab" aria-labelledby="lab-heading">
-      <div><p className="home-eyebrow">Interactive packet journey</p><h2 id="lab-heading">Try the packet lab</h2><p>Follow a packet across the network, inspect each hop, and see what changes along the way.</p><Link className="home-button home-button-primary" href={firstLesson}>Try a packet journey →</Link></div>
+      <div><p className="home-eyebrow">Interactive packet lab</p><h2 id="lab-heading">Try the packet lab</h2><p>Change a network setup, predict what happens, and watch each packet hop.</p><Link className="home-button home-button-primary" href="/labs">Try a sample lab →</Link></div>
       <div className="home-lab-topology" aria-hidden="true">{(["laptop", "switch", "router", "cloud", "server"] as const).map((kind, index) => <div className="home-lab-segment" key={kind}><span className="home-lab-device"><DeviceIcon kind={kind} /><small>{["PC", "Switch", "Router", "Internet", "Server"][index]}</small></span>{index < 4 ? <i /> : null}</div>)}</div>
     </section>
     <section className="home-section" aria-labelledby="journey-heading">

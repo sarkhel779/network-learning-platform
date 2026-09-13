@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useReducedMotionState } from "@/features/packet-flow/use-reduced-motion";
+import { TcpSequenceDiagram } from "./tcp-sequence-diagram";
 import { useProgressCompletionBoundary } from "@/features/progress/progress-completion-boundary";
 import { buildTcpJourney, tcpScenarios } from "./tcp-journeys";
 import { parseTcpScenario, type TcpScenario } from "./transport.schema";
@@ -50,11 +51,8 @@ export function TcpConnectionPlayer({ progressItemId, scenarios = tcpScenarios }
     <fieldset><legend>Choose a TCP journey</legend>{scenarios.map((item, index) => <label key={item.id}>
       <input checked={scenarioIndex === index} name="tcp-journey" onChange={() => chooseScenario(index)} type="radio" />{item.title}
     </label>)}</fieldset>
-    <div aria-label="TCP endpoint topology" className="transport-topology" role="group">
-      <div><strong>{scenario.client.label}</strong><span>Client: {step.clientState}</span></div>
-      <div aria-label="Packet direction" data-direction={step.direction}>{step.direction === "none" ? "No packet crossing" : step.direction === "client-to-server" ? "Client → Server" : "Server → Client"}</div>
-      <div><strong>{scenario.server.label}</strong><span>Server: {step.serverState}</span></div>
-    </div>
+    <TcpSequenceDiagram steps={journey} activeIndex={stepIndex} clientState={step.clientState} serverState={step.serverState} />
+    <TransportPlayerControls finalIndex={finalIndex} onNext={() => { setPlaying(false); setStepIndex((current) => current + 1); }} onPrevious={() => { setPlaying(false); setStepIndex((current) => current - 1); }} onRestart={() => { setStepIndex(0); setPlaying(!reducedMotion); }} onSpeedChange={setSpeed} onTogglePlay={() => setPlaying((current) => !current)} playing={playing} speed={speed} stepIndex={stepIndex} />
     <p aria-live="polite" role="status">Step {stepIndex + 1} of {journey.length}: {step.title}</p>
     <p>{step.explanation}</p>
     <div aria-label="Scrollable TCP packet evidence" className="transport-evidence-scroll" role="region" tabIndex={0}>
@@ -68,7 +66,6 @@ export function TcpConnectionPlayer({ progressItemId, scenarios = tcpScenarios }
     </div>
     <p><strong>Observed state:</strong> {step.outcome}</p>
     {step.terminal ? <div className="transport-outcome"><strong>Conclusion</strong><p>{scenario.conclusion}</p></div> : null}
-    <TransportPlayerControls finalIndex={finalIndex} onNext={() => { setPlaying(false); setStepIndex((current) => current + 1); }} onPrevious={() => { setPlaying(false); setStepIndex((current) => current - 1); }} onRestart={() => { setStepIndex(0); setPlaying(!reducedMotion); }} onSpeedChange={setSpeed} onTogglePlay={() => setPlaying((current) => !current)} playing={playing} speed={speed} stepIndex={stepIndex} />
     {state === "error" ? <button onClick={retry}>Retry saving progress</button> : null}
   </section>;
 }

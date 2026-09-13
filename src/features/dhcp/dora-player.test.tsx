@@ -15,7 +15,12 @@ describe("DoraPlayer", () => {
     expect(screen.getByRole("status")).toHaveTextContent("DHCPDISCOVER");
     expect(screen.getByText("UDP 68 → 67")).toBeVisible();
     expect(screen.getByRole("button", { name: "Next" }).closest(".player-controls")).not.toBeNull();
-    expect(screen.getByRole("img", { name: /direct DHCP packet traversal/i })).toHaveAttribute("viewBox", "0 0 800 210");
+    const topology = screen.getByRole("figure", { name: "Direct DHCP topology" });
+    expect(topology.querySelector("svg")).toHaveAttribute("viewBox", "0 0 800 210");
+    expect(topology.nextElementSibling).toContainElement(screen.getByRole("button", { name: "Play" }));
+    await user.click(screen.getByRole("button", { name: "Play" }));
+    expect(topology.nextElementSibling).toContainElement(screen.getByRole("button", { name: "Pause" }));
+    await user.click(screen.getByRole("button", { name: "Pause" }));
     await user.click(screen.getByRole("button", { name: "Next" }));
     expect(screen.getByRole("status")).toHaveTextContent("DHCPOFFER");
     expect(screen.getByText("UDP 67 → 68")).toBeVisible();

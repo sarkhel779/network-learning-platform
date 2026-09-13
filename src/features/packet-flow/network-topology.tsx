@@ -5,6 +5,7 @@ type NetworkTopologyProps = Readonly<{
   scenario: PacketFlowScenario;
   step: PacketFlowStep;
   reducedMotion: boolean;
+  electricalSignal?: Readonly<{ playing: boolean; speed: number }>;
   selectedDeviceId?: string;
   onDeviceSelect?: (deviceId: string) => void;
 }>;
@@ -27,12 +28,6 @@ function getActiveText(scenario: PacketFlowScenario, step: PacketFlowStep): stri
   const parts = [deviceNames.join(", "), linkNames.length ? `link ${linkNames.join(", ")}` : ""].filter(Boolean);
 
   return `Active: ${parts.join("; ") || "none"}`;
-}
-
-function packetKindLabel(label: string): string {
-  if (label.startsWith("ARP")) return "ARP";
-  if (label.startsWith("ICMP")) return "ICMP";
-  return "FRAME";
 }
 
 const PACKET_MARKER_VERTICAL_OFFSET = 30;
@@ -65,6 +60,7 @@ export function NetworkTopology({
   scenario,
   step,
   reducedMotion,
+  electricalSignal,
   selectedDeviceId,
   onDeviceSelect,
 }: NetworkTopologyProps) {
@@ -86,8 +82,8 @@ export function NetworkTopology({
         const end = insetLinkPoint(from, to, true);
         return [{
           link,
-          start: { ...start, y: start.y - PACKET_MARKER_VERTICAL_OFFSET },
-          end: { ...end, y: end.y - PACKET_MARKER_VERTICAL_OFFSET },
+          start,
+          end,
         }];
       })
     : [];
@@ -124,7 +120,45 @@ export function NetworkTopology({
             );
           })}
         </g>
-        {packet ? packetTravels.map(({ link, start, end }) => (
+        {electricalSignal && packet ? packetTravels.map(({ link, start, end }) => (
+          <path
+            key={`${step.id}-${link.id}`}
+            className="network-topology__electrical-signal"
+            data-electrical-signal="true"
+            data-link-id={link.id}
+            data-from={packet.from}
+            data-to={packet.to}
+            data-playing={electricalSignal.playing ? "true" : "false"}
+            d={`M${start.x} ${start.y} L${end.x} ${end.y}`}
+            pathLength={100}
+            aria-hidden="true"
+            style={{ animationDuration: `${1.5 / electricalSignal.speed}s` }}
+          />
+        )) : null}
+        {electricalSignal && packet ? packetTravels.map(({ link, start, end }) => (
+          <g
+            key={`${step.id}-${link.id}-packet`}
+            className="network-topology__packet-marker network-topology__packet-marker--signal"
+            data-signal-packet="true"
+            data-link-id={link.id}
+            data-from={packet.from}
+            data-to={packet.to}
+            data-playing={electricalSignal.playing ? "true" : "false"}
+            aria-hidden="true"
+            transform={`translate(${end.x} ${end.y})`}
+            style={{
+              animationDuration: `${1.5 / electricalSignal.speed}s`,
+              "--packet-start-x": `${start.x}px`,
+              "--packet-start-y": `${start.y}px`,
+              "--packet-end-x": `${end.x}px`,
+              "--packet-end-y": `${end.y}px`,
+            } as React.CSSProperties}
+          >
+            <circle r="12" />
+            <path data-packet-envelope="true" d="M-7-5h14v10H-7zM-7-3l7 6 7-6" />
+          </g>
+        )) : null}
+        {!electricalSignal && packet ? packetTravels.map(({ link, start, end }) => (
           <g
             key={`${step.id}-${link.id}`}
             className={`network-topology__packet-marker${packet.broadcast ? " network-topology__packet-marker--broadcast" : ""}${reducedMotion ? " network-topology__packet-marker--discrete" : ""}`}
@@ -133,20 +167,20 @@ export function NetworkTopology({
             data-link-id={link.id}
             data-step-id={step.id}
             aria-hidden="true"
-            transform={`translate(${end.x} ${end.y})`}
+            transform={`translate(${end.x} ${end.y - PACKET_MARKER_VERTICAL_OFFSET})`}
           >
             {!reducedMotion ? (
               <animateTransform
                 attributeName="transform"
                 type="translate"
-                from={`${start.x} ${start.y}`}
-                to={`${end.x} ${end.y}`}
+                from={`${start.x} ${start.y - PACKET_MARKER_VERTICAL_OFFSET}`}
+                to={`${end.x} ${end.y - PACKET_MARKER_VERTICAL_OFFSET}`}
                 dur="600ms"
                 fill="freeze"
               />
             ) : null}
-            <rect x="-44" y="-19" width="88" height="38" rx="9" />
-            <text textAnchor="middle" dy="0.35em">{packetKindLabel(packet.label)}</text>
+            <circle r="17" />
+            <path data-packet-envelope="true" d="M-9-6h18v12H-9zM-9-4l9 7 9-7" />
           </g>
         )) : null}
         <g className="network-topology__devices">

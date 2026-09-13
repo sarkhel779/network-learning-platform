@@ -55,7 +55,10 @@ export function PacketJourneyStageView({ journey, stage }: { journey: PacketJour
               </g>
             );
           })}
-          <circle aria-hidden="true" className="packet-journey-marker" cx={activePosition.x} cy={activePosition.y} data-active-link={stage.activeLinkId} data-packet-marker="true" r="8" />
+          <g aria-hidden="true" className="packet-journey-marker" data-active-link={stage.activeLinkId} data-packet-marker="true">
+            <circle cx={activePosition.x} cy={activePosition.y} r="13" />
+            <path data-packet-envelope="true" d={`M${activePosition.x - 7} ${activePosition.y - 5}h14v10h-14zM${activePosition.x - 7} ${activePosition.y - 3}l7 6 7-6`} />
+          </g>
         </svg>
         <ul className="packet-journey-interfaces">
           {journey.devices.flatMap((device) => device.interfaces.map((label) => <li data-active={label === stage.activeInterfaceId || undefined} key={label}>{label}</li>))}

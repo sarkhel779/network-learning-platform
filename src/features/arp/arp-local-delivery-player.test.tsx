@@ -38,7 +38,7 @@ describe("ArpLocalDeliveryPlayer", () => {
     await user.click(next);
     expect(screen.getByRole("heading", { name: "4. Switch floods the request" })).toBeInTheDocument();
     expect([...container.querySelectorAll("[data-packet-marker]")].map((marker) => marker.getAttribute("data-link-id")).sort()).toEqual(["switch-gateway", "switch-target"]);
-    expect(container.querySelectorAll("[data-packet-marker] text")[0]).toHaveTextContent("ARP");
+    expect(container.querySelectorAll('[data-packet-marker] [data-packet-envelope="true"]')).toHaveLength(2);
 
     await user.click(next);
     expect(screen.getByRole("heading", { name: "5. Owner replies by unicast" })).toBeInTheDocument();

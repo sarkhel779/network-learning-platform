@@ -7,8 +7,7 @@ test("refreshed homepage keeps the dark hero and visible packet route", async ({
   await expect(page.getByRole("img", { name: /Example packet route/ })).toBeVisible();
   expect(await hero.evaluate((element) => getComputedStyle(element).display)).toBe("grid");
   expect(await page.locator(".home-refresh").evaluate((element) => getComputedStyle(element).backgroundColor)).toBe("rgb(7, 24, 39)");
-  expect(await page.getByRole("link", { name: "Try a packet journey" }).getAttribute("href"))
-    .toBe("/learn/networking-foundations/how-networks-communicate");
+  await expect(page.getByRole("link", { name: /Try a sample lab/i })).toHaveAttribute("href", "/labs");
 });
 
 test("refreshed homepage fits the mobile viewport", async ({ page, isMobile }) => {

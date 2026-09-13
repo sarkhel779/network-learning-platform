@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { buildPortDeliveryJourney, portDeliveryScenarios } from "./port-delivery-journeys";
+import { buildPortDeliveryJourney, portDeliveryScenarios, udpPortDeliveryScenarios } from "./port-delivery-journeys";
 
 describe("TCP and UDP port-delivery journeys", () => {
   it("provides all approved listener and no-listener scenarios", () => {
     expect(portDeliveryScenarios.map(({ id }) => id)).toEqual([
-      "tcp-listener", "udp-listener", "ephemeral-clients", "tcp-no-listener", "udp-no-listener",
+      "tcp-listener", "udp-listener", "ephemeral-clients", "tcp-no-listener", "udp-no-listener", "udp-ephemeral-clients",
     ]);
   });
 
@@ -28,5 +28,10 @@ describe("TCP and UDP port-delivery journeys", () => {
     const udp = buildPortDeliveryJourney(portDeliveryScenarios[4]).at(-1)?.conclusion ?? "";
     expect(udp).toMatch(/may return ICMP Port Unreachable/i);
     expect(udp).toMatch(/silence/i);
+  });
+
+  it("offers only UDP examples in the focused UDP lesson", () => {
+    expect(udpPortDeliveryScenarios.map(({ id }) => id)).toEqual(["udp-listener", "udp-no-listener", "udp-ephemeral-clients"]);
+    expect(udpPortDeliveryScenarios.every(({ protocol }) => protocol === "UDP")).toBe(true);
   });
 });

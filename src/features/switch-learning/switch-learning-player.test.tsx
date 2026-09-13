@@ -24,8 +24,8 @@ describe("SwitchLearningPlayer", () => {
     }
     expect(screen.getByText("02:00:00:00:00:0A")).toBeInTheDocument();
     expect(screen.getByText("02:00:00:00:00:0B")).toBeInTheDocument();
-    expect(container.querySelector("[data-packet-marker] text")).toHaveTextContent("FRAME");
-    expect(container.querySelector("[data-packet-marker] rect")).toHaveAttribute("width", "88");
+    expect(container.querySelector('[data-packet-marker] [data-packet-envelope="true"]')).toBeInTheDocument();
+    expect(container.querySelector("[data-packet-marker] circle")).toHaveAttribute("r", "17");
     expect(container.querySelector("[data-packet-marker]")).not.toHaveAttribute("transform", "translate(330 120)");
   });
 

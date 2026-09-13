@@ -37,5 +37,5 @@ test("hydrates cleanly in both themes and excludes protected scenario identifier
   const errors: string[] = []; page.on("pageerror", (error) => errors.push(error.message)); page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
   const response = await page.goto(lessonPath); const html = await response!.text();
   for (const secret of ["dhcp-relay-boundary", "multicast-without-group-state", "DELIVERY_SCOPE_ACCOUNT_SENTINEL"]) expect(html).not.toContain(secret);
-  const theme = page.getByRole("combobox", { name: "Color theme" }); await theme.selectOption("dark"); await expect(page.locator("html")).toHaveCSS("color-scheme", "dark"); await theme.selectOption("light"); await expect(page.locator("html")).toHaveCSS("color-scheme", "light"); expect(errors).toEqual([]);
+  const theme = page.getByRole("switch", { name: "Dark mode" }); await expect(theme).toHaveAttribute("aria-checked", "true"); await expect(page.locator("html")).toHaveCSS("color-scheme", "dark"); await theme.click(); await expect(theme).toHaveAttribute("aria-checked", "false"); await expect(page.locator("html")).toHaveCSS("color-scheme", "light"); expect(errors).toEqual([]);
 });

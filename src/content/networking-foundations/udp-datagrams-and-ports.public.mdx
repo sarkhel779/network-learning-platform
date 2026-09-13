@@ -1,0 +1,51 @@
+<LearningObjective>Read UDP datagrams and ports, follow a packet to an application, and explain what a reply, ICMP error, or silence can and cannot prove.</LearningObjective>
+
+<h2 id="why-udp-exists">Why UDP exists</h2>
+
+IP gets a packet to a host. **UDP** adds source and destination ports so an application can send a distinct message, or **datagram**, to an application on another host. UDP does not first establish a TCP-style connection.
+
+<SectionContinue itemId="udp_datagrams_and_ports_section_why_udp_exists" anchor="why-udp-exists" />
+
+<h2 id="udp-ports-and-sockets">Ports and sockets</h2>
+
+The destination port helps the receiving host find the right socket; the source port identifies where a reply may go. Clients often use temporary **ephemeral** source ports. A socket is an operating-system endpoint, not a physical plug. Protocol and the endpoint addresses/ports distinguish conversations.
+
+<SectionContinue itemId="udp_datagrams_and_ports_section_udp_ports_and_sockets" anchor="udp-ports-and-sockets" />
+
+<h2 id="udp-header-and-datagrams">UDP header and datagrams</h2>
+
+<ProtocolFormatDiagram kind="udp" />
+
+The UDP header carries source port, destination port, length, and checksum. It is compact because UDP does not carry TCP sequence numbers, ACKs, a receive window, or connection flags. Each datagram has a message boundary; receiving one datagram does not imply another arrived.
+
+<SectionContinue itemId="udp_datagrams_and_ports_section_udp_header_and_datagrams" anchor="udp-header-and-datagrams" />
+
+<h2 id="udp-delivery-contract">What UDP does and does not provide</h2>
+
+UDP does not itself guarantee delivery, ordering, retransmission, or flow control. An application can build those behaviors above UDP if it needs them. A small header does **not** mean every UDP application is always faster than every TCP application.
+
+<SectionContinue itemId="udp_datagrams_and_ports_section_udp_delivery_contract" anchor="udp-delivery-contract" />
+
+<h2 id="interactive-udp-port-delivery">Interactive UDP port delivery</h2>
+
+Follow a datagram through header inspection and socket lookup. Compare a listening DNS service, two ephemeral clients, and a destination without a listener.
+
+<UdpPortDeliveryPlayer progressItemId="udp_datagrams_and_ports_interactive_interactive_udp_port_delivery" />
+
+<h2 id="udp-service-examples">DNS and DHCP examples</h2>
+
+DNS commonly uses UDP port 53 for queries, though it can also use TCP. DHCP uses UDP ports 67 and 68 while a client obtains configuration. These are examples, not a rule that every application using UDP behaves the same way.
+
+<SectionContinue itemId="udp_datagrams_and_ports_section_udp_service_examples" anchor="udp-service-examples" />
+
+<h2 id="udp-errors-and-silence">Errors and silence</h2>
+
+A datagram to a closed UDP port may cause **ICMP Port Unreachable**. Filtering, application behavior, loss, routing, and return-path problems can instead leave the sender observing silence. Silence alone does not prove a port is closed.
+
+<SectionContinue itemId="udp_datagrams_and_ports_section_udp_errors_and_silence" anchor="udp-errors-and-silence" />
+
+<h2 id="choosing-udp">Choosing UDP</h2>
+
+Choose a transport based on the application's delivery contract. UDP is useful when independent messages and application-controlled timing or recovery matter. TCP's reliable ordered byte stream serves a different contract. Neither is automatically the faster or safer choice on every path.
+
+<SectionContinue itemId="udp_datagrams_and_ports_section_choosing_udp" anchor="choosing-udp" />

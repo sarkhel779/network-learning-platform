@@ -50,13 +50,13 @@ export function DhcpJourneyPlayer({ title, legend, mode, progressItemId, scenari
     <h3>{title}</h3>
     <fieldset><legend>{legend}</legend>{scenarios.map((item, index) => <label key={item.id}><input checked={index === scenarioIndex} name={`${mode}-dhcp-scenario`} onChange={() => choose(index)} type="radio" />{item.title}</label>)}</fieldset>
     <DhcpTopology mode={mode} step={step} />
+    <TransportPlayerControls finalIndex={finalIndex} onNext={() => { setPlaying(false); setStepIndex((current) => current + 1); }} onPrevious={() => { setPlaying(false); setStepIndex((current) => current - 1); }} onRestart={() => { setStepIndex(0); setPlaying(!reducedMotion); }} onSpeedChange={setSpeed} onTogglePlay={() => setPlaying((current) => !current)} playing={playing} speed={speed} stepIndex={stepIndex} />
     <p aria-live="polite" role="status">Step {stepIndex + 1} of {journey.length}: {step.title}</p>
     <p><strong>UDP {step.packet.udp.sourcePort} → {step.packet.udp.destinationPort}</strong> · {step.packet.deliveryMode}</p>
     <p><strong>Client:</strong> {step.clientState} · <strong>Server:</strong> {step.serverState}</p>
     <p>{step.explanation}</p><p><strong>Evidence:</strong> {step.evidence}</p>
     <DhcpPacketInspector packet={step.packet} />
     {step.terminal ? <div className="transport-outcome"><strong>Conclusion</strong><p>{scenario.conclusion}</p></div> : null}
-    <TransportPlayerControls finalIndex={finalIndex} onNext={() => { setPlaying(false); setStepIndex((current) => current + 1); }} onPrevious={() => { setPlaying(false); setStepIndex((current) => current - 1); }} onRestart={() => { setStepIndex(0); setPlaying(!reducedMotion); }} onSpeedChange={setSpeed} onTogglePlay={() => setPlaying((current) => !current)} playing={playing} speed={speed} stepIndex={stepIndex} />
     {state === "error" ? <button onClick={retry}>Retry saving progress</button> : null}
   </section>;
 }

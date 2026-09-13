@@ -1,0 +1,37 @@
+<h2 id="inspect-udp-evidence">Inspect UDP evidence</h2>
+
+Use a `udp` capture filter, then narrow to the expected source and destination ports. Compare the UDP length and checksum, the application request, any response, and any related ICMP error. On Linux, inspect listening sockets with `ss -ulpen`; on Windows, use `Get-NetUDPEndpoint` or `netstat -ano`.
+
+<WiresharkCheck displayFilter="udp || icmp">Capture one UDP request. Record the endpoint tuple, datagram length, matching application evidence, a response or ICMP message if present, and what remains unknown if there is silence.</WiresharkCheck>
+
+<SectionContinue itemId="udp_datagrams_and_ports_section_inspect_udp_evidence" anchor="inspect-udp-evidence" />
+
+<h2 id="guided-udp-diagnosis">Guided UDP diagnosis</h2>
+
+An absent reply is only absence of observed reply evidence. Check whether the request reached the host, a matching socket existed, the application processed it, a response left, and the response had a return path.
+
+<InterviewScenario title="A DNS query gets no answer">Explain why UDP silence does not prove that port 53 is closed. Name one capture or log at each end that would narrow the cause.</InterviewScenario>
+
+<SectionContinue itemId="udp_datagrams_and_ports_section_guided_udp_diagnosis" anchor="guided-udp-diagnosis" />
+
+<h2 id="troubleshoot-udp">Troubleshoot UDP methodically</h2>
+
+1. Confirm the address, transport protocol, source port, and destination port.
+2. Check the receiving socket and application logs.
+3. Capture the request, response, and any ICMP error in both directions.
+4. Check firewall policy and forward and return routes.
+5. Compare with a known-good request before deciding what silence means.
+
+<SectionContinue itemId="udp_datagrams_and_ports_section_troubleshoot_udp" anchor="troubleshoot-udp" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="udp_datagrams_and_ports_check_1" question="Which fields appear in a UDP header?" options={["Ports, length, and checksum", "Sequence number, ACK, and window", "SYN and FIN flags"]} correctIndex={0} explanation="UDP carries source and destination ports, length, and checksum." />
+
+<KnowledgeCheck progressItemId="udp_datagrams_and_ports_check_2" question="What does a UDP request with no observed reply prove?" options={["The port is closed", "No response was observed; the cause is not yet known", "UDP cannot carry replies"]} correctIndex={1} explanation="Loss, filtering, application behavior, routing, and return-path conditions can all cause silence." />
+
+<KnowledgeCheck progressItemId="udp_datagrams_and_ports_check_3" question="What may a host send when a UDP datagram reaches a closed port?" options={["TCP RST", "ICMP Port Unreachable", "TCP SYN-ACK"]} correctIndex={1} explanation="ICMP Port Unreachable is possible, but policy can suppress or filter it." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">Explore application-managed recovery, QUIC over UDP, NAT mapping lifetimes, checksum interpretation, and sparse packet captures without treating silence as proof of a single cause.</PremiumPreview>

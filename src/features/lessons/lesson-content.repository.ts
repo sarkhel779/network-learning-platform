@@ -94,9 +94,13 @@ const lessonImports = {
     public: () => import("@/content/networking-foundations/icmp-ping-and-path-discovery.public.mdx"),
     account: () => import("@/content/networking-foundations/icmp-ping-and-path-discovery.account.mdx"),
   },
-  "networking-foundations/tcp-udp-and-ports": {
-    public: () => import("@/content/networking-foundations/tcp-udp-and-ports.public.mdx"),
-    account: () => import("@/content/networking-foundations/tcp-udp-and-ports.account.mdx"),
+  "networking-foundations/tcp-reliable-transport": {
+    public: () => import("@/content/networking-foundations/tcp-reliable-transport.public.mdx"),
+    account: () => import("@/content/networking-foundations/tcp-reliable-transport.account.mdx"),
+  },
+  "networking-foundations/udp-datagrams-and-ports": {
+    public: () => import("@/content/networking-foundations/udp-datagrams-and-ports.public.mdx"),
+    account: () => import("@/content/networking-foundations/udp-datagrams-and-ports.account.mdx"),
   },
   "networking-foundations/dhcp-and-automatic-address-configuration": {
     public: () => import("@/content/networking-foundations/dhcp-and-automatic-address-configuration.public.mdx"),
