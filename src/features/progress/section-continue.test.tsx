@@ -1,27 +1,52 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { act, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SectionContinue } from "./section-continue";
 
-const { complete } = vi.hoisted(() => ({ complete: vi.fn() }));
+const { complete, retry } = vi.hoisted(() => ({ complete: vi.fn(), retry: vi.fn() }));
 vi.mock("./lesson-progress-context", () => ({
   useOptionalLessonProgress: () => ({}),
-  useLessonProgressItem: () => ({ state: "idle", complete, retry: vi.fn() }),
+  useLessonProgressItem: () => ({ state: "idle", complete, retry }),
   useLessonProgress: () => ({ manifest: { items: [
     { itemId: "read_intro", label: "Introduction", anchor: "intro" },
     { itemId: "read_second", label: "Second topic", anchor: "second" },
   ] } }),
 }));
 
+let observerCallback: IntersectionObserverCallback;
+const observe = vi.fn();
+const disconnect = vi.fn();
+
+beforeEach(() => {
+  vi.useFakeTimers();
+  complete.mockReset().mockResolvedValue(true);
+  retry.mockReset();
+  observe.mockReset();
+  disconnect.mockReset();
+  vi.stubGlobal("IntersectionObserver", class {
+    constructor(callback: IntersectionObserverCallback) { observerCallback = callback; }
+    observe = observe;
+    disconnect = disconnect;
+  });
+});
+
+afterEach(() => {
+  vi.useRealTimers();
+  vi.unstubAllGlobals();
+});
+
 describe("SectionContinue", () => {
-  it("saves before focusing the next section", async () => {
-    let resolveSave: () => void = () => undefined;
-    complete.mockReturnValue(new Promise<void>((resolve) => { resolveSave = resolve; }));
-    render(<><h2 id="second" tabIndex={-1}>Second topic</h2><SectionContinue itemId="read_intro" anchor="intro" /></>);
-    await userEvent.click(screen.getByRole("button", { name: "Continue: Introduction" }));
-    expect(screen.getByRole("heading", { name: "Second topic" })).not.toHaveFocus();
-    resolveSave();
-    await waitFor(() => expect(screen.getByRole("heading", { name: "Second topic" })).toHaveFocus());
+  it("saves progress once on reaching the end marker without showing a Continue button", async () => {
+    render(<SectionContinue itemId="read_intro" anchor="intro" />);
+    expect(screen.queryByRole("button", { name: /continue/i })).not.toBeInTheDocument();
+    expect(observe).toHaveBeenCalledOnce();
+    await act(async () => {
+      observerCallback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
+      await vi.advanceTimersByTimeAsync(900);
+    });
+    expect(complete).not.toHaveBeenCalled();
+    await act(async () => { await vi.advanceTimersByTimeAsync(200); });
+    expect(complete).toHaveBeenCalledOnce();
+    expect(disconnect).toHaveBeenCalled();
   });
 });

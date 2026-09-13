@@ -1367,6 +1367,49 @@ a,a:hover,a:focus-visible,a *,a:hover *{text-decoration:none!important}
 :root p:not(.home-eyebrow) { color: var(--paragraph-color); }
 :root[data-theme="light"] :is(.home-refresh, .labs-page, .site-footer) p:not(.home-eyebrow) { color: #8b98b8; }
 .lesson-content :is(ul, ol) > li { color: var(--paragraph-color); }
+
+/* The landing page and shared chrome have their own dark palette; switch it too. */
+:root[data-theme="light"] .home-refresh { --home-bg:#f5fafc; --home-panel:#fff; --home-line:#cbdce4; --home-text:#142b3a; --home-muted:#435b6d; --home-accent:#087e69; }
+:root[data-theme="light"] body:has(.home-refresh) :is(.site-header,.site-footer),
+:root[data-theme="light"] body:has(.labs-page) :is(.site-header,.site-footer),
+:root[data-theme="light"] .site-header,
+:root[data-theme="light"] .site-footer { background:#f5fafc; border-color:#cbdce4; color:#142b3a; }
+:root[data-theme="light"] body:has(.home-refresh) :is(.site-header,.site-footer) a,
+:root[data-theme="light"] body:has(.labs-page) :is(.site-header,.site-footer) a { color:#142b3a; }
+:root[data-theme="light"] .site-header .site-nav a[aria-current="page"],
+:root[data-theme="light"] body:has(.home-refresh) .site-header .site-nav a:first-child { color:#087e69; }
+:root[data-theme="light"] .site-logo__packet { color:#142b3a; }
+:root[data-theme="light"] .site-logo__secrets { color:#087e69; }
+:root[data-theme="light"] .header-search { background:#fff; border-color:#b7cad6; color:#435b6d; }
+:root[data-theme="light"] .header-search input { color:#142b3a; }
+:root[data-theme="light"] .header-search input::placeholder { color:#536b7d; }
+:root[data-theme="light"] .header-search__results { background:#fff; border-color:#b7cad6; box-shadow:0 14px 36px #17334426; }
+:root[data-theme="light"] .header-search__results a { color:#142b3a!important; }
+:root[data-theme="light"] .header-search__results a:hover { background:#e8f4f2; }
+:root[data-theme="light"] .home-eyebrow,
+:root[data-theme="light"] .home-topics a span:first-child,
+:root[data-theme="light"] .home-journey>div>span { color:#087e69; }
+:root[data-theme="light"] .home-section-heading h2 { color:var(--home-text); }
+:root[data-theme="light"] .home-benefits,
+:root[data-theme="light"] .home-route-node small,
+:root[data-theme="light"] .home-lab-device small { color:#435b6d; }
+:root[data-theme="light"] .home-topics a,
+:root[data-theme="light"] .home-journey>div { background:#fff; border-color:#cbdce4; color:#142b3a; }
+:root[data-theme="light"] .home-topic-icon { background:#e8f4f2; color:#087e69; }
+:root[data-theme="light"] .home-route-title { color:#315b6c; }
+:root[data-theme="light"] .home-lab-topology { background:#eaf4f7; }
+:root[data-theme="light"] .home-lab-topology span { color:#142b3a; }
+:root[data-theme="light"] .home-refresh p:not(.home-eyebrow) { color:#435b6d; }
+:root[data-theme="light"] .site-footer p:not(.home-eyebrow) { color:#435b6d; }
+:root[data-theme="light"] .labs-page { background:#f5fafc; color:#142b3a; }
+:root[data-theme="light"] .labs-page :is(.labs-page__intro>p:last-child,.labs-page__practice p,.labs-page__checks>p) { color:#435b6d; }
+:root[data-theme="light"] .labs-page__cards a,
+:root[data-theme="light"] .labs-page__checks details { background:#fff; border-color:#cbdce4; color:#142b3a; }
+:root[data-theme="light"] .labs-page__cards span { color:#435b6d; }
+:root[data-theme="light"] .labs-page__cards small,
+:root[data-theme="light"] .labs-page__checks a { color:#087e69; }
+:root[data-theme="light"] .packet-inspector__layers h4 { color:#172033; }
+.section-continue:empty { min-height:1px; padding:0; border:0; background:none; }
 .lesson-audit-notice { margin: 1rem 0; padding: .8rem 1rem; border: 1px solid var(--accent); border-radius: .65rem; background: color-mix(in srgb, var(--accent) 10%, var(--background)); color: var(--foreground); font-weight: 700; }
 
 /* Interactive DHCP state and packet-flow lab. */

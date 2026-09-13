@@ -6,18 +6,18 @@ test.describe("learner progress", () => {
   test("saves a reading boundary, restores it, and exposes My learning", async ({ page }, testInfo) => {
     await page.setExtraHTTPHeaders({ "x-packetsecrets-test-viewer": `progress-${testInfo.project.name}` });
     await page.goto(lessonUrl);
-    const continueButton = page.getByRole("button", { name: /Continue: Communication decisions/ });
-    await expect(continueButton).toBeEnabled();
+    const readingBoundary = page.locator('.section-continue[data-anchor="communication-decisions"]');
+    await expect(page.getByRole("button", { name: /Continue: Communication decisions/ })).toHaveCount(0);
     const saved = page.waitForResponse((response) =>
       response.url().endsWith("/api/learning/progress") && response.request().method() === "POST",
     );
-    await continueButton.click();
+    await readingBoundary.scrollIntoViewIfNeeded();
     const saveResponse = await saved;
     expect(saveResponse.status(), await saveResponse.text()).toBe(200);
-    await expect(continueButton).toBeDisabled();
+    await expect(readingBoundary).toContainText("Progress saved");
 
     await page.reload();
-    await expect(continueButton).toBeDisabled();
+    await expect(readingBoundary).toContainText("Progress saved");
     if (testInfo.project.name === "mobile-chromium") {
       await page.getByRole("button", { name: "Learning tools" }).click();
       await page.getByRole("dialog", { name: "Learning tools" }).getByRole("button", { name: "My learning" }).click();
@@ -50,12 +50,12 @@ test.describe("learner progress", () => {
       } else await route.continue();
     });
     await page.goto(lessonUrl);
-    await page.getByRole("button", { name: /Continue: Communication decisions/ }).click();
+    await page.locator('.section-continue[data-anchor="communication-decisions"]').scrollIntoViewIfNeeded();
     await expect(page.getByText("Progress was not saved.", { exact: true })).toBeVisible();
     const saved = page.waitForResponse((response) => response.url().endsWith("/api/learning/progress") && response.status() === 200);
     await page.getByRole("button", { name: "Retry saving" }).click();
     await saved;
-    await expect(page.getByRole("button", { name: /Continue: Communication decisions/ })).toBeDisabled();
+    await expect(page.locator('.section-continue[data-anchor="communication-decisions"]')).toContainText("Progress saved");
   });
 
   test("counts an incorrect check as attempted and supports a confirmed restart", async ({ page }, testInfo) => {
