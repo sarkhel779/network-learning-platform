@@ -5,6 +5,7 @@ import { safeReturnPath } from "./return-path";
 describe("safeReturnPath", () => {
   it.each([
     "/",
+    "/dashboard",
     "/paths/networking-foundations",
     "/learn/networking-foundations/vlans-access-ports-and-trunks",
   ])("allows the known public destination %s", (path) => {

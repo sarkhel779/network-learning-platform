@@ -6,14 +6,7 @@ export type Viewer = Readonly<{
 
 export type WorkspaceToolId =
   | "course"
-  | "learning"
-  | "notes"
-  | "bookmarks"
-  | "practice"
-  | "glossary"
-  | "feedback"
-  | "account"
-  | "pro";
+  | "learning";
 
 export type WorkspaceTool = Readonly<{
   id: WorkspaceToolId;

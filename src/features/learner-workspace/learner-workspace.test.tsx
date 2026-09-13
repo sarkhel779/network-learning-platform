@@ -32,7 +32,7 @@ describe("LearnerWorkspace", () => {
     expect(
       screen.getByRole("toolbar", { name: "Learner workspace" })
         .querySelectorAll("button"),
-    ).toHaveLength(9);
+    ).toHaveLength(2);
     expect(
       Array.from(
         screen.getByRole("toolbar", { name: "Learner workspace" })
@@ -41,31 +41,24 @@ describe("LearnerWorkspace", () => {
     ).toEqual([
       "Course contents",
       "My learning",
-      "Notes",
-      "Bookmarks",
-      "Practice",
-      "Glossary",
-      "Feedback",
-      "Account",
-      "Pro",
     ]);
   });
 
   it("opens one drawer, switches tools, and reselects to close", async () => {
     const user = userEvent.setup();
     render(
-      <LearnerWorkspace pathway={pathway} currentLessonSlug="how-networks-communicate" viewer={viewer} />,
+      <LearnerWorkspace pathway={pathway} currentLessonSlug="how-networks-communicate" viewer={viewer} myLearning={myLearning} />,
     );
 
-    await user.click(screen.getByRole("button", { name: "Notes" }));
-    expect(screen.getByRole("dialog", { name: "Notes" })).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "Course contents" }));
+    expect(screen.getByRole("dialog", { name: "Course contents" })).toBeVisible();
 
     const drawerTools = screen.getByRole("navigation", { name: "Workspace tools" });
-    await user.click(within(drawerTools).getByRole("button", { name: "Bookmarks" }));
-    expect(screen.queryByRole("dialog", { name: "Notes" })).not.toBeInTheDocument();
-    expect(screen.getByRole("dialog", { name: "Bookmarks" })).toBeVisible();
+    await user.click(within(drawerTools).getByRole("button", { name: "My learning" }));
+    expect(screen.queryByRole("dialog", { name: "Course contents" })).not.toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "My learning" })).toBeVisible();
 
-    await user.click(within(screen.getByRole("navigation", { name: "Workspace tools" })).getByRole("button", { name: "Bookmarks" }));
+    await user.click(within(screen.getByRole("navigation", { name: "Workspace tools" })).getByRole("button", { name: "My learning" }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
@@ -88,17 +81,17 @@ describe("LearnerWorkspace", () => {
     expect(screen.getByRole("dialog", { name: "My learning" })).toHaveTextContent("0% complete");
   });
 
-  it("makes every authenticated tool reachable from the mobile menu", async () => {
+  it("offers only working tools from the mobile menu", async () => {
     const user = userEvent.setup();
     render(
-      <LearnerWorkspace pathway={pathway} currentLessonSlug="how-networks-communicate" viewer={viewer} />,
+      <LearnerWorkspace pathway={pathway} currentLessonSlug="how-networks-communicate" viewer={viewer} myLearning={myLearning} />,
     );
 
     await user.click(screen.getByRole("button", { name: "Learning tools" }));
     const dialog = screen.getByRole("dialog", { name: "Learning tools" });
-    expect(dialog.querySelectorAll(".learner-workspace-mobile-menu button")).toHaveLength(9);
+    expect(dialog.querySelectorAll(".learner-workspace-mobile-menu button")).toHaveLength(2);
 
-    await user.click(screen.getAllByRole("button", { name: "Notes" }).at(-1)!);
-    expect(screen.getByRole("dialog", { name: "Notes" })).toBeVisible();
+    await user.click(screen.getAllByRole("button", { name: "My learning" }).at(-1)!);
+    expect(screen.getByRole("dialog", { name: "My learning" })).toBeVisible();
   });
 });

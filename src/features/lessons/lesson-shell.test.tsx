@@ -108,14 +108,14 @@ describe("LessonShell", () => {
     expect(screen.queryByRole("dialog", { name: "Course contents" })).not.toBeInTheDocument();
   });
 
-  it("exposes account tools only to an authenticated viewer", () => {
+  it("exposes working progress tools only to an authenticated viewer", () => {
     const { rerender } = render(
       <LessonShell viewer={null} pathway={pathway} lesson={lesson}>
         <p>Lesson content</p>
       </LessonShell>,
     );
 
-    expect(screen.queryByRole("button", { name: "Notes" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "My learning" })).not.toBeInTheDocument();
 
     rerender(
       <LessonShell
@@ -127,7 +127,8 @@ describe("LessonShell", () => {
       </LessonShell>,
     );
 
-    expect(screen.getByRole("button", { name: "Notes" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "My learning" })).toBeVisible();
+    expect(screen.queryByRole("button", { name: "Notes" })).not.toBeInTheDocument();
     expect(screen.queryByText(/learner-1|private@example|access_token/i)).not.toBeInTheDocument();
   });
 
