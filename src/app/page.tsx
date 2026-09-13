@@ -1,18 +1,61 @@
 import Link from "next/link";
 
+import { pathways } from "@/features/catalog/catalog.data";
+import { DeviceIcon, RouteIllustration } from "@/features/home/route-illustration";
+import { TopicIcon, type TopicIconKind } from "@/features/home/topic-icon";
+
+function getFoundationsPathway() {
+  const pathway = pathways.find((item) => item.slug === "networking-foundations");
+  if (!pathway) throw new Error("Networking Foundations pathway is missing");
+  return pathway;
+}
+const pathway = getFoundationsPathway();
+
+const firstLesson = "/learn/networking-foundations/how-networks-communicate";
+const topicCandidates: { label: string; slug: string; icon: TopicIconKind; anchor?: string }[] = [
+  { label: "TCP/IP Model", slug: "osi-and-tcp-ip-models", anchor: "tcp-ip-model", icon: "tcp-ip" },
+  { label: "OSI Model", slug: "osi-and-tcp-ip-models", anchor: "osi-model", icon: "osi" },
+  { label: "IP Addressing (IPv4 & IPv6)", slug: "ipv4-addressing", icon: "address" },
+  { label: "Subnetting", slug: "subnetting-fundamentals", icon: "subnet" },
+  { label: "Switching & VLANs", slug: "vlans-access-ports-and-trunks", icon: "switch" },
+  { label: "Routing", slug: "routing-tables-and-default-routes", icon: "routing" },
+  { label: "ARP & MAC", slug: "arp-and-local-delivery", icon: "arp" },
+  { label: "DNS", slug: "dns-and-name-resolution", icon: "dns" },
+  { label: "DHCP", slug: "dhcp-and-automatic-address-configuration", icon: "dhcp" },
+  { label: "TCP & UDP", slug: "tcp-udp-and-ports", icon: "transport" },
+  { label: "HTTP/HTTPS", slug: "http-https-tls-and-essential-network-services", icon: "http" },
+];
+const published = new Set(pathway.modules.flatMap((module) => module.lessons)
+  .filter((lesson) => lesson.published).map((lesson) => lesson.slug));
+const topics = topicCandidates.filter((topic) => published.has(topic.slug));
+
 export default function HomePage() {
-  return (
-    <main id="main-content">
-      <section aria-labelledby="pathway-heading" className="hero">
-        <p className="eyebrow">Beginner networking pathway</p>
-        <h1 id="pathway-heading">Understand how networks really work</h1>
-        <p className="summary">
-          Build a clear mental model of the systems that connect people, devices, and the internet.
-        </p>
-        <Link className="primary-link" href="/paths/networking-foundations">
-          Start Networking Foundations
-        </Link>
-      </section>
-    </main>
-  );
+  return <main id="main-content" className="home-refresh">
+    <section className="home-hero" aria-labelledby="home-heading">
+      <div className="home-hero-copy">
+        <p className="home-eyebrow">Networking made simple</p>
+        <h1 id="home-heading">Understand networks.<br /><span>One packet at a time.</span></h1>
+        <p>Learn networking through clear explanations, visual packet journeys, and hands-on practice.</p>
+        <div className="home-actions">
+          <Link className="home-button home-button-primary" href={firstLesson}>Start learning free →</Link>
+          <Link className="home-button home-button-secondary" href="/paths/networking-foundations">Explore Networking Foundations</Link>
+        </div>
+        <div className="home-benefits"><span>◈ Visual learning</span><span>⌘ Hands-on practice</span><span>✓ Build real skills</span></div>
+      </div>
+      <RouteIllustration />
+    </section>
+    <section className="home-section" aria-labelledby="core-heading">
+      <div className="home-section-heading"><h2 id="core-heading">Core Topics You’ll Learn</h2><p>Focus on the fundamentals. Build a strong foundation.</p></div>
+      <div className="home-topics">{topics.map((topic) => <Link key={topic.label} href={`/learn/${pathway.slug}/${topic.slug}${topic.anchor ? `#${topic.anchor}` : ""}`}><span className="home-topic-icon"><TopicIcon kind={topic.icon} /></span><strong>{topic.label}</strong></Link>)}</div>
+    </section>
+    <section className="home-section home-lab" aria-labelledby="lab-heading">
+      <div><p className="home-eyebrow">Interactive packet journey</p><h2 id="lab-heading">Try the packet lab</h2><p>Follow a packet across the network, inspect each hop, and see what changes along the way.</p><Link className="home-button home-button-primary" href={firstLesson}>Try a packet journey →</Link></div>
+      <div className="home-lab-topology" aria-hidden="true">{(["laptop", "switch", "router", "cloud", "server"] as const).map((kind, index) => <div className="home-lab-segment" key={kind}><span className="home-lab-device"><DeviceIcon kind={kind} /><small>{["PC", "Switch", "Router", "Internet", "Server"][index]}</small></span>{index < 4 ? <i /> : null}</div>)}</div>
+    </section>
+    <section className="home-section" aria-labelledby="journey-heading">
+      <div className="home-section-heading"><h2 id="journey-heading">Your learning journey</h2><p>Build understanding one module at a time.</p></div>
+      <div className="home-journey">{pathway.modules.map((module, index) => <div key={module.id}><span>{String(index + 1).padStart(2, "0")}</span><strong>{module.title}</strong><small>{module.lessons.filter((lesson) => lesson.published).length} lessons</small></div>)}</div>
+    </section>
+    <section className="home-final"><h2>Build your networking skills today</h2><p>Start with a free lesson and learn what really happens when devices communicate.</p><div className="home-actions"><Link className="home-button home-button-primary" href={firstLesson}>Start learning free →</Link><Link className="home-button home-button-secondary" href="/sign-in">Create a free account</Link></div></section>
+  </main>;
 }
