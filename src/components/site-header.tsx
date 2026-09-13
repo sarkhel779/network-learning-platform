@@ -1,8 +1,9 @@
 import Link from "next/link";
 
+import { HeaderSearch, type HeaderSearchLesson } from "./header-search";
 import { ThemeToggle } from "./theme-toggle";
 
-export function SiteHeader() {
+export function SiteHeader({ lessons = [] }: { lessons?: HeaderSearchLesson[] }) {
   return (
     <header className="site-header">
       <a className="skip-link" href="#main-content">Skip to content</a>
@@ -13,10 +14,14 @@ export function SiteHeader() {
         </Link>
         <div className="site-header__actions">
           <nav aria-label="Primary navigation" className="site-nav">
-            <Link href="/paths/networking-foundations">Learning Paths</Link>
+            <Link href="/">Home</Link>
+            <Link href="/paths/networking-foundations">Courses</Link>
             <Link href="/dashboard">My dashboard</Link>
             <Link href="/pricing">Pricing</Link>
           </nav>
+          <HeaderSearch lessons={lessons} />
+          <Link className="site-header__sign-in" href="/sign-in">Sign in</Link>
+          <Link className="site-header__get-started" href="/paths/networking-foundations">Get started</Link>
           <ThemeToggle />
         </div>
       </div>
