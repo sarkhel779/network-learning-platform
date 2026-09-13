@@ -21,4 +21,10 @@ describe("SiteHeader", () => {
     expect(nav.querySelector('a[href="/labs"]')).toHaveTextContent("Labs");
     expect(nav.querySelector('a[href="/dashboard"]')).toHaveTextContent("My dashboard");
   });
+
+  it("shows the account destination instead of sign in for an authenticated viewer", () => {
+    render(<SiteHeader signedIn />);
+    expect(screen.getByRole("link", { name: "My account" })).toHaveAttribute("href", "/dashboard");
+    expect(screen.queryByRole("link", { name: "Sign in" })).not.toBeInTheDocument();
+  });
 });

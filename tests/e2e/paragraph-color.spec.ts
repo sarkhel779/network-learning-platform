@@ -18,8 +18,8 @@ test("light theme keeps paragraph copy dark enough for the light surface", async
     .toHaveCSS("color", "rgb(82, 96, 119)");
   await page.goto("/");
   await expect(page.getByText("Learn networking through clear explanations, visual packet journeys, and hands-on practice."))
-    .toHaveCSS("color", "rgb(139, 152, 184)");
-  await expect(page.locator(".site-footer p").first()).toHaveCSS("color", "rgb(139, 152, 184)");
+    .toHaveCSS("color", "rgb(67, 91, 109)");
+  await expect(page.locator(".site-footer p").first()).toHaveCSS("color", "rgb(67, 91, 109)");
 });
 
 test("paragraph copy stays consistent across public pages", async ({ page }) => {

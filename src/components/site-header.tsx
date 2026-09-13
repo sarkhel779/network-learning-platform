@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { HeaderSearch, type HeaderSearchLesson } from "./header-search";
 import { ThemeToggle } from "./theme-toggle";
 
-export function SiteHeader({ lessons = [] }: { lessons?: HeaderSearchLesson[] }) {
+export function SiteHeader({ lessons = [], signedIn = false }: { lessons?: HeaderSearchLesson[]; signedIn?: boolean }) {
   const pathname = usePathname() ?? "";
   const currentSection = pathname === "/" ? "Home" : pathname === "/labs" || pathname.startsWith("/labs/") ? "Labs" : pathname === "/dashboard" || pathname.startsWith("/dashboard/") ? "My dashboard" : pathname === "/pricing" || pathname.startsWith("/pricing/") ? "Pricing" : pathname.startsWith("/paths/") || pathname.startsWith("/learn/") ? "Courses" : null;
   return (
@@ -25,7 +25,7 @@ export function SiteHeader({ lessons = [] }: { lessons?: HeaderSearchLesson[] })
             <Link href="/pricing" aria-current={currentSection === "Pricing" ? "page" : undefined}>Pricing</Link>
           </nav>
           <HeaderSearch lessons={lessons} />
-          <Link className="site-header__sign-in" href="/sign-in">Sign in</Link>
+          <Link className="site-header__sign-in" href={signedIn ? "/dashboard" : "/sign-in"}>{signedIn ? "My account" : "Sign in"}</Link>
           <Link className="site-header__get-started" href="/paths/networking-foundations">Get started</Link>
           <ThemeToggle />
         </div>
