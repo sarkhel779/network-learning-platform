@@ -2,12 +2,28 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { HeaderSearch, type HeaderSearchLesson } from "./header-search";
 import { ThemeToggle } from "./theme-toggle";
 
 export function SiteHeader({ lessons = [], signedIn = false }: { lessons?: HeaderSearchLesson[]; signedIn?: boolean }) {
   const pathname = usePathname() ?? "";
+  const [menuOpen, setMenuOpen] = useState(false);
   const currentSection = pathname === "/" ? "Home" : pathname === "/labs" || pathname.startsWith("/labs/") ? "Labs" : pathname === "/dashboard" || pathname.startsWith("/dashboard/") ? "My dashboard" : pathname === "/pricing" || pathname.startsWith("/pricing/") ? "Pricing" : pathname.startsWith("/paths/") || pathname.startsWith("/learn/") ? "Courses" : null;
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [menuOpen]);
+
   return (
     <header className="site-header">
       <a className="skip-link" href="#main-content">Skip to content</a>
@@ -16,7 +32,17 @@ export function SiteHeader({ lessons = [], signedIn = false }: { lessons?: Heade
           <span className="site-logo__mark" aria-hidden="true"><i /><i /><i /></span>
           <span className="site-logo__wordmark"><span className="site-logo__packet">Packet</span><span className="site-logo__secrets">secrets</span></span>
         </Link>
-        <div className="site-header__actions">
+        <button
+          type="button"
+          className="site-header__toggle"
+          aria-expanded={menuOpen}
+          aria-controls="site-header-menu"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          <span className="site-header__toggle-icon" aria-hidden="true" />
+        </button>
+        <div id="site-header-menu" className="site-header__actions" data-open={menuOpen}>
           <nav aria-label="Primary navigation" className="site-nav">
             <Link href="/" aria-current={currentSection === "Home" ? "page" : undefined}>Home</Link>
             <Link href="/paths/networking-foundations" aria-current={currentSection === "Courses" ? "page" : undefined}>Courses</Link>
@@ -30,6 +56,7 @@ export function SiteHeader({ lessons = [], signedIn = false }: { lessons?: Heade
           <ThemeToggle />
         </div>
       </div>
+      {menuOpen ? <div className="site-header__backdrop" onClick={() => setMenuOpen(false)} aria-hidden="true" /> : null}
     </header>
   );
 }
