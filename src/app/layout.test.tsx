@@ -5,12 +5,13 @@ vi.mock("@/components/site-header", () => ({ SiteHeader: () => <header>Site head
 vi.mock("@/components/site-footer", () => ({ SiteFooter: () => <footer>Site footer</footer> }));
 vi.mock("@/features/catalog/catalog.repository", () => ({ listPathways: () => [] }));
 vi.mock("@/features/analytics/page-view-recorder", () => ({ PageViewRecorder: () => <span data-testid="page-view-recorder" /> }));
+vi.mock("@/lib/supabase/session", () => ({ getViewer: () => Promise.resolve(null) }));
 
 import RootLayout from "./layout";
 
 describe("root layout", () => {
-  it("mounts one page-view recorder around routed content", () => {
-    const html = renderToStaticMarkup(<RootLayout><main>Page</main></RootLayout>);
+  it("mounts one page-view recorder around routed content", async () => {
+    const html = renderToStaticMarkup(await RootLayout({ children: <main>Page</main> }));
     expect(html).toContain('data-testid="page-view-recorder"');
     expect(html).toContain("Page");
   });
