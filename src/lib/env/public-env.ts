@@ -1,7 +1,9 @@
 import { z } from "zod";
 
 const publicEnvSchema = z.object({
-  NEXT_PUBLIC_SUPABASE_URL: z.string().url().startsWith("https://"),
+  NEXT_PUBLIC_SUPABASE_URL: z.string().url().refine((url) =>
+    url.startsWith("https://") || url === "http://127.0.0.1:54321"
+  ),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
 });
 
