@@ -61,7 +61,7 @@ test("an authenticated learner cannot open admin but can open their own dashboar
   const denied = await page.goto("/admin");
   expect(denied?.status()).toBe(404);
   await page.goto("/dashboard");
-  await expect(page.getByRole("heading", { name: /Welcome back/ })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "My dashboard" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Overview" })).toHaveCount(0);
 });
 
