@@ -1,4 +1,5 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 
 import type { Pathway } from "@/features/catalog/catalog.types";
@@ -93,13 +94,18 @@ describe("CurriculumNavigation", () => {
     expect(within(navigation).getByText("Current lesson")).toBeVisible();
     expect(within(navigation).getAllByText("Coming later")).toHaveLength(2);
     expect(within(navigation).getAllByText("Free")).toHaveLength(1);
-    for (const title of ["Switching basics", "Premium troubleshooting"]) {
-      const upcomingLesson = within(navigation).getByText(title).closest("li");
 
-      expect(upcomingLesson).not.toBeNull();
-      expect(within(upcomingLesson as HTMLElement).getByText("Coming later")).toBeVisible();
-      expect(within(upcomingLesson as HTMLElement).queryByText("Free")).toBeNull();
-    }
+    const switchingBasics = within(navigation).getByText("Switching basics").closest("li");
+    expect(switchingBasics).not.toBeNull();
+    expect(within(switchingBasics as HTMLElement).getByText("Coming later")).toBeVisible();
+    expect(within(switchingBasics as HTMLElement).queryByText("Free")).toBeNull();
+
+    // Module two doesn't contain the current lesson, so it starts collapsed;
+    // its content is present but not visible until expanded.
+    const premiumTroubleshooting = within(navigation).getByText("Premium troubleshooting").closest("li");
+    expect(premiumTroubleshooting).not.toBeNull();
+    expect(within(premiumTroubleshooting as HTMLElement).getByText("Coming later")).not.toBeVisible();
+
     expect(within(navigation).queryByText("Premium")).toBeNull();
     expect(within(navigation).queryByText("Palo Alto Basics")).toBeNull();
     expect(within(navigation).queryByRole("link", { name: /switching basics/i })).toBeNull();
@@ -130,5 +136,57 @@ describe("CurriculumNavigation", () => {
       "Intro to packetsFreeCurrent lesson",
       "Switching basicsComing later",
     ]);
+  });
+
+  it("numbers modules and shows each one's lesson count", () => {
+    render(
+      <CurriculumNavigation pathway={pathwayFixture} currentLessonSlug="current-lesson" />,
+    );
+
+    const navigation = screen.getByRole("navigation", { name: "Course curriculum" });
+    const moduleOne = within(navigation).getByRole("heading", { name: "Module one" }).closest("li") as HTMLElement;
+    const moduleTwo = within(navigation).getByRole("heading", { name: "Module two" }).closest("li") as HTMLElement;
+
+    expect(within(moduleOne).getByText("1")).toBeVisible();
+    expect(within(moduleOne).getByText("2 lessons")).toBeVisible();
+    expect(within(moduleTwo).getByText("2")).toBeVisible();
+    expect(within(moduleTwo).getByText("1 lesson")).toBeVisible();
+  });
+
+  it("auto-expands the module with the current lesson, collapses the rest, and toggles on click", async () => {
+    const user = userEvent.setup();
+    render(
+      <CurriculumNavigation pathway={pathwayFixture} currentLessonSlug="current-lesson" />,
+    );
+
+    const navigation = screen.getByRole("navigation", { name: "Course curriculum" });
+    const moduleOneDetails = within(navigation).getByRole("heading", { name: "Module one" }).closest("details") as HTMLDetailsElement;
+    const moduleTwoDetails = within(navigation).getByRole("heading", { name: "Module two" }).closest("details") as HTMLDetailsElement;
+
+    expect(moduleOneDetails.open).toBe(true);
+    expect(moduleTwoDetails.open).toBe(false);
+
+    const moduleTwoSummary = within(navigation).getByRole("heading", { name: "Module two" }).closest("summary") as HTMLElement;
+    await user.click(moduleTwoSummary);
+
+    expect(moduleTwoDetails.open).toBe(true);
+    expect(within(moduleTwoDetails).getByText("Premium troubleshooting")).toBeVisible();
+  });
+
+  it("shows completion status from progress data instead of the default Free tag", () => {
+    render(
+      <CurriculumNavigation
+        pathway={pathwayFixture}
+        currentLessonSlug="current-lesson"
+        progressByLessonId={{ lesson_current: "in_progress" }}
+      />,
+    );
+
+    const navigation = screen.getByRole("navigation", { name: "Course curriculum" });
+    const moduleOne = within(navigation).getByRole("heading", { name: "Module one" }).closest("li") as HTMLElement;
+
+    expect(within(moduleOne).getByText("0/1")).toBeVisible();
+    expect(within(moduleOne).getByText("In progress")).toBeVisible();
+    expect(within(moduleOne).queryByText("Free")).toBeNull();
   });
 });
