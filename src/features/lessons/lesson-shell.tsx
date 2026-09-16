@@ -10,6 +10,7 @@ import { LessonProgressControls } from "@/features/progress/lesson-progress-cont
 import type { MyLearningModel } from "@/features/progress/my-learning";
 
 import { CurriculumNavigation } from "./curriculum-navigation";
+import { formatEstimatedTime } from "@/features/catalog/estimated-time";
 import { LearningObjective } from "./learning-objective";
 import { LessonSectionNavigation } from "./lesson-section-navigation";
 import { RegistrationBoundary } from "./registration-boundary";
@@ -108,7 +109,7 @@ export function LessonShell({
           <p className="eyebrow">Lesson</p>
           <h1>{lesson.title}</h1>
           <p className="lesson-byline">
-            {lesson.estimatedMinutes} minutes · {lesson.sections?.some(({ access }) => access === "public")
+            {formatEstimatedTime(lesson.estimatedMinutes)} · {lesson.sections?.some(({ access }) => access === "public")
               ? "Public introduction · Free account to continue"
               : "Free account required"}
           </p>
@@ -143,3 +144,4 @@ export function LessonShell({
     </main>
   );
 }
+
