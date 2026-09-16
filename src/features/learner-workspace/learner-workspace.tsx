@@ -1,10 +1,11 @@
 "use client";
 
-import { type MouseEvent, useRef, useState } from "react";
+import { type MouseEvent, useMemo, useRef, useState } from "react";
 
 import type { Pathway } from "@/features/catalog/catalog.types";
 import { CurriculumNavigation } from "@/features/lessons/curriculum-navigation";
 import { MyLearning, type MyLearningModel } from "@/features/progress/my-learning";
+import type { LessonProgressStatus } from "@/features/progress/progress.types";
 
 import type { Viewer, WorkspaceToolId } from "./learner-workspace.types";
 import { WorkspaceDrawer } from "./workspace-drawer";
@@ -18,10 +19,18 @@ type LearnerWorkspaceProps = Readonly<{
   progressUnavailable?: boolean;
 }>;
 
-function ToolIcon() {
+function ToolIcon({ id }: { id: WorkspaceToolId }) {
+  if (id === "learning") {
+    return (
+      <svg aria-hidden="true" viewBox="0 0 20 20" width="18" height="18">
+        <circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="1.6" />
+        <path d="m6.5 10.2 2.4 2.4 4.6-4.9" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
   return (
-    <svg aria-hidden="true" viewBox="0 0 20 20" width="20" height="20">
-      <path d="M4 4h12v12H4zM7 7h6M7 10h6M7 13h4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+    <svg aria-hidden="true" viewBox="0 0 20 20" width="18" height="18">
+      <path d="M4 5.5h12M4 10h12M4 14.5h7" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
     </svg>
   );
 }
@@ -32,6 +41,15 @@ export function LearnerWorkspace({ pathway, currentLessonSlug, viewer, myLearnin
   const activeTriggerRef = useRef<HTMLButtonElement>(null);
   const tools = getVisibleWorkspaceTools(viewer);
   const activeTool = tools.find(({ id }) => id === activeToolId) ?? null;
+
+  const progressByLessonId = useMemo(() => {
+    if (!myLearning || progressUnavailable) return undefined;
+    const entries: [string, LessonProgressStatus][] = [];
+    for (const status of ["not_started", "in_progress", "completed"] as const) {
+      for (const item of myLearning.groups[status]) entries.push([item.lessonId, status]);
+    }
+    return Object.fromEntries(entries);
+  }, [myLearning, progressUnavailable]);
 
   function selectTool(
     event: MouseEvent<HTMLButtonElement>,
@@ -61,7 +79,7 @@ export function LearnerWorkspace({ pathway, currentLessonSlug, viewer, myLearnin
             onClick={(event) => selectTool(event, tool.id)}
             type="button"
           >
-            <ToolIcon />
+            <span className="learner-workspace__tool-icon"><ToolIcon id={tool.id} /></span>
             <span>{tool.label}</span>
           </button>
         ))}
@@ -95,7 +113,7 @@ export function LearnerWorkspace({ pathway, currentLessonSlug, viewer, myLearnin
                 onClick={(event) => selectTool(event, tool.id, true)}
                 type="button"
               >
-                <ToolIcon />
+                <span className="learner-workspace__tool-icon"><ToolIcon id={tool.id} /></span>
                 <span>{tool.label}</span>
               </button>
             ))}
@@ -120,6 +138,7 @@ export function LearnerWorkspace({ pathway, currentLessonSlug, viewer, myLearnin
                 pathway={pathway}
                 currentLessonSlug={currentLessonSlug}
                 onLessonSelect={() => setActiveToolId(null)}
+                progressByLessonId={progressByLessonId}
               />
             ) : activeTool.id === "learning" && myLearning ? (
               <MyLearning model={myLearning} unavailable={progressUnavailable} />
