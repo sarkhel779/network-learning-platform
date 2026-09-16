@@ -164,6 +164,8 @@ describe("ConnectionMediaComparison", () => {
   });
 
   it("shows one computed discrete stage per reduced-motion signal track", async () => {
+    // jsdom resolves the full (and growing) globals.css cascade via real getComputedStyle calls below,
+    // which routinely runs close to the default 5s timeout independent of this test's own logic.
     const stylesheet = document.head.appendChild(document.createElement("style"));
     stylesheet.textContent = readFileSync(join(process.cwd(), "src", "app", "globals.css"), "utf8");
     vi.stubGlobal("matchMedia", () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
@@ -196,7 +198,7 @@ describe("ConnectionMediaComparison", () => {
     } finally {
       stylesheet.remove();
     }
-  });
+  }, 15000);
 
   it("registers the public comparison component for MDX", () => {
     const components = useMDXComponents({});
