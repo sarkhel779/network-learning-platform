@@ -58,7 +58,7 @@ describe("LessonShell", () => {
       objective.compareDocumentPosition(content) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Hosts", level: 1 })).toBeVisible();
-    expect(screen.getByText("8 minutes · Public introduction · Free account to continue")).toBeVisible();
+    expect(screen.getByText("Estimated time: 5–15 min · Public introduction · Free account to continue")).toBeVisible();
   });
 
   it("links a published previous lesson", () => {
