@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { Module } from "./catalog.types";
+import { formatEstimatedTime } from "./estimated-time";
 
 type ModuleListProps = {
   modules: Module[];
@@ -26,7 +27,7 @@ export function ModuleList({ modules, pathwaySlug }: ModuleListProps) {
                   <p>{lesson.objective}</p>
                 </div>
                 <div className="lesson-meta">
-                  <span>{lesson.estimatedMinutes} min</span>
+                  <span>{formatEstimatedTime(lesson.estimatedMinutes)}</span>
                   {lesson.published ? <span className="access-label">Free</span> : <span>Coming later</span>}
                 </div>
               </li>
