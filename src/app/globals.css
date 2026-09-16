@@ -124,13 +124,15 @@ a { color: inherit; }
 @keyframes sl-dot-in { to { opacity: 0.75; } }
 @keyframes sl-pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 @keyframes sl-flicker { 0% { opacity: 0.5; } 20% { opacity: 1; } 35% { opacity: 0.2; } 50% { opacity: 1; } 65% { opacity: 0.3; } 100% { opacity: 1; } }
+@keyframes sl-word-in { to { opacity: 1; transform: translateX(0); } }
 @media (prefers-reduced-motion: reduce) {
   .site-logo__badge-outline, .site-logo__badge-fill, .site-logo__conn, .site-logo__dot {
     animation: none !important; opacity: 1 !important; stroke-dashoffset: 0 !important;
   }
   .site-logo__conn, .site-logo__dot { opacity: 0.85 !important; }
+  .site-logo__wordmark { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
-.site-logo__wordmark { font-family: "Arial Narrow", "Aptos Display", "Segoe UI", sans-serif; font-size: 1.35rem; font-weight: 900; letter-spacing: -0.055em; line-height: 1; }
+.site-logo__wordmark { font-family: "Arial Narrow", "Aptos Display", "Segoe UI", sans-serif; font-size: 1.35rem; font-weight: 900; letter-spacing: -0.055em; line-height: 1; opacity: 0; transform: translateX(-6px); animation: sl-word-in 420ms ease-out forwards; animation-delay: 1150ms; }
 .site-logo__packet { color: #fff; }
 .site-logo__secrets { color: #23d6a8; }
 .site-logo:hover .site-logo__wordmark { text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 65%, transparent); text-underline-offset: 0.25rem; }
