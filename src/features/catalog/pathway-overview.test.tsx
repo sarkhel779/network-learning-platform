@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { getPathway } from "./catalog.repository";
@@ -14,13 +14,27 @@ describe("PathwayOverview", () => {
       screen.getByRole("heading", { name: "Networking Foundations" }),
     ).toBeVisible();
     expect(screen.getByText(/complete beginners/i)).toBeVisible();
-    expect(screen.getAllByRole("listitem")).toHaveLength(25);
+    const modulesSection = screen.getByRole("heading", { name: "Modules and lessons" }).closest("section") as HTMLElement;
+    expect(within(modulesSection).getAllByRole("listitem")).toHaveLength(25);
+  });
+
+  it("shows the course scale and a jump-to-module link for every module", () => {
+    render(<PathwayOverview pathway={getPathway("networking-foundations")} />);
+
+    expect(screen.getByText("6 modules")).toBeVisible();
+    expect(screen.getByText("25 lessons")).toBeVisible();
+
+    const toc = screen.getByRole("navigation", { name: "Jump to module" });
+    const tocLinks = within(toc).getAllByRole("link");
+    expect(tocLinks).toHaveLength(6);
+    expect(tocLinks[0]).toHaveAttribute("href", "#module_network_and_device_essentials");
   });
 
   it("links published lessons and marks unpublished lessons as coming later", () => {
     render(<PathwayOverview pathway={getPathway("networking-foundations")} />);
 
-    const publishedLesson = screen.getByRole("link", {
+    const modulesSection = screen.getByRole("heading", { name: "Modules and lessons" }).closest("section") as HTMLElement;
+    const publishedLesson = within(modulesSection).getByRole("link", {
       name: /what is a computer network/i,
     });
     expect(publishedLesson).toHaveAttribute(
@@ -98,7 +112,7 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /systematic network troubleshooting capstone/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/systematic-network-troubleshooting-capstone",
     );
-    expect(screen.getAllByRole("link")).toHaveLength(25);
-    expect(screen.queryByText("Coming later")).not.toBeInTheDocument();
+    expect(within(modulesSection).getAllByRole("link")).toHaveLength(25);
+    expect(within(modulesSection).queryByText("Coming later")).not.toBeInTheDocument();
   });
 });
