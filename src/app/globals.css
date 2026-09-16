@@ -191,8 +191,9 @@ a { color: inherit; }
 .module__heading p { margin: 0.3rem 0 0; color: var(--muted); }
 .module__count { flex: 0 0 auto; align-self: center; padding: 0.2rem 0.6rem; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); font-weight: 800; font-size: 0.78rem; white-space: nowrap; }
 .lesson-list { display: flex; flex-direction: column; margin: 0.75rem 0 0; padding-left: 3.2rem; }
-.lesson-card { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 0.4rem 1.5rem; padding: 0.85rem 0; border-top: 1px solid var(--border); }
+.lesson-card { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 0.4rem 1.5rem; padding: 0.85rem 0.75rem; margin-inline: -0.75rem; border-top: 1px solid var(--border); border-radius: 0.5rem; transition: background-color 160ms ease, box-shadow 160ms ease; }
 .lesson-card:first-child { border-top: none; }
+.lesson-card:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); box-shadow: 0 0 1rem color-mix(in srgb, var(--accent) 25%, transparent); }
 .lesson-card h3, .lesson-card p { margin: 0; }
 .lesson-card p { max-width: 48rem; margin-top: 0.3rem; }
 .lesson-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; color: var(--muted); font-size: 0.875rem; }
