@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseLearnerEdit, parseStaffAssignment } from "./admin-input.schema";
+import { parseLearnerEdit, parseLessonMove, parseLessonPublication, parseStaffAssignment } from "./admin-input.schema";
 
 describe("learner edit input", () => {
   it("trims permitted profile fields and optional notes", () => {
@@ -34,5 +34,37 @@ describe("staff assignment input", () => {
 
   it("rejects unrecognized fields", () => {
     expect(() => parseStaffAssignment({ email: "ada@example.com", role: "finance", note: "hi" })).toThrow();
+  });
+});
+
+describe("lesson publication input", () => {
+  it("coerces the published flag to a boolean", () => {
+    expect(parseLessonPublication({ lessonId: "lesson_how_networks_communicate", published: "false" })).toEqual({
+      lessonId: "lesson_how_networks_communicate", published: false,
+    });
+  });
+
+  it("rejects a lesson id outside the catalogue's naming convention", () => {
+    expect(() => parseLessonPublication({ lessonId: "how-networks-communicate", published: "true" })).toThrow();
+    expect(() => parseLessonPublication({ lessonId: "module_network_and_device_essentials", published: "true" })).toThrow();
+  });
+});
+
+describe("lesson move input", () => {
+  it("accepts a valid module, lesson, and direction", () => {
+    expect(parseLessonMove({
+      moduleId: "module_network_and_device_essentials",
+      lessonId: "lesson_how_networks_communicate",
+      direction: "up",
+    })).toEqual({
+      moduleId: "module_network_and_device_essentials",
+      lessonId: "lesson_how_networks_communicate",
+      direction: "up",
+    });
+  });
+
+  it("rejects an unrecognized direction or malformed ids", () => {
+    expect(() => parseLessonMove({ moduleId: "module_a", lessonId: "lesson_a", direction: "sideways" })).toThrow();
+    expect(() => parseLessonMove({ moduleId: "lesson_a", lessonId: "lesson_a", direction: "up" })).toThrow();
   });
 });

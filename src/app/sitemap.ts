@@ -1,15 +1,24 @@
 import type { MetadataRoute } from "next";
 
-import { listPathways, listPublishedLessons } from "@/features/catalog/catalog.repository";
+import {
+  applyContentOverrides,
+  loadContentOverridesSnapshot,
+} from "@/features/catalog/content-publication.repository";
+import { listPathways } from "@/features/catalog/catalog.repository";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const overrides = await loadContentOverridesSnapshot();
+
   return [
     { url: "https://packetsecrets.com" },
     { url: "https://packetsecrets.com/paths/networking-foundations" },
     ...listPathways().flatMap((pathway) =>
-      listPublishedLessons(pathway.slug).map((lesson) => ({
-        url: `https://packetsecrets.com/learn/${pathway.slug}/${lesson.slug}`,
-      })),
+      applyContentOverrides(pathway, overrides)
+        .modules.flatMap(({ lessons }) => lessons)
+        .filter((lesson) => lesson.published)
+        .map((lesson) => ({
+          url: `https://packetsecrets.com/learn/${pathway.slug}/${lesson.slug}`,
+        })),
     ),
   ];
 }

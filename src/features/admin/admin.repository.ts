@@ -2,7 +2,16 @@ import "server-only";
 
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-import type { AdminOverview, AuditRow, LearnerDetail, LearnerRow, StaffMember, StaffRole } from "./admin.types";
+import type {
+  AdminOverview,
+  AuditRow,
+  LearnerDetail,
+  LearnerRow,
+  LessonPublicationUpdate,
+  ModuleLessonOrderUpdate,
+  StaffMember,
+  StaffRole,
+} from "./admin.types";
 
 function countOrNull(data: unknown): number | null {
   const value = typeof data === "number" ? data : typeof data === "string" ? Number(data) : NaN;
@@ -72,6 +81,20 @@ export async function revokeStaffRole(userId: string): Promise<void> {
   const supabase = await createServerSupabaseClient();
   const { error } = await supabase.rpc("admin_revoke_staff_role", { p_user_id: userId });
   if (error) throw new Error(error.message === "cannot_revoke_self" ? "cannot_revoke_self" : "Staff role could not be revoked");
+}
+
+export async function setLessonPublished(lessonId: string, published: boolean): Promise<LessonPublicationUpdate> {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.rpc("admin_set_lesson_published", { p_lesson_id: lessonId, p_published: published });
+  if (error || !data) throw new Error("Lesson publication could not be updated");
+  return data as LessonPublicationUpdate;
+}
+
+export async function setModuleLessonOrder(moduleId: string, lessonIds: string[]): Promise<ModuleLessonOrderUpdate> {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.rpc("admin_set_module_lesson_order", { p_module_id: moduleId, p_lesson_ids: lessonIds });
+  if (error || !data) throw new Error("Lesson order could not be updated");
+  return data as ModuleLessonOrderUpdate;
 }
 
 export async function listAudit({ offset = 0, limit = 20 }: { offset?: number; limit?: number } = {}): Promise<{ rows: AuditRow[]; total: number }> {

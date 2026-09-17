@@ -1,12 +1,24 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const mocks = vi.hoisted(() => ({ loadContentOverridesSnapshot: vi.fn() }));
+vi.mock("server-only", () => ({}));
+vi.mock("@/features/catalog/content-publication.repository", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/features/catalog/content-publication.repository")>()),
+  loadContentOverridesSnapshot: mocks.loadContentOverridesSnapshot,
+}));
 
 import { listPathways } from "@/features/catalog/catalog.repository";
 
 import sitemap from "./sitemap";
 
+beforeEach(() => {
+  mocks.loadContentOverridesSnapshot.mockReset();
+  mocks.loadContentOverridesSnapshot.mockResolvedValue({ publications: {}, orders: {} });
+});
+
 describe("public sitemap", () => {
-  it("lists exactly approved index pages and all published lessons, without fabricated dates", () => {
-    const entries = sitemap();
+  it("lists exactly approved index pages and all published lessons, without fabricated dates", async () => {
+    const entries = await sitemap();
     expect(entries).toEqual([
       { url: "https://packetsecrets.com" },
       { url: "https://packetsecrets.com/paths/networking-foundations" },
@@ -55,5 +67,14 @@ describe("public sitemap", () => {
       expect(urls).not.toContain(unpublishedUrl);
     }
     expect(unpublishedSlugs).toHaveLength(0);
+  });
+
+  it("removes a lesson unpublished by a live database override", async () => {
+    mocks.loadContentOverridesSnapshot.mockResolvedValue({
+      publications: { lesson_how_networks_communicate: false },
+      orders: {},
+    });
+    const urls = (await sitemap()).map(({ url }) => url);
+    expect(urls).not.toContain("https://packetsecrets.com/learn/networking-foundations/how-networks-communicate");
   });
 });

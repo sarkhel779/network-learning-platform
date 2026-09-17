@@ -38,6 +38,16 @@ export type StaffMember = {
   createdAt: string;
 };
 
+export type LessonPublicationUpdate = {
+  lessonId: string;
+  published: boolean;
+};
+
+export type ModuleLessonOrderUpdate = {
+  moduleId: string;
+  lessonOrder: string[];
+};
+
 export type AuditRow = {
   id: number;
   actorId: string;

@@ -4,7 +4,17 @@ const mocks = vi.hoisted(() => ({ createServerSupabaseClient: vi.fn(), rpc: vi.f
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/supabase/server", () => ({ createServerSupabaseClient: mocks.createServerSupabaseClient }));
 
-import { assignStaffRole, getLearnerDetail, listAudit, listLearners, listStaff, loadAdminOverview, revokeStaffRole } from "./admin.repository";
+import {
+  assignStaffRole,
+  getLearnerDetail,
+  listAudit,
+  listLearners,
+  listStaff,
+  loadAdminOverview,
+  revokeStaffRole,
+  setLessonPublished,
+  setModuleLessonOrder,
+} from "./admin.repository";
 
 beforeEach(() => {
   mocks.rpc.mockReset();
@@ -73,6 +83,32 @@ describe("admin repository", () => {
   it("surfaces a self-revocation failure distinctly", async () => {
     mocks.rpc.mockResolvedValue({ data: null, error: { message: "cannot_revoke_self" } });
     await expect(revokeStaffRole("00000000-0000-4000-8000-000000000301")).rejects.toThrow("cannot_revoke_self");
+  });
+
+  it("updates a lesson's publication state through a guarded RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: { lessonId: "lesson_how_networks_communicate", published: false }, error: null });
+    await expect(setLessonPublished("lesson_how_networks_communicate", false)).resolves.toEqual({
+      lessonId: "lesson_how_networks_communicate", published: false,
+    });
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_set_lesson_published", { p_lesson_id: "lesson_how_networks_communicate", p_published: false });
+  });
+
+  it("surfaces a lesson publication failure", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: "invalid_lesson_id" } });
+    await expect(setLessonPublished("lesson_missing", true)).rejects.toThrow("Lesson publication could not be updated");
+  });
+
+  it("updates a module's lesson order through a guarded RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: { moduleId: "module_network_and_device_essentials", lessonOrder: ["lesson_b", "lesson_a"] }, error: null });
+    await expect(setModuleLessonOrder("module_network_and_device_essentials", ["lesson_b", "lesson_a"])).resolves.toEqual({
+      moduleId: "module_network_and_device_essentials", lessonOrder: ["lesson_b", "lesson_a"],
+    });
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_set_module_lesson_order", { p_module_id: "module_network_and_device_essentials", p_lesson_ids: ["lesson_b", "lesson_a"] });
+  });
+
+  it("surfaces a lesson order failure", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: "duplicate_lesson_in_order" } });
+    await expect(setModuleLessonOrder("module_network_and_device_essentials", ["lesson_a", "lesson_a"])).rejects.toThrow("Lesson order could not be updated");
   });
 
   it("paginates the read-only audit log through a guarded RPC", async () => {

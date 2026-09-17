@@ -2,14 +2,19 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { getViewer, listPathwayProgress } = vi.hoisted(() => ({
+const { getViewer, listPathwayProgress, loadContentOverridesSnapshot } = vi.hoisted(() => ({
   getViewer: vi.fn(),
   listPathwayProgress: vi.fn(),
+  loadContentOverridesSnapshot: vi.fn(),
 }));
 
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/supabase/session", () => ({ getViewer }));
 vi.mock("@/features/progress/progress.repository", () => ({ listPathwayProgress }));
+vi.mock("@/features/catalog/content-publication.repository", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/features/catalog/content-publication.repository")>()),
+  loadContentOverridesSnapshot,
+}));
 vi.mock("@/features/packet-flow/use-reduced-motion", () => ({
   useReducedMotion: () => false,
   useReducedMotionState: () => ({ reducedMotion: false, isHydrated: true }),
@@ -144,6 +149,7 @@ afterEach(() => {
 beforeEach(() => {
   getViewer.mockResolvedValue(null);
   listPathwayProgress.mockResolvedValue([]);
+  loadContentOverridesSnapshot.mockResolvedValue({ publications: {}, orders: {} });
 });
 
 describe("lesson route generation", () => {
@@ -495,8 +501,8 @@ describe("lesson route generation", () => {
     expect(renderToStaticMarkup(page)).not.toMatch(/OSI_FOUNDATIONS_SENTINEL|OSI_ACCOUNT_SENTINEL/);
   });
 
-  it("rejects lesson slugs outside the generated published catalogue", () => {
-    expect(staticLessonPage.dynamicParams).toBe(false);
+  it("renders lesson slugs outside the generated published catalogue on demand instead of 404ing so publish toggles take effect live", () => {
+    expect(staticLessonPage.dynamicParams).toBe(true);
   });
 
   it("renders the complete pathway in the lesson shell", async () => {
@@ -517,5 +523,28 @@ describe("lesson route generation", () => {
     expect(
       screen.getAllByRole("link", { name: /what is a computer network/i })[0],
     ).toHaveAttribute("aria-current", "page");
+  });
+
+  it("hides a lesson unpublished by a live database override", async () => {
+    loadContentOverridesSnapshot.mockResolvedValue({
+      publications: { lesson_how_networks_communicate: false },
+      orders: {},
+    });
+    const props = { params: Promise.resolve({
+      pathwaySlug: "networking-foundations", lessonSlug: "how-networks-communicate",
+    }) };
+    await expect(lessonPage.generateMetadata(props)).rejects.toThrow("NEXT_HTTP_ERROR_FALLBACK;404");
+    await expect(lessonPage.default(props)).rejects.toThrow("NEXT_HTTP_ERROR_FALLBACK;404");
+  });
+
+  it("honors a live database reorder for previous/next navigation", async () => {
+    loadContentOverridesSnapshot.mockResolvedValue({
+      publications: {},
+      orders: { module_network_and_device_essentials: ["lesson_hosts_and_network_devices", "lesson_how_networks_communicate"] },
+    });
+    render(await lessonPage.default({ params: Promise.resolve({
+      pathwaySlug: "networking-foundations", lessonSlug: "how-networks-communicate",
+    }) }));
+    expect(screen.getByRole("link", { name: "Previous: Hosts, Clients, Servers and Network Interfaces" })).toBeVisible();
   });
 });

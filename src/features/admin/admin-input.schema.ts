@@ -22,3 +22,29 @@ export type StaffAssignment = z.infer<typeof staffAssignmentSchema>;
 export function parseStaffAssignment(value: unknown): StaffAssignment {
   return staffAssignmentSchema.parse(value);
 }
+
+const lessonIdSchema = z.string().trim().regex(/^lesson_[a-z0-9_]+$/);
+const moduleIdSchema = z.string().trim().regex(/^module_[a-z0-9_]+$/);
+
+export const lessonPublicationSchema = z.object({
+  lessonId: lessonIdSchema,
+  published: z.enum(["true", "false"]).transform((value) => value === "true"),
+}).strict();
+
+export type LessonPublicationInput = z.infer<typeof lessonPublicationSchema>;
+
+export function parseLessonPublication(value: unknown): LessonPublicationInput {
+  return lessonPublicationSchema.parse(value);
+}
+
+export const lessonMoveSchema = z.object({
+  moduleId: moduleIdSchema,
+  lessonId: lessonIdSchema,
+  direction: z.enum(["up", "down"]),
+}).strict();
+
+export type LessonMoveInput = z.infer<typeof lessonMoveSchema>;
+
+export function parseLessonMove(value: unknown): LessonMoveInput {
+  return lessonMoveSchema.parse(value);
+}

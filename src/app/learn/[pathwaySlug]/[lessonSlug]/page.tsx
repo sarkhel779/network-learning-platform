@@ -3,13 +3,15 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
 import {
-  getAdjacentLessons,
-  getLesson,
   getPathway,
   listPathways,
   listPublishedLessons,
 } from "@/features/catalog/catalog.repository";
-import type { LessonSummary } from "@/features/catalog/catalog.types";
+import type { LessonSummary, Pathway } from "@/features/catalog/catalog.types";
+import {
+  applyContentOverrides,
+  loadContentOverridesSnapshot,
+} from "@/features/catalog/content-publication.repository";
 import { loadAuthorizedLessonContent } from "@/features/lessons/lesson-content.repository";
 import type { LessonContentKey, LessonContentModule } from "@/features/lessons/lesson-content.types";
 import { LessonShell } from "@/features/lessons/lesson-shell";
@@ -27,7 +29,7 @@ type LessonPageProps = {
   searchParams?: Promise<{ audit?: string }>;
 };
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   return listPathways().flatMap(({ slug: pathwaySlug }) =>
@@ -38,11 +40,18 @@ export function generateStaticParams() {
   );
 }
 
-function findPublishedLesson(pathwaySlug: string, lessonSlug: string): LessonSummary {
-  let lesson: LessonSummary;
+type ResolvedLesson = {
+  pathway: Pathway;
+  lesson: LessonSummary;
+  previous: LessonSummary | undefined;
+  next: LessonSummary | undefined;
+};
+
+async function findPublishedLesson(pathwaySlug: string, lessonSlug: string): Promise<ResolvedLesson> {
+  let pathway: Pathway;
 
   try {
-    lesson = getLesson(pathwaySlug, lessonSlug);
+    pathway = getPathway(pathwaySlug);
   } catch (error) {
     if (isExpectedCatalogError(error)) {
       notFound();
@@ -50,16 +59,28 @@ function findPublishedLesson(pathwaySlug: string, lessonSlug: string): LessonSum
     throw error;
   }
 
-  if (!lesson.published) {
+  const overrides = await loadContentOverridesSnapshot();
+  pathway = applyContentOverrides(pathway, overrides);
+
+  const lessons = pathway.modules.flatMap(({ lessons }) => lessons);
+  const lessonIndex = lessons.findIndex(({ slug }) => slug === lessonSlug);
+  const lesson = lessons[lessonIndex];
+
+  if (!lesson || !lesson.published) {
     notFound();
   }
 
-  return lesson;
+  return {
+    pathway,
+    lesson,
+    previous: lessons[lessonIndex - 1],
+    next: lessons[lessonIndex + 1],
+  };
 }
 
 export async function generateMetadata({ params }: LessonPageProps): Promise<Metadata> {
   const { pathwaySlug, lessonSlug } = await params;
-  const lesson = findPublishedLesson(pathwaySlug, lessonSlug);
+  const { lesson } = await findPublishedLesson(pathwaySlug, lessonSlug);
   const canonical = `/learn/${pathwaySlug}/${lesson.slug}`;
 
   return {
@@ -77,9 +98,7 @@ export async function generateMetadata({ params }: LessonPageProps): Promise<Met
 
 export default async function LessonPage({ params, searchParams }: LessonPageProps) {
   const { pathwaySlug, lessonSlug } = await params;
-  const lesson = findPublishedLesson(pathwaySlug, lessonSlug);
-  const pathway = getPathway(pathwaySlug);
-  const { previous, next } = getAdjacentLessons(pathwaySlug, lessonSlug);
+  const { pathway, lesson, previous, next } = await findPublishedLesson(pathwaySlug, lessonSlug);
   const viewer = await getViewer();
   const auditRequested = (await searchParams)?.audit === "1";
   const requestHost = auditRequested && process.env.NODE_ENV === "development"
