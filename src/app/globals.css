@@ -1573,6 +1573,9 @@ body:has(.admin-shell) .site-header,body:has(.admin-shell) .site-footer{display:
 .admin-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
 .admin-metric,.admin-panel{min-width:0;border:1px solid #2a3850;border-radius:1rem;background:#111a2a}
 .admin-metric{display:grid;align-content:start;gap:.55rem;min-height:10rem;padding:1.25rem}
+a.admin-metric{transition:border-color 150ms ease,transform 150ms ease}
+a.admin-metric:hover,a.admin-metric:focus-visible{border-color:#32dcb4;transform:translateY(-2px)}
+@media(prefers-reduced-motion:reduce){a.admin-metric{transition:none}a.admin-metric:hover{transform:none}}
 .admin-metric p{margin:0;color:#aab9d1;font-size:.88rem}.admin-metric strong{font-size:2rem;color:#fff}.admin-metric small{color:#39e0b7}
 .admin-overview-panels,.admin-detail-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:1rem;margin-top:1.5rem}
 .admin-panel{padding:1.3rem}.admin-panel h2{margin:0 0 1rem;color:#fff;font-size:1.08rem}.admin-panel p,.admin-panel dd,.admin-metric-note{color:#aab9d1;line-height:1.55}

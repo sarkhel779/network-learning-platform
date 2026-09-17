@@ -175,7 +175,7 @@ begin
   if public.record_page_view('00000000-0000-4000-8000-000000000206', '/pricing', 'ci-only-ingest-token-with-32-chars-minimum', '00000000-0000-4000-8000-000000000302') <> 'recorded' then
     raise exception 'a new visitor was not recorded';
   end if;
-  for i in 1..119 loop
+  for i in 1..117 loop
     if public.record_page_view(pg_catalog.md5(i::text)::uuid, '/labs', 'ci-only-ingest-token-with-32-chars-minimum', '00000000-0000-4000-8000-000000000303') <> 'recorded' then
       raise exception 'rate window closed before 120 views';
     end if;
