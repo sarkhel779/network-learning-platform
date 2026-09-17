@@ -30,3 +30,7 @@ Thumbs.db
 
 # Isolated feature worktrees
 .worktrees/
+
+# Supabase CLI local state
+supabase/.temp/
+supabase/.branches/
