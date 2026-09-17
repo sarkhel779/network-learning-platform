@@ -12,6 +12,12 @@ const statusLabels: Record<SupportTicketStatus, string> = {
   resolved: "Resolved",
 };
 
+const statusBadgeClass: Record<SupportTicketStatus, string> = {
+  open: "admin-badge--warning",
+  in_progress: "admin-badge--info",
+  resolved: "admin-badge--success",
+};
+
 const statusFilters = ["open", "in_progress", "resolved"] as const;
 
 function isSupportTicketStatus(value: string): value is SupportTicketStatus {
@@ -57,7 +63,7 @@ export default async function SupportPage({ searchParams }: Props) {
               <tr key={ticket.id}>
                 <td><Link href={`/admin/support/${ticket.id}`}>{ticket.subject}</Link></td>
                 <td>{ticket.learnerEmail}</td>
-                <td>{statusLabels[ticket.status]}</td>
+                <td><span className={`admin-badge ${statusBadgeClass[ticket.status]}`}>{statusLabels[ticket.status]}</span></td>
                 <td>{new Date(ticket.updatedAt).toLocaleString("en-IN")}</td>
               </tr>
             ))}

@@ -4,12 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { AdminIcon } from "./admin-icons";
 import type { AdminNavItem } from "./admin-navigation";
 
 function NavGroup({ title, items, pathname }: { title: string; items: AdminNavItem[]; pathname: string }) {
   return <div className="admin-nav-group"><p>{title}</p>{items.map((item) => {
     const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(`${item.href}/`));
-    return <Link key={item.href} href={item.href} aria-current={active ? "page" : undefined}><span className="admin-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="4" width="6" height="6" rx="1" /><rect x="14" y="4" width="6" height="6" rx="1" /><rect x="4" y="14" width="6" height="6" rx="1" /><rect x="14" y="14" width="6" height="6" rx="1" /></svg></span>{item.label}</Link>;
+    return <Link key={item.href} href={item.href} aria-current={active ? "page" : undefined}><span className="admin-nav-icon" aria-hidden="true"><AdminIcon name={item.icon} /></span>{item.label}</Link>;
   })}</div>;
 }
 
