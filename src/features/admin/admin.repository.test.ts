@@ -15,6 +15,7 @@ import {
   listStaff,
   listSubscriptions,
   listSupportTickets,
+  listWaitlist,
   loadAdminOverview,
   replySupportTicket,
   revokeStaffRole,
@@ -54,6 +55,12 @@ describe("admin repository", () => {
     expect(mocks.rpc).toHaveBeenCalledWith("admin_list_learners", {
       p_query: "subnet", p_offset: 0, p_limit: 50,
     });
+  });
+
+  it("clamps pagination when listing the joined waitlist through a guarded RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: { total: 0, rows: [] }, error: null });
+    await expect(listWaitlist({ offset: -2, limit: 999 })).resolves.toEqual({ rows: [], total: 0 });
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_list_waitlist", { p_offset: 0, p_limit: 50 });
   });
 
   it("loads one authorized learner detail through a narrow RPC", async () => {

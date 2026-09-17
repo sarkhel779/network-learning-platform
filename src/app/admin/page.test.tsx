@@ -20,4 +20,15 @@ describe("admin overview", () => {
     expect(html).toContain("12");
     expect(mocks.loadAdminOverview).toHaveBeenCalledWith(30);
   });
+
+  it("links the account and waitlist metrics to their dedicated admin pages", async () => {
+    mocks.requireStaff.mockResolvedValueOnce({ viewer: { id: "admin-1" }, role: "super_admin" });
+    mocks.loadAdminOverview.mockResolvedValueOnce({ accounts: 10, joinedWaitlist: 1, pageViews: 12 });
+    const html = renderToStaticMarkup(await AdminOverviewPage({ searchParams: Promise.resolve({}) }));
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    const usersLinks = Array.from(parsed.querySelectorAll('a[href="/admin/users"]'));
+    const waitlistLinks = Array.from(parsed.querySelectorAll('a[href="/admin/waitlist"]'));
+    expect(usersLinks.some((link) => link.textContent?.includes("Registered accounts"))).toBe(true);
+    expect(waitlistLinks.some((link) => link.textContent?.includes("Founding Pro waitlist"))).toBe(true);
+  });
 });

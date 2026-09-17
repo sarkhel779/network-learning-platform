@@ -17,4 +17,17 @@ describe("admin users page", () => {
     expect(html).toContain("temporarily unavailable");
     expect(html).not.toContain("No learners found");
   });
+
+  it("lists learners without a waitlist column", async () => {
+    mocks.requireStaff.mockResolvedValue({ viewer: { id: "staff-1" }, role: "support_agent" });
+    mocks.listLearners.mockResolvedValue({
+      total: 1,
+      rows: [{ id: "00000000-0000-4000-8000-000000000102", email: "ada@example.test", displayName: "Ada", learningLevel: "beginner", createdAt: "2026-09-17T00:00:00Z", waitlistStatus: "joined" }],
+    });
+    const html = renderToStaticMarkup(await UsersPage({ searchParams: Promise.resolve({}) }));
+    expect(html).toContain("Ada");
+    expect(html).not.toContain("Waitlist");
+    expect(html).not.toContain("Not joined");
+    expect(html).not.toContain("Unsubscribed");
+  });
 });

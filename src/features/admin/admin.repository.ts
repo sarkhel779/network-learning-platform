@@ -17,6 +17,7 @@ import type {
   SupportTicketDetail,
   SupportTicketRow,
   SupportTicketStatus,
+  WaitlistMember,
 } from "./admin.types";
 
 function countOrNull(data: unknown): number | null {
@@ -60,6 +61,20 @@ export async function listLearners({ query = "", offset = 0, limit = 20 }: Learn
   const total = countOrNull(result.total);
   if (total === null || !Array.isArray(result.rows)) throw new Error("Learner directory unavailable");
   return { rows: result.rows as LearnerRow[], total };
+}
+
+type WaitlistQuery = { offset?: number; limit?: number };
+
+export async function listWaitlist({ offset = 0, limit = 20 }: WaitlistQuery = {}): Promise<{ rows: WaitlistMember[]; total: number }> {
+  const p_offset = Math.max(0, Math.floor(offset || 0));
+  const p_limit = Math.min(50, Math.max(1, Math.floor(limit || 20)));
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.rpc("admin_list_waitlist", { p_offset, p_limit });
+  if (error || !data || typeof data !== "object") throw new Error("Waitlist unavailable");
+  const result = data as { total?: unknown; rows?: unknown };
+  const total = countOrNull(result.total);
+  if (total === null || !Array.isArray(result.rows)) throw new Error("Waitlist unavailable");
+  return { rows: result.rows as WaitlistMember[], total };
 }
 
 export async function getLearnerDetail(targetId: string): Promise<LearnerDetail | null> {

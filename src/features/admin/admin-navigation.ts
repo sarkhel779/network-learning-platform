@@ -6,6 +6,7 @@ export type AdminNavItem = { label: string; href: string; permission: AdminPermi
 const items: AdminNavItem[] = [
   { label: "Overview", href: "/admin", permission: "overview", group: "GENERAL" },
   { label: "Users", href: "/admin/users", permission: "users_read", group: "GENERAL" },
+  { label: "Pro waitlist", href: "/admin/waitlist", permission: "users_read", group: "GENERAL" },
   { label: "Courses and labs", href: "/admin/courses", permission: "courses", group: "GENERAL" },
   { label: "Billing", href: "/admin/billing", permission: "billing", group: "GENERAL" },
   { label: "Support", href: "/admin/support", permission: "support", group: "GENERAL" },

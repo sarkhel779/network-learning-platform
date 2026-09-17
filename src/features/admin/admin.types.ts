@@ -20,6 +20,15 @@ export type LearnerRow = {
   waitlistStatus: "joined" | "unsubscribed" | null;
 };
 
+export type WaitlistMember = {
+  userId: string;
+  email: string;
+  displayName: string | null;
+  sourceLessonSlug: string | null;
+  consentedAt: string;
+  createdAt: string;
+};
+
 export type LearnerDetail = LearnerRow & {
   notes: { id: number; body: string; createdAt: string; authorId: string }[];
 };
