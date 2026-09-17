@@ -40,6 +40,8 @@ export function SiteHeader({ lessons = [], signedIn = false }: { lessons?: Heade
               <rect className="site-logo__badge-fill" x="6" y="6" width="188" height="188" rx="45" />
               <rect className="site-logo__badge-outline" x="6" y="6" width="188" height="188" rx="45" />
               <line className="site-logo__conn" x1="68" y1="100" x2="143" y2="100" />
+              <line className="site-logo__branch" x1="143" y1="100" x2="141.93" y2="75.98" />
+              <line className="site-logo__branch" x1="143" y1="100" x2="141.93" y2="124.02" />
               <circle className="site-logo__dot site-logo__dot--a" cx="56" cy="100" r="21" />
               <circle className="site-logo__dot site-logo__dot--b" cx="141" cy="55" r="21" />
               <circle className="site-logo__dot site-logo__dot--c" cx="141" cy="145" r="21" />
