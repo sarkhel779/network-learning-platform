@@ -30,6 +30,14 @@ export type AdminOverview = {
   pageViews: number | null;
 };
 
+export type StaffMember = {
+  userId: string;
+  email: string;
+  role: StaffRole;
+  assignedBy: string | null;
+  createdAt: string;
+};
+
 export type AuditRow = {
   id: number;
   actorId: string;
