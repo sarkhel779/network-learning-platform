@@ -5,12 +5,15 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type {
   AdminOverview,
   AuditRow,
+  BillingPlan,
   LearnerDetail,
   LearnerRow,
   LessonPublicationUpdate,
   ModuleLessonOrderUpdate,
   StaffMember,
   StaffRole,
+  SubscriptionRow,
+  SubscriptionStatus,
   SupportTicketDetail,
   SupportTicketRow,
   SupportTicketStatus,
@@ -134,6 +137,39 @@ export async function setSupportTicketStatus(ticketId: number, status: SupportTi
   const supabase = await createServerSupabaseClient();
   const { error } = await supabase.rpc("admin_set_support_ticket_status", { p_ticket_id: ticketId, p_status: status });
   if (error) throw new Error(error.message === "ticket_not_found" ? "ticket_not_found" : "Status could not be updated");
+}
+
+export async function listBillingPlans(): Promise<BillingPlan[]> {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.rpc("admin_list_billing_plans");
+  if (error || !Array.isArray(data)) throw new Error("Billing plans unavailable");
+  return data as BillingPlan[];
+}
+
+type SubscriptionQuery = { status?: SubscriptionStatus; offset?: number; limit?: number };
+
+export async function listSubscriptions({ status, offset = 0, limit = 20 }: SubscriptionQuery = {}): Promise<{ rows: SubscriptionRow[]; total: number }> {
+  const p_offset = Math.max(0, Math.floor(offset || 0));
+  const p_limit = Math.min(50, Math.max(1, Math.floor(limit || 20)));
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.rpc("admin_list_subscriptions", { p_status: status ?? null, p_offset, p_limit });
+  if (error || !data || typeof data !== "object") throw new Error("Subscriptions unavailable");
+  const result = data as { total?: unknown; rows?: unknown };
+  const total = countOrNull(result.total);
+  if (total === null || !Array.isArray(result.rows)) throw new Error("Subscriptions unavailable");
+  return { rows: result.rows as SubscriptionRow[], total };
+}
+
+export async function grantSubscription(email: string, planId: string): Promise<void> {
+  const supabase = await createServerSupabaseClient();
+  const { error } = await supabase.rpc("admin_grant_subscription", { p_email: email, p_plan_id: planId });
+  if (error) throw new Error(error.message === "learner_account_not_found" ? "learner_account_not_found" : "Subscription could not be granted");
+}
+
+export async function revokeSubscription(subscriptionId: number): Promise<void> {
+  const supabase = await createServerSupabaseClient();
+  const { error } = await supabase.rpc("admin_revoke_subscription", { p_subscription_id: subscriptionId });
+  if (error) throw new Error(error.message === "subscription_not_found" ? "subscription_not_found" : "Subscription could not be revoked");
 }
 
 export async function listAudit({ offset = 0, limit = 20 }: { offset?: number; limit?: number } = {}): Promise<{ rows: AuditRow[]; total: number }> {

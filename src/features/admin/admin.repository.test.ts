@@ -8,13 +8,17 @@ import {
   assignStaffRole,
   getLearnerDetail,
   getSupportTicket,
+  grantSubscription,
   listAudit,
+  listBillingPlans,
   listLearners,
   listStaff,
+  listSubscriptions,
   listSupportTickets,
   loadAdminOverview,
   replySupportTicket,
   revokeStaffRole,
+  revokeSubscription,
   setLessonPublished,
   setModuleLessonOrder,
   setSupportTicketStatus,
@@ -159,6 +163,47 @@ describe("admin repository", () => {
   it("surfaces a support ticket status failure", async () => {
     mocks.rpc.mockResolvedValue({ data: null, error: { message: "ticket_not_found" } });
     await expect(setSupportTicketStatus(999, "resolved")).rejects.toThrow("ticket_not_found");
+  });
+
+  it("loads the seeded placeholder plans through a guarded RPC", async () => {
+    const plans = [{ id: "pro_monthly", name: "Pro Monthly", billingInterval: "monthly", priceCents: null, currency: "INR" }];
+    mocks.rpc.mockResolvedValue({ data: plans, error: null });
+    await expect(listBillingPlans()).resolves.toEqual(plans);
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_list_billing_plans");
+  });
+
+  it("clamps pagination and passes an unset status filter as null", async () => {
+    mocks.rpc.mockResolvedValue({ data: { total: 0, rows: [] }, error: null });
+    await expect(listSubscriptions({ offset: -2, limit: 999 })).resolves.toEqual({ rows: [], total: 0 });
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_list_subscriptions", { p_status: null, p_offset: 0, p_limit: 50 });
+  });
+
+  it("passes a status filter through to the subscriptions RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: { total: 1, rows: [{ id: 1, learnerId: "learner-1", learnerEmail: "ada@example.test", planId: "pro_monthly", status: "active", source: "manual", currentPeriodEnd: null, createdAt: "2026-09-17T00:00:00Z", canceledAt: null }] }, error: null });
+    await listSubscriptions({ status: "active" });
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_list_subscriptions", { p_status: "active", p_offset: 0, p_limit: 20 });
+  });
+
+  it("grants a subscription through a guarded RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: { id: 1, learnerId: "learner-1", planId: "pro_monthly", status: "active" }, error: null });
+    await expect(grantSubscription("ada@example.test", "pro_monthly")).resolves.toBeUndefined();
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_grant_subscription", { p_email: "ada@example.test", p_plan_id: "pro_monthly" });
+  });
+
+  it("surfaces an unknown-email grant failure distinctly", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: "learner_account_not_found" } });
+    await expect(grantSubscription("nobody@example.test", "pro_monthly")).rejects.toThrow("learner_account_not_found");
+  });
+
+  it("revokes a subscription through a guarded RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: { id: 1, status: "canceled" }, error: null });
+    await expect(revokeSubscription(1)).resolves.toBeUndefined();
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_revoke_subscription", { p_subscription_id: 1 });
+  });
+
+  it("surfaces a not-found revoke failure distinctly", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: "subscription_not_found" } });
+    await expect(revokeSubscription(999)).rejects.toThrow("subscription_not_found");
   });
 
   it("paginates the read-only audit log through a guarded RPC", async () => {

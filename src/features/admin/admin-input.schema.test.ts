@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  parseBillingGrant,
+  parseBillingRevoke,
   parseLearnerEdit,
   parseLessonMove,
   parseLessonPublication,
@@ -96,5 +98,32 @@ describe("support ticket status input", () => {
 
   it("rejects an unrecognized status", () => {
     expect(() => parseSupportTicketStatusChange({ ticketId: "7", status: "archived" })).toThrow();
+  });
+});
+
+describe("billing grant input", () => {
+  it("trims and lowercases the email, keeping the plan id as-is", () => {
+    expect(parseBillingGrant({ email: " Ada@Example.com ", planId: "pro_monthly" })).toEqual({
+      email: "ada@example.com", planId: "pro_monthly",
+    });
+  });
+
+  it("rejects a malformed email or an invalid plan id", () => {
+    expect(() => parseBillingGrant({ email: "not-an-email", planId: "pro_monthly" })).toThrow();
+    expect(() => parseBillingGrant({ email: "ada@example.com", planId: "Pro Monthly" })).toThrow();
+  });
+
+  it("rejects unrecognized fields", () => {
+    expect(() => parseBillingGrant({ email: "ada@example.com", planId: "pro_monthly", note: "hi" })).toThrow();
+  });
+});
+
+describe("billing revoke input", () => {
+  it("coerces the subscription id", () => {
+    expect(parseBillingRevoke({ subscriptionId: "42" })).toEqual({ subscriptionId: 42 });
+  });
+
+  it("rejects a non-positive subscription id", () => {
+    expect(() => parseBillingRevoke({ subscriptionId: "0" })).toThrow();
   });
 });
