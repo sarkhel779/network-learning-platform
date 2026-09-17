@@ -95,3 +95,27 @@ export type BillingRevokeInput = z.infer<typeof billingRevokeSchema>;
 export function parseBillingRevoke(value: unknown): BillingRevokeInput {
   return billingRevokeSchema.parse(value);
 }
+
+const featureFlagKeySchema = z.string().trim().toLowerCase().regex(/^[a-z][a-z0-9_]{1,49}$/);
+
+export const featureFlagUpsertSchema = z.object({
+  key: featureFlagKeySchema,
+  enabled: z.enum(["true", "false"]).transform((value) => value === "true"),
+  description: z.string().trim().max(200),
+}).strict();
+
+export type FeatureFlagUpsertInput = z.infer<typeof featureFlagUpsertSchema>;
+
+export function parseFeatureFlagUpsert(value: unknown): FeatureFlagUpsertInput {
+  return featureFlagUpsertSchema.parse(value);
+}
+
+export const featureFlagDeleteSchema = z.object({
+  key: featureFlagKeySchema,
+}).strict();
+
+export type FeatureFlagDeleteInput = z.infer<typeof featureFlagDeleteSchema>;
+
+export function parseFeatureFlagDelete(value: unknown): FeatureFlagDeleteInput {
+  return featureFlagDeleteSchema.parse(value);
+}

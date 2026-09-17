@@ -6,11 +6,13 @@ vi.mock("@/lib/supabase/server", () => ({ createServerSupabaseClient: mocks.crea
 
 import {
   assignStaffRole,
+  deleteFeatureFlag,
   getLearnerDetail,
   getSupportTicket,
   grantSubscription,
   listAudit,
   listBillingPlans,
+  listFeatureFlags,
   listLearners,
   listStaff,
   listSubscriptions,
@@ -23,6 +25,7 @@ import {
   setLessonPublished,
   setModuleLessonOrder,
   setSupportTicketStatus,
+  upsertFeatureFlag,
 } from "./admin.repository";
 
 beforeEach(() => {
@@ -220,5 +223,34 @@ describe("admin repository", () => {
     const result = await listAudit({ offset: 0, limit: 20 });
     expect(result.total).toBe(1);
     expect(mocks.rpc).toHaveBeenCalledWith("admin_list_audit", { p_offset: 0, p_limit: 20 });
+  });
+
+  it("lists feature flags through a guarded RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: [{ key: "new_lesson_ui", enabled: true, description: null, updatedAt: "2026-09-17T00:00:00Z" }], error: null });
+    const result = await listFeatureFlags();
+    expect(result).toHaveLength(1);
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_list_feature_flags");
+  });
+
+  it("upserts a feature flag through a guarded RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: { key: "new_lesson_ui", enabled: true, description: "Testing" }, error: null });
+    await expect(upsertFeatureFlag("new_lesson_ui", true, "Testing")).resolves.toBeUndefined();
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_upsert_feature_flag", { p_key: "new_lesson_ui", p_enabled: true, p_description: "Testing" });
+  });
+
+  it("surfaces an invalid-key upsert failure distinctly", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: "invalid_flag_key" } });
+    await expect(upsertFeatureFlag("Not Valid", true, null)).rejects.toThrow("invalid_flag_key");
+  });
+
+  it("deletes a feature flag through a guarded RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: null });
+    await expect(deleteFeatureFlag("new_lesson_ui")).resolves.toBeUndefined();
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_delete_feature_flag", { p_key: "new_lesson_ui" });
+  });
+
+  it("surfaces a not-found delete failure distinctly", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: "feature_flag_not_found" } });
+    await expect(deleteFeatureFlag("does_not_exist")).rejects.toThrow("feature_flag_not_found");
   });
 });

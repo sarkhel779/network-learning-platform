@@ -103,6 +103,13 @@ export type SubscriptionRow = {
   canceledAt: string | null;
 };
 
+export type FeatureFlag = {
+  key: string;
+  enabled: boolean;
+  description: string | null;
+  updatedAt: string;
+};
+
 export type AuditRow = {
   id: number;
   actorId: string;

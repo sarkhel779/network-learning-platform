@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import {
   parseBillingGrant,
   parseBillingRevoke,
+  parseFeatureFlagDelete,
+  parseFeatureFlagUpsert,
   parseLearnerEdit,
   parseLessonMove,
   parseLessonPublication,
@@ -125,5 +127,36 @@ describe("billing revoke input", () => {
 
   it("rejects a non-positive subscription id", () => {
     expect(() => parseBillingRevoke({ subscriptionId: "0" })).toThrow();
+  });
+});
+
+describe("feature flag upsert input", () => {
+  it("lowercases the key and coerces the enabled flag", () => {
+    expect(parseFeatureFlagUpsert({ key: "New_Lesson_UI", enabled: "true", description: " Testing " })).toEqual({
+      key: "new_lesson_ui", enabled: true, description: "Testing",
+    });
+  });
+
+  it("rejects a key that does not start with a lowercase letter or has invalid characters", () => {
+    expect(() => parseFeatureFlagUpsert({ key: "1_flag", enabled: "true", description: "" })).toThrow();
+    expect(() => parseFeatureFlagUpsert({ key: "not valid!", enabled: "true", description: "" })).toThrow();
+  });
+
+  it("rejects an over-length description", () => {
+    expect(() => parseFeatureFlagUpsert({ key: "flag", enabled: "true", description: "x".repeat(201) })).toThrow();
+  });
+
+  it("rejects unrecognized fields", () => {
+    expect(() => parseFeatureFlagUpsert({ key: "flag", enabled: "true", description: "", extra: "hi" })).toThrow();
+  });
+});
+
+describe("feature flag delete input", () => {
+  it("lowercases the key", () => {
+    expect(parseFeatureFlagDelete({ key: "New_Flag" })).toEqual({ key: "new_flag" });
+  });
+
+  it("rejects an invalid key", () => {
+    expect(() => parseFeatureFlagDelete({ key: "not valid!" })).toThrow();
   });
 });

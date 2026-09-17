@@ -6,6 +6,7 @@ import type {
   AdminOverview,
   AuditRow,
   BillingPlan,
+  FeatureFlag,
   LearnerDetail,
   LearnerRow,
   LessonPublicationUpdate,
@@ -197,4 +198,23 @@ export async function listAudit({ offset = 0, limit = 20 }: { offset?: number; l
   const total = countOrNull(result.total);
   if (total === null || !Array.isArray(result.rows)) throw new Error("Audit log unavailable");
   return { rows: result.rows as AuditRow[], total };
+}
+
+export async function listFeatureFlags(): Promise<FeatureFlag[]> {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.rpc("admin_list_feature_flags");
+  if (error || !Array.isArray(data)) throw new Error("Feature flags unavailable");
+  return data as FeatureFlag[];
+}
+
+export async function upsertFeatureFlag(key: string, enabled: boolean, description: string | null): Promise<void> {
+  const supabase = await createServerSupabaseClient();
+  const { error } = await supabase.rpc("admin_upsert_feature_flag", { p_key: key, p_enabled: enabled, p_description: description });
+  if (error) throw new Error(error.message === "invalid_flag_key" ? "invalid_flag_key" : "Feature flag could not be saved");
+}
+
+export async function deleteFeatureFlag(key: string): Promise<void> {
+  const supabase = await createServerSupabaseClient();
+  const { error } = await supabase.rpc("admin_delete_feature_flag", { p_key: key });
+  if (error) throw new Error(error.message === "feature_flag_not_found" ? "feature_flag_not_found" : "Feature flag could not be deleted");
 }
