@@ -48,6 +48,29 @@ export type ModuleLessonOrderUpdate = {
   lessonOrder: string[];
 };
 
+export type SupportTicketStatus = "open" | "in_progress" | "resolved";
+
+export type SupportTicketMessage = {
+  id: number;
+  isStaff: boolean;
+  body: string;
+  createdAt: string;
+};
+
+export type SupportTicketRow = {
+  id: number;
+  subject: string;
+  status: SupportTicketStatus;
+  learnerId: string;
+  learnerEmail: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SupportTicketDetail = SupportTicketRow & {
+  messages: SupportTicketMessage[];
+};
+
 export type AuditRow = {
   id: number;
   actorId: string;

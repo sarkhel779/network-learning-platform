@@ -11,6 +11,9 @@ import type {
   ModuleLessonOrderUpdate,
   StaffMember,
   StaffRole,
+  SupportTicketDetail,
+  SupportTicketRow,
+  SupportTicketStatus,
 } from "./admin.types";
 
 function countOrNull(data: unknown): number | null {
@@ -95,6 +98,42 @@ export async function setModuleLessonOrder(moduleId: string, lessonIds: string[]
   const { data, error } = await supabase.rpc("admin_set_module_lesson_order", { p_module_id: moduleId, p_lesson_ids: lessonIds });
   if (error || !data) throw new Error("Lesson order could not be updated");
   return data as ModuleLessonOrderUpdate;
+}
+
+type SupportTicketQuery = { status?: SupportTicketStatus; offset?: number; limit?: number };
+
+export async function listSupportTickets({ status, offset = 0, limit = 20 }: SupportTicketQuery = {}): Promise<{ rows: SupportTicketRow[]; total: number }> {
+  const p_offset = Math.max(0, Math.floor(offset || 0));
+  const p_limit = Math.min(50, Math.max(1, Math.floor(limit || 20)));
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.rpc("admin_list_support_tickets", { p_status: status ?? null, p_offset, p_limit });
+  if (error || !data || typeof data !== "object") throw new Error("Support queue unavailable");
+  const result = data as { total?: unknown; rows?: unknown };
+  const total = countOrNull(result.total);
+  if (total === null || !Array.isArray(result.rows)) throw new Error("Support queue unavailable");
+  return { rows: result.rows as SupportTicketRow[], total };
+}
+
+export async function getSupportTicket(ticketId: number): Promise<SupportTicketDetail | null> {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.rpc("admin_get_support_ticket", { p_ticket_id: ticketId });
+  if (error) {
+    if (error.message === "ticket_not_found") return null;
+    throw new Error("Support ticket unavailable");
+  }
+  return data as SupportTicketDetail;
+}
+
+export async function replySupportTicket(ticketId: number, body: string): Promise<void> {
+  const supabase = await createServerSupabaseClient();
+  const { error } = await supabase.rpc("admin_reply_support_ticket", { p_ticket_id: ticketId, p_body: body });
+  if (error) throw new Error(error.message === "ticket_not_found" ? "ticket_not_found" : "Reply could not be sent");
+}
+
+export async function setSupportTicketStatus(ticketId: number, status: SupportTicketStatus): Promise<void> {
+  const supabase = await createServerSupabaseClient();
+  const { error } = await supabase.rpc("admin_set_support_ticket_status", { p_ticket_id: ticketId, p_status: status });
+  if (error) throw new Error(error.message === "ticket_not_found" ? "ticket_not_found" : "Status could not be updated");
 }
 
 export async function listAudit({ offset = 0, limit = 20 }: { offset?: number; limit?: number } = {}): Promise<{ rows: AuditRow[]; total: number }> {

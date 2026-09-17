@@ -48,3 +48,27 @@ export type LessonMoveInput = z.infer<typeof lessonMoveSchema>;
 export function parseLessonMove(value: unknown): LessonMoveInput {
   return lessonMoveSchema.parse(value);
 }
+
+const ticketIdSchema = z.coerce.number().int().positive();
+
+export const supportTicketReplySchema = z.object({
+  ticketId: ticketIdSchema,
+  body: z.string().trim().min(1).max(4000),
+}).strict();
+
+export type SupportTicketReplyInput = z.infer<typeof supportTicketReplySchema>;
+
+export function parseSupportTicketReply(value: unknown): SupportTicketReplyInput {
+  return supportTicketReplySchema.parse(value);
+}
+
+export const supportTicketStatusSchema = z.object({
+  ticketId: ticketIdSchema,
+  status: z.enum(["open", "in_progress", "resolved"]),
+}).strict();
+
+export type SupportTicketStatusInput = z.infer<typeof supportTicketStatusSchema>;
+
+export function parseSupportTicketStatusChange(value: unknown): SupportTicketStatusInput {
+  return supportTicketStatusSchema.parse(value);
+}

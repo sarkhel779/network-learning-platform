@@ -40,6 +40,7 @@ describe("dashboard page", () => {
     expect(screen.getByRole("progressbar", { name: "Pathway completion" })).toHaveValue(25);
     expect(screen.getByRole("button", { name: "Sign out" })).toBeVisible();
     expect(mocks.loadMyLearning).toHaveBeenCalledWith("learner-1", expect.objectContaining({ slug: "networking-foundations" }));
+    expect(screen.getByRole("link", { name: "Contact support" })).toHaveAttribute("href", "/support");
   });
 
   it("reports a progress-loading failure without hiding the account", async () => {

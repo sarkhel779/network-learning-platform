@@ -15,9 +15,15 @@ describe("sign-in page", () => {
     expect(screen.getByRole("link", { name: "Back to dashboard" })).toHaveAttribute("href", "/dashboard");
   });
 
+  it("labels the support return destination clearly", async () => {
+    render(await SignInPage({ searchParams: Promise.resolve({ returnTo: "/support" }) }));
+    expect(screen.getByRole("link", { name: "Back to support" })).toHaveAttribute("href", "/support");
+  });
+
   it.each([
     "/",
     "/dashboard",
+    "/support",
     "/paths/networking-foundations",
     "/learn/networking-foundations/how-networks-communicate",
     "/learn/networking-foundations/hosts-and-network-devices",
@@ -30,7 +36,7 @@ describe("sign-in page", () => {
   it.each([
     undefined, "", "https://example.com", "//example.com", "/\\example.com",
     "javascript:alert(1)", "%2F%2Fexample.com", "/learn/../sign-in",
-    "/learn/networking-foundations/not-a-lesson", "/admin",
+    "/learn/networking-foundations/not-a-lesson", "/admin", "/support/1",
     "/learn/networking-foundations/how-networks-communicate?next=https://example.com",
     "/learn/networking-foundations/how-networks-communicate#answers",
     " /learn/networking-foundations/how-networks-communicate",

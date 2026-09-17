@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { parseLearnerEdit, parseLessonMove, parseLessonPublication, parseStaffAssignment } from "./admin-input.schema";
+import {
+  parseLearnerEdit,
+  parseLessonMove,
+  parseLessonPublication,
+  parseStaffAssignment,
+  parseSupportTicketReply,
+  parseSupportTicketStatusChange,
+} from "./admin-input.schema";
 
 describe("learner edit input", () => {
   it("trims permitted profile fields and optional notes", () => {
@@ -66,5 +73,28 @@ describe("lesson move input", () => {
   it("rejects an unrecognized direction or malformed ids", () => {
     expect(() => parseLessonMove({ moduleId: "module_a", lessonId: "lesson_a", direction: "sideways" })).toThrow();
     expect(() => parseLessonMove({ moduleId: "lesson_a", lessonId: "lesson_a", direction: "up" })).toThrow();
+  });
+});
+
+describe("support ticket reply input", () => {
+  it("coerces the ticket id and trims the reply body", () => {
+    expect(parseSupportTicketReply({ ticketId: "42", body: " We are looking into this. " })).toEqual({
+      ticketId: 42, body: "We are looking into this.",
+    });
+  });
+
+  it("rejects a non-positive ticket id or an empty body", () => {
+    expect(() => parseSupportTicketReply({ ticketId: "0", body: "Hello" })).toThrow();
+    expect(() => parseSupportTicketReply({ ticketId: "1", body: "   " })).toThrow();
+  });
+});
+
+describe("support ticket status input", () => {
+  it("accepts a recognized status", () => {
+    expect(parseSupportTicketStatusChange({ ticketId: "7", status: "resolved" })).toEqual({ ticketId: 7, status: "resolved" });
+  });
+
+  it("rejects an unrecognized status", () => {
+    expect(() => parseSupportTicketStatusChange({ ticketId: "7", status: "archived" })).toThrow();
   });
 });

@@ -36,5 +36,6 @@ export default async function DashboardPage() {
       <MyLearning model={learning.model} unavailable={learning.unavailable} />
     </section>
     <Link href="/paths/networking-foundations">Browse Networking Foundations</Link>
+    <Link href="/support">Contact support</Link>
   </main>;
 }
