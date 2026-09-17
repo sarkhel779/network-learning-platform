@@ -183,10 +183,12 @@ begin
   if public.record_page_view('00000000-0000-4000-8000-000000000202', '/labs', 'ci-only-ingest-token-with-32-chars-minimum', '00000000-0000-4000-8000-000000000304') <> 'rate_limited' then
     raise exception 'rate window did not cap ingestion';
   end if;
-  perform public.admin_staff_role();
-  raise exception 'anonymous role lookup was unexpectedly executable';
-exception
-  when insufficient_privilege then null;
+  begin
+    perform public.admin_staff_role();
+    raise exception 'anonymous role lookup was unexpectedly executable';
+  exception
+    when insufficient_privilege then null;
+  end;
 end $$;
 
 reset role;
