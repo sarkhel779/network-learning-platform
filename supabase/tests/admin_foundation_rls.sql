@@ -196,11 +196,13 @@ do $$
 declare
   v_unique bigint;
 begin
-  v_unique := public.admin_unique_visitor_count(now() - interval '1 day', now());
+  -- now() is frozen at transaction start in Postgres, identical to the just-inserted
+  -- rows' created_at default; nudge the exclusive upper bound past it to include them.
+  v_unique := public.admin_unique_visitor_count(now() - interval '1 day', now() + interval '1 minute');
   if v_unique <> 3 then
     raise exception 'unique visitor count did not deduplicate repeat visits, got %', v_unique;
   end if;
-  if public.admin_page_view_count(now() - interval '1 day', now()) <= v_unique then
+  if public.admin_page_view_count(now() - interval '1 day', now() + interval '1 minute') <= v_unique then
     raise exception 'raw page view count should exceed the deduplicated visitor count';
   end if;
 end $$;
