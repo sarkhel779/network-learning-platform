@@ -2,7 +2,7 @@ import "server-only";
 
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-import type { AdminOverview, AuditRow, LearnerDetail, LearnerRow } from "./admin.types";
+import type { AdminOverview, AuditRow, LearnerDetail, LearnerRow, StaffMember, StaffRole } from "./admin.types";
 
 function countOrNull(data: unknown): number | null {
   const value = typeof data === "number" ? data : typeof data === "string" ? Number(data) : NaN;
@@ -52,6 +52,26 @@ export async function getLearnerDetail(targetId: string): Promise<LearnerDetail 
   const { data, error } = await supabase.rpc("admin_get_learner", { p_target_id: targetId });
   if (error) throw new Error("Learner detail unavailable");
   return data ? data as LearnerDetail : null;
+}
+
+export async function listStaff(): Promise<StaffMember[]> {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.rpc("admin_list_staff");
+  if (error || !Array.isArray(data)) throw new Error("Staff directory unavailable");
+  return data as StaffMember[];
+}
+
+export async function assignStaffRole(email: string, role: StaffRole): Promise<StaffMember> {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.rpc("admin_assign_staff_role", { p_email: email, p_role: role });
+  if (error || !data) throw new Error(error?.message === "staff_account_not_found" ? "staff_account_not_found" : "Staff role could not be assigned");
+  return data as StaffMember;
+}
+
+export async function revokeStaffRole(userId: string): Promise<void> {
+  const supabase = await createServerSupabaseClient();
+  const { error } = await supabase.rpc("admin_revoke_staff_role", { p_user_id: userId });
+  if (error) throw new Error(error.message === "cannot_revoke_self" ? "cannot_revoke_self" : "Staff role could not be revoked");
 }
 
 export async function listAudit({ offset = 0, limit = 20 }: { offset?: number; limit?: number } = {}): Promise<{ rows: AuditRow[]; total: number }> {

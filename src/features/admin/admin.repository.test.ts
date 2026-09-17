@@ -4,7 +4,7 @@ const mocks = vi.hoisted(() => ({ createServerSupabaseClient: vi.fn(), rpc: vi.f
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/supabase/server", () => ({ createServerSupabaseClient: mocks.createServerSupabaseClient }));
 
-import { getLearnerDetail, listAudit, listLearners, loadAdminOverview } from "./admin.repository";
+import { assignStaffRole, getLearnerDetail, listAudit, listLearners, listStaff, loadAdminOverview, revokeStaffRole } from "./admin.repository";
 
 beforeEach(() => {
   mocks.rpc.mockReset();
@@ -43,6 +43,36 @@ describe("admin repository", () => {
     mocks.rpc.mockResolvedValue({ data: learner, error: null });
     await expect(getLearnerDetail(learner.id)).resolves.toEqual(learner);
     expect(mocks.rpc).toHaveBeenCalledWith("admin_get_learner", { p_target_id: learner.id });
+  });
+
+  it("loads the staff directory through a guarded RPC", async () => {
+    const staff = [{ userId: "00000000-0000-4000-8000-000000000301", email: "staff@example.test", role: "support_agent", assignedBy: null, createdAt: "2026-09-17T00:00:00Z" }];
+    mocks.rpc.mockResolvedValue({ data: staff, error: null });
+    await expect(listStaff()).resolves.toEqual(staff);
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_list_staff");
+  });
+
+  it("assigns a staff role through a guarded RPC", async () => {
+    const member = { userId: "00000000-0000-4000-8000-000000000303", email: "new@example.test", role: "content_editor" };
+    mocks.rpc.mockResolvedValue({ data: member, error: null });
+    await expect(assignStaffRole("new@example.test", "content_editor")).resolves.toEqual(member);
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_assign_staff_role", { p_email: "new@example.test", p_role: "content_editor" });
+  });
+
+  it("surfaces an unknown-email assignment failure distinctly", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: "staff_account_not_found" } });
+    await expect(assignStaffRole("nobody@example.test", "finance")).rejects.toThrow("staff_account_not_found");
+  });
+
+  it("revokes a staff role through a guarded RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: null });
+    await expect(revokeStaffRole("00000000-0000-4000-8000-000000000301")).resolves.toBeUndefined();
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_revoke_staff_role", { p_user_id: "00000000-0000-4000-8000-000000000301" });
+  });
+
+  it("surfaces a self-revocation failure distinctly", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: "cannot_revoke_self" } });
+    await expect(revokeStaffRole("00000000-0000-4000-8000-000000000301")).rejects.toThrow("cannot_revoke_self");
   });
 
   it("paginates the read-only audit log through a guarded RPC", async () => {

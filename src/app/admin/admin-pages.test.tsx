@@ -7,7 +7,6 @@ vi.mock("@/features/admin/admin-access", () => ({ requireStaff: mocks.requireSta
 import CoursesPage from "./courses/page";
 import BillingPage from "./billing/page";
 import SupportPage from "./support/page";
-import RolesPage from "./roles/page";
 import SettingsPage from "./settings/page";
 
 describe("admin integration pages", () => {
@@ -15,7 +14,6 @@ describe("admin integration pages", () => {
     ["Courses and labs", "courses", CoursesPage],
     ["Billing", "billing", BillingPage],
     ["Support", "support", SupportPage],
-    ["Roles", "roles", RolesPage],
     ["Settings", "settings", SettingsPage],
   ] as const)("gates %s and does not pretend it is connected", async (title, permission, Page) => {
     mocks.requireStaff.mockResolvedValue({ viewer: { id: "staff" }, role: "super_admin" });
