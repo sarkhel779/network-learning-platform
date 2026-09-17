@@ -1557,8 +1557,7 @@ a,a:hover,a:focus-visible,a *,a:hover *{text-decoration:none!important}
 body:has(.admin-shell) .site-header,body:has(.admin-shell) .site-footer{display:none}
 .admin-shell{display:grid;grid-template-columns:15rem minmax(0,1fr);min-height:100dvh;background:#0b111c;color:#f5f8fc}
 .admin-sidebar{position:sticky;top:0;align-self:start;display:flex;flex-direction:column;gap:2rem;height:100dvh;padding:1.2rem .9rem;border-right:1px solid #28364a;background:#101722}
-.admin-brand{display:flex;align-items:center;gap:.7rem;padding:.3rem;color:#f5f8fc;font-weight:900;text-decoration:none}
-.admin-brand__mark{display:grid;place-items:center;width:2rem;height:2rem;border-radius:.55rem;background:#123b36;color:#39e0b7;font-size:1.3rem}
+.admin-brand{padding:.3rem}
 .admin-nav-group{display:grid;gap:.2rem;margin-bottom:2rem}
 .admin-nav-group>p{margin:0 0 .4rem;padding:0 .35rem;color:#8192ab;font-size:.72rem;letter-spacing:.12em}
 .admin-nav-group a{display:flex;align-items:center;gap:.65rem;min-height:2.45rem;padding:.55rem .65rem;border-radius:.6rem;color:#aab9d1;text-decoration:none;font-size:.88rem;font-weight:650;transition:color 150ms ease,background-color 150ms ease}

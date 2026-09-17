@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HeaderSearch, type HeaderSearchLesson } from "./header-search";
+import { SiteLogoMark } from "./site-logo";
 import { ThemeToggle } from "./theme-toggle";
 
 export function SiteHeader({ lessons = [], signedIn = false }: { lessons?: HeaderSearchLesson[]; signedIn?: boolean }) {
@@ -29,24 +30,7 @@ export function SiteHeader({ lessons = [], signedIn = false }: { lessons?: Heade
       <a className="skip-link" href="#main-content">Skip to content</a>
       <div className="site-chrome">
         <Link className="site-logo" href="/" aria-label="Packetsecrets">
-          <svg className="site-logo__mark-svg" viewBox="0 0 200 200" aria-hidden="true">
-            <defs>
-              <linearGradient id="siteLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="var(--logo-grad-start, var(--accent))" />
-                <stop offset="100%" stopColor="var(--accent)" />
-              </linearGradient>
-            </defs>
-            <g transform="rotate(-4 100 100)">
-              <rect className="site-logo__badge-fill" x="6" y="6" width="188" height="188" rx="45" />
-              <rect className="site-logo__badge-outline" x="6" y="6" width="188" height="188" rx="45" />
-              <line className="site-logo__conn" x1="68" y1="100" x2="143" y2="100" />
-              <line className="site-logo__branch" x1="143" y1="100" x2="141.93" y2="75.98" />
-              <line className="site-logo__branch" x1="143" y1="100" x2="141.93" y2="124.02" />
-              <circle className="site-logo__dot site-logo__dot--a" cx="56" cy="100" r="21" />
-              <circle className="site-logo__dot site-logo__dot--b" cx="141" cy="55" r="21" />
-              <circle className="site-logo__dot site-logo__dot--c" cx="141" cy="145" r="21" />
-            </g>
-          </svg>
+          <SiteLogoMark />
           <span className="site-logo__wordmark"><span className="site-logo__packet">Packet</span><span className="site-logo__secrets">secrets</span></span>
         </Link>
         <button
