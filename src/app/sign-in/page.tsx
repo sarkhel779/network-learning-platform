@@ -17,6 +17,8 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
     ? "Back to your lesson"
     : returnTo === "/dashboard"
       ? "Back to dashboard"
+      : returnTo === "/support"
+      ? "Back to support"
       : returnTo.startsWith("/paths/")
       ? "Back to your pathway"
       : "Back to Packetsecrets";

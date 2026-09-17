@@ -4,7 +4,21 @@ const mocks = vi.hoisted(() => ({ createServerSupabaseClient: vi.fn(), rpc: vi.f
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/supabase/server", () => ({ createServerSupabaseClient: mocks.createServerSupabaseClient }));
 
-import { assignStaffRole, getLearnerDetail, listAudit, listLearners, listStaff, loadAdminOverview, revokeStaffRole } from "./admin.repository";
+import {
+  assignStaffRole,
+  getLearnerDetail,
+  getSupportTicket,
+  listAudit,
+  listLearners,
+  listStaff,
+  listSupportTickets,
+  loadAdminOverview,
+  replySupportTicket,
+  revokeStaffRole,
+  setLessonPublished,
+  setModuleLessonOrder,
+  setSupportTicketStatus,
+} from "./admin.repository";
 
 beforeEach(() => {
   mocks.rpc.mockReset();
@@ -73,6 +87,78 @@ describe("admin repository", () => {
   it("surfaces a self-revocation failure distinctly", async () => {
     mocks.rpc.mockResolvedValue({ data: null, error: { message: "cannot_revoke_self" } });
     await expect(revokeStaffRole("00000000-0000-4000-8000-000000000301")).rejects.toThrow("cannot_revoke_self");
+  });
+
+  it("updates a lesson's publication state through a guarded RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: { lessonId: "lesson_how_networks_communicate", published: false }, error: null });
+    await expect(setLessonPublished("lesson_how_networks_communicate", false)).resolves.toEqual({
+      lessonId: "lesson_how_networks_communicate", published: false,
+    });
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_set_lesson_published", { p_lesson_id: "lesson_how_networks_communicate", p_published: false });
+  });
+
+  it("surfaces a lesson publication failure", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: "invalid_lesson_id" } });
+    await expect(setLessonPublished("lesson_missing", true)).rejects.toThrow("Lesson publication could not be updated");
+  });
+
+  it("updates a module's lesson order through a guarded RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: { moduleId: "module_network_and_device_essentials", lessonOrder: ["lesson_b", "lesson_a"] }, error: null });
+    await expect(setModuleLessonOrder("module_network_and_device_essentials", ["lesson_b", "lesson_a"])).resolves.toEqual({
+      moduleId: "module_network_and_device_essentials", lessonOrder: ["lesson_b", "lesson_a"],
+    });
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_set_module_lesson_order", { p_module_id: "module_network_and_device_essentials", p_lesson_ids: ["lesson_b", "lesson_a"] });
+  });
+
+  it("surfaces a lesson order failure", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: "duplicate_lesson_in_order" } });
+    await expect(setModuleLessonOrder("module_network_and_device_essentials", ["lesson_a", "lesson_a"])).rejects.toThrow("Lesson order could not be updated");
+  });
+
+  it("clamps pagination and passes an unset status filter as null", async () => {
+    mocks.rpc.mockResolvedValue({ data: { total: 0, rows: [] }, error: null });
+    await expect(listSupportTickets({ offset: -2, limit: 999 })).resolves.toEqual({ rows: [], total: 0 });
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_list_support_tickets", { p_status: null, p_offset: 0, p_limit: 50 });
+  });
+
+  it("passes a status filter through to the queue RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: { total: 1, rows: [{ id: 1, subject: "Login issue", status: "open", learnerId: "learner-1", learnerEmail: "learner@example.test", createdAt: "2026-09-17T00:00:00Z", updatedAt: "2026-09-17T00:00:00Z" }] }, error: null });
+    await listSupportTickets({ status: "open" });
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_list_support_tickets", { p_status: "open", p_offset: 0, p_limit: 20 });
+  });
+
+  it("loads one support ticket with its full thread through a guarded RPC", async () => {
+    const ticket = { id: 1, subject: "Login issue", status: "open", learnerId: "learner-1", learnerEmail: "learner@example.test", createdAt: "2026-09-17T00:00:00Z", updatedAt: "2026-09-17T00:00:00Z", messages: [] };
+    mocks.rpc.mockResolvedValue({ data: ticket, error: null });
+    await expect(getSupportTicket(1)).resolves.toEqual(ticket);
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_get_support_ticket", { p_ticket_id: 1 });
+  });
+
+  it("returns null for a missing support ticket instead of throwing", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: "ticket_not_found" } });
+    await expect(getSupportTicket(999)).resolves.toBeNull();
+  });
+
+  it("replies to a support ticket through a guarded RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: { ticketId: 1 }, error: null });
+    await expect(replySupportTicket(1, "We are looking into this.")).resolves.toBeUndefined();
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_reply_support_ticket", { p_ticket_id: 1, p_body: "We are looking into this." });
+  });
+
+  it("surfaces a support ticket reply failure", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: "ticket_not_found" } });
+    await expect(replySupportTicket(999, "Hello")).rejects.toThrow("ticket_not_found");
+  });
+
+  it("changes a support ticket's status through a guarded RPC", async () => {
+    mocks.rpc.mockResolvedValue({ data: { id: 1, status: "resolved" }, error: null });
+    await expect(setSupportTicketStatus(1, "resolved")).resolves.toBeUndefined();
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_set_support_ticket_status", { p_ticket_id: 1, p_status: "resolved" });
+  });
+
+  it("surfaces a support ticket status failure", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: "ticket_not_found" } });
+    await expect(setSupportTicketStatus(999, "resolved")).rejects.toThrow("ticket_not_found");
   });
 
   it("paginates the read-only audit log through a guarded RPC", async () => {

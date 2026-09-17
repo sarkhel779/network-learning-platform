@@ -6,6 +6,7 @@ describe("safeReturnPath", () => {
   it.each([
     "/",
     "/dashboard",
+    "/support",
     "/paths/networking-foundations",
     "/learn/networking-foundations/vlans-access-ports-and-trunks",
   ])("allows the known public destination %s", (path) => {
@@ -30,6 +31,7 @@ describe("safeReturnPath", () => {
     "/\\attacker.example",
     "javascript:alert(1)",
     "/learn/networking-foundations/not-a-lesson",
+    "/support/1",
     "/learn/networking-foundations/vlans-access-ports-and-trunks#private",
     ["/", "https://attacker.example"],
   ])("falls back to home for an unsafe destination", (path) => {
