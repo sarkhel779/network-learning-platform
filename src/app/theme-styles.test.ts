@@ -10,7 +10,8 @@ describe("system theme and table styles", () => {
     expect(root).toMatch(/--background:\s*#0b111c\s*;/);
     expect(root).toMatch(/--foreground:\s*#f5f8fc\s*;/);
     expect(root).toMatch(/--accent:\s*#23d6a8\s*;/);
-    expect(css).toMatch(/\.site-logo__wordmark\s*\{[^}]*color:\s*var\(--foreground\)/);
+    expect(css).toMatch(/\.site-logo__packet\s*\{[^}]*color:\s*#fff/);
+    expect(css).toMatch(/\.site-logo__secrets\s*\{[^}]*color:\s*#23d6a8/);
   });
   it("keeps the landing glow static and unable to intercept clicks", () => {
     expect(css).toMatch(/\.home-refresh::before\s*\{[^}]*radial-gradient\([^}]*pointer-events:\s*none/);

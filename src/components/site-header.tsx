@@ -36,12 +36,18 @@ export function SiteHeader({ lessons = [], signedIn = false }: { lessons?: Heade
                 <stop offset="100%" stopColor="var(--accent)" />
               </linearGradient>
             </defs>
-            <rect className="site-logo__badge-fill" x="6" y="6" width="188" height="188" rx="45" />
-            <rect className="site-logo__badge-outline" x="6" y="6" width="188" height="188" rx="45" />
-            <circle className="site-logo__ring" cx="103" cy="103" r="52" />
-            <circle className="site-logo__ring-dot" cx="72" cy="72" r="17" />
+            <g transform="rotate(-4 100 100)">
+              <rect className="site-logo__badge-fill" x="6" y="6" width="188" height="188" rx="45" />
+              <rect className="site-logo__badge-outline" x="6" y="6" width="188" height="188" rx="45" />
+              <line className="site-logo__conn" x1="68" y1="100" x2="143" y2="100" />
+              <line className="site-logo__branch" x1="143" y1="100" x2="141.93" y2="75.98" />
+              <line className="site-logo__branch" x1="143" y1="100" x2="141.93" y2="124.02" />
+              <circle className="site-logo__dot site-logo__dot--a" cx="56" cy="100" r="21" />
+              <circle className="site-logo__dot site-logo__dot--b" cx="141" cy="55" r="21" />
+              <circle className="site-logo__dot site-logo__dot--c" cx="141" cy="145" r="21" />
+            </g>
           </svg>
-          <span className="site-logo__wordmark">Packetsecrets</span>
+          <span className="site-logo__wordmark"><span className="site-logo__packet">Packet</span><span className="site-logo__secrets">secrets</span></span>
         </Link>
         <button
           type="button"
