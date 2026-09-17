@@ -175,11 +175,39 @@ begin
   if public.record_page_view('00000000-0000-4000-8000-000000000206', '/pricing', 'ci-only-ingest-token-with-32-chars-minimum', '00000000-0000-4000-8000-000000000302') <> 'recorded' then
     raise exception 'a new visitor was not recorded';
   end if;
-  for i in 1..117 loop
+  for i in 1..115 loop
     if public.record_page_view(pg_catalog.md5(i::text)::uuid, '/labs', 'ci-only-ingest-token-with-32-chars-minimum', '00000000-0000-4000-8000-000000000303') <> 'recorded' then
       raise exception 'rate window closed before 120 views';
     end if;
   end loop;
+end $$;
+
+reset role;
+set local role authenticated;
+set local request.jwt.claim.sub = '00000000-0000-4000-8000-000000000102';
+do $$
+begin
+  if public.record_page_view('00000000-0000-4000-8000-000000000210', '/pricing', 'ci-only-ingest-token-with-32-chars-minimum', '00000000-0000-4000-8000-000000000401') <> 'recorded' then
+    raise exception 'signed-in visit via visitor cookie A was not recorded';
+  end if;
+  if public.record_page_view('00000000-0000-4000-8000-000000000211', '/pricing', 'ci-only-ingest-token-with-32-chars-minimum', '00000000-0000-4000-8000-000000000402') <> 'recorded' then
+    raise exception 'signed-in visit via a different visitor cookie was not recorded';
+  end if;
+end $$;
+
+reset role;
+do $$
+begin
+  if (select account_id from public.page_views where event_id = '00000000-0000-4000-8000-000000000210') <> '00000000-0000-4000-8000-000000000102' then
+    raise exception 'signed-in page view was not tagged with the caller account id';
+  end if;
+end $$;
+
+reset role;
+set local role anon;
+set local request.jwt.claim.sub = '';
+do $$
+begin
   if public.record_page_view('00000000-0000-4000-8000-000000000202', '/labs', 'ci-only-ingest-token-with-32-chars-minimum', '00000000-0000-4000-8000-000000000304') <> 'rate_limited' then
     raise exception 'rate window did not cap ingestion';
   end if;
@@ -200,9 +228,11 @@ declare
 begin
   -- now() is frozen at transaction start in Postgres, identical to the just-inserted
   -- rows' created_at default; nudge the exclusive upper bound past it to include them.
+  -- Account 102 recorded two page views under two different visitor cookies (401, 402),
+  -- simulating the same signed-in person switching browsers; it must still count as one.
   v_unique := public.admin_unique_visitor_count(now() - interval '1 day', now() + interval '1 minute');
-  if v_unique <> 3 then
-    raise exception 'unique visitor count did not deduplicate repeat visits, got %', v_unique;
+  if v_unique <> 4 then
+    raise exception 'unique visitor count did not deduplicate by account and cookie, got %', v_unique;
   end if;
   if public.admin_page_view_count(now() - interval '1 day', now() + interval '1 minute') <= v_unique then
     raise exception 'raw page view count should exceed the deduplicated visitor count';

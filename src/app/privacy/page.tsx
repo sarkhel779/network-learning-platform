@@ -28,13 +28,16 @@ export default function PrivacyPage() {
       <p>
         Packetsecrets counts total page views and unique visitors using a first-party request when a
         public page is opened. The page-view record contains a page path, timestamp, and random retry
-        identifier. It does not store an IP address, account ID, full query string, or browser
-        fingerprint in that record. To tell a repeat visit apart from a new visitor, Packetsecrets sets
-        a random, anonymous identifier in a first-party cookie that lasts up to 400 days; it is not
-        linked to your account and is not used anywhere else on the site. Total page views counts every
-        visit, including repeats; unique visitors approximates the number of distinct people and resets
-        if you clear cookies, switch browsers, or block cookies. Both counts start when each feature is
-        deployed; blocking scripts, bot traffic, and rate limiting may affect them.
+        identifier. It does not store an IP address, full query string, or browser fingerprint in that
+        record. To tell a repeat visit apart from a new visitor, Packetsecrets sets a random, anonymous
+        identifier in a first-party cookie that lasts up to 400 days; this cookie identifier is not used
+        anywhere else on the site. If you are signed in when a page view is recorded, the record is also
+        tagged with your account ID so that visits from different browsers or devices while signed in are
+        counted as a single visitor instead of several; signed-out visits are still only deduplicated by
+        the cookie. Total page views counts every visit, including repeats; unique visitors approximates
+        the number of distinct people and undercounts a signed-out visitor who clears cookies, switches
+        browsers, or blocks cookies. Both counts start when each feature is deployed; blocking scripts,
+        bot traffic, and rate limiting may affect them.
       </p>
       <p>
         Packetsecrets does not collect payments at this stage. Billing information will be added
