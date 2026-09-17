@@ -10,20 +10,22 @@ import AdminOverviewPage from "./page";
 describe("admin overview", () => {
   it("shows live zero separately from an unavailable waitlist metric", async () => {
     mocks.requireStaff.mockResolvedValueOnce({ viewer: { id: "admin-1" }, role: "super_admin" });
-    mocks.loadAdminOverview.mockResolvedValueOnce({ accounts: 0, joinedWaitlist: null, pageViews: 12 });
+    mocks.loadAdminOverview.mockResolvedValueOnce({ accounts: 0, joinedWaitlist: null, pageViews: 12, uniqueVisitors: 9 });
     const html = renderToStaticMarkup(await AdminOverviewPage({ searchParams: Promise.resolve({}) }));
     expect(mocks.requireStaff).toHaveBeenCalledWith("overview");
     expect(html).toContain("Registered accounts");
     expect(html).toContain("Founding Pro waitlist");
     expect(html).toContain("Total page views");
+    expect(html).toContain("Unique visitors");
     expect(html).toContain("Unavailable");
     expect(html).toContain("12");
+    expect(html).toContain("9");
     expect(mocks.loadAdminOverview).toHaveBeenCalledWith(30);
   });
 
   it("links the account and waitlist metrics to their dedicated admin pages", async () => {
     mocks.requireStaff.mockResolvedValueOnce({ viewer: { id: "admin-1" }, role: "super_admin" });
-    mocks.loadAdminOverview.mockResolvedValueOnce({ accounts: 10, joinedWaitlist: 1, pageViews: 12 });
+    mocks.loadAdminOverview.mockResolvedValueOnce({ accounts: 10, joinedWaitlist: 1, pageViews: 12, uniqueVisitors: 9 });
     const html = renderToStaticMarkup(await AdminOverviewPage({ searchParams: Promise.resolve({}) }));
     const parsed = new DOMParser().parseFromString(html, "text/html");
     const usersLinks = Array.from(parsed.querySelectorAll('a[href="/admin/users"]'));

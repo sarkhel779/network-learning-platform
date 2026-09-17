@@ -22,7 +22,7 @@ export function PageViewRecorder() {
           const response = await fetch("/api/page-view", {
             method: "POST",
             headers: { "content-type": "application/json" },
-            credentials: "omit",
+            credentials: "same-origin",
             keepalive: true,
             body: JSON.stringify({ path: pathname, eventId }),
           });

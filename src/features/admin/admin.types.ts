@@ -37,6 +37,7 @@ export type AdminOverview = {
   accounts: number | null;
   joinedWaitlist: number | null;
   pageViews: number | null;
+  uniqueVisitors: number | null;
 };
 
 export type StaffMember = {

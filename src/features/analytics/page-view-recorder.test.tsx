@@ -20,6 +20,7 @@ describe("PageViewRecorder", () => {
     expect(body.path).toBe("/pricing");
     expect(body.eventId).toMatch(/^[0-9a-f-]{36}$/);
     expect(Object.keys(body).sort()).toEqual(["eventId", "path"]);
+    expect(options?.credentials).toBe("same-origin");
   });
 
   it("never records an admin path", async () => {
