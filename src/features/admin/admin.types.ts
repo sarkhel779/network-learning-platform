@@ -20,6 +20,15 @@ export type LearnerRow = {
   waitlistStatus: "joined" | "unsubscribed" | null;
 };
 
+export type WaitlistMember = {
+  userId: string;
+  email: string;
+  displayName: string | null;
+  sourceLessonSlug: string | null;
+  consentedAt: string;
+  createdAt: string;
+};
+
 export type LearnerDetail = LearnerRow & {
   notes: { id: number; body: string; createdAt: string; authorId: string }[];
 };
@@ -69,6 +78,28 @@ export type SupportTicketRow = {
 
 export type SupportTicketDetail = SupportTicketRow & {
   messages: SupportTicketMessage[];
+};
+
+export type BillingPlan = {
+  id: string;
+  name: string;
+  billingInterval: "monthly" | "annual";
+  priceCents: number | null;
+  currency: string;
+};
+
+export type SubscriptionStatus = "active" | "canceled";
+
+export type SubscriptionRow = {
+  id: number;
+  learnerId: string;
+  learnerEmail: string;
+  planId: string;
+  status: SubscriptionStatus;
+  source: "manual" | "gateway";
+  currentPeriodEnd: string | null;
+  createdAt: string;
+  canceledAt: string | null;
 };
 
 export type AuditRow = {

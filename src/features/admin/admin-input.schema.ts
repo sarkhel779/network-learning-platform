@@ -72,3 +72,26 @@ export type SupportTicketStatusInput = z.infer<typeof supportTicketStatusSchema>
 export function parseSupportTicketStatusChange(value: unknown): SupportTicketStatusInput {
   return supportTicketStatusSchema.parse(value);
 }
+
+const planIdSchema = z.string().trim().regex(/^[a-z0-9_]+$/);
+
+export const billingGrantSchema = z.object({
+  email: z.string().trim().toLowerCase().email().max(254),
+  planId: planIdSchema,
+}).strict();
+
+export type BillingGrantInput = z.infer<typeof billingGrantSchema>;
+
+export function parseBillingGrant(value: unknown): BillingGrantInput {
+  return billingGrantSchema.parse(value);
+}
+
+export const billingRevokeSchema = z.object({
+  subscriptionId: z.coerce.number().int().positive(),
+}).strict();
+
+export type BillingRevokeInput = z.infer<typeof billingRevokeSchema>;
+
+export function parseBillingRevoke(value: unknown): BillingRevokeInput {
+  return billingRevokeSchema.parse(value);
+}
