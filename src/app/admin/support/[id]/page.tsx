@@ -9,6 +9,7 @@ import { SupportTicketPanel } from "@/features/admin/support-ticket-panel";
 type Props = { params: Promise<{ id: string }> };
 
 const statusLabels = { open: "Open", in_progress: "In progress", resolved: "Resolved" } as const;
+const statusBadgeClass = { open: "admin-badge--warning", in_progress: "admin-badge--info", resolved: "admin-badge--success" } as const;
 
 export default async function SupportTicketDetailPage({ params }: Props) {
   await requireStaff("support");
@@ -26,7 +27,7 @@ export default async function SupportTicketDetailPage({ params }: Props) {
 
   return <main className="admin-page" id="main-content">
     <Link href="/admin/support">← All tickets</Link>
-    <header className="admin-page__header"><div><p className="eyebrow">Support ticket</p><h1>{ticket.subject}</h1><p>{ticket.learnerEmail}</p></div><span>{statusLabels[ticket.status]}</span></header>
+    <header className="admin-page__header"><div><p className="eyebrow">Support ticket</p><h1>{ticket.subject}</h1><p>{ticket.learnerEmail}</p></div><span className={`admin-badge ${statusBadgeClass[ticket.status]}`}>{statusLabels[ticket.status]}</span></header>
     <div className="admin-detail-grid">
       <SupportTicketPanel ticketId={ticket.id} status={ticket.status} />
       <section className="admin-panel">

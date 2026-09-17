@@ -1,10 +1,12 @@
 import Link from "next/link";
 
 import { requireStaff } from "@/features/admin/admin-access";
+import { AdminIcon, type AdminIconName } from "@/features/admin/admin-icons";
 import { loadAdminOverview } from "@/features/admin/admin.repository";
 
-function Metric({ label, value, detail, href }: { label: string; value: number | null; detail: string; href?: string }) {
+function Metric({ label, value, detail, href, icon }: { label: string; value: number | null; detail: string; href?: string; icon: AdminIconName }) {
   const content = <>
+    <span className="admin-metric__icon"><AdminIcon name={icon} /></span>
     <p>{label}</p>
     <strong>{value === null ? "—" : value.toLocaleString("en-IN")}</strong>
     <small>{value === null ? "Unavailable" : detail}</small>
@@ -20,10 +22,10 @@ export default async function AdminOverviewPage({ searchParams }: { searchParams
   return <main className="admin-page" id="main-content">
     <header className="admin-page__header"><div><p className="eyebrow">Administration</p><h1>Overview</h1></div><span>Staff workspace</span></header>
     <section className="admin-metrics" aria-label="Platform metrics">
-      <Metric label="Registered accounts" value={metrics.accounts} detail="Accounts created" href="/admin/users" />
-      <Metric label="Founding Pro waitlist" value={metrics.joinedWaitlist} detail="Currently joined" href="/admin/waitlist" />
-      <Metric label="Total page views" value={metrics.pageViews} detail={`Last ${days} days · tracking starts at deployment`} />
-      <Metric label="Unique visitors" value={metrics.uniqueVisitors} detail={`Last ${days} days · deduplicated by anonymous cookie`} />
+      <Metric label="Registered accounts" value={metrics.accounts} detail="Accounts created" href="/admin/users" icon="users" />
+      <Metric label="Founding Pro waitlist" value={metrics.joinedWaitlist} detail="Currently joined" href="/admin/waitlist" icon="waitlist" />
+      <Metric label="Total page views" value={metrics.pageViews} detail={`Last ${days} days · tracking starts at deployment`} icon="pulse" />
+      <Metric label="Unique visitors" value={metrics.uniqueVisitors} detail={`Last ${days} days · deduplicated by anonymous cookie`} icon="eye" />
     </section>
     <nav className="admin-range" aria-label="Page-view date range">Page views: {[7, 30, 90].map((value) => <Link key={value} href={`/admin?range=${value}`} aria-current={days === value ? "page" : undefined}>{value} days</Link>)}</nav>
     <div className="admin-overview-panels">
