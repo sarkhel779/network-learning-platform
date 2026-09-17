@@ -37,7 +37,7 @@ describe("admin repository", () => {
       if (name === "admin_joined_waitlist_count") return { data: null, error: { message: "offline" } };
       return { data: 12, error: null };
     });
-    await expect(loadAdminOverview()).resolves.toMatchObject({ accounts: 0, joinedWaitlist: null, pageViews: 12 });
+    await expect(loadAdminOverview()).resolves.toMatchObject({ accounts: 0, joinedWaitlist: null, pageViews: 12, uniqueVisitors: 12 });
   });
 
   it("uses a validated page-view range without changing account totals", async () => {
@@ -45,6 +45,8 @@ describe("admin repository", () => {
     await loadAdminOverview(7);
     const range = mocks.rpc.mock.calls.find(([name]) => name === "admin_page_view_count")?.[1];
     expect(new Date(range.p_to).getTime() - new Date(range.p_from).getTime()).toBe(7 * 86400000);
+    const uniqueRange = mocks.rpc.mock.calls.find(([name]) => name === "admin_unique_visitor_count")?.[1];
+    expect(uniqueRange).toEqual(range);
     expect(mocks.rpc).toHaveBeenCalledWith("admin_account_count");
     expect(mocks.rpc).toHaveBeenCalledWith("admin_joined_waitlist_count");
   });

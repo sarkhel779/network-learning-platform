@@ -30,21 +30,21 @@ export async function loadAdminOverview(days: 7 | 30 | 90 = 30): Promise<AdminOv
     const supabase = await createServerSupabaseClient();
     const rangeDays = days === 7 || days === 90 ? days : 30;
     const to = new Date();
-    const [accounts, joinedWaitlist, pageViews] = await Promise.all([
+    const from = new Date(to.getTime() - rangeDays * 86400000).toISOString();
+    const [accounts, joinedWaitlist, pageViews, uniqueVisitors] = await Promise.all([
       supabase.rpc("admin_account_count"),
       supabase.rpc("admin_joined_waitlist_count"),
-      supabase.rpc("admin_page_view_count", {
-        p_from: new Date(to.getTime() - rangeDays * 86400000).toISOString(),
-        p_to: to.toISOString(),
-      }),
+      supabase.rpc("admin_page_view_count", { p_from: from, p_to: to.toISOString() }),
+      supabase.rpc("admin_unique_visitor_count", { p_from: from, p_to: to.toISOString() }),
     ]);
     return {
       accounts: accounts.error ? null : countOrNull(accounts.data),
       joinedWaitlist: joinedWaitlist.error ? null : countOrNull(joinedWaitlist.data),
       pageViews: pageViews.error ? null : countOrNull(pageViews.data),
+      uniqueVisitors: uniqueVisitors.error ? null : countOrNull(uniqueVisitors.data),
     };
   } catch {
-    return { accounts: null, joinedWaitlist: null, pageViews: null };
+    return { accounts: null, joinedWaitlist: null, pageViews: null, uniqueVisitors: null };
   }
 }
 

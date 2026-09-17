@@ -23,12 +23,13 @@ export default async function AdminOverviewPage({ searchParams }: { searchParams
       <Metric label="Registered accounts" value={metrics.accounts} detail="Accounts created" href="/admin/users" />
       <Metric label="Founding Pro waitlist" value={metrics.joinedWaitlist} detail="Currently joined" href="/admin/waitlist" />
       <Metric label="Total page views" value={metrics.pageViews} detail={`Last ${days} days · tracking starts at deployment`} />
+      <Metric label="Unique visitors" value={metrics.uniqueVisitors} detail={`Last ${days} days · deduplicated by anonymous cookie`} />
     </section>
     <nav className="admin-range" aria-label="Page-view date range">Page views: {[7, 30, 90].map((value) => <Link key={value} href={`/admin?range=${value}`} aria-current={days === value ? "page" : undefined}>{value} days</Link>)}</nav>
     <div className="admin-overview-panels">
       <section className="admin-panel"><div className="admin-panel__heading"><h2>Learners</h2><Link href="/admin/users">View all users →</Link></div><p>Search accounts and make authorized profile changes. See Pro waitlist for Founding Pro registrations.</p></section>
       <section className="admin-panel"><div className="admin-panel__heading"><h2>Support queue</h2><Link href="/admin/support">View queue →</Link></div><p>Triage and reply to learner support tickets.</p></section>
     </div>
-    <p className="admin-metric-note">Page views count navigations, not unique visitors. Tracking may be affected by disabled JavaScript, blockers, or bots.</p>
+    <p className="admin-metric-note">Total page views counts every navigation, including repeats. Unique visitors deduplicates repeat visits using an anonymous first-party cookie, and undercounts if a visitor blocks or clears cookies. Both may be affected by disabled JavaScript, blockers, or bots.</p>
   </main>;
 }

@@ -57,6 +57,11 @@ begin
   exception when insufficient_privilege then null;
   end;
   begin
+    perform public.admin_unique_visitor_count(now() - interval '1 day', now());
+    raise exception 'learner can inspect unique visitor totals';
+  exception when insufficient_privilege then null;
+  end;
+  begin
     perform public.admin_list_audit(0, 20);
     raise exception 'learner can inspect audit events';
   exception when insufficient_privilege then null;
@@ -154,28 +159,54 @@ begin
   exception when insufficient_privilege then null;
   end;
   begin
-    perform public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing', 'wrong-token');
+    perform public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing', 'wrong-token', '00000000-0000-4000-8000-000000000301');
     raise exception 'invalid ingest token was accepted';
   exception when insufficient_privilege then null;
   end;
-  if public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing', 'ci-only-ingest-token-with-32-chars-minimum') <> 'recorded' then
+  if public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing', 'ci-only-ingest-token-with-32-chars-minimum', '00000000-0000-4000-8000-000000000301') <> 'recorded' then
     raise exception 'authorized view was not recorded';
   end if;
-  if public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing', 'ci-only-ingest-token-with-32-chars-minimum') <> 'duplicate' then
+  if public.record_page_view('00000000-0000-4000-8000-000000000201', '/pricing', 'ci-only-ingest-token-with-32-chars-minimum', '00000000-0000-4000-8000-000000000301') <> 'duplicate' then
     raise exception 'retry was not deduplicated';
   end if;
-  for i in 1..119 loop
-    if public.record_page_view(pg_catalog.md5(i::text)::uuid, '/labs', 'ci-only-ingest-token-with-32-chars-minimum') <> 'recorded' then
+  if public.record_page_view('00000000-0000-4000-8000-000000000205', '/pricing', 'ci-only-ingest-token-with-32-chars-minimum', '00000000-0000-4000-8000-000000000301') <> 'recorded' then
+    raise exception 'a repeat visit from the same visitor was not recorded';
+  end if;
+  if public.record_page_view('00000000-0000-4000-8000-000000000206', '/pricing', 'ci-only-ingest-token-with-32-chars-minimum', '00000000-0000-4000-8000-000000000302') <> 'recorded' then
+    raise exception 'a new visitor was not recorded';
+  end if;
+  for i in 1..117 loop
+    if public.record_page_view(pg_catalog.md5(i::text)::uuid, '/labs', 'ci-only-ingest-token-with-32-chars-minimum', '00000000-0000-4000-8000-000000000303') <> 'recorded' then
       raise exception 'rate window closed before 120 views';
     end if;
   end loop;
-  if public.record_page_view('00000000-0000-4000-8000-000000000202', '/labs', 'ci-only-ingest-token-with-32-chars-minimum') <> 'rate_limited' then
+  if public.record_page_view('00000000-0000-4000-8000-000000000202', '/labs', 'ci-only-ingest-token-with-32-chars-minimum', '00000000-0000-4000-8000-000000000304') <> 'rate_limited' then
     raise exception 'rate window did not cap ingestion';
   end if;
-  perform public.admin_staff_role();
-  raise exception 'anonymous role lookup was unexpectedly executable';
-exception
-  when insufficient_privilege then null;
+  begin
+    perform public.admin_staff_role();
+    raise exception 'anonymous role lookup was unexpectedly executable';
+  exception
+    when insufficient_privilege then null;
+  end;
+end $$;
+
+reset role;
+set local role authenticated;
+set local request.jwt.claim.sub = '00000000-0000-4000-8000-000000000101';
+do $$
+declare
+  v_unique bigint;
+begin
+  -- now() is frozen at transaction start in Postgres, identical to the just-inserted
+  -- rows' created_at default; nudge the exclusive upper bound past it to include them.
+  v_unique := public.admin_unique_visitor_count(now() - interval '1 day', now() + interval '1 minute');
+  if v_unique <> 3 then
+    raise exception 'unique visitor count did not deduplicate repeat visits, got %', v_unique;
+  end if;
+  if public.admin_page_view_count(now() - interval '1 day', now() + interval '1 minute') <= v_unique then
+    raise exception 'raw page view count should exceed the deduplicated visitor count';
+  end if;
 end $$;
 
 rollback;
