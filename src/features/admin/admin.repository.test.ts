@@ -58,7 +58,15 @@ describe("admin repository", () => {
     mocks.rpc.mockResolvedValue({ data: { total: 0, rows: [] }, error: null });
     await expect(listLearners({ query: "  subnet  ", offset: -2, limit: 999 })).resolves.toEqual({ rows: [], total: 0 });
     expect(mocks.rpc).toHaveBeenCalledWith("admin_list_learners", {
-      p_query: "subnet", p_offset: 0, p_limit: 50,
+      p_query: "subnet", p_offset: 0, p_limit: 50, p_waitlist_status: null, p_joined_from: null, p_joined_to: null,
+    });
+  });
+
+  it("passes waitlist status and joined date range filters through to the database", async () => {
+    mocks.rpc.mockResolvedValue({ data: { total: 0, rows: [] }, error: null });
+    await listLearners({ waitlistStatus: "joined", joinedFrom: "2026-09-01T00:00:00.000Z", joinedTo: "2026-09-08T00:00:00.000Z" });
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_list_learners", {
+      p_query: "", p_offset: 0, p_limit: 20, p_waitlist_status: "joined", p_joined_from: "2026-09-01T00:00:00.000Z", p_joined_to: "2026-09-08T00:00:00.000Z",
     });
   });
 

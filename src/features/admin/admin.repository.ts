@@ -49,14 +49,26 @@ export async function loadAdminOverview(days: 7 | 30 | 90 = 30): Promise<AdminOv
   }
 }
 
-type LearnerQuery = { query?: string; offset?: number; limit?: number };
+export type WaitlistStatusFilter = "joined" | "unsubscribed" | "none";
 
-export async function listLearners({ query = "", offset = 0, limit = 20 }: LearnerQuery): Promise<{ rows: LearnerRow[]; total: number }> {
+type LearnerQuery = {
+  query?: string;
+  offset?: number;
+  limit?: number;
+  waitlistStatus?: WaitlistStatusFilter;
+  joinedFrom?: string;
+  joinedTo?: string;
+};
+
+export async function listLearners({ query = "", offset = 0, limit = 20, waitlistStatus, joinedFrom, joinedTo }: LearnerQuery): Promise<{ rows: LearnerRow[]; total: number }> {
   const p_query = query.trim().slice(0, 100);
   const p_offset = Math.max(0, Math.floor(offset || 0));
   const p_limit = Math.min(50, Math.max(1, Math.floor(limit || 20)));
+  const p_waitlist_status = waitlistStatus ?? null;
+  const p_joined_from = joinedFrom ?? null;
+  const p_joined_to = joinedTo ?? null;
   const supabase = await createServerSupabaseClient();
-  const { data, error } = await supabase.rpc("admin_list_learners", { p_query, p_offset, p_limit });
+  const { data, error } = await supabase.rpc("admin_list_learners", { p_query, p_offset, p_limit, p_waitlist_status, p_joined_from, p_joined_to });
   if (error || !data || typeof data !== "object") throw new Error("Learner directory unavailable");
   const result = data as { total?: unknown; rows?: unknown };
   const total = countOrNull(result.total);

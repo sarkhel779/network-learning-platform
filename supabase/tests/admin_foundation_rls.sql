@@ -3,7 +3,8 @@ begin;
 insert into auth.users (id, instance_id, aud, role, email, encrypted_password, created_at, updated_at)
 values
   ('00000000-0000-4000-8000-000000000101', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'admin-test@example.test', '', now(), now()),
-  ('00000000-0000-4000-8000-000000000102', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'learner-test@example.test', '', now(), now());
+  ('00000000-0000-4000-8000-000000000102', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'learner-test@example.test', '', now(), now()),
+  ('00000000-0000-4000-8000-000000000103', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'old-learner@example.test', '', now() - interval '10 days', now() - interval '10 days');
 
 insert into public.staff_roles (user_id, role)
 values ('00000000-0000-4000-8000-000000000101', 'support_agent');
@@ -95,6 +96,41 @@ begin
   if jsonb_array_length(public.admin_list_learners('', 0, 1) -> 'rows') <> 1 then
     raise exception 'directory pagination failed';
   end if;
+  if (public.admin_list_learners('', 0, 20, 'joined') ->> 'total')::integer <> 1
+    or (public.admin_list_learners('', 0, 20, 'joined') -> 'rows' -> 0 ->> 'id') <> '00000000-0000-4000-8000-000000000102' then
+    raise exception 'waitlist status filter did not isolate joined members';
+  end if;
+  if (public.admin_list_learners('', 0, 20, 'unsubscribed') ->> 'total')::integer <> 1
+    or (public.admin_list_learners('', 0, 20, 'unsubscribed') -> 'rows' -> 0 ->> 'id') <> '00000000-0000-4000-8000-000000000101' then
+    raise exception 'waitlist status filter did not isolate unsubscribed members';
+  end if;
+  if (public.admin_list_learners('', 0, 20, 'none') ->> 'total')::integer <> 1
+    or (public.admin_list_learners('', 0, 20, 'none') -> 'rows' -> 0 ->> 'id') <> '00000000-0000-4000-8000-000000000103' then
+    raise exception 'waitlist status filter did not isolate learners who never joined';
+  end if;
+  begin
+    perform public.admin_list_learners('', 0, 20, 'forged');
+    raise exception 'an invalid waitlist status filter was accepted';
+  exception when others then
+    if sqlerrm <> 'invalid_waitlist_status' then
+      raise;
+    end if;
+  end;
+  if (public.admin_list_learners('', 0, 20, null, now() - interval '1 day', now() + interval '1 minute') ->> 'total')::integer <> 2 then
+    raise exception 'joined date range filter omitted recent learners';
+  end if;
+  if (public.admin_list_learners('', 0, 20, null, now() - interval '20 days', now() - interval '5 days') ->> 'total')::integer <> 1
+    or (public.admin_list_learners('', 0, 20, null, now() - interval '20 days', now() - interval '5 days') -> 'rows' -> 0 ->> 'id') <> '00000000-0000-4000-8000-000000000103' then
+    raise exception 'joined date range filter did not isolate the older learner';
+  end if;
+  begin
+    perform public.admin_list_learners('', 0, 20, null, now(), now() - interval '1 day');
+    raise exception 'an inverted joined date range was accepted';
+  exception when others then
+    if sqlerrm <> 'invalid_joined_range' then
+      raise;
+    end if;
+  end;
   perform public.admin_update_learner('00000000-0000-4000-8000-000000000102', 'Ada', 'beginner', 'Requested help');
   if (public.admin_get_learner('00000000-0000-4000-8000-000000000102') ->> 'displayName') <> 'Ada' then
     raise exception 'authorized profile update was not persisted';
