@@ -1593,11 +1593,15 @@ a.admin-metric:hover,a.admin-metric:focus-visible{border-color:#32dcb4;transform
 .admin-range a{color:#aab9d1;text-decoration:none;border:1px solid #34465d;border-radius:.45rem;padding:.35rem .6rem;transition:border-color 150ms ease,color 150ms ease}
 .admin-range a:hover,.admin-range a:focus-visible,.admin-range a[aria-current="page"]{border-color:#32dcb4;color:#67efd2}
 .admin-search{display:flex;align-items:end;gap:.65rem;flex-wrap:wrap;margin:1rem 0}.admin-search label{width:100%;color:#aab9d1;font-size:.85rem}
-.admin-search input,.admin-learner-editor input,.admin-learner-editor select,.admin-learner-editor textarea,.admin-staff-manager input,.admin-staff-manager select,
+.admin-search input,.admin-search select,.admin-learner-editor input,.admin-learner-editor select,.admin-learner-editor textarea,.admin-staff-manager input,.admin-staff-manager select,
 .admin-billing-manager input,.admin-billing-manager select,.admin-feature-flags input,.admin-feature-flags select,.support-ticket-panel textarea{min-height:2.6rem;padding:.6rem .7rem;border:1px solid #35475e;border-radius:.5rem;background:#0c1523;color:#f5f8fc;font:inherit}
 .admin-feature-flags input[type="checkbox"]{min-height:auto;width:1.15rem;height:1.15rem;padding:0;accent-color:#27d4aa}
 .support-ticket-panel textarea{width:100%;min-height:7rem;resize:vertical}
-.admin-search input{width:min(100%,24rem)}.admin-search button,.admin-learner-editor button,.admin-staff-manager button,
+.admin-search input{width:min(100%,24rem)}
+.admin-search__filters{display:flex;align-items:end;gap:.5rem;flex-wrap:wrap}
+.admin-search .admin-search__filters label{width:auto}
+.admin-search__filters select,.admin-search__filters input{width:auto}
+.admin-search button,.admin-learner-editor button,.admin-staff-manager button,
 .admin-billing-manager button,.admin-feature-flags button,.support-ticket-panel form button{min-height:2.6rem;padding:.55rem 1rem;border:1px solid #31ddae;border-radius:.5rem;background:#27d4aa;color:#06251f;font:inherit;font-weight:800;cursor:pointer;transition:background-color 150ms ease}
 .admin-search button:hover,.admin-learner-editor button:hover,.admin-staff-manager button:hover,
 .admin-billing-manager button:hover,.admin-feature-flags button:hover,.support-ticket-panel form button:hover{background:#53edc4}
@@ -1619,7 +1623,7 @@ a.admin-metric:hover,a.admin-metric:focus-visible{border-color:#32dcb4;transform
 .support-ticket-status-controls button:disabled{opacity:.6}
 .admin-shell a:focus-visible,.admin-shell button:focus-visible,.admin-shell input:focus-visible,.admin-shell select:focus-visible,.admin-shell textarea:focus-visible{outline:3px solid #4ce9c0;outline-offset:2px}
 @media(max-width:900px){.admin-shell{grid-template-columns:1fr}.admin-sidebar{position:relative;height:auto;gap:1rem;padding:1rem}.admin-sidebar nav{display:flex;gap:1rem;flex-wrap:wrap}.admin-nav-group{margin:0}.admin-nav-group a{display:inline-flex}.admin-sidebar__back{margin:0}.admin-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:600px){.admin-shell__content{padding:1rem}.admin-metrics,.admin-overview-panels,.admin-detail-grid{grid-template-columns:1fr}.admin-nav-group{display:flex;flex-wrap:wrap}.admin-nav-group>p{width:100%}.admin-page__header{flex-direction:column}.admin-search input{width:100%}.admin-table{min-width:35rem}}
+@media(max-width:600px){.admin-shell__content{padding:1rem}.admin-metrics,.admin-overview-panels,.admin-detail-grid{grid-template-columns:1fr}.admin-nav-group{display:flex;flex-wrap:wrap}.admin-nav-group>p{width:100%}.admin-page__header{flex-direction:column}.admin-search input{width:100%}.admin-search__filters{width:100%}.admin-search__filters select,.admin-search__filters input{flex:1;min-width:8rem}.admin-table{min-width:35rem}}
 
 /* Signed-in learner dashboard */
 .learner-dashboard{width:min(100% - 2rem,1100px);margin:0 auto;padding:clamp(2rem,5vw,4rem) 0 5rem}

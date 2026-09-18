@@ -18,7 +18,7 @@ describe("admin users page", () => {
     expect(html).not.toContain("No learners found");
   });
 
-  it("lists learners without a waitlist column", async () => {
+  it("lists learners without a per-row waitlist column", async () => {
     mocks.requireStaff.mockResolvedValue({ viewer: { id: "staff-1" }, role: "support_agent" });
     mocks.listLearners.mockResolvedValue({
       total: 1,
@@ -26,8 +26,35 @@ describe("admin users page", () => {
     });
     const html = renderToStaticMarkup(await UsersPage({ searchParams: Promise.resolve({}) }));
     expect(html).toContain("Ada");
-    expect(html).not.toContain("Waitlist");
+    expect(html).not.toContain("<th scope=\"col\">Waitlist</th>");
     expect(html).not.toContain("Not joined");
-    expect(html).not.toContain("Unsubscribed");
+  });
+
+  it("renders waitlist status and joined date range filters beside the search button", async () => {
+    mocks.requireStaff.mockResolvedValue({ viewer: { id: "staff-1" }, role: "support_agent" });
+    mocks.listLearners.mockResolvedValue({ total: 0, rows: [] });
+    const html = renderToStaticMarkup(await UsersPage({ searchParams: Promise.resolve({}) }));
+    expect(html).toContain("admin-search__filters");
+    expect(html).toContain("Never joined");
+    expect(html).toContain("Joined from");
+    expect(html).toContain("Joined to");
+  });
+
+  it("passes valid filter query params through to the directory query", async () => {
+    mocks.requireStaff.mockResolvedValue({ viewer: { id: "staff-1" }, role: "support_agent" });
+    mocks.listLearners.mockResolvedValue({ total: 0, rows: [] });
+    await UsersPage({ searchParams: Promise.resolve({ waitlist: "joined", from: "2026-09-01", to: "2026-09-07" }) });
+    expect(mocks.listLearners).toHaveBeenCalledWith({
+      query: "", offset: 0, limit: 20, waitlistStatus: "joined", joinedFrom: "2026-09-01T00:00:00.000Z", joinedTo: "2026-09-08T00:00:00.000Z",
+    });
+  });
+
+  it("ignores an invalid waitlist status or malformed date instead of passing it through", async () => {
+    mocks.requireStaff.mockResolvedValue({ viewer: { id: "staff-1" }, role: "support_agent" });
+    mocks.listLearners.mockResolvedValue({ total: 0, rows: [] });
+    await UsersPage({ searchParams: Promise.resolve({ waitlist: "forged", from: "not-a-date" }) });
+    expect(mocks.listLearners).toHaveBeenCalledWith({
+      query: "", offset: 0, limit: 20, waitlistStatus: undefined, joinedFrom: undefined, joinedTo: undefined,
+    });
   });
 });
