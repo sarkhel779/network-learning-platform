@@ -208,15 +208,23 @@ begin
   returning * into v_attempt;
 
   if v_attempt.status = 'completed' and not exists (
-    select 1 from public.learner_progress_events where attempt_id = v_attempt.id and event_type = 'lesson_completed'
+    select 1 from public.learner_progress_events
+    where attempt_id = v_attempt.id
+      and event_type = 'lesson_completed'
+      and metadata @> '{"completionRule": "quiz-only-v1"}'::jsonb
   ) then
     insert into public.learner_progress_events (
       user_id, attempt_id, idempotency_key, event_type, metadata
-    ) values (v_user_id, v_attempt.id, gen_random_uuid(), 'lesson_completed', '{}'::jsonb);
+    ) values (v_user_id, v_attempt.id, gen_random_uuid(), 'lesson_completed', '{"completionRule": "quiz-only-v1"}'::jsonb);
   end if;
   return v_attempt;
 end;
 $$;
+
+update public.learner_progress_events
+set metadata = metadata || '{"completionRule": "legacy-all-items-v1"}'::jsonb
+where event_type = 'lesson_completed'
+  and not (metadata ? 'completionRule');
 
 do $$
 declare
@@ -224,6 +232,7 @@ declare
   v_completed text[];
   v_required integer;
   v_next_item text;
+  v_has_quiz_attempt boolean;
 begin
   for v_attempt in select * from public.learner_lesson_attempts loop
     select required_item_count into v_required
@@ -256,18 +265,39 @@ begin
       and not (item_id = any(v_completed))
     order by ordinal limit 1;
 
+    select exists (
+      select 1
+      from public.learner_progress_events
+      where attempt_id = v_attempt.id
+        and event_type = 'knowledge_check_attempted'
+    ) into v_has_quiz_attempt;
+
     update public.learner_lesson_attempts
     set completed_item_ids = v_completed,
         next_item_id = v_next_item,
         completion_percent = floor(cardinality(v_completed)::numeric * 100 / v_required)::integer,
         status = case
           when cardinality(v_completed) = v_required then 'completed'
-          when cardinality(v_completed) = 0 then 'not_started'
-          else 'in_progress'
+          when v_has_quiz_attempt then 'in_progress'
+          else 'not_started'
         end,
-        completed_at = case when cardinality(v_completed) = v_required then coalesce(completed_at, now()) else null end,
-        updated_at = now()
+        completed_at = case when cardinality(v_completed) = v_required then coalesce(completed_at, now()) else null end
     where id = v_attempt.id;
+
+    if cardinality(v_completed) = v_required and not exists (
+      select 1
+      from public.learner_progress_events
+      where attempt_id = v_attempt.id
+        and event_type = 'lesson_completed'
+        and metadata @> '{"completionRule": "quiz-only-v1"}'::jsonb
+    ) then
+      insert into public.learner_progress_events (
+        user_id, attempt_id, idempotency_key, event_type, metadata
+      ) values (
+        v_attempt.user_id, v_attempt.id, gen_random_uuid(), 'lesson_completed',
+        '{"completionRule": "quiz-only-v1"}'::jsonb
+      );
+    end if;
   end loop;
 end;
 $$;

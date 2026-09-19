@@ -138,7 +138,9 @@ begin
 
   select count(*) into completion_events
   from public.learner_progress_events
-  where attempt_id = result.id and event_type = 'lesson_completed';
+  where attempt_id = result.id
+    and event_type = 'lesson_completed'
+    and metadata @> '{"completionRule":"quiz-only-v1"}'::jsonb;
   if completion_events <> 1 then
     raise exception 'expected exactly one lesson_completed event, got %', completion_events;
   end if;

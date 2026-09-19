@@ -13,5 +13,10 @@ describe("quiz-only completion migration", () => {
     expect(migration).toContain("'capstone_check_1'");
     expect(migration).toContain("'capstone_check_2'");
     expect(migration).toContain("'capstone_check_3'");
+    expect(migration).toContain('"completionRule": "legacy-all-items-v1"');
+    expect(migration).toContain('"completionRule": "quiz-only-v1"');
+    expect(migration).toContain("v_has_quiz_attempt boolean");
+    const recalculation = migration.slice(migration.indexOf("do $$"));
+    expect(recalculation).not.toMatch(/updated_at\s*=\s*now\(\)/);
   });
 });
