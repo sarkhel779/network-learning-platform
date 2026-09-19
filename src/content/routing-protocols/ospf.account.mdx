@@ -1,0 +1,42 @@
+{/* OSPF_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-ospf-evidence">Inspect OSPF evidence</h2>
+
+`show ip ospf neighbor` is the first command to check: it lists every neighbor and its current state, and any state other than **Full** (or **2-Way** on a non-DR/BDR multi-access neighbor, which is expected) means the adjacency has not finished forming. `show ip ospf database` lists every LSA type the router holds, organized by area — a fast way to confirm whether two routers actually share an identical LSDB.
+
+<WiresharkCheck displayFilter="ospf">Capture on an OSPF-enabled interface while an adjacency forms. Identify each packet type by its OSPF header (Hello, DBD, LSR, LSU, LSAck) and confirm the Router ID and Area ID match on both sides.</WiresharkCheck>
+
+<SectionContinue itemId="ospf_section_inspect_ospf_evidence" anchor="inspect-ospf-evidence" />
+
+<h2 id="guided-ospf-cost-practice">Guided OSPF cost practice</h2>
+
+With the default reference bandwidth of 100 Mbps, compute the total cost of a path crossing a 100 Mbps link, then a 1 Gbps link, then a 10 Mbps link: 100,000,000/100,000,000 = 1, plus 100,000,000/1,000,000,000 rounds up to 1, plus 100,000,000/10,000,000 = 10. Total cost = 1 + 1 + 10 = 12.
+
+<InterviewScenario title="Why does a 1 Gbps link only save you 0 cost over a 100 Mbps link here?">With the default 100 Mbps reference bandwidth, both a 100 Mbps and a 1 Gbps link round to a cost of 1, so OSPF cannot tell them apart. Explain what an administrator should change to make OSPF prefer the faster link, and why leaving the default in place on a modern high-speed network is a common misconfiguration.</InterviewScenario>
+
+<SectionContinue itemId="ospf_section_guided_ospf_cost_practice" anchor="guided-ospf-cost-practice" />
+
+<h2 id="troubleshoot-ospf">Troubleshoot OSPF</h2>
+
+1. Confirm both routers have OSPF enabled on the correct interfaces and agree on the area number for that link.
+2. Check for a Hello or Dead interval mismatch — OSPF requires these to match exactly between neighbors on the same link.
+3. Look for a duplicate Router ID on the network, which can prevent an adjacency from forming correctly or cause it to flap.
+4. If a neighbor is stuck in ExStart or Exchange, suspect an MTU mismatch: routers that disagree on the largest DBD packet size can appear to negotiate but never finish exchanging LSA summaries.
+5. Verify authentication settings match on both sides if OSPF authentication is configured.
+6. On a multi-access network, confirm the DR/BDR election completed as expected — a router stuck below 2-Way with the DR usually means one of the checks above failed specifically toward the DR.
+
+<InterviewScenario title="A neighbor is stuck in EXSTART/EXCHANGE">Two routers show a neighbor relationship stuck in ExStart or Exchange indefinitely, never reaching Full. Walk through what you would check first, and explain why this specific symptom points toward an MTU mismatch rather than a Hello/Dead timer problem.</InterviewScenario>
+
+<SectionContinue itemId="ospf_section_troubleshoot_ospf" anchor="troubleshoot-ospf" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="ospf_check_1" question="What does OSPF's cost metric measure?" options={["Hop count between routers", "An inverse function of interface bandwidth", "Round-trip delay measured in real time"]} correctIndex={1} explanation="OSPF cost is reference bandwidth divided by interface bandwidth, summed along the path — faster links produce lower cost." />
+
+<KnowledgeCheck progressItemId="ospf_check_2" question="What must be true for an OSPF neighbor relationship to reach the Full state?" options={["Both routers can ping each other", "Both routers' link-state databases are fully synchronized", "Both routers are in the same VLAN"]} correctIndex={1} explanation="Full specifically means the link-state databases are synchronized after the Exchange and Loading states, not merely that the link is up." />
+
+<KnowledgeCheck progressItemId="ospf_check_3" question="Which LSA type does an Area Border Router use to advertise routes between areas?" options={["Type 1 (Router LSA)", "Type 3 (Summary LSA)", "Type 5 (AS External LSA)"]} correctIndex={1} explanation="Type 3 Summary LSAs are originated by ABRs to advertise routes from one area into another; Type 5 is for routes redistributed from outside OSPF entirely." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">Go through all five LSA types in detail plus Type 7 for Not-So-Stubby Areas (NSSA), the difference between stub, totally stubby, and NSSA area types, how virtual links patch a discontiguous backbone, and how to tune reference bandwidth so OSPF cost reflects modern multi-gigabit links.</PremiumPreview>

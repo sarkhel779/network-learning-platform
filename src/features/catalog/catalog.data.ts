@@ -670,13 +670,26 @@ const curriculum: Pathway[] = [
         title: "OSPF",
         description: "The dominant link-state interior gateway protocol: areas, LSAs, and Dijkstra's algorithm in practice.",
         lessons: [
-          plannedLesson({
+          {
             id: "lesson_ospf", slug: "ospf",
             title: "OSPF: Open Shortest Path First",
             objective: "Explain how OSPF routers form adjacencies, flood link-state advertisements, and compute shortest paths per RFC 2328.",
             seo: { title: "OSPF: Open Shortest Path First", description: "Learn OSPF's link-state operation, areas, LSA types, and adjacency states from RFC 2328." },
-            estimatedMinutes: 30,
-          }),
+            published: true, estimatedMinutes: 30,
+            sections: [
+              { id: "what-ospf-is", label: "What OSPF is", access: "public" },
+              { id: "ospf-cost-and-the-link-state-database", label: "OSPF cost and the link-state database", access: "public" },
+              { id: "ospf-packet-types", label: "OSPF packet types", access: "public" },
+              { id: "forming-an-ospf-adjacency", label: "Forming an OSPF adjacency", access: "public" },
+              { id: "interactive-ospf-adjacency", label: "Interactive OSPF adjacency", access: "public" },
+              { id: "ospf-areas-and-lsa-types", label: "OSPF areas and LSA types", access: "public" },
+              { id: "inspect-ospf-evidence", label: "Inspect OSPF evidence", access: "account" },
+              { id: "guided-ospf-cost-practice", label: "Guided OSPF cost practice", access: "account" },
+              { id: "troubleshoot-ospf", label: "Troubleshoot OSPF", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "All five LSA types plus NSSA, stub and totally stubby areas, virtual links, and how to tune reference bandwidth for modern high-speed links." },
+            ],
+          },
         ],
       },
       {

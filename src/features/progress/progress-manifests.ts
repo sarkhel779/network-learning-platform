@@ -86,6 +86,7 @@ const definitions = [
   },
   { lessonId: "lesson_routing_fundamentals", interactiveAnchors: ["interactive-route-selection"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_rip", interactiveAnchors: ["interactive-rip-exchange"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_ospf", interactiveAnchors: ["interactive-ospf-adjacency"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
 ] as const satisfies readonly LessonProgressDefinition[];
 
 function itemPrefix(lessonId: string) {

@@ -375,6 +375,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "routing-protocols",
         lessonSlug: "rip",
       },
+      {
+        pathwaySlug: "routing-protocols",
+        lessonSlug: "ospf",
+      },
     ]);
   });
 

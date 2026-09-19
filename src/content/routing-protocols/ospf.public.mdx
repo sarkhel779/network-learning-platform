@@ -1,0 +1,37 @@
+<LearningObjective>Explain how OSPF routers form adjacencies, flood link-state advertisements, and compute shortest paths per RFC 2328.</LearningObjective>
+
+<h2 id="what-ospf-is">What OSPF is</h2>
+
+**OSPF (Open Shortest Path First)** is the most widely deployed interior gateway protocol, standardized for IPv4 in **RFC 2328** (OSPFv2; OSPFv3 for IPv6 is RFC 5340). Unlike RIP's distance-vector design, OSPF is a **link-state** protocol: every router floods a description of its own directly connected links to every other router in the same area, so all routers end up holding an identical **link-state database (LSDB)**. Each router then independently runs **Dijkstra's shortest-path algorithm** against that shared database to compute its own best routes. Every OSPF router is identified by a 32-bit **Router ID**, conventionally written in dotted-decimal form even though it is not necessarily a real IP address.
+
+<SectionContinue itemId="ospf_section_what_ospf_is" anchor="what-ospf-is" />
+
+<h2 id="ospf-cost-and-the-link-state-database">OSPF cost and the link-state database</h2>
+
+OSPF's metric is **cost**, calculated per interface as `reference bandwidth ÷ interface bandwidth`, and summed along the whole path. With the common default reference bandwidth of 100 Mbps, a 100 Mbps link costs 1 and a 10 Mbps link costs 10 — faster links are cheaper. Because every router in an area holds the same link-state database, cost comparisons and the resulting shortest-path tree are consistent across the whole area; there is no risk of the reachability disagreements that plague distance-vector protocols.
+
+<SectionContinue itemId="ospf_section_ospf_cost_and_the_link_state_database" anchor="ospf-cost-and-the-link-state-database" />
+
+<h2 id="ospf-packet-types">OSPF packet types</h2>
+
+OSPF runs directly over IP (**IP protocol 89**, no UDP or TCP header) and defines five packet types: **Hello** (type 1, discovers and maintains neighbors), **Database Description / DBD** (type 2, summarizes LSA headers during adjacency formation), **Link State Request / LSR** (type 3, asks a neighbor for a specific LSA in full), **Link State Update / LSU** (type 4, carries one or more complete LSAs), and **Link State Acknowledgment / LSAck** (type 5, confirms receipt of an LSU). Every one of these packet types plays a role in the adjacency-formation sequence covered next.
+
+<SectionContinue itemId="ospf_section_ospf_packet_types" anchor="ospf-packet-types" />
+
+<h2 id="forming-an-ospf-adjacency">Forming an OSPF adjacency</h2>
+
+Two OSPF routers move through a well-defined sequence of neighbor states on their way to a full adjacency: **Down** → **Init** (a Hello has been heard, but the local router isn't listed yet) → **2-Way** (both routers see each other's Router ID in a Hello) → **ExStart** (negotiating which router will be master for the exchange) → **Exchange** (trading DBD summaries of the LSDB) → **Loading** (requesting and receiving any LSAs not yet held in full) → **Full** (LSDBs synchronized). On a multi-access network (such as Ethernet) with more than two routers, OSPF also elects a **Designated Router (DR)** and **Backup Designated Router (BDR)** so that routers form full adjacencies with the DR/BDR rather than with every other router, cutting down on redundant flooding.
+
+<SectionContinue itemId="ospf_section_forming_an_ospf_adjacency" anchor="forming-an-ospf-adjacency" />
+
+<h2 id="interactive-ospf-adjacency">Interactive OSPF adjacency</h2>
+
+Step through two routers forming a full adjacency over a point-to-point link, from the first Hello through Database Description negotiation to a synchronized link-state database.
+
+<OspfAdjacencyPacketFlow progressItemId="ospf_interactive_interactive_ospf_adjacency" />
+
+<h2 id="ospf-areas-and-lsa-types">OSPF areas and LSA types</h2>
+
+OSPF scales by dividing a network into **areas**; **Area 0**, the **backbone**, must exist, and every other area normally attaches directly to it, which limits how far a single topology change has to propagate. Different **Link-State Advertisement (LSA)** types carry different information: **Type 1 (Router LSA)** describes a router's own links within an area; **Type 2 (Network LSA)** describes a multi-access segment's attached routers, originated by the DR; **Type 3 (Summary LSA)** lets an **Area Border Router (ABR)** advertise routes between areas; **Type 4 (ASBR Summary LSA)** advertises the location of an **Autonomous System Boundary Router (ASBR)**; and **Type 5 (AS External LSA)** carries routes redistributed from outside OSPF entirely, originated by an ASBR.
+
+<SectionContinue itemId="ospf_section_ospf_areas_and_lsa_types" anchor="ospf-areas-and-lsa-types" />

@@ -37,6 +37,7 @@ import { RoutingTableDecisionPlayer } from "@/features/routing/routing-table-dec
 import { HopByHopForwardingPlayer } from "@/features/routing/hop-by-hop-forwarding-player";
 import { RouteSelectionPacketFlow } from "@/features/routing-fundamentals/route-selection-packet-flow";
 import { RipExchangePacketFlow } from "@/features/rip/rip-exchange-packet-flow";
+import { OspfAdjacencyPacketFlow } from "@/features/ospf/ospf-adjacency-packet-flow";
 import { PingEvidencePlayer } from "@/features/icmp/ping-evidence-player";
 import { TracerouteDiscoveryPlayer } from "@/features/icmp/traceroute-discovery-player";
 import { TcpConnectionPlayer } from "@/features/transport/tcp-connection-player";
@@ -108,6 +109,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     HopByHopForwardingPlayer,
     RouteSelectionPacketFlow,
     RipExchangePacketFlow,
+    OspfAdjacencyPacketFlow,
     InterviewScenario,
     Ipv4AddressBoundaryPlayer,
     Ipv4BinaryExplorer,
