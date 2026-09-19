@@ -111,8 +111,8 @@ a { color: inherit; }
 .site-logo__mark-svg { width: 2rem; height: 2rem; overflow: visible; flex-shrink: 0; }
 .site-logo__badge-outline { fill: none; stroke: url(#siteLogoGrad); stroke-width: 12.5; stroke-dasharray: 676; stroke-dashoffset: 676; opacity: 0.65; animation: sl-draw 700ms ease-out forwards, sl-pulse 2600ms ease-in-out 700ms infinite; }
 .site-logo__badge-fill { fill: color-mix(in srgb, var(--accent) 12%, var(--background)); opacity: 0; animation: sl-fade-in 400ms ease-out forwards; animation-delay: 600ms; }
-.site-logo__trace-outer { fill: none; stroke: url(#siteLogoGrad); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 420; stroke-dashoffset: 420; opacity: 0.75; animation: sl-draw 520ms ease-out 260ms forwards, sl-pulse 2600ms ease-in-out 780ms infinite; }
-.site-logo__trace-inner { fill: none; stroke: url(#siteLogoGrad); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 210; stroke-dashoffset: 210; opacity: 0.75; animation: sl-draw 420ms ease-out 640ms forwards, sl-pulse 2600ms ease-in-out 1060ms infinite; }
+.site-logo__trace-outer { fill: none; stroke: url(#siteLogoGrad); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 382; stroke-dashoffset: 382; opacity: 0.75; animation: sl-draw 520ms ease-out 260ms forwards, sl-pulse 2600ms ease-in-out 780ms infinite; }
+.site-logo__trace-inner { fill: none; stroke: url(#siteLogoGrad); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 157; stroke-dashoffset: 157; opacity: 0.75; animation: sl-draw 420ms ease-out 640ms forwards, sl-pulse 2600ms ease-in-out 1060ms infinite; }
 .site-logo__pad { fill: url(#siteLogoGrad); opacity: 0; }
 .site-logo__pad--a { animation: sl-dot-in 200ms ease-out forwards, sl-pulse 2600ms ease-in-out 780ms infinite; animation-delay: 260ms, 780ms; }
 .site-logo__pad--b { animation: sl-dot-in 220ms ease-out forwards, sl-pulse 2600ms ease-in-out 1060ms infinite; animation-delay: 640ms, 1060ms; }
