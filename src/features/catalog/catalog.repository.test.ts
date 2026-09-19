@@ -39,6 +39,7 @@ describe("catalog repository", () => {
         "Subnetting Fundamentals",
         "IPv6 Fundamentals",
         "Routing, Routing Tables and Default Routes",
+        "Routing Protocols",
         "ICMP, Ping and Path Discovery",
       ],
     },
@@ -69,7 +70,7 @@ describe("catalog repository", () => {
       title,
       lessons: lessons.map((lesson) => lesson.title),
     }))).toEqual(approvedCurriculum);
-    expect(pathway.modules.flatMap(({ lessons }) => lessons)).toHaveLength(25);
+    expect(pathway.modules.flatMap(({ lessons }) => lessons)).toHaveLength(26);
   });
 
   it("preserves implemented routes and removes security lessons", () => {
@@ -95,6 +96,7 @@ describe("catalog repository", () => {
       "nat-pat-and-the-complete-internet-packet-journey",
       "osi-and-tcp-ip-models",
       "routers-default-gateways-and-network-boundaries",
+      "routing-protocols",
       "routing-tables-and-default-routes",
       "subnetting-fundamentals",
       "systematic-network-troubleshooting-capstone",
@@ -412,6 +414,7 @@ describe("catalog repository", () => {
       "subnetting-fundamentals",
       "ipv6-fundamentals",
       "routing-tables-and-default-routes",
+      "routing-protocols",
       "icmp-ping-and-path-discovery",
       "tcp-reliable-transport",
       "udp-datagrams-and-ports",
@@ -557,7 +560,7 @@ describe("catalog repository", () => {
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
       previous: { slug: "ipv6-fundamentals", published: true },
-      next: { slug: "icmp-ping-and-path-discovery", published: true },
+      next: { slug: "routing-protocols", published: true },
     });
   });
 
@@ -580,7 +583,7 @@ describe("catalog repository", () => {
       ["pro-deep-dive", "pro"],
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
-      previous: { slug: "routing-tables-and-default-routes", published: true },
+      previous: { slug: "routing-protocols", published: true },
       next: { slug: "tcp-reliable-transport", published: true },
     });
   });

@@ -39,6 +39,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/networking-foundations/subnetting-fundamentals" },
       { url: "https://packetsecrets.com/learn/networking-foundations/ipv6-fundamentals" },
       { url: "https://packetsecrets.com/learn/networking-foundations/routing-tables-and-default-routes" },
+      { url: "https://packetsecrets.com/learn/networking-foundations/routing-protocols" },
       { url: "https://packetsecrets.com/learn/networking-foundations/icmp-ping-and-path-discovery" },
       { url: "https://packetsecrets.com/learn/networking-foundations/tcp-reliable-transport" },
       { url: "https://packetsecrets.com/learn/networking-foundations/udp-datagrams-and-ports" },

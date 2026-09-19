@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(25);
+    expect(lessonProgressManifests).toHaveLength(26);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -58,6 +58,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609090004_add_subnetting_fundamentals_progress.sql",
       "supabase/migrations/202609100001_add_ipv6_fundamentals_progress.sql",
       "supabase/migrations/202609100002_add_routing_tables_progress.sql",
+      "supabase/migrations/202609190001_add_routing_protocols_progress.sql",
       "supabase/migrations/202609100003_add_icmp_ping_path_progress.sql",
       "supabase/migrations/202609100004_add_tcp_udp_ports_progress.sql",
       "supabase/migrations/202609120001_split_tcp_udp_progress.sql",
@@ -85,6 +86,14 @@ describe("lessonProgressManifests", () => {
     expect(manifest.items).toHaveLength(18);
     expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-route-selection", "interactive-hop-by-hop-forwarding"]);
     expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
+  });
+
+  it("registers the routing protocols lesson with one player and three checks as 15 required items", () => {
+    const manifest = getLessonProgressManifest("path_networking_foundations", "lesson_routing_protocols");
+    expect(manifest.items).toHaveLength(15);
+    expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-protocol-selection"]);
+    expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
+    expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
   });
 
   it("registers the ICMP lesson in catalog order with two players and three checks", () => {
