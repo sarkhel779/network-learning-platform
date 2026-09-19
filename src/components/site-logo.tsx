@@ -16,13 +16,28 @@ export function SiteLogoMark() {
       <g transform="rotate(-4 100 100)">
         <rect className="site-logo__badge-fill" x="6" y="6" width="188" height="188" rx="45" />
         <rect className="site-logo__badge-outline" x="6" y="6" width="188" height="188" rx="45" style={{ stroke: gradUrl }} />
-        <polyline
-          className="site-logo__trace"
-          points="70,42 70,65 100,65 100,90 75,90 75,115 110,115 110,148"
+        <polygon
+          className="site-logo__trace-outer"
+          points="50,45 150,45 150,155 50,155"
           style={{ stroke: gradUrl }}
         />
-        <circle className="site-logo__pad site-logo__pad--a" cx="70" cy="42" r="11" style={{ fill: gradUrl }} />
-        <circle className="site-logo__pad site-logo__pad--b" cx="110" cy="148" r="11" style={{ fill: gradUrl }} />
+        <polyline
+          className="site-logo__trace-inner"
+          points="100,45 100,75 125,75 125,105 75,105 75,135 100,135 100,155"
+          style={{ stroke: gradUrl }}
+        />
+        <circle className="site-logo__pad site-logo__pad--a" cx="50" cy="45" r="7" style={{ fill: gradUrl }} />
+        <circle className="site-logo__pad site-logo__pad--a" cx="100" cy="45" r="7" style={{ fill: gradUrl }} />
+        <circle className="site-logo__pad site-logo__pad--a" cx="150" cy="45" r="7" style={{ fill: gradUrl }} />
+        <circle className="site-logo__pad site-logo__pad--a" cx="150" cy="155" r="7" style={{ fill: gradUrl }} />
+        <circle className="site-logo__pad site-logo__pad--a" cx="100" cy="155" r="7" style={{ fill: gradUrl }} />
+        <circle className="site-logo__pad site-logo__pad--a" cx="50" cy="155" r="7" style={{ fill: gradUrl }} />
+        <circle className="site-logo__pad site-logo__pad--b" cx="100" cy="75" r="7" style={{ fill: gradUrl }} />
+        <circle className="site-logo__pad site-logo__pad--b" cx="125" cy="75" r="7" style={{ fill: gradUrl }} />
+        <circle className="site-logo__pad site-logo__pad--b" cx="125" cy="105" r="7" style={{ fill: gradUrl }} />
+        <circle className="site-logo__pad site-logo__pad--b" cx="75" cy="105" r="7" style={{ fill: gradUrl }} />
+        <circle className="site-logo__pad site-logo__pad--b" cx="75" cy="135" r="7" style={{ fill: gradUrl }} />
+        <circle className="site-logo__pad site-logo__pad--b" cx="100" cy="135" r="7" style={{ fill: gradUrl }} />
       </g>
     </svg>
   );
