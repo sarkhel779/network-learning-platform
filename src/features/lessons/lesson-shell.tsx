@@ -6,7 +6,6 @@ import { LearnerWorkspace } from "@/features/learner-workspace/learner-workspace
 import type { Viewer } from "@/features/learner-workspace/learner-workspace.types";
 import type { LessonProgressManifest, LessonProgressSummary } from "@/features/progress/progress.types";
 import { LessonProgressProvider } from "@/features/progress/lesson-progress-context";
-import { LessonProgressControls } from "@/features/progress/lesson-progress-controls";
 import type { MyLearningModel } from "@/features/progress/my-learning";
 
 import { CurriculumNavigation } from "./curriculum-navigation";
@@ -78,7 +77,6 @@ export function LessonShell({
         manifest={progressManifest}
         initialProgress={initialProgress ?? null}
       >
-        <LessonProgressControls />
         {children}
       </LessonProgressProvider>
     )

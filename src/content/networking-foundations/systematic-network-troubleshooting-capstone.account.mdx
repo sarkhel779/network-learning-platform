@@ -11,3 +11,13 @@ The branch portal has several sequential faults. State a hypothesis, predict wha
 Review your timeline. Identify where an incorrect attempt still improved the investigation, whether your confidence matched the evidence, and why verifying DNS, TLS, and HTTP added information beyond a successful ping.
 
 <SectionContinue itemId="capstone_section_guided_incident_debrief" anchor="guided-incident-debrief" />
+
+<h2 id="final-knowledge-check">Final knowledge check</h2>
+
+Answer all three questions correctly to complete this capstone lesson.
+
+<KnowledgeCheck progressItemId="capstone_check_1" question="Evidence contradicts your leading troubleshooting hypothesis. What should you do next?" options={["Revise the hypothesis and test the next best explanation", "Keep changing settings until the symptom disappears", "Ignore the evidence because the original hypothesis came first"]} correctIndex={0} explanation="A falsifiable hypothesis must change when reliable evidence contradicts it. Revise the explanation, make a new prediction, and test it safely." />
+
+<KnowledgeCheck progressItemId="capstone_check_2" question="Which test should normally come first during an incident?" options={["The least-destructive test that distinguishes plausible causes", "A broad configuration replacement", "A reboot of every device in the path"]} correctIndex={0} explanation="Begin with the safest evidence that can separate competing explanations. Large changes can destroy useful evidence and introduce new faults." />
+
+<KnowledgeCheck progressItemId="capstone_check_3" question="A successful ping returns after remediation. What best proves the service is restored?" options={["Verify the complete user transaction, including DNS, transport, security, and application response", "Treat ping alone as proof that every layer works", "Wait for users to report whether the problem returns"]} correctIndex={0} explanation="Ping verifies limited reachability. Restoration requires the real end-to-end service and its dependencies to work for affected users." />

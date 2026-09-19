@@ -14,11 +14,11 @@ beforeEach(() => { markTerminalStateReached.mockClear(); restartLesson.mockClear
 afterEach(cleanup);
 
 describe("TroubleshootingWorkspace", () => {
-  it("restarts the server-backed lesson attempt before resetting the incident", async () => {
+  it("restarts only the incident without resetting lesson quiz completion", async () => {
     const user = userEvent.setup();
     render(<TroubleshootingWorkspace scenario={guidedBranchPortalIncident} progressItemId="capstone" guidance="guided" />);
     await user.click(screen.getByRole("button", { name: /restart incident/i }));
-    expect(restartLesson).toHaveBeenCalledOnce();
+    expect(restartLesson).not.toHaveBeenCalled();
     expect(screen.getByRole("status")).toHaveTextContent(/incident restarted/i);
   });
   it("explains premature remediation and records incorrect tests", async () => {

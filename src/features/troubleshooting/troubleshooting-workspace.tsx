@@ -99,16 +99,13 @@ export function TroubleshootingWorkspace({ scenario, progressItemId, guidance, o
       if (closed.closed) { setFeedback("Incident resolved. Every required layer has been restored."); progress.markTerminalStateReached(); }
     } catch (error) { setFeedback(error instanceof Error ? error.message : "Incident cannot be closed."); }
   };
-  const restart = async () => {
-    try {
-      if (lessonProgress) await lessonProgress.restartLesson();
-      store?.clear();
-      dispatch({ type: "restart_workspace" });
-      setSelectedTestId(undefined);
-      setSelectedAttemptIndex(undefined);
-      setSelectedRestorationCheckId(undefined);
-      setFeedback("Incident restarted. Confirm the scope before collecting new evidence.");
-    } catch { setFeedback("The incident could not restart. Try again before continuing."); }
+  const restart = () => {
+    store?.clear();
+    dispatch({ type: "restart_workspace" });
+    setSelectedTestId(undefined);
+    setSelectedAttemptIndex(undefined);
+    setSelectedRestorationCheckId(undefined);
+    setFeedback("Incident restarted. Confirm the scope before collecting new evidence.");
   };
   const selectedEvidence = selectedRestorationCheckId ? state.restorationEvidence[selectedRestorationCheckId] : scenario.tests.find(({ id }) => id === selectedTestId)?.evidence;
   const restorationReady = state.correctedFaultIds.length === scenario.faults.length;
@@ -129,7 +126,7 @@ export function TroubleshootingWorkspace({ scenario, progressItemId, guidance, o
     <RemediationPanel remediations={visibleRemediations} correctedFaultIds={state.correctedFaultIds} onApply={apply} />
     <RestorationChecklist checks={scenario.restorationChecks} results={state.restorationResults} enabled={restorationReady} onRun={runRestoration} />
     <button className="troubleshooting-workspace__close" disabled={state.closed} onClick={close} type="button">{state.closed ? "Incident closed" : "Close incident"}</button>
-    <button onClick={() => { void restart(); }} type="button">Restart incident</button>
+    <button onClick={restart} type="button">Restart incident</button>
     <IncidentTimeline entries={state.timeline} />
     {scenario.id === "guided-branch-portal" && state.correctedFaultIds.includes("wrong-access-vlan") ? <ProgressMilestone attemptKey={learnerAttemptKey} itemId="capstone_guided_vlan_check" /> : null}
     {scenario.id === "guided-branch-portal" && state.correctedFaultIds.includes("wrong-specific-route") ? <ProgressMilestone attemptKey={learnerAttemptKey} itemId="capstone_guided_route_check" /> : null}

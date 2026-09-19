@@ -693,7 +693,7 @@ describe("catalog repository", () => {
   it("publishes the troubleshooting capstone with progressive access", () => {
     const lesson = getLesson("networking-foundations", "systematic-network-troubleshooting-capstone");
     expect(lesson).toMatchObject({ id: "lesson_systematic_network_troubleshooting_capstone", estimatedMinutes: 45, published: true });
-    expect(lesson.sections?.map(({ access }) => access)).toEqual(["public", "public", "public", "public", "public", "public", "account", "account", "pro", "pro", "pro"]);
+    expect(lesson.sections?.map(({ access }) => access)).toEqual(["public", "public", "public", "public", "public", "public", "account", "account", "account", "pro", "pro", "pro"]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({ previous: { slug: "nat-pat-and-the-complete-internet-packet-journey", published: true }, next: undefined });
   });
 

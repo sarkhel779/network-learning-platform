@@ -67,6 +67,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609110003_add_essential_services_progress.sql",
       "supabase/migrations/202609110004_add_nat_pat_progress.sql",
       "supabase/migrations/202609110005_add_troubleshooting_capstone_progress.sql",
+      "supabase/migrations/202609200001_quiz_only_completion.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -176,15 +177,26 @@ describe("lessonProgressManifests", () => {
   it("registers guided milestones and optional Pro milestones without blocking Account completion", () => {
     const manifest = getLessonProgressManifest("path_networking_foundations", "lesson_systematic_network_troubleshooting_capstone");
     expect(manifest.contentVersion).toBe(1);
-    expect(manifest.items).toHaveLength(15);
+    expect(manifest.items).toHaveLength(18);
     expect(manifest.items.map(({ itemId }) => itemId)).toContain("capstone_guided_incident");
-    expect(manifest.items.filter(({ kind, required }) => kind === "interactive" && required).map(({ anchor }) => anchor)).toEqual([
-      "guided-branch-incident", "guided-vlan-check", "guided-route-check", "guided-dns-check", "restoration-verification",
+    expect(manifest.items.filter(({ kind, required }) => kind === "knowledge_check" && required).map(({ itemId }) => itemId)).toEqual([
+      "capstone_check_1", "capstone_check_2", "capstone_check_3",
     ]);
-    expect(manifest.items.filter(({ required }) => required)).toHaveLength(12);
+    expect(manifest.items.filter(({ required }) => required)).toHaveLength(3);
     expect(manifest.items.filter(({ required }) => !required).map(({ itemId }) => itemId)).toEqual([
+      "capstone_section_scope_the_incident", "capstone_section_form_a_hypothesis", "capstone_section_collect_evidence",
+      "capstone_section_isolate_the_fault", "capstone_section_restore_the_service", "capstone_section_report_and_prevent",
+      "capstone_guided_incident", "capstone_section_guided_incident_debrief", "capstone_guided_vlan_check",
+      "capstone_guided_route_check", "capstone_guided_dns_check", "capstone_restoration_verification",
       "capstone_pro_evidence", "capstone_pro_validation", "capstone_pro_report",
     ]);
+  });
+
+  it("uses only knowledge checks as required completion items", () => {
+    for (const manifest of lessonProgressManifests) {
+      expect(manifest.items.filter(({ required }) => required).length, manifest.lessonId).toBeGreaterThan(0);
+      expect(manifest.items.filter(({ required }) => required).every(({ kind }) => kind === "knowledge_check"), manifest.lessonId).toBe(true);
+    }
   });
 
   it("parenthesizes the CASE expression used by the progress event guard", () => {

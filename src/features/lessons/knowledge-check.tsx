@@ -34,7 +34,7 @@ export function KnowledgeCheck({
   const groupName = useId();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [checked, setChecked] = useState(false);
-  const progress = useOptionalLessonProgressItem(progressItemId);
+  const { complete } = useOptionalLessonProgressItem(progressItemId);
   const isCorrect = checked && selectedIndex === correctIndex;
 
   return (
@@ -62,7 +62,7 @@ export function KnowledgeCheck({
           disabled={selectedIndex === null}
           onClick={() => {
             setChecked(true);
-            void progress.complete({
+            void complete({
               eventType: "knowledge_check_attempted",
               answerCorrect: selectedIndex === correctIndex,
             });
@@ -81,11 +81,6 @@ export function KnowledgeCheck({
           </>
         ) : null}
       </div>
-      {progress.state === "saving" ? <p role="status">Saving answer…</p> : null}
-      {progress.state === "saved" ? <p role="status">Answer saved</p> : null}
-      {progress.state === "error" ? (
-        <p role="alert">Answer progress was not saved. <button type="button" onClick={() => void progress.retry()}>Retry saving answer</button></p>
-      ) : null}
     </section>
   );
 }
