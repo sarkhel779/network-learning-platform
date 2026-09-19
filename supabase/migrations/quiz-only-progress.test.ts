@@ -19,4 +19,14 @@ describe("quiz-only completion migration", () => {
     const recalculation = migration.slice(migration.indexOf("do $$"));
     expect(recalculation).not.toMatch(/updated_at\s*=\s*now\(\)/);
   });
+
+  it("repairs a missing capstone manifest before inserting its quiz items", () => {
+    const migration = readFileSync(migrationPath, "utf8");
+    const manifestInsert = migration.indexOf("insert into public.lesson_progress_manifests");
+    const firstQuizItem = migration.indexOf("'capstone_check_1'");
+
+    expect(manifestInsert).toBeGreaterThanOrEqual(0);
+    expect(manifestInsert).toBeLessThan(firstQuizItem);
+    expect(migration.slice(manifestInsert, firstQuizItem)).toContain("'lesson_systematic_network_troubleshooting_capstone'");
+  });
 });
