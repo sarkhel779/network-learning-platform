@@ -35,7 +35,6 @@ const definitions = [
   { lessonId: "lesson_subnetting_fundamentals", interactiveAnchors: ["interactive-subnet-boundary", "interactive-subnet-scenarios"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_ipv6_fundamentals", interactiveAnchors: ["interactive-address-explorer", "interactive-ndp-slaac"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_routing_tables_and_default_routes", interactiveAnchors: ["interactive-route-selection", "interactive-hop-by-hop-forwarding"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
-  { lessonId: "lesson_routing_protocols", interactiveAnchors: ["interactive-protocol-selection"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_icmp_ping_and_path_discovery", interactiveAnchors: ["interactive-ping-evidence", "interactive-traceroute-discovery"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_tcp_udp_and_ports", interactiveAnchors: ["interactive-tcp-connection", "interactive-tcp-window", "interactive-fast-retransmit"], knowledgeCheckCount: 3, knowledgeCheckItemIds: ["tcp_reliable_transport_check_1", "tcp_reliable_transport_check_2", "tcp_reliable_transport_check_3"], knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_udp_datagrams_and_ports", interactiveAnchors: ["interactive-udp-port-delivery"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },

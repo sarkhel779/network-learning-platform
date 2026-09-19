@@ -15,14 +15,14 @@ describe("PathwayOverview", () => {
     ).toBeVisible();
     expect(screen.getByText(/complete beginners/i)).toBeVisible();
     const modulesSection = screen.getByRole("heading", { name: "Modules and lessons" }).closest("section") as HTMLElement;
-    expect(within(modulesSection).getAllByRole("listitem")).toHaveLength(26);
+    expect(within(modulesSection).getAllByRole("listitem")).toHaveLength(25);
   });
 
   it("shows the course scale and a jump-to-module link for every module", () => {
     render(<PathwayOverview pathway={getPathway("networking-foundations")} />);
 
     expect(screen.getByText("6 modules")).toBeVisible();
-    expect(screen.getByText("26 lessons")).toBeVisible();
+    expect(screen.getByText("25 lessons")).toBeVisible();
 
     const toc = screen.getByRole("navigation", { name: "Jump to module" });
     const tocLinks = within(toc).getAllByRole("link");
@@ -112,7 +112,7 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /systematic network troubleshooting capstone/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/systematic-network-troubleshooting-capstone",
     );
-    expect(within(modulesSection).getAllByRole("link")).toHaveLength(26);
+    expect(within(modulesSection).getAllByRole("link")).toHaveLength(25);
     expect(within(modulesSection).queryByText("Coming later")).not.toBeInTheDocument();
   });
 });

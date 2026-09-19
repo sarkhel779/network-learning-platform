@@ -34,7 +34,6 @@ import { SubnetScenarioPlayer } from "@/features/subnetting/subnet-scenario-play
 import { Ipv6AddressExplorer } from "@/features/ipv6/ipv6-address-explorer";
 import { NdpSlaacJourneyPlayer } from "@/features/ipv6/ndp-slaac-journey-player";
 import { RoutingTableDecisionPlayer } from "@/features/routing/routing-table-decision-player";
-import { RoutingProtocolSelectorPlayer } from "@/features/routing-protocols/routing-protocol-selector-player";
 import { HopByHopForwardingPlayer } from "@/features/routing/hop-by-hop-forwarding-player";
 import { PingEvidencePlayer } from "@/features/icmp/ping-evidence-player";
 import { TracerouteDiscoveryPlayer } from "@/features/icmp/traceroute-discovery-player";
@@ -128,7 +127,6 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     RouteDecisionPlayer,
     RouteDecisionExperience,
     RoutingTableDecisionPlayer,
-    RoutingProtocolSelectorPlayer,
     SectionContinue,
     SwitchingComparison,
     SwitchLearningPlayer,
