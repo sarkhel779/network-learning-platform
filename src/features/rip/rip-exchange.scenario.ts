@@ -1,0 +1,110 @@
+import { parsePacketFlowScenario, type PacketFlowScenario } from "@/features/packet-flow/packet-flow.schema";
+
+export const ripExchangeScenario: PacketFlowScenario = parsePacketFlowScenario({
+  id: "rip-exchange-split-horizon-triggered-update",
+  title: "RIP: advertising, split horizon, and a triggered update",
+  description: "Watch two RIP routers exchange routes, poison a route back with split horizon, and react instantly to a link failure with a triggered update.",
+  defaultSpeed: 1,
+  devices: [
+    { id: "lan", label: "LAN 192.168.10.0/24", role: "connected network", x: 90, y: 135 },
+    { id: "r1", label: "R1", role: "RIP router", x: 380, y: 135 },
+    { id: "r2", label: "R2", role: "RIP router", x: 680, y: 135 },
+  ],
+  links: [
+    { id: "lan-r1", from: "lan", to: "r1" },
+    { id: "r1-r2", from: "r1", to: "r2" },
+  ],
+  steps: [
+    {
+      id: "r1-advertises-lan",
+      title: "R1 advertises its connected network",
+      explanation: "R1 sends a periodic RIPv2 response to the multicast address 224.0.0.9 on UDP port 520, listing 192.168.10.0/24 with a metric of 1 — its own connected network.",
+      durationMs: 1800,
+      activeDeviceIds: ["r1", "r2"],
+      activeLinkIds: ["r1-r2"],
+      packet: { kind: "packet", label: "RIPv2 Response: 192.168.10.0/24 metric 1", from: "r1", to: "r2" },
+      summaryFields: [
+        { label: "Protocol", value: "RIPv2" },
+        { label: "Destination", value: "224.0.0.9:520 (UDP)" },
+        { label: "Prefix", value: "192.168.10.0/24" },
+        { label: "Metric", value: "1" },
+      ],
+      detailFields: [
+        { label: "Command", value: "2 (Response)" },
+        { label: "Address family", value: "2 (IP)" },
+        { label: "Subnet mask", value: "255.255.255.0" },
+      ],
+    },
+    {
+      id: "r2-installs-route",
+      title: "R2 installs the route with an incremented metric",
+      explanation: "R2 adds 1 to the advertised metric because R1 is one hop away, and installs 192.168.10.0/24 via R1 with a metric of 2.",
+      durationMs: 2600,
+      activeDeviceIds: ["r2"],
+      activeLinkIds: [],
+      summaryFields: [
+        { label: "Installed route", value: "192.168.10.0/24 via R1" },
+        { label: "Metric", value: "2" },
+      ],
+      detailFields: [],
+    },
+    {
+      id: "r2-applies-split-horizon",
+      title: "R2 poisons the route back with split horizon",
+      explanation: "When R2 next advertises toward R1, split horizon with poisoned reverse re-advertises 192.168.10.0/24 back to R1 with a metric of 16 (infinite) instead of silently omitting it — explicitly telling R1 not to route through R2 to reach its own network.",
+      durationMs: 1800,
+      activeDeviceIds: ["r2", "r1"],
+      activeLinkIds: ["r1-r2"],
+      packet: { kind: "packet", label: "RIPv2 Response: 192.168.10.0/24 metric 16 (poisoned)", from: "r2", to: "r1" },
+      summaryFields: [
+        { label: "Protocol", value: "RIPv2" },
+        { label: "Prefix", value: "192.168.10.0/24" },
+        { label: "Metric", value: "16 (poisoned)", changed: true },
+      ],
+      detailFields: [
+        { label: "Loop-prevention rule", value: "Split horizon with poisoned reverse" },
+      ],
+    },
+    {
+      id: "lan-link-fails",
+      title: "R1's LAN interface fails",
+      explanation: "The link to 192.168.10.0/24 goes down. RIP does not have to wait out its 30-second periodic update timer for a failure — it fires a triggered update immediately.",
+      durationMs: 2600,
+      activeDeviceIds: ["r1"],
+      activeLinkIds: [],
+      summaryFields: [
+        { label: "Interface", value: "R1 LAN interface: down", changed: true },
+      ],
+      detailFields: [],
+      stateNote: "A triggered update fires the moment a route changes, instead of waiting for the next 30-second cycle.",
+    },
+    {
+      id: "r1-sends-triggered-update",
+      title: "R1 sends a triggered update with metric 16",
+      explanation: "R1 immediately advertises 192.168.10.0/24 with a metric of 16 (unreachable), rather than waiting for its next regularly scheduled update.",
+      durationMs: 1800,
+      activeDeviceIds: ["r1", "r2"],
+      activeLinkIds: ["r1-r2"],
+      packet: { kind: "packet", label: "RIPv2 Triggered Update: 192.168.10.0/24 metric 16", from: "r1", to: "r2" },
+      summaryFields: [
+        { label: "Protocol", value: "RIPv2 (triggered)" },
+        { label: "Prefix", value: "192.168.10.0/24" },
+        { label: "Metric", value: "16 (unreachable)", changed: true },
+      ],
+      detailFields: [],
+    },
+    {
+      id: "r2-removes-route",
+      title: "R2 removes the unreachable route",
+      explanation: "R2 marks 192.168.10.0/24 unreachable as soon as it receives the metric-16 update, instead of waiting out its 180-second invalid timer.",
+      durationMs: 2600,
+      activeDeviceIds: ["r2"],
+      activeLinkIds: [],
+      summaryFields: [
+        { label: "Route 192.168.10.0/24", value: "Removed", changed: true },
+      ],
+      detailFields: [],
+      stateNote: "Without split horizon and triggered updates, a failure like this could bounce back and forth as a routing loop until the routers counted to infinity.",
+    },
+  ],
+} as const);

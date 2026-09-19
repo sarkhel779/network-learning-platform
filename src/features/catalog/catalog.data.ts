@@ -642,13 +642,26 @@ const curriculum: Pathway[] = [
         title: "RIP",
         description: "The oldest distance-vector protocol still in use, and why its simplicity is both its strength and its limit.",
         lessons: [
-          plannedLesson({
+          {
             id: "lesson_rip", slug: "rip",
             title: "RIP: Routing Information Protocol",
-            objective: "Explain how RIP exchanges routes by hop count, prevents loops, and where its RFC 2453 packet format and limits show up in practice.",
+            objective: "Explain how RIP exchanges routes by hop count, prevents loops with split horizon and triggered updates, and where its RFC 2453 packet format and limits show up in practice.",
             seo: { title: "RIP: Routing Information Protocol", description: "Learn how RIP's distance-vector, hop-count design works, from RFC 1058 through RFC 2453." },
-            estimatedMinutes: 25,
-          }),
+            published: true, estimatedMinutes: 25,
+            sections: [
+              { id: "what-rip-is", label: "What RIP is", access: "public" },
+              { id: "rip-packet-format", label: "RIP packet format", access: "public" },
+              { id: "how-rip-updates-work", label: "How RIP updates work", access: "public" },
+              { id: "preventing-routing-loops", label: "Preventing routing loops", access: "public" },
+              { id: "interactive-rip-exchange", label: "Interactive RIP exchange", access: "public" },
+              { id: "rip-limits-and-ripng", label: "RIP's limits and RIPng", access: "public" },
+              { id: "inspect-rip-evidence", label: "Inspect RIP evidence", access: "account" },
+              { id: "guided-rip-convergence-practice", label: "Guided RIP convergence practice", access: "account" },
+              { id: "troubleshoot-rip", label: "Troubleshoot RIP", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "RIPv2 authentication, RIPng for IPv6, and why RIP still shows up in legacy and lab networks." },
+            ],
+          },
         ],
       },
       {

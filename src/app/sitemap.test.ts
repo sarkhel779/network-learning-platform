@@ -49,6 +49,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/networking-foundations/nat-pat-and-the-complete-internet-packet-journey" },
       { url: "https://packetsecrets.com/learn/networking-foundations/systematic-network-troubleshooting-capstone" },
       { url: "https://packetsecrets.com/learn/routing-protocols/routing-fundamentals" },
+      { url: "https://packetsecrets.com/learn/routing-protocols/rip" },
     ]);
     const urls = entries.map(({ url }) => url);
     for (const pathway of listPathways()) {
@@ -69,7 +70,6 @@ describe("public sitemap", () => {
       expect(urls).not.toContain(unpublishedUrl);
     }
     expect(unpublishedSlugs).toEqual([
-      "https://packetsecrets.com/learn/routing-protocols/rip",
       "https://packetsecrets.com/learn/routing-protocols/ospf",
       "https://packetsecrets.com/learn/routing-protocols/eigrp",
       "https://packetsecrets.com/learn/routing-protocols/bgp",

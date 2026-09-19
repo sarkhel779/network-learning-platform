@@ -135,6 +135,10 @@ const lessonImports = {
     public: () => import("@/content/routing-protocols/routing-fundamentals.public.mdx"),
     account: () => import("@/content/routing-protocols/routing-fundamentals.account.mdx"),
   },
+  "routing-protocols/rip": {
+    public: () => import("@/content/routing-protocols/rip.public.mdx"),
+    account: () => import("@/content/routing-protocols/rip.account.mdx"),
+  },
 } satisfies LessonContentRegistry;
 
 async function loadFromRegistry(

@@ -371,6 +371,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "routing-protocols",
         lessonSlug: "routing-fundamentals",
       },
+      {
+        pathwaySlug: "routing-protocols",
+        lessonSlug: "rip",
+      },
     ]);
   });
 
