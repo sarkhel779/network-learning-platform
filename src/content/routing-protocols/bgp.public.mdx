@@ -1,0 +1,37 @@
+<LearningObjective>Explain how BGP establishes peering sessions, advertises path attributes, and applies the RFC 4271 decision process to choose a best path.</LearningObjective>
+
+<h2 id="what-bgp-is">What BGP is</h2>
+
+**BGP (Border Gateway Protocol)** is the routing protocol that holds the public Internet together, standardized in **RFC 4271** (BGP-4). Unlike the three interior gateway protocols in this course, BGP is an **Exterior Gateway Protocol**: it runs *between* independently administered networks called **autonomous systems (AS)**, each identified by an AS number. BGP is a **path-vector** protocol — related to distance-vector, but instead of a simple distance it exchanges the entire sequence of autonomous systems a route has crossed, letting a router detect and reject a route that loops back through its own AS. Two BGP routers that exchange routes are **peers**; a session between routers in different autonomous systems is **eBGP**, and a session between routers in the same autonomous system is **iBGP**. BGP runs over **TCP port 179**, inheriting reliable, ordered delivery instead of implementing its own.
+
+<SectionContinue itemId="bgp_section_what_bgp_is" anchor="what-bgp-is" />
+
+<h2 id="bgp-message-types">BGP message types</h2>
+
+RFC 4271 defines four BGP message types. **OPEN** is sent once, right after the TCP connection forms, to negotiate session parameters (AS number, hold time, BGP Identifier). **UPDATE** advertises new reachable prefixes or withdraws ones that are no longer reachable, each carrying its path attributes. **NOTIFICATION** reports an error and closes the session. **KEEPALIVE** is sent periodically (and has no body beyond its header) to confirm the session is still alive within the negotiated hold time.
+
+<SectionContinue itemId="bgp_section_bgp_message_types" anchor="bgp-message-types" />
+
+<h2 id="the-bgp-finite-state-machine">The BGP finite state machine</h2>
+
+A BGP session moves through a defined sequence of states: **Idle** (no connection attempted) → **Connect** (waiting for the TCP connection) → **Active** (retrying the TCP connection) → **OpenSent** (TCP is up, local OPEN sent, waiting for the peer's OPEN) → **OpenConfirm** (OPEN messages exchanged, waiting for a KEEPALIVE) → **Established** (the session is fully up). Routes are only exchanged once a session reaches **Established** — anything short of that is still session setup, not routing.
+
+<SectionContinue itemId="bgp_section_the_bgp_finite_state_machine" anchor="the-bgp-finite-state-machine" />
+
+<h2 id="path-attributes">Path attributes</h2>
+
+Every BGP UPDATE carries **path attributes** describing the route, which the decision process later compares. **AS_PATH** lists every autonomous system the route has crossed; **NEXT_HOP** is the IP address to forward toward; **ORIGIN** records how the route entered BGP (IGP, EGP, or Incomplete); **LOCAL_PREF** is an iBGP-only attribute an administrator sets to prefer one exit point over another; **MED (Multi-Exit Discriminator)** is a hint one AS gives another about which of several entry points it prefers, deliberately weak in the decision process so it rarely overrides more important attributes.
+
+<SectionContinue itemId="bgp_section_path_attributes" anchor="path-attributes" />
+
+<h2 id="interactive-bgp-session-establishment">Interactive BGP session establishment</h2>
+
+Step through two eBGP peers moving through the finite state machine from Idle to Established, then advertising a prefix with its path attributes.
+
+<BgpSessionEstablishmentPacketFlow progressItemId="bgp_interactive_interactive_bgp_session_establishment" />
+
+<h2 id="the-bgp-decision-process">The BGP decision process</h2>
+
+When more than one route to the same prefix survives, RFC 4271's decision process compares them in order, stopping as soon as one criterion breaks the tie: highest **LOCAL_PREF**, shortest **AS_PATH** length, lowest **ORIGIN** type (IGP beats EGP beats Incomplete), lowest **MED** (only compared between routes from the same neighboring AS), **eBGP preferred over iBGP**, lowest IGP metric to the **NEXT_HOP**, and finally lowest **BGP Identifier** (Router ID) as a final tiebreaker. Cisco's implementation checks a proprietary **Weight** attribute before all of these, but Weight is not part of the RFC 4271 specification.
+
+<SectionContinue itemId="bgp_section_the_bgp_decision_process" anchor="the-bgp-decision-process" />

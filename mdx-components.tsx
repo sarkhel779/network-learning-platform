@@ -39,6 +39,7 @@ import { RouteSelectionPacketFlow } from "@/features/routing-fundamentals/route-
 import { RipExchangePacketFlow } from "@/features/rip/rip-exchange-packet-flow";
 import { OspfAdjacencyPacketFlow } from "@/features/ospf/ospf-adjacency-packet-flow";
 import { EigrpDualPacketFlow } from "@/features/eigrp/eigrp-dual-packet-flow";
+import { BgpSessionEstablishmentPacketFlow } from "@/features/bgp/bgp-session-establishment-packet-flow";
 import { PingEvidencePlayer } from "@/features/icmp/ping-evidence-player";
 import { TracerouteDiscoveryPlayer } from "@/features/icmp/traceroute-discovery-player";
 import { TcpConnectionPlayer } from "@/features/transport/tcp-connection-player";
@@ -112,6 +113,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     RipExchangePacketFlow,
     OspfAdjacencyPacketFlow,
     EigrpDualPacketFlow,
+    BgpSessionEstablishmentPacketFlow,
     InterviewScenario,
     Ipv4AddressBoundaryPlayer,
     Ipv4BinaryExplorer,

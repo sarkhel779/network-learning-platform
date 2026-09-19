@@ -1,0 +1,42 @@
+{/* BGP_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-bgp-evidence">Inspect BGP evidence</h2>
+
+`show ip bgp summary` is the first command to check: it lists every configured neighbor and its current session state. Anything other than a number (the count of received prefixes) in the state column — Idle, Active, Connect, OpenSent, OpenConfirm — means the session has not reached Established, and no routes are being exchanged with that neighbor yet. `show ip bgp` (or `show ip bgp <prefix>`) lists the routes themselves along with their path attributes, so you can see exactly why the decision process picked the route it did.
+
+<WiresharkCheck displayFilter="bgp">Capture on a link between two BGP peers. Identify OPEN, UPDATE, and KEEPALIVE messages by their BGP message type field, and confirm the session actually completed the OPEN/KEEPALIVE exchange before assuming any advertised route is in use.</WiresharkCheck>
+
+<SectionContinue itemId="bgp_section_inspect_bgp_evidence" anchor="inspect-bgp-evidence" />
+
+<h2 id="guided-bgp-path-selection-practice">Guided BGP path-selection practice</h2>
+
+Two routes reach the same prefix: Route A has LOCAL_PREF 200 and a 3-AS-long AS_PATH; Route B has LOCAL_PREF 100 and a 1-AS-long AS_PATH. Because LOCAL_PREF is compared before AS_PATH length in the decision process, Route A wins outright — its longer AS_PATH is never even considered.
+
+<InterviewScenario title="Why does LOCAL_PREF beat a shorter AS_PATH?">Explain, in terms of what LOCAL_PREF is actually used for (an administrator's policy preference, set within one AS) versus what AS_PATH length approximates (how many autonomous systems a route crosses), why BGP's designers put policy ahead of path length in the decision order.</InterviewScenario>
+
+<SectionContinue itemId="bgp_section_guided_bgp_path_selection_practice" anchor="guided-bgp-path-selection-practice" />
+
+<h2 id="troubleshoot-bgp">Troubleshoot BGP</h2>
+
+1. Confirm basic IP reachability and that nothing is blocking TCP port 179 between the two routers.
+2. Check for an AS number mismatch — each side must be configured with the AS number its peer expects, for both eBGP and iBGP.
+3. If the session is stuck in Active or Idle, the TCP connection itself is failing; verify routing to the peer's address exists independently of BGP.
+4. If the session reaches Established but a prefix does not appear, check outbound and inbound routing policy (prefix lists, route maps, distribute lists) on both sides before assuming a protocol fault.
+5. Confirm the NEXT_HOP in a received route is actually reachable — an eBGP-learned NEXT_HOP that is not directly reachable, or not reachable via an IGP route in an iBGP scenario, will keep the route out of the forwarding table even though BGP accepted it.
+6. When two routes both look valid but only one is used, read the path attributes directly with `show ip bgp <prefix>` and walk the decision process in order rather than guessing.
+
+<InterviewScenario title="A neighbor is stuck in Active">A BGP neighbor relationship shows the Active state and never advances to OpenSent. Explain what Active specifically means in the finite state machine, and why this points toward a TCP-level reachability problem rather than a BGP parameter mismatch.</InterviewScenario>
+
+<SectionContinue itemId="bgp_section_troubleshoot_bgp" anchor="troubleshoot-bgp" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="bgp_check_1" question="What makes BGP a path-vector protocol rather than a plain distance-vector protocol?" options={["It uses hop count as its metric", "It exchanges the entire AS_PATH, letting a router detect a loop back through its own AS", "It floods link-state information to every router"]} correctIndex={1} explanation="BGP exchanges the full sequence of autonomous systems a route has crossed (AS_PATH), which is what distinguishes path-vector from simple distance-vector." />
+
+<KnowledgeCheck progressItemId="bgp_check_2" question="At which BGP finite state machine state are routes first exchanged?" options={["OpenSent", "OpenConfirm", "Established"]} correctIndex={2} explanation="Routes are only exchanged once a session reaches Established; OpenSent and OpenConfirm are still session setup." />
+
+<KnowledgeCheck progressItemId="bgp_check_3" question="In the RFC 4271 decision process, which is compared first: LOCAL_PREF or AS_PATH length?" options={["AS_PATH length, always", "LOCAL_PREF, before AS_PATH length is ever considered", "They are compared together as a single score"]} correctIndex={1} explanation="LOCAL_PREF is compared before AS_PATH length, so a higher LOCAL_PREF route wins even with a longer AS_PATH." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">Go through BGP communities for tagging and filtering routes, route reflectors (RFC 4456) for scaling iBGP without a full mesh, confederations, route dampening for suppressing flapping routes, and multiprotocol BGP (RFC 4760) for carrying address families beyond IPv4 unicast.</PremiumPreview>

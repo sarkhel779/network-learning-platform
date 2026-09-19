@@ -88,6 +88,7 @@ const definitions = [
   { lessonId: "lesson_rip", interactiveAnchors: ["interactive-rip-exchange"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_ospf", interactiveAnchors: ["interactive-ospf-adjacency"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_eigrp", interactiveAnchors: ["interactive-eigrp-dual"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_bgp", interactiveAnchors: ["interactive-bgp-session-establishment"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
 ] as const satisfies readonly LessonProgressDefinition[];
 
 function itemPrefix(lessonId: string) {

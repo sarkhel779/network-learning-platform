@@ -383,6 +383,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "routing-protocols",
         lessonSlug: "eigrp",
       },
+      {
+        pathwaySlug: "routing-protocols",
+        lessonSlug: "bgp",
+      },
     ]);
   });
 

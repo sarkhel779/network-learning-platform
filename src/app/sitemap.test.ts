@@ -52,6 +52,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/routing-protocols/rip" },
       { url: "https://packetsecrets.com/learn/routing-protocols/ospf" },
       { url: "https://packetsecrets.com/learn/routing-protocols/eigrp" },
+      { url: "https://packetsecrets.com/learn/routing-protocols/bgp" },
     ]);
     const urls = entries.map(({ url }) => url);
     for (const pathway of listPathways()) {
@@ -71,9 +72,7 @@ describe("public sitemap", () => {
     for (const unpublishedUrl of unpublishedSlugs) {
       expect(urls).not.toContain(unpublishedUrl);
     }
-    expect(unpublishedSlugs).toEqual([
-      "https://packetsecrets.com/learn/routing-protocols/bgp",
-    ]);
+    expect(unpublishedSlugs).toHaveLength(0);
   });
 
   it("removes a lesson unpublished by a live database override", async () => {

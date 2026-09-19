@@ -147,6 +147,10 @@ const lessonImports = {
     public: () => import("@/content/routing-protocols/eigrp.public.mdx"),
     account: () => import("@/content/routing-protocols/eigrp.account.mdx"),
   },
+  "routing-protocols/bgp": {
+    public: () => import("@/content/routing-protocols/bgp.public.mdx"),
+    account: () => import("@/content/routing-protocols/bgp.account.mdx"),
+  },
 } satisfies LessonContentRegistry;
 
 async function loadFromRegistry(
