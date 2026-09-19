@@ -25,6 +25,7 @@ describe("pathway route generation", () => {
   it("emits every validated pathway slug", () => {
     expect(staticPathwayPage.generateStaticParams?.()).toEqual([
       { pathwaySlug: "networking-foundations" },
+      { pathwaySlug: "routing-protocols" },
     ]);
   });
 

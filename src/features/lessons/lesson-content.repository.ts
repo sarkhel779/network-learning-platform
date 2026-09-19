@@ -131,6 +131,10 @@ const lessonImports = {
     account: () =>
       import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),
   },
+  "routing-protocols/routing-fundamentals": {
+    public: () => import("@/content/routing-protocols/routing-fundamentals.public.mdx"),
+    account: () => import("@/content/routing-protocols/routing-fundamentals.account.mdx"),
+  },
 } satisfies LessonContentRegistry;
 
 async function loadFromRegistry(

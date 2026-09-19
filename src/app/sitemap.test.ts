@@ -22,6 +22,7 @@ describe("public sitemap", () => {
     expect(entries).toEqual([
       { url: "https://packetsecrets.com" },
       { url: "https://packetsecrets.com/paths/networking-foundations" },
+      { url: "https://packetsecrets.com/paths/routing-protocols" },
       { url: "https://packetsecrets.com/learn/networking-foundations/how-networks-communicate" },
       { url: "https://packetsecrets.com/learn/networking-foundations/hosts-and-network-devices" },
       { url: "https://packetsecrets.com/learn/networking-foundations/cables-fibre-wireless-and-network-connections" },
@@ -47,6 +48,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/networking-foundations/http-https-tls-and-essential-network-services" },
       { url: "https://packetsecrets.com/learn/networking-foundations/nat-pat-and-the-complete-internet-packet-journey" },
       { url: "https://packetsecrets.com/learn/networking-foundations/systematic-network-troubleshooting-capstone" },
+      { url: "https://packetsecrets.com/learn/routing-protocols/routing-fundamentals" },
     ]);
     const urls = entries.map(({ url }) => url);
     for (const pathway of listPathways()) {
@@ -66,7 +68,12 @@ describe("public sitemap", () => {
     for (const unpublishedUrl of unpublishedSlugs) {
       expect(urls).not.toContain(unpublishedUrl);
     }
-    expect(unpublishedSlugs).toHaveLength(0);
+    expect(unpublishedSlugs).toEqual([
+      "https://packetsecrets.com/learn/routing-protocols/rip",
+      "https://packetsecrets.com/learn/routing-protocols/ospf",
+      "https://packetsecrets.com/learn/routing-protocols/eigrp",
+      "https://packetsecrets.com/learn/routing-protocols/bgp",
+    ]);
   });
 
   it("removes a lesson unpublished by a live database override", async () => {

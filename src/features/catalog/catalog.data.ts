@@ -601,6 +601,103 @@ const curriculum: Pathway[] = [
       },
     ],
   },
+  {
+    id: "path_routing_protocols",
+    slug: "routing-protocols",
+    title: "Routing Protocols",
+    description: "Go deep on how routers actually choose paths: routing-table fundamentals, then RFC-grounded, packet-by-packet internals of RIP, OSPF, EIGRP, and BGP.",
+    audience: "Learners who already understand basic networking and want a rigorous, protocol-by-protocol understanding of dynamic routing.",
+    modules: [
+      {
+        id: "module_introduction_to_routing",
+        slug: "introduction-to-routing",
+        title: "Introduction to Routing",
+        description: "The concepts every routing protocol builds on: administrative distance, metrics, and the distance-vector, link-state, and path-vector families.",
+        lessons: [
+          {
+            id: "lesson_routing_fundamentals", slug: "routing-fundamentals",
+            title: "Routing Fundamentals: Administrative Distance and Metrics",
+            objective: "Explain how a router chooses between competing routes using administrative distance and protocol metrics, and identify which algorithm family (distance-vector, link-state, or path-vector) each routing protocol belongs to.",
+            seo: { title: "Routing Fundamentals: Administrative Distance and Metrics", description: "Learn how routers pick a best route using administrative distance and metrics, and how distance-vector, link-state, and path-vector protocols differ." },
+            published: true, estimatedMinutes: 25,
+            sections: [
+              { id: "why-routing-protocols-exist", label: "Why routing protocols exist", access: "public" },
+              { id: "administrative-distance-and-trustworthiness", label: "Administrative distance and trustworthiness", access: "public" },
+              { id: "how-routing-metrics-are-calculated", label: "How routing metrics are calculated", access: "public" },
+              { id: "distance-vector-link-state-and-path-vector", label: "Distance-vector, link-state, and path-vector", access: "public" },
+              { id: "interactive-route-selection", label: "Interactive route selection", access: "public" },
+              { id: "choosing-an-igp-or-egp", label: "Choosing an IGP or EGP", access: "public" },
+              { id: "inspect-routing-table-evidence", label: "Inspect routing table evidence", access: "account" },
+              { id: "guided-metric-calculation-practice", label: "Guided metric-calculation practice", access: "account" },
+              { id: "troubleshoot-routing-selection", label: "Troubleshoot routing selection", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Tune OSPF reference bandwidth, compute the full EIGRP K-value formula, and see how redistribution and route maps change administrative distance and metrics." },
+            ],
+          },
+        ],
+      },
+      {
+        id: "module_rip",
+        slug: "rip",
+        title: "RIP",
+        description: "The oldest distance-vector protocol still in use, and why its simplicity is both its strength and its limit.",
+        lessons: [
+          plannedLesson({
+            id: "lesson_rip", slug: "rip",
+            title: "RIP: Routing Information Protocol",
+            objective: "Explain how RIP exchanges routes by hop count, prevents loops, and where its RFC 2453 packet format and limits show up in practice.",
+            seo: { title: "RIP: Routing Information Protocol", description: "Learn how RIP's distance-vector, hop-count design works, from RFC 1058 through RFC 2453." },
+            estimatedMinutes: 25,
+          }),
+        ],
+      },
+      {
+        id: "module_ospf",
+        slug: "ospf",
+        title: "OSPF",
+        description: "The dominant link-state interior gateway protocol: areas, LSAs, and Dijkstra's algorithm in practice.",
+        lessons: [
+          plannedLesson({
+            id: "lesson_ospf", slug: "ospf",
+            title: "OSPF: Open Shortest Path First",
+            objective: "Explain how OSPF routers form adjacencies, flood link-state advertisements, and compute shortest paths per RFC 2328.",
+            seo: { title: "OSPF: Open Shortest Path First", description: "Learn OSPF's link-state operation, areas, LSA types, and adjacency states from RFC 2328." },
+            estimatedMinutes: 30,
+          }),
+        ],
+      },
+      {
+        id: "module_eigrp",
+        slug: "eigrp",
+        title: "EIGRP",
+        description: "Cisco's advanced distance-vector protocol and the DUAL algorithm that makes it fast and loop-free.",
+        lessons: [
+          plannedLesson({
+            id: "lesson_eigrp", slug: "eigrp",
+            title: "EIGRP: Enhanced Interior Gateway Routing Protocol",
+            objective: "Explain how EIGRP's DUAL algorithm finds loop-free successors and feasible successors, and how its composite metric is calculated per RFC 7868.",
+            seo: { title: "EIGRP: Enhanced Interior Gateway Routing Protocol", description: "Learn EIGRP's DUAL algorithm, feasible successors, and composite metric from RFC 7868." },
+            estimatedMinutes: 28,
+          }),
+        ],
+      },
+      {
+        id: "module_bgp",
+        slug: "bgp",
+        title: "BGP",
+        description: "The path-vector protocol that holds the Internet together, and the policy-driven decisions behind it.",
+        lessons: [
+          plannedLesson({
+            id: "lesson_bgp", slug: "bgp",
+            title: "BGP: Border Gateway Protocol",
+            objective: "Explain how BGP establishes peering sessions, advertises path attributes, and applies the RFC 4271 decision process to choose a best path.",
+            seo: { title: "BGP: Border Gateway Protocol", description: "Learn BGP's path-vector operation, path attributes, and best-path decision process from RFC 4271." },
+            estimatedMinutes: 30,
+          }),
+        ],
+      },
+    ],
+  },
 ];
 
 export const pathways = pathwayCatalogSchema.parse(curriculum);

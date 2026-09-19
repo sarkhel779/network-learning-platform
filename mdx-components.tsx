@@ -35,6 +35,7 @@ import { Ipv6AddressExplorer } from "@/features/ipv6/ipv6-address-explorer";
 import { NdpSlaacJourneyPlayer } from "@/features/ipv6/ndp-slaac-journey-player";
 import { RoutingTableDecisionPlayer } from "@/features/routing/routing-table-decision-player";
 import { HopByHopForwardingPlayer } from "@/features/routing/hop-by-hop-forwarding-player";
+import { RouteSelectionPacketFlow } from "@/features/routing-fundamentals/route-selection-packet-flow";
 import { PingEvidencePlayer } from "@/features/icmp/ping-evidence-player";
 import { TracerouteDiscoveryPlayer } from "@/features/icmp/traceroute-discovery-player";
 import { TcpConnectionPlayer } from "@/features/transport/tcp-connection-player";
@@ -104,6 +105,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     HostsAndDevicesExperience,
     HostsAndDevicesStaticOverview,
     HopByHopForwardingPlayer,
+    RouteSelectionPacketFlow,
     InterviewScenario,
     Ipv4AddressBoundaryPlayer,
     Ipv4BinaryExplorer,

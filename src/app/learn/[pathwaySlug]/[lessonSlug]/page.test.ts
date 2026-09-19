@@ -367,6 +367,10 @@ describe("lesson route generation", () => {
         pathwaySlug: "networking-foundations",
         lessonSlug: "systematic-network-troubleshooting-capstone",
       },
+      {
+        pathwaySlug: "routing-protocols",
+        lessonSlug: "routing-fundamentals",
+      },
     ]);
   });
 

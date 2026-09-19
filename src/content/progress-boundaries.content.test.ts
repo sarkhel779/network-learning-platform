@@ -5,10 +5,12 @@ import { describe, expect, it } from "vitest";
 
 import { lessonProgressManifests } from "@/features/progress/progress-manifests";
 
-const contentRoot = path.join(process.cwd(), "src", "content", "networking-foundations");
-const sourceFiles = fs.readdirSync(contentRoot)
-  .filter((name) => name.endsWith(".public.mdx") || name.endsWith(".account.mdx"))
-  .map((name) => ({ name, source: fs.readFileSync(path.join(contentRoot, name), "utf8") }));
+const contentRoot = path.join(process.cwd(), "src", "content");
+const sourceFiles = fs.readdirSync(contentRoot, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .flatMap((dir) => fs.readdirSync(path.join(contentRoot, dir.name))
+    .filter((name) => name.endsWith(".public.mdx") || name.endsWith(".account.mdx"))
+    .map((name) => ({ name, source: fs.readFileSync(path.join(contentRoot, dir.name, name), "utf8") })));
 const sources = sourceFiles.map(({ source }) => source).join("\n");
 
 describe("published lesson progress boundaries", () => {

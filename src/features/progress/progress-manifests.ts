@@ -84,6 +84,7 @@ const definitions = [
       { itemId: "capstone_pro_report", kind: "interactive", label: "Pro incident report", anchor: "pro-incident-report", required: false },
     ],
   },
+  { lessonId: "lesson_routing_fundamentals", interactiveAnchors: ["interactive-route-selection"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
 ] as const satisfies readonly LessonProgressDefinition[];
 
 function itemPrefix(lessonId: string) {
@@ -145,22 +146,22 @@ function buildItems(
 }
 
 function createManifests() {
-  const pathway = pathways.find(({ id }) => id === "path_networking_foundations");
-  if (!pathway) throw new Error("Networking foundations pathway not found.");
-
-  const lessons = pathway.modules.flatMap(({ lessons: moduleLessons }) => moduleLessons);
+  const lessonsByPathway = pathways.flatMap((pathway) =>
+    pathway.modules
+      .flatMap(({ lessons: moduleLessons }) => moduleLessons)
+      .map((lesson) => ({ pathwayId: pathway.id, lesson })));
 
   return definitions.map((definition) => {
-    const lesson = lessons.find(({ id }) => id === definition.lessonId);
-    if (!lesson?.published) {
+    const match = lessonsByPathway.find(({ lesson }) => lesson.id === definition.lessonId);
+    if (!match?.lesson.published) {
       throw new Error(`Published lesson not found for progress: ${definition.lessonId}`);
     }
 
     return parseLessonProgressManifest({
-      pathwayId: pathway.id,
-      lessonId: lesson.id,
+      pathwayId: match.pathwayId,
+      lessonId: match.lesson.id,
       contentVersion: 1,
-      items: buildItems(lesson.id, lesson.sections ?? [], definition),
+      items: buildItems(match.lesson.id, match.lesson.sections ?? [], definition),
     });
   });
 }

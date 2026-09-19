@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(25);
+    expect(lessonProgressManifests).toHaveLength(26);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -67,6 +67,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609110003_add_essential_services_progress.sql",
       "supabase/migrations/202609110004_add_nat_pat_progress.sql",
       "supabase/migrations/202609110005_add_troubleshooting_capstone_progress.sql",
+      "supabase/migrations/202609190001_add_routing_fundamentals_progress.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -75,9 +76,17 @@ describe("lessonProgressManifests", () => {
       expect(migration).toContain(`'${itemId}'`);
     }
 
-    const registeredLessons = [...migration.matchAll(/^  \('path_networking_foundations', '(lesson_[^']+)', 1, \d+\)[,;]?$/gm)]
+    const registeredLessons = [...migration.matchAll(/^  \('path_[a-z_]+', '(lesson_[^']+)', 1, \d+\)[,;]?$/gm)]
       .map((match) => match[1]);
     expect(new Set(registeredLessons)).toEqual(new Set(lessonProgressManifests.map(({ lessonId }) => lessonId)));
+  });
+
+  it("registers the routing fundamentals lesson with one player and three checks as 12 required items", () => {
+    const manifest = getLessonProgressManifest("path_routing_protocols", "lesson_routing_fundamentals");
+    expect(manifest.items).toHaveLength(12);
+    expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-route-selection"]);
+    expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
+    expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
   });
 
   it("registers the routing lesson players and three checks as 18 required items", () => {
