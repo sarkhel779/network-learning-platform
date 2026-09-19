@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { LessonProgressManifest, LessonProgressSummary } from "./progress.types";
-import { LessonProgressProvider, useLessonProgress, useLessonProgressItem } from "./lesson-progress-context";
+import { LessonProgressProvider, useLessonProgress, useLessonProgressItem, useOptionalLessonProgressItem } from "./lesson-progress-context";
 
 const { saveProgress } = vi.hoisted(() => ({ saveProgress: vi.fn() }));
 vi.mock("./progress-client", () => ({ saveProgress }));
@@ -18,6 +18,18 @@ function Probe() {
   const item = useLessonProgressItem("read_intro");
   const lesson = useLessonProgress();
   return <><button onClick={() => item.complete()}>Complete</button><button onClick={item.retry}>Retry</button><span>State {item.state}</span><span>Confirmed {lesson.authoritativeProgress?.completionPercent ?? 0}</span><span>Displayed {lesson.optimisticCompletionPercent}</span></>;
+}
+
+const quizManifest: LessonProgressManifest = { pathwayId: "path_networking_foundations", lessonId: "lesson_quiz", contentVersion: 1, items: [
+  { itemId: "interactive_demo", kind: "interactive", label: "Demo", anchor: "demo", required: false },
+  { itemId: "quiz_check_1", kind: "knowledge_check", label: "Knowledge check 1", anchor: "quiz-check-1", required: true },
+] };
+
+function QuizProbe() {
+  const interactive = useOptionalLessonProgressItem("interactive_demo");
+  const check = useOptionalLessonProgressItem("quiz_check_1");
+  const lesson = useLessonProgress();
+  return <><button onClick={() => interactive.complete({ eventType: "interactive_completed" })}>Complete interactive</button><button onClick={() => check.complete({ eventType: "knowledge_check_attempted", answerCorrect: false })}>Submit wrong answer</button><span>Displayed {lesson.optimisticCompletionPercent}</span></>;
 }
 
 beforeEach(() => { localStorage.clear(); vi.clearAllMocks(); });
@@ -52,5 +64,15 @@ describe("LessonProgressProvider", () => {
     await userEvent.click(screen.getByRole("button", { name: "Complete" }));
     await waitFor(() => expect(screen.getByText("State saved")).toBeVisible());
     expect(saveProgress).toHaveBeenCalledOnce();
+  });
+
+  it("does not save interactive completion or optimistically count an incorrect quiz answer", async () => {
+    saveProgress.mockRejectedValue(new Error("offline"));
+    render(<LessonProgressProvider viewerId="learner-quiz" manifest={quizManifest} initialProgress={null}><QuizProbe /></LessonProgressProvider>);
+    await userEvent.click(screen.getByRole("button", { name: "Complete interactive" }));
+    expect(saveProgress).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByRole("button", { name: "Submit wrong answer" }));
+    await waitFor(() => expect(saveProgress).toHaveBeenCalledOnce());
+    expect(screen.getByText("Displayed 0")).toBeVisible();
   });
 });

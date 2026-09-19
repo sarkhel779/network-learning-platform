@@ -18,4 +18,12 @@ describe("systematic troubleshooting capstone content", () => {
     expect(pro).toMatch(/TroubleshootingProExperience/);
     expect(pro).toMatch(/Wireshark|RFC 9293|asymmetric/i);
   });
+
+  it("ends the account capstone with three final knowledge checks", () => {
+    const account = read("account");
+    expect(account.match(/<KnowledgeCheck\s/g)).toHaveLength(3);
+    expect(account).toContain('progressItemId="capstone_check_1"');
+    expect(account).toContain('progressItemId="capstone_check_2"');
+    expect(account).toContain('progressItemId="capstone_check_3"');
+  });
 });

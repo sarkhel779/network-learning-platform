@@ -72,13 +72,13 @@ const definitions = [
     lessonId: "lesson_systematic_network_troubleshooting_capstone", itemPrefix: "capstone",
     interactiveAnchors: ["guided-branch-incident"],
     interactiveItemIds: { "guided-branch-incident": "capstone_guided_incident" },
-    knowledgeCheckCount: 0,
-    knowledgeAnchor: null,
+    knowledgeCheckCount: 3,
+    knowledgeAnchor: "final-knowledge-check",
     extraItems: [
-      { itemId: "capstone_guided_vlan_check", kind: "interactive", label: "Diagnose the VLAN fault", anchor: "guided-vlan-check", required: true },
-      { itemId: "capstone_guided_route_check", kind: "interactive", label: "Diagnose the routing fault", anchor: "guided-route-check", required: true },
-      { itemId: "capstone_guided_dns_check", kind: "interactive", label: "Diagnose the DNS fault", anchor: "guided-dns-check", required: true },
-      { itemId: "capstone_restoration_verification", kind: "interactive", label: "Verify end-to-end restoration", anchor: "restoration-verification", required: true },
+      { itemId: "capstone_guided_vlan_check", kind: "interactive", label: "Diagnose the VLAN fault", anchor: "guided-vlan-check", required: false },
+      { itemId: "capstone_guided_route_check", kind: "interactive", label: "Diagnose the routing fault", anchor: "guided-route-check", required: false },
+      { itemId: "capstone_guided_dns_check", kind: "interactive", label: "Diagnose the DNS fault", anchor: "guided-dns-check", required: false },
+      { itemId: "capstone_restoration_verification", kind: "interactive", label: "Verify end-to-end restoration", anchor: "restoration-verification", required: false },
       { itemId: "capstone_pro_evidence", kind: "interactive", label: "Pro sparse-evidence incident", anchor: "pro-sparse-incident", required: false },
       { itemId: "capstone_pro_validation", kind: "interactive", label: "Pro packet and RFC validation", anchor: "pro-advanced-validation", required: false },
       { itemId: "capstone_pro_report", kind: "interactive", label: "Pro incident report", anchor: "pro-incident-report", required: false },
@@ -96,7 +96,7 @@ function sectionItem(lessonId: string, section: LessonSection, prefix = itemPref
     kind: "section",
     label: section.label,
     anchor: section.id,
-    required: true,
+    required: false,
   };
 }
 
@@ -113,7 +113,7 @@ function interactiveItem(
     kind: "interactive",
     label: section.label,
     anchor: section.id,
-    required: true,
+    required: false,
   };
 }
 

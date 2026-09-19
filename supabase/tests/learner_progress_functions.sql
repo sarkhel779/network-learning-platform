@@ -26,6 +26,7 @@ begin
   where pathway_id = 'path_networking_foundations'
     and lesson_id = 'lesson_how_networks_communicate'
     and content_version = 1
+    and kind = 'section'
   order by ordinal
   limit 1;
 
@@ -35,8 +36,8 @@ begin
     case item_kind when 'section' then 'section_completed' when 'interactive' then 'interactive_completed' else 'knowledge_check_attempted' end,
     first_item, item_kind, item_anchor, null, '{}'::jsonb
   );
-  if result.status <> 'in_progress' or result.completion_percent <= 0 then
-    raise exception 'first valid event did not advance progress';
+  if result.status <> 'in_progress' or result.completion_percent <> 0 then
+    raise exception 'section event unexpectedly advanced quiz-only progress';
   end if;
 
   perform public.record_learner_progress_event(
@@ -106,11 +107,33 @@ begin
     );
   end loop;
 
-  if result.status <> 'completed' or result.completion_percent <> 100 then
-    raise exception 'all requirements did not complete lesson: %, %', result.status, result.completion_percent;
+  if result.status <> 'in_progress' or result.completion_percent <> 0 then
+    raise exception 'non-quiz and incorrect events advanced lesson: %, %', result.status, result.completion_percent;
   end if;
   if result.incorrect_check_count < 1 then
-    raise exception 'incorrect attempted answer was not stored while completing requirement';
+    raise exception 'incorrect attempted answer was not stored';
+  end if;
+
+  for candidate in
+    select item_id, kind, anchor
+    from public.lesson_progress_items
+    where pathway_id = 'path_networking_foundations'
+      and lesson_id = 'lesson_how_networks_communicate'
+      and content_version = 1
+      and required
+    order by ordinal
+  loop
+    key_counter := key_counter + 1;
+    result := public.record_learner_progress_event(
+      'path_networking_foundations', 'lesson_how_networks_communicate', 1,
+      ('00000000-0000-0000-0000-' || lpad(key_counter::text, 12, '0'))::uuid,
+      'knowledge_check_attempted', candidate.item_id, candidate.kind, candidate.anchor,
+      true, '{}'::jsonb
+    );
+  end loop;
+
+  if result.status <> 'completed' or result.completion_percent <> 100 then
+    raise exception 'correct knowledge checks did not complete lesson: %, %', result.status, result.completion_percent;
   end if;
 
   select count(*) into completion_events

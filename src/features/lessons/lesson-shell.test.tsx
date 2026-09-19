@@ -132,6 +132,25 @@ describe("LessonShell", () => {
     expect(screen.queryByText(/learner-1|private@example|access_token/i)).not.toBeInTheDocument();
   });
 
+  it("does not render lesson progress or restart controls", () => {
+    render(
+      <LessonShell
+        viewer={{ id: "learner-1", displayName: "Pranita", avatarUrl: null }}
+        pathway={pathway}
+        lesson={lesson}
+        progressManifest={{ pathwayId: pathway.id, lessonId: lesson.id, contentVersion: 1, items: [
+          { itemId: "hosts_check_1", kind: "knowledge_check", label: "Knowledge check 1", anchor: "hosts-check-1", required: true },
+        ] }}
+        initialProgress={null}
+      >
+        <p>Lesson content</p>
+      </LessonShell>,
+    );
+
+    expect(screen.queryByText(/% complete/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /restart lesson/i })).not.toBeInTheDocument();
+  });
+
   it("renders section navigation separately from the course curriculum", async () => {
     const user = userEvent.setup();
     render(

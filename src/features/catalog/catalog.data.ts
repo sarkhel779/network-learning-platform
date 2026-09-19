@@ -592,6 +592,7 @@ const curriculum: Pathway[] = [
               { id: "report-and-prevent", label: "Report and prevent recurrence", access: "public" },
               { id: "guided-branch-incident", label: "Guided branch incident", access: "account" },
               { id: "guided-incident-debrief", label: "Guided incident debrief", access: "account" },
+              { id: "final-knowledge-check", label: "Final knowledge check", access: "account" },
               { id: "pro-sparse-incident", label: "Sparse enterprise incident", access: "pro", preview: "Diagnose asymmetric stateful routing and stale DNS with minimal guidance." },
               { id: "pro-incident-report", label: "Structured incident report", access: "pro", preview: "Turn evidence, correction, restoration, and prevention into an operational record." },
               { id: "pro-advanced-validation", label: "Packet and RFC validation", access: "pro", preview: "Validate TCP retransmission, DNS caching, and route symmetry against authoritative references." },

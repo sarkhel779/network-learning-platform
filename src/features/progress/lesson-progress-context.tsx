@@ -113,7 +113,8 @@ export function LessonProgressProvider({ viewerId, manifest, initialProgress, ch
 
   const completed = new Set(authoritativeProgress?.completedItemIds ?? []);
   for (const event of pending) {
-    if (event.lessonId === manifest.lessonId && manifest.items.some(({ itemId }) => itemId === event.itemId)) completed.add(event.itemId);
+    if (event.lessonId === manifest.lessonId && manifest.items.some(({ itemId }) => itemId === event.itemId)
+      && (event.itemKind !== "knowledge_check" || event.answerCorrect)) completed.add(event.itemId);
   }
   const requiredItems = manifest.items.filter(({ required }) => required);
   const completedRequired = requiredItems.filter(({ itemId }) => completed.has(itemId)).length;
@@ -144,7 +145,8 @@ export function useLessonProgressItem(itemId: string) {
 
 export function useOptionalLessonProgressItem(itemId: string) {
   const context = useContext(ProgressContext);
-  if (!context) {
+  const item = context?.manifest.items.find((candidate) => candidate.itemId === itemId);
+  if (!context || item?.kind !== "knowledge_check") {
     return {
       state: "idle" as SaveState,
       complete: async () => true,
