@@ -111,13 +111,16 @@ a { color: inherit; }
 .site-logo__mark-svg { width: 2rem; height: 2rem; overflow: visible; flex-shrink: 0; }
 .site-logo__badge-outline { fill: none; stroke: url(#siteLogoGrad); stroke-width: 12.5; stroke-dasharray: 676; stroke-dashoffset: 676; opacity: 0.65; animation: sl-draw 700ms ease-out forwards, sl-pulse 2600ms ease-in-out 700ms infinite; }
 .site-logo__badge-fill { fill: color-mix(in srgb, var(--accent) 12%, var(--background)); opacity: 0; animation: sl-fade-in 400ms ease-out forwards; animation-delay: 600ms; }
-.site-logo__trace { fill: none; stroke: url(#siteLogoGrad); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 196; stroke-dashoffset: 196; opacity: 0.75; animation: sl-draw 520ms ease-out 380ms forwards, sl-pulse 2600ms ease-in-out 900ms infinite; }
-.site-logo__pad { fill: url(#siteLogoGrad); opacity: 0; }
-.site-logo__pad--a { animation: sl-dot-in 200ms ease-out forwards, sl-pulse 2600ms ease-in-out 700ms infinite; animation-delay: 260ms, 700ms; }
-.site-logo__pad--b { animation: sl-dot-in 220ms ease-out forwards, sl-pulse 2600ms ease-in-out 1100ms infinite; animation-delay: 900ms, 1100ms; }
-.site-logo:hover .site-logo__pad--a, .site-logo:focus-visible .site-logo__pad--a { animation: sl-flicker 220ms ease-out forwards; }
-.site-logo:hover .site-logo__trace, .site-logo:focus-visible .site-logo__trace { animation: sl-flicker 220ms ease-out 60ms forwards; }
-.site-logo:hover .site-logo__pad--b, .site-logo:focus-visible .site-logo__pad--b { animation: sl-flicker 220ms ease-out 120ms forwards; }
+.site-logo__conn { stroke: url(#siteLogoGrad); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 75; stroke-dashoffset: 75; opacity: 0.7; animation: sl-draw 260ms ease-out 380ms forwards, sl-pulse 2600ms ease-in-out 900ms infinite; }
+.site-logo__branch { stroke: url(#siteLogoGrad); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 24.04; stroke-dashoffset: 24.04; opacity: 0.7; animation: sl-draw 200ms ease-out 640ms forwards, sl-pulse 2600ms ease-in-out 1100ms infinite; }
+.site-logo__dot { fill: url(#siteLogoGrad); opacity: 0; }
+.site-logo__dot--a { animation: sl-dot-in 200ms ease-out forwards, sl-pulse 2600ms ease-in-out 700ms infinite; animation-delay: 260ms, 700ms; }
+.site-logo__dot--b, .site-logo__dot--c { animation: sl-dot-in 220ms ease-out forwards, sl-pulse 2600ms ease-in-out 1100ms infinite; animation-delay: 640ms, 1100ms; }
+.site-logo:hover .site-logo__dot--a, .site-logo:focus-visible .site-logo__dot--a { animation: sl-flicker 220ms ease-out forwards; }
+.site-logo:hover .site-logo__conn, .site-logo:focus-visible .site-logo__conn { animation: sl-flicker 220ms ease-out 60ms forwards; }
+.site-logo:hover .site-logo__branch, .site-logo:focus-visible .site-logo__branch { animation: sl-flicker 220ms ease-out 90ms forwards; }
+.site-logo:hover .site-logo__dot--b, .site-logo:focus-visible .site-logo__dot--b,
+.site-logo:hover .site-logo__dot--c, .site-logo:focus-visible .site-logo__dot--c { animation: sl-flicker 220ms ease-out 120ms forwards; }
 @keyframes sl-draw { to { stroke-dashoffset: 0; } }
 @keyframes sl-fade-in { to { opacity: 1; } }
 @keyframes sl-dot-in { to { opacity: 0.75; } }
@@ -125,10 +128,10 @@ a { color: inherit; }
 @keyframes sl-flicker { 0% { opacity: 0.5; } 20% { opacity: 1; } 35% { opacity: 0.2; } 50% { opacity: 1; } 65% { opacity: 0.3; } 100% { opacity: 1; } }
 @keyframes sl-word-in { to { opacity: 1; transform: translateX(0); } }
 @media (prefers-reduced-motion: reduce) {
-  .site-logo__badge-outline, .site-logo__badge-fill, .site-logo__trace, .site-logo__pad {
+  .site-logo__badge-outline, .site-logo__badge-fill, .site-logo__conn, .site-logo__branch, .site-logo__dot {
     animation: none !important; opacity: 1 !important; stroke-dashoffset: 0 !important;
   }
-  .site-logo__trace, .site-logo__pad { opacity: 0.85 !important; }
+  .site-logo__conn, .site-logo__branch, .site-logo__dot { opacity: 0.85 !important; }
   .site-logo__wordmark { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
 .site-logo__wordmark { font-family: "Arial Narrow", "Aptos Display", "Segoe UI", sans-serif; font-size: 1.35rem; font-weight: 900; letter-spacing: -0.055em; line-height: 1; opacity: 0; transform: translateX(-6px); animation: sl-word-in 420ms ease-out forwards; animation-delay: 1150ms; }
