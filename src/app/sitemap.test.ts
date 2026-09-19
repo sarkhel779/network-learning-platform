@@ -51,6 +51,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/routing-protocols/routing-fundamentals" },
       { url: "https://packetsecrets.com/learn/routing-protocols/rip" },
       { url: "https://packetsecrets.com/learn/routing-protocols/ospf" },
+      { url: "https://packetsecrets.com/learn/routing-protocols/eigrp" },
     ]);
     const urls = entries.map(({ url }) => url);
     for (const pathway of listPathways()) {
@@ -71,7 +72,6 @@ describe("public sitemap", () => {
       expect(urls).not.toContain(unpublishedUrl);
     }
     expect(unpublishedSlugs).toEqual([
-      "https://packetsecrets.com/learn/routing-protocols/eigrp",
       "https://packetsecrets.com/learn/routing-protocols/bgp",
     ]);
   });

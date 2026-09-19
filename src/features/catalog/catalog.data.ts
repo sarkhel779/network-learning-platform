@@ -698,13 +698,26 @@ const curriculum: Pathway[] = [
         title: "EIGRP",
         description: "Cisco's advanced distance-vector protocol and the DUAL algorithm that makes it fast and loop-free.",
         lessons: [
-          plannedLesson({
+          {
             id: "lesson_eigrp", slug: "eigrp",
             title: "EIGRP: Enhanced Interior Gateway Routing Protocol",
             objective: "Explain how EIGRP's DUAL algorithm finds loop-free successors and feasible successors, and how its composite metric is calculated per RFC 7868.",
             seo: { title: "EIGRP: Enhanced Interior Gateway Routing Protocol", description: "Learn EIGRP's DUAL algorithm, feasible successors, and composite metric from RFC 7868." },
-            estimatedMinutes: 28,
-          }),
+            published: true, estimatedMinutes: 28,
+            sections: [
+              { id: "what-eigrp-is", label: "What EIGRP is", access: "public" },
+              { id: "the-composite-metric", label: "The composite metric", access: "public" },
+              { id: "dual-and-loop-free-paths", label: "DUAL and loop-free paths", access: "public" },
+              { id: "eigrp-packet-types", label: "EIGRP packet types", access: "public" },
+              { id: "interactive-eigrp-dual", label: "Interactive EIGRP DUAL", access: "public" },
+              { id: "eigrp-vs-classic-distance-vector", label: "EIGRP vs. classic distance-vector", access: "public" },
+              { id: "inspect-eigrp-evidence", label: "Inspect EIGRP evidence", access: "account" },
+              { id: "guided-eigrp-metric-practice", label: "Guided EIGRP metric practice", access: "account" },
+              { id: "troubleshoot-eigrp", label: "Troubleshoot EIGRP", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "The full five K-value formula with load and reliability, unequal-cost load balancing with variance, stub routing, and diagnosing Stuck-In-Active (SIA) routes." },
+            ],
+          },
         ],
       },
       {

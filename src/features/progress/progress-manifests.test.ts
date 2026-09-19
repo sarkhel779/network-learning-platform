@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(28);
+    expect(lessonProgressManifests).toHaveLength(29);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -70,6 +70,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609190001_add_routing_fundamentals_progress.sql",
       "supabase/migrations/202609190002_add_rip_progress.sql",
       "supabase/migrations/202609190003_add_ospf_progress.sql",
+      "supabase/migrations/202609190004_add_eigrp_progress.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -103,6 +104,14 @@ describe("lessonProgressManifests", () => {
     const manifest = getLessonProgressManifest("path_routing_protocols", "lesson_ospf");
     expect(manifest.items).toHaveLength(12);
     expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-ospf-adjacency"]);
+    expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
+    expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
+  });
+
+  it("registers the EIGRP lesson with one player and three checks as 12 required items", () => {
+    const manifest = getLessonProgressManifest("path_routing_protocols", "lesson_eigrp");
+    expect(manifest.items).toHaveLength(12);
+    expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-eigrp-dual"]);
     expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
     expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
   });

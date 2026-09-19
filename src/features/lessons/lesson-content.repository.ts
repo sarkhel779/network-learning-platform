@@ -143,6 +143,10 @@ const lessonImports = {
     public: () => import("@/content/routing-protocols/ospf.public.mdx"),
     account: () => import("@/content/routing-protocols/ospf.account.mdx"),
   },
+  "routing-protocols/eigrp": {
+    public: () => import("@/content/routing-protocols/eigrp.public.mdx"),
+    account: () => import("@/content/routing-protocols/eigrp.account.mdx"),
+  },
 } satisfies LessonContentRegistry;
 
 async function loadFromRegistry(
