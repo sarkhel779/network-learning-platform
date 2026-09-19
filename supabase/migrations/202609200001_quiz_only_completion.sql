@@ -1,5 +1,13 @@
 begin;
 
+insert into public.lesson_progress_manifests (
+  pathway_id, lesson_id, content_version, required_item_count
+) values (
+  'path_networking_foundations', 'lesson_systematic_network_troubleshooting_capstone', 1, 3
+)
+on conflict (pathway_id, lesson_id, content_version) do update
+set required_item_count = excluded.required_item_count;
+
 alter table public.lesson_progress_items drop constraint if exists lesson_progress_items_required_check;
 
 update public.lesson_progress_items
