@@ -18,14 +18,18 @@ type LessonProgressDefinition = Readonly<{
 }>;
 
 const definitions = [
-  { lessonId: "lesson_how_networks_communicate", interactiveAnchors: ["packet-journey"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
-  { lessonId: "lesson_hosts_and_network_devices", interactiveAnchors: ["compare-journeys"], knowledgeCheckCount: 2, knowledgeAnchor: "test-understanding" },
+  { lessonId: "lesson_how_networks_communicate", interactiveAnchors: ["identify-device-roles"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
+  { lessonId: "lesson_hosts_and_network_devices", interactiveAnchors: ["classify-host-roles"], knowledgeCheckCount: 2, knowledgeAnchor: "knowledge-check" },
+  { lessonId: "lesson_hubs", interactiveAnchors: ["repeat-a-signal"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
+  { lessonId: "lesson_bridges", interactiveAnchors: ["compare-segments"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
+  { lessonId: "lesson_switches", interactiveAnchors: ["match-hosts-to-ports"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
   { lessonId: "lesson_cables_fibre_wireless_and_network_connections", interactiveAnchors: ["compare-media", "design-a-connection"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
-  { lessonId: "lesson_hubs_bridges_and_switches", interactiveAnchors: ["compare-hub-bridge-switch", "forward-the-frame"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_unicast_broadcast_and_multicast_communication", interactiveAnchors: ["delivery-scope-player", "predict-delivery"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
-  { lessonId: "lesson_routers_default_gateways_and_network_boundaries", interactiveAnchors: ["route-decision-player", "read-a-basic-routing-table"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_routers_default_gateways_and_network_boundaries", interactiveAnchors: ["place-the-router"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check" },
+  { lessonId: "lesson_physical_and_logical_addressing", interactiveAnchors: ["inspect-address-formats"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check" },
   { lessonId: "lesson_access_points_modems_onts_and_firewalls", interactiveAnchors: ["interactive-edge-journey"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
-  { lessonId: "lesson_osi_and_tcp_ip_models", interactiveAnchors: ["encapsulation-lab"], knowledgeCheckCount: 2, knowledgeAnchor: "knowledge-summary" },
+  { lessonId: "lesson_osi_and_tcp_ip_models", interactiveAnchors: ["encapsulation-lab"], knowledgeCheckCount: 2, knowledgeAnchor: "knowledge-check" },
+  { lessonId: "lesson_computer_network_basics_final_quiz", interactiveAnchors: [], knowledgeCheckCount: 8, knowledgeAnchor: "final-module-quiz" },
   { lessonId: "lesson_first_packet_journey_through_a_small_network", interactiveAnchors: ["complete-packet-journey"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_ethernet_frames_and_mac_addresses", interactiveAnchors: ["interactive-frame-delivery"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_how_switches_learn_and_forward", interactiveAnchors: ["interactive-switch-learning", "read-mac-table-evidence"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
