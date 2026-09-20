@@ -19,7 +19,7 @@ describe("safeReturnPath", () => {
   });
 
   it("returns to an exact locked topic in an ordinary lesson", () => {
-    const path = "/learn/networking-foundations/hosts-and-network-devices#windows-checks";
+    const path = "/learn/networking-foundations/cables-fibre-wireless-and-network-connections#design-a-connection";
     expect(safeReturnPath(path)).toBe(path);
   });
 

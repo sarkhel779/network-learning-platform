@@ -70,7 +70,7 @@ describe("LearnerWorkspace", () => {
 
     await user.click(screen.getByRole("button", { name: "Course contents" }));
     expect(screen.getByRole("dialog", { name: "Course contents" })).toHaveTextContent(
-      "Network and Device Essentials",
+      "Computer Network Basics",
     );
   });
 

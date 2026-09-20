@@ -5,13 +5,13 @@ import { getPathway } from "./catalog.repository";
 describe("Computer Network Basics catalogue", () => {
   it("publishes the approved nine beginner lessons in order", () => {
     const pathway = getPathway("networking-foundations");
-    const module = pathway.modules.find(({ id }) => id === "module_network_and_device_essentials");
+    const basicsModule = pathway.modules.find(({ id }) => id === "module_network_and_device_essentials");
 
-    expect(module).toMatchObject({
+    expect(basicsModule).toMatchObject({
       slug: "computer-network-basics",
       title: "Computer Network Basics",
     });
-    expect(module?.lessons.map(({ id }) => id)).toEqual([
+    expect(basicsModule?.lessons.map(({ id }) => id)).toEqual([
       "lesson_how_networks_communicate",
       "lesson_hosts_and_network_devices",
       "lesson_hubs",
@@ -22,13 +22,13 @@ describe("Computer Network Basics catalogue", () => {
       "lesson_osi_and_tcp_ip_models",
       "lesson_computer_network_basics_final_quiz",
     ]);
-    expect(module?.lessons.map(({ estimatedMinutes }) => estimatedMinutes)).toEqual([
+    expect(basicsModule?.lessons.map(({ estimatedMinutes }) => estimatedMinutes)).toEqual([
       12, 15, 8, 10, 12, 12, 15, 18, 12,
     ]);
-    expect(module?.lessons.slice(0, 8).every(({ sections }) =>
+    expect(basicsModule?.lessons.slice(0, 8).every(({ sections }) =>
       sections?.every(({ access }) => access === "public"),
     )).toBe(true);
-    expect(module?.lessons.at(-1)).toMatchObject({ format: "assessment" });
+    expect(basicsModule?.lessons.at(-1)).toMatchObject({ format: "assessment" });
   });
 
   it("relocates existing lessons without changing their stable routes", () => {
