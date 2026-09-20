@@ -345,3 +345,21 @@ Release sequence:
 
 Later modules receive separate designs, branches, and pull requests. This branch must not implement
 How Data Moves Through Networks or restructure the remaining layer modules.
+
+## Temporary Placement of Existing Lessons
+
+Four currently published lessons do not belong in the approved Computer Network Basics sequence.
+They must remain published and keep their current IDs, slugs, content, progress history, and canonical
+URLs while later modules are redesigned one at a time:
+
+- move `lesson_cables_fibre_wireless_and_network_connections` to the beginning of the current
+  Ethernet, Switching and Local Networks module;
+- place `lesson_unicast_broadcast_and_multicast_communication` immediately after that media lesson;
+- move `lesson_access_points_modems_onts_and_firewalls` to the beginning of the current NAT and
+  Internet Communication module;
+- move `lesson_first_packet_journey_through_a_small_network` to the end of the current NAT and
+  Internet Communication module.
+
+These are navigation-only relocations. Do not rewrite those four lessons in this branch. Each will
+be reconsidered when its eventual layer or data-movement module receives its own design and pull
+request.
