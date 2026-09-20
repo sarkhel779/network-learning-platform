@@ -10,22 +10,24 @@ import {
 describe("catalog repository", () => {
   const approvedCurriculum = [
     {
-      title: "Network and Device Essentials",
+      title: "Computer Network Basics",
       lessons: [
-        "What Is a Computer Network?",
-        "Hosts, Clients, Servers and Network Interfaces",
-        "Cables, Fibre, Wireless and Network Connections",
-        "Hubs, Bridges and Switches",
-        "Unicast, Broadcast and Multicast Communication",
-        "Routers, Default Gateways and Network Boundaries",
-        "Access Points, Modems, ONTs and Firewalls",
+        "Introduction to Computer Networks and Network Devices",
+        "Hosts, Clients and Servers",
+        "Hubs",
+        "Bridges",
+        "Switches",
+        "Routers",
+        "Physical and Logical Addressing",
         "OSI and TCP/IP Models",
-        "A Packet’s First Journey Through a Small Network",
+        "Computer Network Basics Final Quiz",
       ],
     },
     {
       title: "Ethernet, Switching and Local Networks",
       lessons: [
+        "Cables, Fibre, Wireless and Network Connections",
+        "Unicast, Broadcast and Multicast Communication",
         "Ethernet Frames and MAC Addresses",
         "How Switches Learn and Forward",
         "ARP and Local Delivery",
@@ -54,7 +56,11 @@ describe("catalog repository", () => {
     },
     {
       title: "NAT and Internet Communication",
-      lessons: ["NAT, PAT and the Complete Internet Packet Journey"],
+      lessons: [
+        "Access Points, Modems, ONTs and Firewalls",
+        "NAT, PAT and the Complete Internet Packet Journey",
+        "A Packet’s First Journey Through a Small Network",
+      ],
     },
     {
       title: "Packet Analysis and Troubleshooting",
@@ -69,7 +75,7 @@ describe("catalog repository", () => {
       title,
       lessons: lessons.map((lesson) => lesson.title),
     }))).toEqual(approvedCurriculum);
-    expect(pathway.modules.flatMap(({ lessons }) => lessons)).toHaveLength(25);
+    expect(pathway.modules.flatMap(({ lessons }) => lessons)).toHaveLength(29);
   });
 
   it("preserves implemented routes and removes security lessons", () => {
@@ -79,7 +85,9 @@ describe("catalog repository", () => {
     expect(listPublishedLessons(pathway.slug).map(({ slug }) => slug).sort()).toEqual([
       "access-points-modems-onts-and-firewalls",
       "arp-and-local-delivery",
+      "bridges",
       "cables-fibre-wireless-and-network-connections",
+      "computer-network-basics-final-quiz",
       "dhcp-and-automatic-address-configuration",
       "dns-and-name-resolution",
       "ethernet-frames-and-mac-addresses",
@@ -88,15 +96,17 @@ describe("catalog repository", () => {
       "how-networks-communicate",
       "how-switches-learn-and-forward",
       "http-https-tls-and-essential-network-services",
-      "hubs-bridges-and-switches",
+      "hubs",
       "icmp-ping-and-path-discovery",
       "ipv4-addressing",
       "ipv6-fundamentals",
       "nat-pat-and-the-complete-internet-packet-journey",
       "osi-and-tcp-ip-models",
+      "physical-and-logical-addressing",
       "routers-default-gateways-and-network-boundaries",
       "routing-tables-and-default-routes",
       "subnetting-fundamentals",
+      "switches",
       "systematic-network-troubleshooting-capstone",
       "tcp-reliable-transport",
       "udp-datagrams-and-ports",
@@ -104,9 +114,9 @@ describe("catalog repository", () => {
       "vlans-access-ports-and-trunks",
     ]);
     expect(getLesson(pathway.slug, "how-networks-communicate").title)
-      .toBe("What Is a Computer Network?");
+      .toBe("Introduction to Computer Networks and Network Devices");
     expect(getLesson(pathway.slug, "hosts-and-network-devices").title)
-      .toBe("Hosts, Clients, Servers and Network Interfaces");
+      .toBe("Hosts, Clients and Servers");
     expect(getLesson(pathway.slug, "osi-and-tcp-ip-models").title)
       .toBe("OSI and TCP/IP Models");
     expect(lessons.map(({ title }) => title).join(" ")).not.toMatch(
@@ -114,7 +124,7 @@ describe("catalog repository", () => {
     );
   });
 
-  it("publishes Ethernet frames after the packet-journey capstone with progressive access", () => {
+  it("publishes Ethernet frames after delivery scope with progressive access", () => {
     const lesson = getLesson("networking-foundations", "ethernet-frames-and-mac-addresses");
 
     expect(lesson).toMatchObject({
@@ -134,7 +144,7 @@ describe("catalog repository", () => {
       ["pro-deep-dive", "pro"],
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
-      previous: { slug: "first-packet-journey-through-a-small-network", published: true },
+      previous: { slug: "unicast-broadcast-and-multicast-communication", published: true },
       next: { slug: "how-switches-learn-and-forward", published: true },
     });
   });
@@ -301,42 +311,37 @@ describe("catalog repository", () => {
       { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Discover future multicast operations, advanced packet analysis, and production troubleshooting." },
     ]);
     expect(getAdjacentLessons(pathwaySlug, lessonSlug)).toMatchObject({
-      previous: { slug: "hubs-bridges-and-switches", published: true },
-      next: { slug: "routers-default-gateways-and-network-boundaries", published: true },
+      previous: { slug: "cables-fibre-wireless-and-network-connections", published: true },
+      next: { slug: "ethernet-frames-and-mac-addresses", published: true },
     });
   });
 
-  it("publishes routers and default gateways after delivery scope with its approved access contract", () => {
+  it("publishes the introductory router lesson in Computer Network Basics", () => {
     const pathwaySlug = "networking-foundations";
     const lessonSlug = "routers-default-gateways-and-network-boundaries";
     const lesson = getLesson(pathwaySlug, lessonSlug);
 
     expect(lesson).toMatchObject({
-      title: "Routers, Default Gateways and Network Boundaries",
-      objective: "Decide whether a destination is local or remote and identify the first next hop.",
-      estimatedMinutes: 20,
+      title: "Routers",
+      objective: "Explain how routers connect different IP networks and act as default gateways.",
+      estimatedMinutes: 12,
       published: true,
     });
     expect(lesson.sections?.map(({ id, access }) => [id, access])).toEqual([
-      ["why-network-boundaries-matter", "public"],
       ["what-a-router-does", "public"],
-      ["local-or-remote", "public"],
+      ["router-interfaces", "public"],
+      ["network-boundaries", "public"],
       ["default-gateway", "public"],
-      ["direct-and-routed-delivery", "public"],
-      ["what-changes-at-each-hop", "public"],
-      ["route-decision-player", "public"],
-      ["read-a-basic-routing-table", "account"],
-      ["diagnose-gateway-boundary-problems", "account"],
-      ["knowledge-check-summary", "account"],
-      ["pro-deep-dive", "pro"],
+      ["place-the-router", "public"],
+      ["knowledge-check", "public"],
     ]);
     expect(getAdjacentLessons(pathwaySlug, lessonSlug)).toMatchObject({
-      previous: { slug: "unicast-broadcast-and-multicast-communication", published: true },
-      next: { slug: "access-points-modems-onts-and-firewalls", published: true },
+      previous: { slug: "switches", published: true },
+      next: { slug: "physical-and-logical-addressing", published: true },
     });
   });
 
-  it("publishes edge devices after routers with a progressive access contract", () => {
+  it("relocates edge devices to the start of the NAT module", () => {
     const pathwaySlug = "networking-foundations";
     const lessonSlug = "access-points-modems-onts-and-firewalls";
     const lesson = getLesson(pathwaySlug, lessonSlug);
@@ -360,12 +365,12 @@ describe("catalog repository", () => {
       ["pro-deep-dive", "pro"],
     ]);
     expect(getAdjacentLessons(pathwaySlug, lessonSlug)).toMatchObject({
-      previous: { slug: "routers-default-gateways-and-network-boundaries", published: true },
-      next: { slug: "osi-and-tcp-ip-models", published: true },
+      previous: { slug: "http-https-tls-and-essential-network-services", published: true },
+      next: { slug: "nat-pat-and-the-complete-internet-packet-journey", published: true },
     });
   });
 
-  it("publishes the packet journey capstone with progressive lesson sections", () => {
+  it("relocates the packet journey to the end of the NAT module", () => {
     const lesson = getLesson("networking-foundations", "first-packet-journey-through-a-small-network");
     expect(lesson).toMatchObject({
       title: "A Packet’s First Journey Through a Small Network",
@@ -385,8 +390,8 @@ describe("catalog repository", () => {
       ["pro-deep-dive", "pro"],
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
-      previous: { slug: "osi-and-tcp-ip-models", published: true },
-      next: { slug: "ethernet-frames-and-mac-addresses", published: true },
+      previous: { slug: "nat-pat-and-the-complete-internet-packet-journey", published: true },
+      next: { slug: "systematic-network-troubleshooting-capstone", published: true },
     });
   });
 
@@ -397,13 +402,15 @@ describe("catalog repository", () => {
     expect(listPublishedLessons(pathwaySlug).map(({ slug }) => slug)).toEqual([
       "how-networks-communicate",
       "hosts-and-network-devices",
-      "cables-fibre-wireless-and-network-connections",
-      "hubs-bridges-and-switches",
-      "unicast-broadcast-and-multicast-communication",
+      "hubs",
+      "bridges",
+      "switches",
       "routers-default-gateways-and-network-boundaries",
-      "access-points-modems-onts-and-firewalls",
+      "physical-and-logical-addressing",
       "osi-and-tcp-ip-models",
-      "first-packet-journey-through-a-small-network",
+      "computer-network-basics-final-quiz",
+      "cables-fibre-wireless-and-network-connections",
+      "unicast-broadcast-and-multicast-communication",
       "ethernet-frames-and-mac-addresses",
       "how-switches-learn-and-forward",
       "arp-and-local-delivery",
@@ -418,7 +425,9 @@ describe("catalog repository", () => {
       "dhcp-and-automatic-address-configuration",
       "dns-and-name-resolution",
       "http-https-tls-and-essential-network-services",
+      "access-points-modems-onts-and-firewalls",
       "nat-pat-and-the-complete-internet-packet-journey",
+      "first-packet-journey-through-a-small-network",
       "systematic-network-troubleshooting-capstone",
     ]);
     expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
@@ -445,73 +454,25 @@ describe("catalog repository", () => {
     ]);
   });
 
-  it("publishes hubs, bridges and switches with its approved access contract", () => {
+  it("publishes hubs, bridges and switches as separate introductory lessons", () => {
     const pathwaySlug = "networking-foundations";
-    const lessonSlug = "hubs-bridges-and-switches";
-
-    expect(getLesson(pathwaySlug, lessonSlug)).toMatchObject({
-      title: "Hubs, Bridges and Switches",
-      objective: "Explain why hubs repeat signals while bridges and switches make link-layer forwarding decisions.",
-      seo: {
-        title: "Hubs, Bridges and Switches Explained",
-        description: "See how hubs repeat traffic while bridges and switches make selective link-layer forwarding choices on a local network.",
-      },
-      estimatedMinutes: 20,
-      published: true,
-    });
-    expect(getLesson(pathwaySlug, lessonSlug).sections).toEqual([
-      { id: "one-local-ethernet-conversation", label: "One local Ethernet conversation", access: "public" },
-      { id: "what-a-hub-does", label: "What a hub does", access: "public" },
-      { id: "why-bridges-changed-ethernet", label: "Why bridges changed Ethernet", access: "public" },
-      { id: "how-a-switch-learns", label: "How a switch learns", access: "public" },
-      { id: "how-a-switch-forwards", label: "How a switch forwards", access: "public" },
-      { id: "compare-hub-bridge-switch", label: "Compare hub, bridge and switch", access: "public" },
-      { id: "forward-the-frame", label: "Forward the frame", access: "account" },
-      { id: "diagnose-local-switching-symptoms", label: "Diagnose local switching symptoms", access: "account" },
-      { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
-      { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "Discover future advanced switching practice and career preparation." },
+    expect(["hubs", "bridges", "switches"].map((slug) => getLesson(pathwaySlug, slug))).toMatchObject([
+      { title: "Hubs", estimatedMinutes: 8, published: true },
+      { title: "Bridges", estimatedMinutes: 10, published: true },
+      { title: "Switches", estimatedMinutes: 12, published: true },
     ]);
-    expect(getAdjacentLessons(pathwaySlug, lessonSlug)).toMatchObject({
-      previous: { slug: "cables-fibre-wireless-and-network-connections" },
-      next: { slug: "unicast-broadcast-and-multicast-communication", published: true },
+    expect(getAdjacentLessons(pathwaySlug, "bridges")).toMatchObject({
+      previous: { slug: "hubs" },
+      next: { slug: "switches" },
     });
   });
 
-  it("keeps public foundations limited to published beginner lessons", () => {
+  it("keeps every published lesson discoverable and gives every lesson public content", () => {
     const lessons = getPathway("networking-foundations").modules
       .flatMap(({ lessons: moduleLessons }) => moduleLessons);
-    const [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables, icmp, transport, dhcp, dns, essentialServices, nat, capstone] = lessons;
-
-    expect(first.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(second.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(connectionMedia.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(switching.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(deliveryScope.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(routers.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(edgeDevices.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(packetJourney.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(ethernetFrames.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(switchLearning.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(arp.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(vlans.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(ipv4.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(subnetting.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(ipv6.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(routingTables.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(icmp.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(transport.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(dhcp.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(dns.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(essentialServices.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(nat.sections?.some(({ access }) => access === "public")).toBe(true);
-    expect(capstone.sections?.some(({ access }) => access === "public")).toBe(true);
-    for (const lesson of [first, second, connectionMedia, switching, deliveryScope, routers, edgeDevices, osi, packetJourney, ethernetFrames, switchLearning, arp, vlans, ipv4, subnetting, ipv6, routingTables, icmp, transport, dhcp]) {
-      expect(lesson.sections?.at(-1)).toEqual(expect.objectContaining({
-        id: "pro-deep-dive",
-        label: "Pro Deep Dive",
-        access: "pro",
-        preview: expect.stringMatching(/\S/),
-      }));
+    for (const lesson of lessons) {
+      expect(lesson.published).toBe(true);
+      expect(lesson.sections?.some(({ access }) => access === "public")).toBe(true);
     }
   });
 
@@ -521,15 +482,15 @@ describe("catalog repository", () => {
     expect(getAdjacentLessons("networking-foundations", "how-networks-communicate").next?.slug)
       .toBe("hosts-and-network-devices");
     expect(getAdjacentLessons("networking-foundations", "hosts-and-network-devices").next?.slug)
-      .toBe("cables-fibre-wireless-and-network-connections");
+      .toBe("hubs");
     const connectionMedia = getAdjacentLessons(
       "networking-foundations",
       "cables-fibre-wireless-and-network-connections",
     );
-    expect(connectionMedia.previous?.slug).toBe("hosts-and-network-devices");
-    expect(connectionMedia.next?.slug).toBe("hubs-bridges-and-switches");
+    expect(connectionMedia.previous?.slug).toBe("computer-network-basics-final-quiz");
+    expect(connectionMedia.next?.slug).toBe("unicast-broadcast-and-multicast-communication");
     expect(getAdjacentLessons("networking-foundations", "osi-and-tcp-ip-models").previous?.slug)
-      .toBe("access-points-modems-onts-and-firewalls");
+      .toBe("physical-and-logical-addressing");
     expect(getAdjacentLessons("networking-foundations", "systematic-network-troubleshooting-capstone").next)
       .toBeUndefined();
   });
@@ -685,8 +646,8 @@ describe("catalog repository", () => {
       ["pro-packet-analysis", "pro"], ["pro-rfc-validation", "pro"], ["pro-u-turn-nat-lab", "pro"],
     ]);
     expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({
-      previous: { slug: "http-https-tls-and-essential-network-services", published: true },
-      next: { slug: "systematic-network-troubleshooting-capstone", published: true },
+      previous: { slug: "access-points-modems-onts-and-firewalls", published: true },
+      next: { slug: "first-packet-journey-through-a-small-network", published: true },
     });
   });
 
@@ -694,7 +655,7 @@ describe("catalog repository", () => {
     const lesson = getLesson("networking-foundations", "systematic-network-troubleshooting-capstone");
     expect(lesson).toMatchObject({ id: "lesson_systematic_network_troubleshooting_capstone", estimatedMinutes: 45, published: true });
     expect(lesson.sections?.map(({ access }) => access)).toEqual(["public", "public", "public", "public", "public", "public", "account", "account", "account", "pro", "pro", "pro"]);
-    expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({ previous: { slug: "nat-pat-and-the-complete-internet-packet-journey", published: true }, next: undefined });
+    expect(getAdjacentLessons("networking-foundations", lesson.slug)).toMatchObject({ previous: { slug: "first-packet-journey-through-a-small-network", published: true }, next: undefined });
   });
 
   it("throws the documented error for an unknown pathway", () => {

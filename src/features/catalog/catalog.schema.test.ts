@@ -76,6 +76,11 @@ function validPathway() {
 }
 
 describe("lesson summary schema", () => {
+  it("accepts lesson and assessment formats and rejects unknown formats", () => {
+    expect(lessonSummarySchema.parse({ ...validLesson(), format: "assessment" }).format).toBe("assessment");
+    expect(() => lessonSummarySchema.parse({ ...validLesson(), format: "workshop" })).toThrow();
+  });
+
   it("accepts public, account, and pro section access", () => {
     expect(() =>
       lessonSectionSchema.parse({

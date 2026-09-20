@@ -36,6 +36,12 @@ export async function loadContentOverridesSnapshot(): Promise<ContentOverridesSn
   }
 }
 
+export function isExactLessonOrder(currentIds: readonly string[], overrideIds: readonly string[]) {
+  return overrideIds.length === currentIds.length
+    && new Set(overrideIds).size === currentIds.length
+    && currentIds.every((id) => overrideIds.includes(id));
+}
+
 export function applyContentOverrides(pathway: Pathway, overrides: ContentOverridesSnapshot): Pathway {
   return {
     ...pathway,
@@ -43,14 +49,11 @@ export function applyContentOverrides(pathway: Pathway, overrides: ContentOverri
       const order = overrides.orders[module.id];
       let lessons = module.lessons;
 
-      if (order) {
+      if (order && isExactLessonOrder(module.lessons.map(({ id }) => id), order)) {
         const byId = new Map(lessons.map((lesson) => [lesson.id, lesson]));
-        const ordered = order
+        lessons = order
           .map((lessonId) => byId.get(lessonId))
           .filter((lesson): lesson is LessonSummary => lesson !== undefined);
-        const orderedIds = new Set(ordered.map((lesson) => lesson.id));
-        const remaining = lessons.filter((lesson) => !orderedIds.has(lesson.id));
-        lessons = [...ordered, ...remaining];
       }
 
       return {
