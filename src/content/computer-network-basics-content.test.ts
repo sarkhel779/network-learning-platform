@@ -36,4 +36,16 @@ describe("Computer Network Basics content", () => {
     expect(hosts).toContain("The same computer can run a client application and serve a file to another device.");
     expect(hosts).not.toMatch(/DNS query|ARP request|subnet mask|route lookup|MAC table|packet journey/i);
   });
+
+  it.each([
+    ["hubs", ["what-is-a-hub", "why-hubs-existed", "shared-traffic-and-bandwidth", "repeat-a-signal", "knowledge-check"], "<HubRepeaterDemo />", "hubs_check_1"],
+    ["bridges", ["what-is-a-bridge", "why-bridges-were-introduced", "network-segments", "compare-segments", "knowledge-check"], "<BridgeSegmentComparison />", "bridges_check_1"],
+    ["switches", ["what-is-a-switch", "switch-ports", "more-selective-than-a-hub", "switches-and-routers", "match-hosts-to-ports", "knowledge-check"], "<SwitchPortMatcher />", "switches_check_1"],
+  ])("keeps %s introductory and interactive", (slug, expectedHeadings, interaction, checkId) => {
+    const lesson = source(slug as string);
+    expect(headings(lesson)).toEqual(expectedHeadings);
+    expect(lesson).toContain(interaction);
+    expect(lesson).toContain(`progressItemId="${checkId}"`);
+    expect(lesson).not.toMatch(/MAC table|learn the source|\bflood\b|\bage\b|collision domain calculation|forwarding decision/i);
+  });
 });

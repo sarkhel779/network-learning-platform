@@ -24,6 +24,9 @@ vi.mock("@/content/networking-foundations/hubs-bridges-and-switches.public.mdx",
 vi.mock("@/content/networking-foundations/hubs-bridges-and-switches.account.mdx", () => ({
   default: () => null,
 }));
+vi.mock("@/content/networking-foundations/hubs.public.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/bridges.public.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/switches.public.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/unicast-broadcast-and-multicast-communication.public.mdx", () => ({
   default: () => null,
 }));
@@ -198,6 +201,13 @@ describe("loadAuthorizedLessonContent", () => {
     expect(account.public).toBeDefined();
     expect(account.account).toBeDefined();
     expect(account.pro).toBeUndefined();
+  });
+
+  it.each(["hubs", "bridges", "switches"])("loads the public %s lesson without protected blocks", async (slug) => {
+    const result = await loadAuthorizedLessonContent(`networking-foundations/${slug}`, "account");
+    expect(result.public).toBeDefined();
+    expect(result.account).toBeUndefined();
+    expect(result.pro).toBeUndefined();
   });
 
   it("keeps delivery-scope practice protected while serving its public lesson anonymously", async () => {

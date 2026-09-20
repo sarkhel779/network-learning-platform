@@ -30,6 +30,15 @@ const lessonImports = {
     account: () =>
       import("@/content/networking-foundations/hubs-bridges-and-switches.account.mdx"),
   },
+  "networking-foundations/hubs": {
+    public: () => import("@/content/networking-foundations/hubs.public.mdx"),
+  },
+  "networking-foundations/bridges": {
+    public: () => import("@/content/networking-foundations/bridges.public.mdx"),
+  },
+  "networking-foundations/switches": {
+    public: () => import("@/content/networking-foundations/switches.public.mdx"),
+  },
   "networking-foundations/unicast-broadcast-and-multicast-communication": {
     public: () =>
       import("@/content/networking-foundations/unicast-broadcast-and-multicast-communication.public.mdx"),
