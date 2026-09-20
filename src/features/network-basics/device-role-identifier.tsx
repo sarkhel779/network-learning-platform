@@ -179,6 +179,7 @@ const tours: Record<ScenarioId, TourDefinition> = {
 
 export function DeviceRoleIdentifier() {
   const [scenarioId, setScenarioId] = useState<ScenarioId>("hub");
+  const [hasStarted, setHasStarted] = useState(false);
   const tour = tours[scenarioId];
   const [selectedDeviceId, setSelectedDeviceId] = useState<DeviceId>(tour.stepDeviceIds[0]);
   const selected = deviceDetails[selectedDeviceId];
@@ -193,7 +194,9 @@ export function DeviceRoleIdentifier() {
   }, [scenarioId]);
 
   const selectScenario = (nextScenarioId: ScenarioId) => {
+    if (nextScenarioId === scenarioId) return;
     setScenarioId(nextScenarioId);
+    setHasStarted(false);
     setSelectedDeviceId(tours[nextScenarioId].stepDeviceIds[0]);
   };
 
@@ -233,10 +236,11 @@ export function DeviceRoleIdentifier() {
       </div>
       <PacketFlowPlayer
         allowMotionOverride
-        autoplay
+        autoplay={false}
         deviceStepIndexes={deviceStepIndexes}
         key={tour.scenario.id}
         onDeviceSelect={(deviceId) => setSelectedDeviceId(deviceId as DeviceId)}
+        onPlaybackStart={() => setHasStarted(true)}
         onStepChange={handleStepChange}
         packetMotion="dhcp-css"
         packetTravelDurationMs={1500}
@@ -244,7 +248,7 @@ export function DeviceRoleIdentifier() {
         selectedDeviceId={selectedDeviceId}
         showStepSummary={false}
         suppressHeading
-        topologyOverlay={cloud}
+        topologyOverlay={hasStarted ? cloud : null}
       />
     </section>
   );
