@@ -1546,6 +1546,7 @@ a,a:hover,a:focus-visible,a *,a:hover *{text-decoration:none!important}
 :root[data-theme="light"] body:has(.labs-page) :is(.site-header,.site-footer),
 :root[data-theme="light"] .site-header,
 :root[data-theme="light"] .site-footer { background:#f5fafc; border-color:#cbdce4; color:#142b3a; }
+:root[data-theme="light"] .site-header .site-nav { color:#142b3a; }
 :root[data-theme="light"] body:has(.home-refresh) :is(.site-header,.site-footer) a,
 :root[data-theme="light"] body:has(.labs-page) :is(.site-header,.site-footer) a { color:#142b3a; }
 :root[data-theme="light"] .site-header .site-nav a[aria-current="page"],
