@@ -17,6 +17,40 @@ afterEach(() => {
 });
 
 describe("DeviceRoleIdentifier", () => {
+  it("keeps the device description hidden until Play and resets it for a new scenario", async () => {
+    const user = userEvent.setup();
+    render(<DeviceRoleIdentifier />);
+
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Play" }));
+    expect(within(screen.getByRole("status")).getByRole("heading", { name: "Laptop" })).toBeVisible();
+
+    await user.click(screen.getByRole("button", { name: "Bridge" }));
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Play" })).toBeVisible();
+  });
+
+  it("does not start the tour when Restart is pressed before Play", async () => {
+    const user = userEvent.setup();
+    render(<DeviceRoleIdentifier />);
+
+    await user.click(screen.getByRole("button", { name: "Restart" }));
+
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Play" })).toBeVisible();
+  });
+
+  it("keeps the running tour visible when the active scenario is selected again", async () => {
+    const user = userEvent.setup();
+    render(<DeviceRoleIdentifier />);
+
+    await user.click(screen.getByRole("button", { name: "Play" }));
+    await user.click(screen.getByRole("button", { name: "Hub" }));
+
+    expect(within(screen.getByRole("status")).getByRole("heading", { name: "Laptop" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Pause" })).toBeVisible();
+  });
+
   it("teaches hub, bridge, switch, and routed networks as separate examples", async () => {
     const user = userEvent.setup();
     const { container } = render(<DeviceRoleIdentifier />);
@@ -61,6 +95,7 @@ describe("DeviceRoleIdentifier", () => {
     const user = userEvent.setup();
     const { container } = render(<DeviceRoleIdentifier />);
 
+    await user.click(screen.getByRole("button", { name: "Play" }));
     await user.click(screen.getByRole("button", { name: "Explore Printer" }));
 
     const topology = container.querySelector(".packet-flow-topology-stage") as HTMLElement;
@@ -77,6 +112,7 @@ describe("DeviceRoleIdentifier", () => {
 
     const topology = container.querySelector(".packet-flow-topology-stage");
     expect(topology).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Play" }));
     const cloud = within(topology as HTMLElement).getByRole("status");
     expect(cloud).toHaveClass("device-role-tour__cloud");
     expect(cloud).toHaveStyle({ "--device-role-cloud-anchor": "13.125%" });
@@ -136,6 +172,7 @@ describe("DeviceRoleIdentifier", () => {
     vi.useFakeTimers();
     const { container } = render(<DeviceRoleIdentifier />);
 
+    fireEvent.click(screen.getByRole("button", { name: "Play" }));
     act(() => vi.advanceTimersByTime(5200));
     const marker = container.querySelector("[data-packet-marker].network-topology__packet-marker--travel");
     expect(marker).toHaveAttribute("data-playing", "true");

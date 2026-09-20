@@ -21,6 +21,7 @@ type PacketFlowPlayerProps = Readonly<{
   inspectionDepthControl?: boolean;
   progressItemId?: string;
   onStepChange?: (stepIndex: number, atFinalStep: boolean) => void;
+  onPlaybackStart?: () => void;
   electricalSignal?: boolean;
   topologyOverlay?: ReactNode;
   showStepSummary?: boolean;
@@ -40,6 +41,7 @@ export function PacketFlowPlayer({
   inspectionDepthControl = false,
   progressItemId,
   onStepChange,
+  onPlaybackStart,
   electricalSignal = false,
   topologyOverlay,
   showStepSummary = true,
@@ -75,6 +77,7 @@ export function PacketFlowPlayer({
       }
     : undefined;
   const handlePlaybackAction = (action: PlaybackAction) => {
+    if (action.type === "play") onPlaybackStart?.();
     if (action.type === "pause") setPacketAnimationPaused(true);
     else if (action.type !== "set-speed") setPacketAnimationPaused(false);
     dispatch(action);
@@ -146,7 +149,12 @@ export function PacketFlowPlayer({
           <span>{forceMotion ? "Full packet animation is enabled." : "Your system currently requests reduced motion."}</span>
         </div>
       ) : null}
-      <PlaybackControls state={state} dispatch={handlePlaybackAction} reducedMotion={reducedMotion} />
+      <PlaybackControls
+        state={state}
+        dispatch={handlePlaybackAction}
+        reducedMotion={reducedMotion}
+        restartAutoplay={autoplay && !reducedMotion}
+      />
       </div>
       <div className={`packet-flow-details${showStepSummary ? "" : " packet-flow-details--inspector-only"}`} id={isFirstLesson ? "first-packet-details" : undefined}>
         {showStepSummary ? <section className="packet-flow-progress" aria-live="polite" aria-atomic="true">
