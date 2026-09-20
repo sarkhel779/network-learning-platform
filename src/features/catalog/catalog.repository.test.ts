@@ -491,6 +491,12 @@ describe("catalog repository", () => {
     expect(connectionMedia.next?.slug).toBe("unicast-broadcast-and-multicast-communication");
     expect(getAdjacentLessons("networking-foundations", "osi-and-tcp-ip-models").previous?.slug)
       .toBe("physical-and-logical-addressing");
+    expect(getAdjacentLessons("networking-foundations", "osi-and-tcp-ip-models").next?.slug)
+      .toBe("computer-network-basics-final-quiz");
+    expect(getAdjacentLessons("networking-foundations", "computer-network-basics-final-quiz")).toMatchObject({
+      previous: { slug: "osi-and-tcp-ip-models" },
+      next: { slug: "cables-fibre-wireless-and-network-connections" },
+    });
     expect(getAdjacentLessons("networking-foundations", "systematic-network-troubleshooting-capstone").next)
       .toBeUndefined();
   });

@@ -2,13 +2,20 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { getViewer, listPathwayProgress, loadContentOverridesSnapshot } = vi.hoisted(() => ({
+const { getViewer, listPathwayProgress, loadContentOverridesSnapshot, permanentRedirect } = vi.hoisted(() => ({
   getViewer: vi.fn(),
   listPathwayProgress: vi.fn(),
   loadContentOverridesSnapshot: vi.fn(),
+  permanentRedirect: vi.fn((destination: string) => {
+    throw new Error(`NEXT_REDIRECT;${destination}`);
+  }),
 }));
 
 vi.mock("server-only", () => ({}));
+vi.mock("next/navigation", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("next/navigation")>()),
+  permanentRedirect,
+}));
 vi.mock("@/lib/supabase/session", () => ({ getViewer }));
 vi.mock("@/features/progress/progress.repository", () => ({ listPathwayProgress }));
 vi.mock("@/features/catalog/content-publication.repository", async (importOriginal) => ({
@@ -92,6 +99,10 @@ vi.mock("@/content/networking-foundations/access-points-modems-onts-and-firewall
 vi.mock("@/content/networking-foundations/access-points-modems-onts-and-firewalls.account.mdx", () => {
   throw new Error("EDGE_DEVICE_ACCOUNT_SENTINEL: anonymous route imported a protected body");
 });
+vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.public.mdx", async () => {
+  const { createElement } = await import("react");
+  return { default: () => createElement("p", null, "Public layered-model foundations.") };
+});
 vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx", () => {
   throw new Error("OSI_ACCOUNT_SENTINEL: anonymous route imported a protected body");
 });
@@ -147,25 +158,35 @@ afterEach(() => {
 });
 
 beforeEach(() => {
+  permanentRedirect.mockClear();
   getViewer.mockResolvedValue(null);
   listPathwayProgress.mockResolvedValue([]);
   loadContentOverridesSnapshot.mockResolvedValue({ publications: {}, orders: {} });
 });
 
 describe("lesson route generation", () => {
+  it("permanently redirects the retired combined lesson to Hubs before lookup", async () => {
+    await expect(lessonPage.default({ params: Promise.resolve({
+      pathwaySlug: "networking-foundations",
+      lessonSlug: "hubs-bridges-and-switches",
+    }) })).rejects.toThrow("NEXT_REDIRECT;/learn/networking-foundations/hubs");
+    expect(permanentRedirect).toHaveBeenCalledWith("/learn/networking-foundations/hubs");
+    expect(loadContentOverridesSnapshot).not.toHaveBeenCalled();
+  });
+
   it("provides unique catalog SEO and a relative canonical for each published lesson", async () => {
     const metadata = await Promise.all(listPublishedLessons("networking-foundations").map((lesson) =>
       lessonPage.generateMetadata({ params: Promise.resolve({ pathwaySlug: "networking-foundations", lessonSlug: lesson.slug }) }),
     ));
     expect(metadata[0]).toEqual({
-      title: "How Networks Communicate: A Beginner's Guide",
-      description: "Learn the decisions that move data between hosts and trace a packet across a network.",
+      title: "Computer Networks and Network Devices",
+      description: "Learn what computer networks are, why they exist, and the broad roles of common network devices.",
       alternates: { canonical: "/learn/networking-foundations/how-networks-communicate" },
       openGraph: {
         type: "article",
         url: "/learn/networking-foundations/how-networks-communicate",
-        title: "How Networks Communicate: A Beginner's Guide",
-        description: "Learn the decisions that move data between hosts and trace a packet across a network.",
+        title: "Computer Networks and Network Devices",
+        description: "Learn what computer networks are, why they exist, and the broad roles of common network devices.",
       },
     });
     expect(new Set(metadata.map(({ title }) => title)).size).toBe(metadata.length);
@@ -189,7 +210,7 @@ describe("lesson route generation", () => {
     expect(scripts).toHaveLength(1);
     const data = JSON.parse(scripts[0].textContent ?? "");
     expect(data.url).toBe("https://packetsecrets.com/learn/networking-foundations/how-networks-communicate");
-    expect(data.hasPart.map((part: { isAccessibleForFree: boolean }) => part.isAccessibleForFree)).toEqual([true, true, false, false, false, false]);
+    expect(data.hasPart.map((part: { isAccessibleForFree: boolean }) => part.isAccessibleForFree)).toEqual([true, true, true, true, true, true]);
   });
 
   it("renders usable public content before registration and excludes protected bodies", async () => {
@@ -201,14 +222,14 @@ describe("lesson route generation", () => {
       }),
     });
     const { container } = render(page);
-    const boundary = screen.getByRole("region", { name: "Continue this lesson for free" });
+    const boundary = screen.getByRole("region", { name: "Save your progress" });
     const introduction = screen.getByText("Public lesson explanation.");
     const playerNext = screen.getByRole("button", { name: "Next" });
     expect(introduction.compareDocumentPosition(boundary) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(playerNext.compareDocumentPosition(boundary) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     fireEvent.click(playerNext);
     expect(screen.getByText(/Step 2 of/)).toBeVisible();
-    expect(boundary).toHaveTextContent("No payment required.");
+    expect(boundary).toHaveTextContent("Sign in to keep lesson completion and quiz results across devices. All lesson content remains free.");
     expect(screen.getByRole("link", { name: "Continue with Google or email" })).toHaveAttribute(
       "href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fhow-networks-communicate",
     );
@@ -225,17 +246,17 @@ describe("lesson route generation", () => {
     });
     render(page);
     expect(loader).toHaveBeenCalledWith("networking-foundations/how-networks-communicate", "anonymous");
-    expect(screen.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
+    expect(screen.getByRole("region", { name: "Save your progress" })).toBeVisible();
     expect(screen.queryByText(/Local audit preview/)).not.toBeInTheDocument();
   });
 
-  it("renders public and account content for an authenticated learner and loads progress", async () => {
+  it("renders the complete public lesson for an authenticated learner and loads progress", async () => {
     getViewer.mockResolvedValue({ id: "learner-1", displayName: "Pranita", avatarUrl: null });
     listPathwayProgress.mockResolvedValue([{
       attemptId: "attempt-1", pathwayId: "path_networking_foundations",
       lessonId: "lesson_how_networks_communicate", contentVersion: 1,
       attemptNumber: 1, status: "in_progress", completedItemIds: [],
-      nextItemId: "how_networks_communicate_section_communication_decisions",
+      nextItemId: "how_networks_communicate_check_1",
       lastItemId: null, lastAnchor: null, completionPercent: 20,
       incorrectCheckCount: 0, updatedAt: "2026-09-09T00:00:00Z",
     }]);
@@ -246,12 +267,12 @@ describe("lesson route generation", () => {
 
     expect(loader).toHaveBeenCalledWith("networking-foundations/how-networks-communicate", "account");
     expect(screen.getByText("Public lesson explanation.")).toBeVisible();
-    expect(screen.getByText("Authenticated lesson explanation.")).toBeVisible();
+    expect(screen.queryByText("Authenticated lesson explanation.")).not.toBeInTheDocument();
     expect(listPathwayProgress).toHaveBeenCalledWith(
       "learner-1", "path_networking_foundations",
     );
     expect(container.querySelector("article")).toHaveAttribute("data-progress-attempt", "attempt-1");
-    expect(screen.queryByRole("region", { name: "Continue this lesson for free" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Save your progress" })).not.toBeInTheDocument();
   });
 
   it("keeps authenticated lesson content visible when progress loading is unavailable", async () => {
@@ -260,114 +281,22 @@ describe("lesson route generation", () => {
     const { container } = render(await lessonPage.default({ params: Promise.resolve({
       pathwaySlug: "networking-foundations", lessonSlug: "how-networks-communicate",
     }) }));
-    expect(screen.getByText("Authenticated lesson explanation.")).toBeVisible();
+    expect(screen.getByText("Public lesson explanation.")).toBeVisible();
     expect(container.querySelector("article")).toHaveAttribute("data-progress-unavailable", "true");
     expect(container.innerHTML).not.toContain("provider detail");
   });
 
   it("emits only published lessons from the validated catalogue", () => {
-    expect(staticLessonPage.generateStaticParams?.()).toEqual([
-      {
+    expect(staticLessonPage.generateStaticParams?.()).toEqual(
+      listPublishedLessons("networking-foundations").map(({ slug: lessonSlug }) => ({
         pathwaySlug: "networking-foundations",
-        lessonSlug: "how-networks-communicate",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "hosts-and-network-devices",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "cables-fibre-wireless-and-network-connections",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "hubs-bridges-and-switches",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "unicast-broadcast-and-multicast-communication",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "routers-default-gateways-and-network-boundaries",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "access-points-modems-onts-and-firewalls",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "osi-and-tcp-ip-models",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "first-packet-journey-through-a-small-network",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "ethernet-frames-and-mac-addresses",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "how-switches-learn-and-forward",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "arp-and-local-delivery",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "vlans-access-ports-and-trunks",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "ipv4-addressing",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "subnetting-fundamentals",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "ipv6-fundamentals",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "routing-tables-and-default-routes",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "icmp-ping-and-path-discovery",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "tcp-reliable-transport",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "udp-datagrams-and-ports",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "dhcp-and-automatic-address-configuration",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "dns-and-name-resolution",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "http-https-tls-and-essential-network-services",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "nat-pat-and-the-complete-internet-packet-journey",
-      },
-      {
-        pathwaySlug: "networking-foundations",
-        lessonSlug: "systematic-network-troubleshooting-capstone",
-      },
-    ]);
+        lessonSlug,
+      })),
+    );
+    expect(staticLessonPage.generateStaticParams?.()).not.toContainEqual({
+      pathwaySlug: "networking-foundations",
+      lessonSlug: "hubs-bridges-and-switches",
+    });
   });
 
   it("renders the capstone public method without protected blocks for anonymous visitors", async () => {
@@ -452,21 +381,6 @@ describe("lesson route generation", () => {
     expect(container.innerHTML).not.toContain("ROUTE_DECISION_ACCOUNT_SENTINEL");
   });
 
-  it("renders only the switching public body for anonymous visitors", async () => {
-    const loader = vi.spyOn(contentRepository, "loadAuthorizedLessonContent");
-    const page = await lessonPage.default({ params: Promise.resolve({
-      pathwaySlug: "networking-foundations",
-      lessonSlug: "hubs-bridges-and-switches",
-    }) });
-    const { container } = render(page);
-
-    expect(screen.getByText("Public switching comparison.")).toBeVisible();
-    expect(screen.getByRole("heading", { level: 2, name: "Compare hub, bridge and switch" })).toBeVisible();
-    expect(loader).toHaveBeenCalledWith("networking-foundations/hubs-bridges-and-switches", "anonymous");
-    expect(container.innerHTML).not.toContain("SWITCHING_ACCOUNT_SENTINEL");
-    expect(renderToStaticMarkup(page)).not.toContain("SWITCHING_ACCOUNT_SENTINEL");
-  });
-
   it("renders only the connection-media public body for anonymous visitors", async () => {
     const loader = vi.spyOn(contentRepository, "loadAuthorizedLessonContent");
     const page = await lessonPage.default({ params: Promise.resolve({
@@ -485,19 +399,18 @@ describe("lesson route generation", () => {
     expect(renderToStaticMarkup(page)).not.toContain("CONNECTION_MEDIA_ACCOUNT_SENTINEL");
   });
 
-  it("renders the OSI account boundary without loading or serializing its foundations", async () => {
+  it("renders the public OSI foundations and offers optional progress saving", async () => {
     const page = await lessonPage.default({ params: Promise.resolve({
       pathwaySlug: "networking-foundations", lessonSlug: "osi-and-tcp-ip-models",
     }) });
     const { container } = render(page);
     expect(screen.getByRole("heading", { level: 1, name: "OSI and TCP/IP Models" })).toBeVisible();
-    expect(screen.getByRole("region", { name: "Continue this lesson for free" })).toBeVisible();
+    expect(screen.getByRole("region", { name: "Save your progress" })).toBeVisible();
     expect(screen.getByRole("link", { name: "Continue with Google or email" })).toHaveAttribute(
       "href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fosi-and-tcp-ip-models",
     );
-    expect(container.querySelector(".lesson-content")).toBeEmptyDOMElement();
-    expect(container.querySelector(".lesson-byline")).not.toHaveTextContent("Public introduction");
-    expect(screen.queryByRole("button", { name: "Next" })).not.toBeInTheDocument();
+    expect(container.querySelector(".lesson-content")).not.toBeEmptyDOMElement();
+    expect(container.querySelector(".lesson-byline")).toHaveTextContent("Free");
     expect(renderToStaticMarkup(page)).not.toMatch(/OSI_FOUNDATIONS_SENTINEL|OSI_ACCOUNT_SENTINEL/);
   });
 
@@ -519,9 +432,9 @@ describe("lesson route generation", () => {
     expect(trigger).toHaveAttribute("aria-expanded", "false");
     fireEvent.click(trigger);
     expect(screen.getByRole("dialog", { name: "Course contents" })).toBeVisible();
-    expect(screen.getByText("Network and Device Essentials")).toBeVisible();
+    expect(screen.getByText("Computer Network Basics")).toBeVisible();
     expect(
-      screen.getAllByRole("link", { name: /what is a computer network/i })[0],
+      screen.getAllByRole("link", { name: /introduction to computer networks and network devices/i })[0],
     ).toHaveAttribute("aria-current", "page");
   });
 
@@ -540,11 +453,21 @@ describe("lesson route generation", () => {
   it("honors a live database reorder for previous/next navigation", async () => {
     loadContentOverridesSnapshot.mockResolvedValue({
       publications: {},
-      orders: { module_network_and_device_essentials: ["lesson_hosts_and_network_devices", "lesson_how_networks_communicate"] },
+      orders: { module_network_and_device_essentials: [
+        "lesson_hosts_and_network_devices",
+        "lesson_how_networks_communicate",
+        "lesson_hubs",
+        "lesson_bridges",
+        "lesson_switches",
+        "lesson_routers_default_gateways_and_network_boundaries",
+        "lesson_physical_and_logical_addressing",
+        "lesson_osi_and_tcp_ip_models",
+        "lesson_computer_network_basics_final_quiz",
+      ] },
     });
     render(await lessonPage.default({ params: Promise.resolve({
       pathwaySlug: "networking-foundations", lessonSlug: "how-networks-communicate",
     }) }));
-    expect(screen.getByRole("link", { name: "Previous: Hosts, Clients, Servers and Network Interfaces" })).toBeVisible();
+    expect(screen.getByRole("link", { name: "Previous: Hosts, Clients and Servers" })).toBeVisible();
   });
 });

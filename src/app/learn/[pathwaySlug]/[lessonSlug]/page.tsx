@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 
 import {
   getPathway,
@@ -12,6 +12,7 @@ import {
   applyContentOverrides,
   loadContentOverridesSnapshot,
 } from "@/features/catalog/content-publication.repository";
+import { resolveLessonAlias } from "@/features/catalog/lesson-aliases";
 import { loadAuthorizedLessonContent } from "@/features/lessons/lesson-content.repository";
 import type { LessonContentKey, LessonContentModule } from "@/features/lessons/lesson-content.types";
 import { LessonShell } from "@/features/lessons/lesson-shell";
@@ -47,6 +48,13 @@ type ResolvedLesson = {
   next: LessonSummary | undefined;
 };
 
+function redirectAliasedLesson(pathwaySlug: string, lessonSlug: string) {
+  const destinationSlug = resolveLessonAlias(pathwaySlug, lessonSlug);
+  if (destinationSlug) {
+    permanentRedirect(`/learn/${pathwaySlug}/${destinationSlug}`);
+  }
+}
+
 async function findPublishedLesson(pathwaySlug: string, lessonSlug: string): Promise<ResolvedLesson> {
   let pathway: Pathway;
 
@@ -80,6 +88,7 @@ async function findPublishedLesson(pathwaySlug: string, lessonSlug: string): Pro
 
 export async function generateMetadata({ params }: LessonPageProps): Promise<Metadata> {
   const { pathwaySlug, lessonSlug } = await params;
+  redirectAliasedLesson(pathwaySlug, lessonSlug);
   const { lesson } = await findPublishedLesson(pathwaySlug, lessonSlug);
   const canonical = `/learn/${pathwaySlug}/${lesson.slug}`;
 
@@ -98,6 +107,7 @@ export async function generateMetadata({ params }: LessonPageProps): Promise<Met
 
 export default async function LessonPage({ params, searchParams }: LessonPageProps) {
   const { pathwaySlug, lessonSlug } = await params;
+  redirectAliasedLesson(pathwaySlug, lessonSlug);
   const { pathway, lesson, previous, next } = await findPublishedLesson(pathwaySlug, lessonSlug);
   const viewer = await getViewer();
   const auditRequested = (await searchParams)?.audit === "1";
