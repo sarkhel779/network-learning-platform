@@ -1,0 +1,52 @@
+<h2 id="why-networks-use-addresses">Why networks use addresses</h2>
+
+Networks need identifiers so data can be associated with the right interfaces and endpoints. Two important forms are **MAC addresses**, used as local-link identifiers, and **IP addresses**, used as logical network addresses.
+
+They are related but not interchangeable. They have different formats and responsibilities.
+
+<h2 id="mac-addresses">MAC addresses</h2>
+
+An Ethernet MAC address is 48 bits and is commonly written as six hexadecimal pairs, such as `02:1A:2B:3C:4D:5E`. Hexadecimal uses digits 0–9 and letters A–F.
+
+A MAC address identifies an interface for local-link purposes. Later lessons explain how Ethernet uses it.
+
+<h2 id="universal-local-and-individual-group">U/L and I/G bits</h2>
+
+The two least-significant bits of the first octet have introductory meaning:
+
+- The **I/G bit** is the least-significant bit. `0` means an individual address; `1` means a group address.
+- The **U/L bit** is the next bit. `0` indicates universally administered; `1` indicates locally administered.
+
+For `02:1A:2B:3C:4D:5E`, the I/G bit is `0` and the U/L bit is `1`, so it is an individual, locally administered MAC address.
+
+<h2 id="ip-addresses">IP addresses</h2>
+
+An IP address is a logical network address. IPv4 is commonly written in **dotted decimal**, such as `192.0.2.10`. IPv6 uses hexadecimal groups separated by colons.
+
+MAC addresses support local-link identity; IP addresses provide logical network addressing across connected networks. Detailed IPv4, IPv6, and subnet concepts come in the Network Layer module.
+
+<h2 id="inspect-address-formats">Inspect address formats</h2>
+
+Choose each sample to identify its format and, for MAC examples, the introductory U/L and I/G meaning.
+
+<AddressFormatInspector />
+
+<h2 id="knowledge-check">Knowledge check</h2>
+
+<KnowledgeCheck progressItemId="physical_and_logical_addressing_check_1"
+  question="What kind of address is 02:1A:2B:3C:4D:5E?"
+  options={["A MAC address written in hexadecimal", "An IPv4 address in dotted decimal", "A web address"]}
+  correctIndex={0}
+  explanation="02:1A:2B:3C:4D:5E is a MAC address written in hexadecimal." />
+
+<KnowledgeCheck progressItemId="physical_and_logical_addressing_check_2"
+  question="What do I/G = 1 and U/L = 1 indicate?"
+  options={["A group address and a locally administered address", "An individual and universally administered address", "An IPv4 broadcast address"]}
+  correctIndex={0}
+  explanation="An I/G bit of 1 identifies a group address; a U/L bit of 1 identifies a locally administered address." />
+
+<KnowledgeCheck progressItemId="physical_and_logical_addressing_check_3"
+  question="Which comparison is correct?"
+  options={["MAC supports local-link identity; IP provides logical network addressing", "MAC and IP are the same format", "IP is only a physical cable label"]}
+  correctIndex={0}
+  explanation="MAC addresses support local-link delivery identity; IP addresses provide logical network addressing." />

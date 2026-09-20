@@ -48,8 +48,9 @@ const lessonImports = {
   "networking-foundations/routers-default-gateways-and-network-boundaries": {
     public: () =>
       import("@/content/networking-foundations/routers-default-gateways-and-network-boundaries.public.mdx"),
-    account: () =>
-      import("@/content/networking-foundations/routers-default-gateways-and-network-boundaries.account.mdx"),
+  },
+  "networking-foundations/physical-and-logical-addressing": {
+    public: () => import("@/content/networking-foundations/physical-and-logical-addressing.public.mdx"),
   },
   "networking-foundations/access-points-modems-onts-and-firewalls": {
     public: () =>
@@ -133,8 +134,7 @@ const lessonImports = {
     pro: () => import("@/content/networking-foundations/systematic-network-troubleshooting-capstone.pro.mdx"),
   },
   "networking-foundations/osi-and-tcp-ip-models": {
-    account: () =>
-      import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),
+    public: () => import("@/content/networking-foundations/osi-and-tcp-ip-models.public.mdx"),
   },
 } satisfies LessonContentRegistry;
 

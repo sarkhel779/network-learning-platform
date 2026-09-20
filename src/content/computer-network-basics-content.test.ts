@@ -48,4 +48,32 @@ describe("Computer Network Basics content", () => {
     expect(lesson).toContain(`progressItemId="${checkId}"`);
     expect(lesson).not.toMatch(/MAC table|learn the source|\bflood\b|\bage\b|collision domain calculation|forwarding decision/i);
   });
+
+  it("keeps Routers introductory", () => {
+    const lesson = source("routers-default-gateways-and-network-boundaries");
+    expect(headings(lesson)).toEqual(["what-a-router-does", "router-interfaces", "network-boundaries", "default-gateway", "place-the-router", "knowledge-check"]);
+    expect(lesson).toContain("<RouterBoundaryPlacement />");
+    expect(lesson).not.toMatch(/local or remote|route lookup|routing table|longest prefix|what changes at each hop/i);
+  });
+
+  it("introduces physical and logical addressing without delivery mechanics", () => {
+    const lesson = source("physical-and-logical-addressing");
+    expect(headings(lesson)).toEqual(["why-networks-use-addresses", "mac-addresses", "universal-local-and-individual-group", "ip-addresses", "inspect-address-formats", "knowledge-check"]);
+    expect(lesson).toMatch(/hexadecimal/i);
+    expect(lesson).toMatch(/U\/L bit/i);
+    expect(lesson).toMatch(/I\/G bit/i);
+    expect(lesson).toMatch(/dotted decimal/i);
+    expect(lesson).toContain("<AddressFormatInspector />");
+    expect(lesson).not.toMatch(/ARP|subnetting|binary AND|delivery decision/i);
+  });
+
+  it("introduces both layered models and their mapping", () => {
+    const lesson = source("osi-and-tcp-ip-models");
+    expect(headings(lesson)).toEqual(["why-layers", "osi-model", "tcp-ip-model", "model-mapping", "encapsulation-lab", "knowledge-check"]);
+    for (const layer of ["Physical", "Data Link", "Network", "Transport", "Session", "Presentation", "Application"]) expect(lesson).toContain(layer);
+    expect(lesson).toContain("<LayerModelComparison />");
+    expect(lesson).toContain("<EncapsulationExperience");
+    expect(lesson).toContain("<LayerMatchingExercise />");
+    expect(lesson).not.toMatch(/troubleshooting|interview/i);
+  });
 });

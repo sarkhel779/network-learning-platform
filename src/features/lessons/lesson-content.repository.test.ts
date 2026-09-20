@@ -39,6 +39,8 @@ vi.mock("@/content/networking-foundations/routers-default-gateways-and-network-b
 vi.mock("@/content/networking-foundations/routers-default-gateways-and-network-boundaries.account.mdx", () => ({
   default: () => null,
 }));
+vi.mock("@/content/networking-foundations/physical-and-logical-addressing.public.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.public.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/access-points-modems-onts-and-firewalls.public.mdx", () => ({
   default: () => null,
 }));
@@ -222,7 +224,7 @@ describe("loadAuthorizedLessonContent", () => {
     expect(account.pro).toBeUndefined();
   });
 
-  it("keeps route-decision practice protected while serving its public lesson anonymously", async () => {
+  it("serves the introductory router lesson without the preserved account block", async () => {
     const key = "networking-foundations/routers-default-gateways-and-network-boundaries";
     const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
     expect(anonymous.public).toBeDefined();
@@ -231,8 +233,14 @@ describe("loadAuthorizedLessonContent", () => {
 
     const account = await loadAuthorizedLessonContent(key, "account");
     expect(account.public).toBeDefined();
-    expect(account.account).toBeDefined();
+    expect(account.account).toBeUndefined();
     expect(account.pro).toBeUndefined();
+  });
+
+  it("serves introductory addressing publicly", async () => {
+    const result = await loadAuthorizedLessonContent("networking-foundations/physical-and-logical-addressing", "account");
+    expect(result.public).toBeDefined();
+    expect(result.account).toBeUndefined();
   });
 
   it("keeps edge-device practice protected while serving its public lesson anonymously", async () => {
@@ -376,19 +384,19 @@ describe("loadAuthorizedLessonContent", () => {
     expect(await loadAuthorizedLessonContent(key, "pro")).toMatchObject({ public: expect.anything(), account: expect.anything(), pro: expect.anything() });
   });
 
-  it("returns no OSI content to anonymous viewers", async () => {
+  it("serves OSI foundations to anonymous viewers", async () => {
     const result = await loadAuthorizedLessonContent(
       "networking-foundations/osi-and-tcp-ip-models", "anonymous",
     );
-    expect(Boolean(result.public)).toBe(false);
+    expect(Boolean(result.public)).toBe(true);
     expect(Boolean(result.account)).toBe(false);
     expect(Boolean(result.pro)).toBe(false);
   });
 
-  it.each(["account", "pro"] as const)("loads OSI foundations through account access for %s viewers", async (access) => {
+  it.each(["account", "pro"] as const)("does not append preserved OSI account content for %s viewers", async (access) => {
     const result = await loadAuthorizedLessonContent("networking-foundations/osi-and-tcp-ip-models", access);
-    expect(Boolean(result.public)).toBe(false);
-    expect(result.account).toBeDefined();
+    expect(Boolean(result.public)).toBe(true);
+    expect(result.account).toBeUndefined();
     expect(result.pro).toBeUndefined();
   });
 
