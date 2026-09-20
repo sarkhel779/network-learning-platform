@@ -76,4 +76,22 @@ describe("Computer Network Basics content", () => {
     expect(lesson).toContain("<LayerMatchingExercise />");
     expect(lesson).not.toMatch(/troubleshooting|interview/i);
   });
+
+  it("keeps the final assessment introduction public and its eight checks in the account block", () => {
+    const publicSource = source("computer-network-basics-final-quiz");
+    const accountSource = readFileSync(join(process.cwd(), "src", "content", "networking-foundations", "computer-network-basics-final-quiz.account.mdx"), "utf8");
+    expect(publicSource).toMatch(/sign in.*assessment/i);
+    expect(publicSource).not.toContain("<KnowledgeCheck");
+    expect(accountSource.match(/<KnowledgeCheck\b/g)).toHaveLength(8);
+    for (let index = 1; index <= 8; index += 1) expect(accountSource).toContain(`progressItemId="computer_network_basics_final_quiz_check_${index}"`);
+    expect(accountSource).toMatch(/network purpose|LAN|WAN/i);
+    expect(accountSource).toMatch(/host/i);
+    expect(accountSource).toMatch(/client|server/i);
+    expect(accountSource).toMatch(/hub|bridge|switch/i);
+    expect(accountSource).toMatch(/router|default gateway/i);
+    expect(accountSource).toMatch(/MAC|IP address/i);
+    expect(accountSource).toMatch(/U\/L|I\/G/i);
+    expect(accountSource).toMatch(/OSI|TCP\/IP/i);
+    expect(accountSource).not.toMatch(/DNS|ARP|subnet mask|binary AND|forwarding|routing table|packet journey/i);
+  });
 });

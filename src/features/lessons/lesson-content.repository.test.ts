@@ -41,6 +41,8 @@ vi.mock("@/content/networking-foundations/routers-default-gateways-and-network-b
 }));
 vi.mock("@/content/networking-foundations/physical-and-logical-addressing.public.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/osi-and-tcp-ip-models.public.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/computer-network-basics-final-quiz.public.mdx", () => ({ default: () => null }));
+vi.mock("@/content/networking-foundations/computer-network-basics-final-quiz.account.mdx", () => ({ default: () => null }));
 vi.mock("@/content/networking-foundations/access-points-modems-onts-and-firewalls.public.mdx", () => ({
   default: () => null,
 }));
@@ -241,6 +243,12 @@ describe("loadAuthorizedLessonContent", () => {
     const result = await loadAuthorizedLessonContent("networking-foundations/physical-and-logical-addressing", "account");
     expect(result.public).toBeDefined();
     expect(result.account).toBeUndefined();
+  });
+
+  it("keeps the final module quiz behind free account access", async () => {
+    const key = "networking-foundations/computer-network-basics-final-quiz";
+    expect(await loadAuthorizedLessonContent(key, "anonymous")).toMatchObject({ public: expect.anything(), account: undefined });
+    expect(await loadAuthorizedLessonContent(key, "account")).toMatchObject({ public: expect.anything(), account: expect.anything(), pro: undefined });
   });
 
   it("keeps edge-device practice protected while serving its public lesson anonymously", async () => {
