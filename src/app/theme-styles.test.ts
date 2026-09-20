@@ -83,6 +83,16 @@ describe("system theme and table styles", () => {
     expect(envelope).toMatch(/stroke:\s*var\(--background\)\s*;/);
   });
 
+  it("uses a teal glow instead of a rectangular outline for focused topology devices", () => {
+    expect(css).toMatch(/\.device-role-tour \.network-topology__device\[role="button"\]:focus\s*\{[^}]*outline:\s*none/);
+    expect(css).toMatch(/\.device-role-tour \.network-topology__device\[role="button"\]:focus-visible\s*\{[^}]*outline:\s*none[^}]*filter:\s*drop-shadow/);
+  });
+
+  it("keeps the device thought cloud above the topology on narrow screens", () => {
+    expect(css).toMatch(/@media\s*\(max-width:\s*44rem\)[\s\S]*\.device-role-tour \.packet-flow-topology-stage\s*\{[^}]*padding-block-start:\s*(?!0)/);
+    expect(css).toMatch(/@media\s*\(max-width:\s*44rem\)[\s\S]*\.device-role-tour__cloud\s*\{[^}]*position:\s*absolute/);
+  });
+
   it("defines a desktop workspace rail and mobile bottom sheet", () => {
     expect(css).toMatch(/\.learner-workspace\s*\{[^}]*position:\s*fixed/);
     expect(css).toMatch(/\.learner-workspace-mobile-trigger\s*\{[^}]*display:\s*flex/);

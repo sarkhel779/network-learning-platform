@@ -8,6 +8,10 @@ type NetworkTopologyProps = Readonly<{
   electricalSignal?: Readonly<{ playing: boolean; speed: number }>;
   selectedDeviceId?: string;
   onDeviceSelect?: (deviceId: string) => void;
+  packetTravelDurationMs?: number;
+  packetMotion?: "svg" | "dhcp-css";
+  forceMotion?: boolean;
+  packetAnimationPlaying?: boolean;
 }>;
 
 function isLinkActive(linkId: string, step: PacketFlowStep): boolean {
@@ -50,8 +54,10 @@ function deviceSymbolKind(device: PacketFlowScenario["devices"][number]): Networ
   const identity = `${device.id} ${device.label} ${device.role}`.toLowerCase();
   if (identity.includes("firewall") || identity.includes("security boundary")) return "firewall";
   if (identity.includes("access point") || identity.includes("wireless bridge")) return "access-point";
+  if (identity.includes("hub") || identity.includes("bridge")) return "switch";
   if (identity.includes("switch") || identity.includes("lan forwarding")) return "switch";
   if (identity.includes("router") || identity.includes("gateway")) return "router";
+  if (identity.includes("provider") || identity.includes("internet") || identity.includes("cloud")) return "provider";
   if (identity.includes("server")) return "server";
   return "host";
 }
@@ -63,6 +69,10 @@ export function NetworkTopology({
   electricalSignal,
   selectedDeviceId,
   onDeviceSelect,
+  packetTravelDurationMs = 600,
+  packetMotion = "svg",
+  forceMotion = false,
+  packetAnimationPlaying = true,
 }: NetworkTopologyProps) {
   const devicesById = new Map(scenario.devices.map((device) => [device.id, device]));
   const packet = step.packet;
@@ -82,6 +92,7 @@ export function NetworkTopology({
         const end = insetLinkPoint(from, to, true);
         return [{
           link,
+          destinationId: otherId,
           start,
           end,
         }];
@@ -89,11 +100,13 @@ export function NetworkTopology({
     : [];
   const titleId = `${scenario.id}-topology-title`;
   const descriptionId = `${scenario.id}-topology-description`;
+  const packetHasArrived = packetMotion === "dhcp-css" && packet?.settled === true;
 
   return (
     <div
       className={`network-topology${reducedMotion ? " network-topology--reduced-motion" : ""}`}
       data-reduced-motion={reducedMotion ? "true" : undefined}
+      data-motion-override={forceMotion ? "true" : undefined}
     >
       <svg viewBox="0 0 800 270" role={onDeviceSelect ? "group" : "img"} aria-labelledby={titleId} aria-describedby={descriptionId}>
         <title id={titleId}>{scenario.title}</title>
@@ -158,31 +171,47 @@ export function NetworkTopology({
             <path data-packet-envelope="true" d="M-7-5h14v10H-7zM-7-3l7 6 7-6" />
           </g>
         )) : null}
-        {!electricalSignal && packet ? packetTravels.map(({ link, start, end }) => (
+        {!electricalSignal && packet ? packetTravels.map(({ link, destinationId, start, end }) => {
+          const packetState = packetHasArrived && selectedDeviceId
+            ? destinationId === selectedDeviceId ? "emphasized" : "muted"
+            : undefined;
+          return (
           <g
             key={`${step.id}-${link.id}`}
-            className={`network-topology__packet-marker${packet.broadcast ? " network-topology__packet-marker--broadcast" : ""}${reducedMotion ? " network-topology__packet-marker--discrete" : ""}`}
+            className={`network-topology__packet-marker${packet.broadcast ? " network-topology__packet-marker--broadcast" : ""}${reducedMotion ? " network-topology__packet-marker--discrete" : ""}${packetMotion === "dhcp-css" && !reducedMotion && !packetHasArrived ? " network-topology__packet-marker--travel" : ""}${packetState ? ` network-topology__packet-marker--${packetState}` : ""}`}
             data-broadcast={packet.broadcast ? "true" : undefined}
             data-packet-marker="true"
             data-link-id={link.id}
             data-step-id={step.id}
+            data-packet-state={packetState}
+            data-playing={packetAnimationPlaying ? "true" : "false"}
             aria-hidden="true"
-            transform={`translate(${end.x} ${end.y - PACKET_MARKER_VERTICAL_OFFSET})`}
+            transform={packetMotion === "dhcp-css" && !reducedMotion && !packetHasArrived
+              ? `translate(${start.x} ${start.y - PACKET_MARKER_VERTICAL_OFFSET})`
+              : `translate(${end.x} ${end.y - PACKET_MARKER_VERTICAL_OFFSET})`}
+            style={packetMotion === "dhcp-css" && !reducedMotion && !packetHasArrived ? {
+              animationDuration: `${packetTravelDurationMs}ms`,
+              "--packet-travel-duration": `${packetTravelDurationMs}ms`,
+              "--packet-travel-x": `${end.x - start.x}px`,
+              "--packet-travel-y": `${end.y - start.y}px`,
+            } as React.CSSProperties : undefined}
           >
-            {!reducedMotion ? (
+            {!reducedMotion && packetMotion === "svg" ? (
               <animateTransform
                 attributeName="transform"
                 type="translate"
                 from={`${start.x} ${start.y - PACKET_MARKER_VERTICAL_OFFSET}`}
                 to={`${end.x} ${end.y - PACKET_MARKER_VERTICAL_OFFSET}`}
-                dur="600ms"
+                dur={`${packetTravelDurationMs}ms`}
+                calcMode="linear"
                 fill="freeze"
               />
             ) : null}
             <circle r="17" />
             <path data-packet-envelope="true" d="M-9-6h18v12H-9zM-9-4l9 7 9-7" />
           </g>
-        )) : null}
+          );
+        }) : null}
         <g className="network-topology__devices">
           {scenario.devices.map((device) => {
             const active = step.activeDeviceIds.includes(device.id);

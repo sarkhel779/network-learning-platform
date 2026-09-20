@@ -15,8 +15,9 @@ describe("Computer Network Basics content", () => {
     const introduction = source("how-networks-communicate");
     expect(headings(introduction)).toEqual([
       "what-is-a-computer-network", "why-networks-exist", "lan-wan-and-the-internet",
-      "end-and-intermediary-devices", "identify-device-roles", "knowledge-check",
+      "end-and-intermediary-devices", "types-of-hosts", "identify-device-roles", "knowledge-check",
     ]);
+    expect(introduction).toContain("<HostTypesGallery />");
     expect(introduction).toContain("<DeviceRoleIdentifier />");
     expect(introduction).toContain('progressItemId="how_networks_communicate_check_1"');
     expect(introduction).toContain("A network lets connected devices exchange data and share resources.");
