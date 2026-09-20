@@ -13,14 +13,10 @@ const lessonImports = {
   "networking-foundations/how-networks-communicate": {
     public: () =>
       import("@/content/networking-foundations/how-networks-communicate.public.mdx"),
-    account: () =>
-      import("@/content/networking-foundations/how-networks-communicate.account.mdx"),
   },
   "networking-foundations/hosts-and-network-devices": {
     public: () =>
       import("@/content/networking-foundations/hosts-and-network-devices.public.mdx"),
-    account: () =>
-      import("@/content/networking-foundations/hosts-and-network-devices.account.mdx"),
   },
   "networking-foundations/cables-fibre-wireless-and-network-connections": {
     public: () =>

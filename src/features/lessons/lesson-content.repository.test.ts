@@ -163,6 +163,16 @@ describe("loadAuthorizedLessonContent", () => {
     expect(result.pro).toBeUndefined();
   });
 
+  it.each(["how-networks-communicate", "hosts-and-network-devices"])("does not append preserved legacy account content for %s", async (slug) => {
+    const result = await loadAuthorizedLessonContent(
+      `networking-foundations/${slug}`,
+      "account",
+    );
+
+    expect(result.public).toBeDefined();
+    expect(result.account).toBeUndefined();
+  });
+
   it("loads the connection media public body anonymously and its account body only for an account", async () => {
     const key = "networking-foundations/cables-fibre-wireless-and-network-connections";
     const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
