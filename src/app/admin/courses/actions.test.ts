@@ -104,7 +104,17 @@ describe("move lesson action", () => {
   it("computes a swap on top of a live database override instead of the static catalog order", async () => {
     mocks.loadContentOverridesSnapshot.mockResolvedValue({
       publications: {},
-      orders: { module_network_and_device_essentials: ["lesson_hosts_and_network_devices", "lesson_how_networks_communicate"] },
+      orders: { module_network_and_device_essentials: [
+        "lesson_hosts_and_network_devices",
+        "lesson_how_networks_communicate",
+        "lesson_hubs",
+        "lesson_bridges",
+        "lesson_switches",
+        "lesson_routers_default_gateways_and_network_boundaries",
+        "lesson_physical_and_logical_addressing",
+        "lesson_osi_and_tcp_ip_models",
+        "lesson_computer_network_basics_final_quiz",
+      ] },
     });
     mocks.setModuleLessonOrder.mockResolvedValue({ moduleId: "module_network_and_device_essentials", lessonOrder: [] });
     await moveLessonAction(form({

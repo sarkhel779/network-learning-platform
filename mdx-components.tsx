@@ -66,14 +66,25 @@ import { IncidentReportBuilder } from "@/features/troubleshooting/incident-repor
 import { TroubleshootingWorkspace } from "@/features/troubleshooting/troubleshooting-workspace";
 import { TroubleshootingProExperience } from "@/features/troubleshooting/troubleshooting-pro-experience";
 import { ProtocolFormatDiagram } from "@/features/packet-formats/protocol-format-diagram";
+import { AddressFormatInspector } from "@/features/network-basics/address-format-inspector";
+import { BridgeSegmentComparison } from "@/features/network-basics/bridge-segment-comparison";
+import { DeviceRoleIdentifier } from "@/features/network-basics/device-role-identifier";
+import { HostRoleClassifier } from "@/features/network-basics/host-role-classifier";
+import { HubRepeaterDemo } from "@/features/network-basics/hub-repeater-demo";
+import { LayerMatchingExercise } from "@/features/network-basics/layer-matching-exercise";
+import { RouterBoundaryPlacement } from "@/features/network-basics/router-boundary-placement";
+import { SwitchPortMatcher } from "@/features/network-basics/switch-port-matcher";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
+    AddressFormatInspector,
     ArpLocalDeliveryPlayer,
     ArpVariantPlayer,
+    BridgeSegmentComparison,
     ConnectionMediaComparison,
     EncapsulationExperience,
     DeviceLayerScope,
+    DeviceRoleIdentifier,
     DhcpRelayPlayer,
     DhcpRfcCheck,
     DoraPlayer,
@@ -103,6 +114,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     DeliveryScopePlayer,
     HostsAndDevicesExperience,
     HostsAndDevicesStaticOverview,
+    HostRoleClassifier,
+    HubRepeaterDemo,
     HopByHopForwardingPlayer,
     InterviewScenario,
     Ipv4AddressBoundaryPlayer,
@@ -110,6 +123,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     Ipv6AddressExplorer,
     KnowledgeCheck,
     LayerModelComparison,
+    LayerMatchingExercise,
     LeaseTimingPlayer,
     LearningObjective,
     NetworkCommunicationPacketFlow,
@@ -126,9 +140,11 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     UdpPortDeliveryPlayer,
     RouteDecisionPlayer,
     RouteDecisionExperience,
+    RouterBoundaryPlacement,
     RoutingTableDecisionPlayer,
     SectionContinue,
     SwitchingComparison,
+    SwitchPortMatcher,
     SwitchLearningPlayer,
     SubnetBoundaryPlayer,
     SubnetScenarioPlayer,

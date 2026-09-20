@@ -41,10 +41,10 @@ describe("progress repository", () => {
     const result = await recordLearnerProgress({
       pathwayId: "path_networking_foundations", lessonId: "lesson_how_networks_communicate", contentVersion: 1,
       idempotencyKey: "11111111-1111-4111-8111-111111111111", eventType: "section_completed",
-      itemId: "how_networks_communicate_section_communication_decisions", itemKind: "section",
-      anchor: "communication-decisions", metadata: {},
+      itemId: "how_networks_communicate_section_what_is_a_computer_network", itemKind: "section",
+      anchor: "what-is-a-computer-network", metadata: {},
     });
     expect(result.ok).toBe(true);
-    expect(rpc).toHaveBeenCalledWith("record_learner_progress_event", expect.objectContaining({ p_item_id: "how_networks_communicate_section_communication_decisions" }));
+    expect(rpc).toHaveBeenCalledWith("record_learner_progress_event", expect.objectContaining({ p_item_id: "how_networks_communicate_section_what_is_a_computer_network" }));
   });
 });

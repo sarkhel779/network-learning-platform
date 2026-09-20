@@ -40,6 +40,7 @@ export const lessonSummarySchema = z
     objective: learnerTextSchema,
     seo: lessonSeoSchema,
     published: z.boolean(),
+    format: z.enum(["lesson", "assessment"]).optional(),
     estimatedMinutes: z.number().int().min(1).max(60),
     sections: z.array(lessonSectionSchema).optional(),
   })

@@ -10,7 +10,7 @@ describe("ModuleList publication labels", () => {
   it("marks a published lesson Free and preserves its canonical link", () => {
     const pathway = getPathway("networking-foundations");
     render(<ModuleList modules={pathway.modules} pathwaySlug={pathway.slug} />);
-    const link = screen.getByRole("link", { name: "What Is a Computer Network?" });
+    const link = screen.getByRole("link", { name: "Introduction to Computer Networks and Network Devices" });
     const card = link.closest("li")!;
     expect(within(card).getByText("Free")).toBeVisible();
     expect(within(card).queryByText("Premium")).toBeNull();
@@ -22,10 +22,18 @@ describe("ModuleList publication labels", () => {
     render(<ModuleList modules={pathway.modules} pathwaySlug={pathway.slug} />);
     expect(screen.getByRole("link", { name: "Unicast, Broadcast and Multicast Communication" }))
       .toHaveAttribute("href", "/learn/networking-foundations/unicast-broadcast-and-multicast-communication");
-    expect(screen.getByRole("link", { name: "Routers, Default Gateways and Network Boundaries" }))
+    expect(screen.getByRole("link", { name: "Routers" }))
       .toHaveAttribute("href", "/learn/networking-foundations/routers-default-gateways-and-network-boundaries");
     expect(screen.getByRole("link", { name: "ARP and Local Delivery" }))
       .toHaveAttribute("href", "/learn/networking-foundations/arp-and-local-delivery");
+  });
+
+  it("marks the final module assessment Free account", () => {
+    const pathway = getPathway("networking-foundations");
+    render(<ModuleList modules={pathway.modules} pathwaySlug={pathway.slug} />);
+    const link = screen.getByRole("link", { name: "Computer Network Basics Final Quiz" });
+    const card = link.closest("li")!;
+    expect(within(card).getByText("Free account")).toBeVisible();
   });
 
   it("links the published ICMP lesson as Free", () => {

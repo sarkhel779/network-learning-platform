@@ -15,14 +15,14 @@ describe("PathwayOverview", () => {
     ).toBeVisible();
     expect(screen.getByText(/complete beginners/i)).toBeVisible();
     const modulesSection = screen.getByRole("heading", { name: "Modules and lessons" }).closest("section") as HTMLElement;
-    expect(within(modulesSection).getAllByRole("listitem")).toHaveLength(25);
+    expect(within(modulesSection).getAllByRole("listitem")).toHaveLength(29);
   });
 
   it("shows the course scale and a jump-to-module link for every module", () => {
     render(<PathwayOverview pathway={getPathway("networking-foundations")} />);
 
     expect(screen.getByText("6 modules")).toBeVisible();
-    expect(screen.getByText("25 lessons")).toBeVisible();
+    expect(screen.getByText("29 lessons")).toBeVisible();
 
     const toc = screen.getByRole("navigation", { name: "Jump to module" });
     const tocLinks = within(toc).getAllByRole("link");
@@ -35,13 +35,13 @@ describe("PathwayOverview", () => {
 
     const modulesSection = screen.getByRole("heading", { name: "Modules and lessons" }).closest("section") as HTMLElement;
     const publishedLesson = within(modulesSection).getByRole("link", {
-      name: /what is a computer network/i,
+      name: /introduction to computer networks and network devices/i,
     });
     expect(publishedLesson).toHaveAttribute(
       "href",
       "/learn/networking-foundations/how-networks-communicate",
     );
-    expect(screen.getByRole("link", { name: /hosts, clients, servers and network interfaces/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /hosts, clients and servers/i })).toHaveAttribute(
       "href",
       "/learn/networking-foundations/hosts-and-network-devices",
     );
@@ -49,10 +49,9 @@ describe("PathwayOverview", () => {
       "href",
       "/learn/networking-foundations/cables-fibre-wireless-and-network-connections",
     );
-    expect(screen.getByRole("link", { name: /hubs, bridges and switches/i })).toHaveAttribute(
-      "href",
-      "/learn/networking-foundations/hubs-bridges-and-switches",
-    );
+    expect(screen.getByRole("link", { name: "Hubs" })).toHaveAttribute("href", "/learn/networking-foundations/hubs");
+    expect(screen.getByRole("link", { name: "Bridges" })).toHaveAttribute("href", "/learn/networking-foundations/bridges");
+    expect(screen.getByRole("link", { name: "Switches" })).toHaveAttribute("href", "/learn/networking-foundations/switches");
     const osiLesson = screen.getByRole("link", { name: /osi and tcp\/ip models/i });
     expect(osiLesson).toHaveAttribute(
       "href",
@@ -61,7 +60,7 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /unicast, broadcast and multicast communication/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/unicast-broadcast-and-multicast-communication",
     );
-    expect(screen.getByRole("link", { name: /routers, default gateways and network boundaries/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Routers" })).toHaveAttribute(
       "href", "/learn/networking-foundations/routers-default-gateways-and-network-boundaries",
     );
     expect(screen.getByRole("link", { name: /access points, modems, onts and firewalls/i })).toHaveAttribute(
@@ -112,7 +111,7 @@ describe("PathwayOverview", () => {
     expect(screen.getByRole("link", { name: /systematic network troubleshooting capstone/i })).toHaveAttribute(
       "href", "/learn/networking-foundations/systematic-network-troubleshooting-capstone",
     );
-    expect(within(modulesSection).getAllByRole("link")).toHaveLength(25);
+    expect(within(modulesSection).getAllByRole("link")).toHaveLength(29);
     expect(within(modulesSection).queryByText("Coming later")).not.toBeInTheDocument();
   });
 });

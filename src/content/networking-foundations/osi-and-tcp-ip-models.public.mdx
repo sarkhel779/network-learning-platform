@@ -1,0 +1,51 @@
+<h2 id="why-layers">Why layered models exist</h2>
+
+Layered models divide networking work into smaller responsibilities. Each layer describes a useful group of tasks, making a complex system easier to learn, build, and discuss.
+
+The models are guides rather than physical stacks of boxes. Real products may combine responsibilities while the concepts remain useful.
+
+<h2 id="osi-model">The seven OSI layers</h2>
+
+The **OSI model** has seven conceptual layers:
+
+1. **Physical** — signals, media, and bits.
+2. **Data Link** — local frames and link identifiers.
+3. **Network** — logical addressing between networks.
+4. **Transport** — end-to-end application conversations.
+5. **Session** — organizing an application exchange.
+6. **Presentation** — representation, compression, and encryption formats.
+7. **Application** — services used by applications.
+
+<h2 id="tcp-ip-model">The TCP/IP model</h2>
+
+The practical **TCP/IP model** commonly groups responsibilities into four layers: Network Access, Internet, Transport, and Application. The name refers to the Internet protocol suite; it does not mean every exchange must use TCP.
+
+<h2 id="model-mapping">OSI-to-TCP/IP mapping</h2>
+
+TCP/IP Network Access roughly combines OSI Physical and Data Link. TCP/IP Internet aligns with OSI Network. Transport aligns with Transport. TCP/IP Application groups the OSI Session, Presentation, and Application responsibilities.
+
+<LayerModelComparison />
+
+Use the short exercise to place Ethernet, IP, TCP, and DNS into their introductory model groups.
+
+<LayerMatchingExercise />
+
+<h2 id="encapsulation-lab">Encapsulation and layer matching</h2>
+
+When a sender prepares data, each layer supplies information needed for its responsibility. The receiver interprets those layers in the other direction. This process is called **encapsulation** and **decapsulation**.
+
+<EncapsulationExperience progressItemId="osi_and_tcp_ip_models_interactive_encapsulation_lab" />
+
+<h2 id="knowledge-check">Knowledge check</h2>
+
+<KnowledgeCheck progressItemId="osi_and_tcp_ip_models_check_1"
+  question="Which OSI layer is associated with IP addressing?"
+  options={["Network", "Physical", "Presentation"]}
+  correctIndex={0}
+  explanation="IP addressing is associated with the OSI Network layer and the TCP/IP Internet layer." />
+
+<KnowledgeCheck progressItemId="osi_and_tcp_ip_models_check_2"
+  question="How does TCP/IP Application relate to OSI?"
+  options={["It groups OSI Session, Presentation, and Application responsibilities", "It replaces the Physical layer only", "It is identical to the OSI Network layer"]}
+  correctIndex={0}
+  explanation="The TCP/IP Application layer groups responsibilities described by the top three OSI layers." />

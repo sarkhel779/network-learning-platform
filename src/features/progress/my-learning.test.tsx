@@ -25,6 +25,8 @@ describe("MyLearning", () => {
     expect(screen.getByRole("heading", { name: "Not started" })).toBeVisible();
     expect(screen.getByRole("heading", { name: "In progress" })).toBeVisible();
     expect(screen.getByRole("heading", { name: "Completed" })).toBeVisible();
+    expect(screen.queryByRole("button", { name: /restart|confirm restart|retry saving/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/restart failed|manual completion/i)).not.toBeInTheDocument();
   });
 
   it("renders a useful empty state", () => {

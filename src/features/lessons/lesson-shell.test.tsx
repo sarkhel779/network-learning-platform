@@ -189,12 +189,25 @@ describe("LessonShell", () => {
     );
 
     const content = screen.getByText("Public explanation and player content.");
-    const boundary = screen.getByRole("region", { name: "Continue this lesson for free" });
+    const boundary = screen.getByRole("region", { name: "Save your progress" });
     const navigation = screen.getByRole("navigation", { name: "Lesson navigation" });
     expect(content.compareDocumentPosition(boundary) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(boundary.compareDocumentPosition(navigation) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(screen.getByRole("link", { name: "Continue with Google or email" })).toHaveAttribute(
       "href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fhosts",
     );
+  });
+
+  it("uses the unlock boundary only when a lesson has protected sections", () => {
+    render(
+      <LessonShell viewer={null} pathway={pathway} lesson={{ ...lesson, format: "assessment", sections: [
+        { id: "overview", label: "Overview", access: "public" },
+        { id: "quiz", label: "Quiz", access: "account" },
+      ] }}>
+        <p>Assessment overview</p>
+      </LessonShell>,
+    );
+    expect(screen.getByRole("region", { name: "Take the final quiz" })).toBeVisible();
+    expect(screen.queryByRole("region", { name: "Save your progress" })).not.toBeInTheDocument();
   });
 });

@@ -12,6 +12,80 @@
   --logo-grad-start: #56eac9;
 }
 
+.network-basics-exercise {
+  display: grid;
+  gap: 1rem;
+  margin-block: 1.5rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--surface);
+}
+
+.network-basics-exercise__controls,
+.network-basics-exercise__port-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+}
+
+.network-basics-exercise__control,
+.network-basics-exercise fieldset label {
+  min-block-size: 44px;
+}
+
+.network-basics-exercise__control {
+  padding: .65rem .9rem;
+  border: 1px solid var(--border-strong, var(--border));
+  border-radius: .65rem;
+  color: var(--text);
+  background: var(--surface-raised, var(--surface));
+  cursor: pointer;
+}
+
+.network-basics-exercise__control:hover,
+.network-basics-exercise__control.is-selected,
+.network-basics-exercise__port-row .is-selected {
+  border-color: var(--accent);
+  background: var(--accent-soft, var(--surface));
+}
+
+.network-basics-exercise__control:focus-visible,
+.network-basics-exercise input:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.network-basics-exercise__port-row span {
+  padding: .55rem .75rem;
+  border: 1px solid var(--border);
+  border-radius: .5rem;
+}
+
+.network-basics-exercise fieldset {
+  display: grid;
+  gap: .5rem;
+  border: 0;
+  padding: 0;
+}
+
+.network-basics-exercise fieldset label {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+.network-basics-exercise__result {
+  margin: 0;
+  padding: .8rem 1rem;
+  border-inline-start: 4px solid var(--accent);
+  background: var(--accent-soft, var(--surface));
+}
+
+.network-basics-exercise__result.is-correct { border-inline-start-color: var(--success, var(--accent)); }
+.network-basics-exercise__result.is-incorrect { border-inline-start-color: var(--danger, #b42318); }
+.network-basics-exercise__code { font-family: var(--font-mono, monospace); }
+
 .ipv6-address-explorer {
   display: grid;
   gap: 1rem;
@@ -1472,6 +1546,7 @@ a,a:hover,a:focus-visible,a *,a:hover *{text-decoration:none!important}
 :root[data-theme="light"] body:has(.labs-page) :is(.site-header,.site-footer),
 :root[data-theme="light"] .site-header,
 :root[data-theme="light"] .site-footer { background:#f5fafc; border-color:#cbdce4; color:#142b3a; }
+:root[data-theme="light"] .site-header .site-nav { color:#142b3a; }
 :root[data-theme="light"] body:has(.home-refresh) :is(.site-header,.site-footer) a,
 :root[data-theme="light"] body:has(.labs-page) :is(.site-header,.site-footer) a { color:#142b3a; }
 :root[data-theme="light"] .site-header .site-nav a[aria-current="page"],

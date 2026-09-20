@@ -74,13 +74,16 @@ describe("applyContentOverrides", () => {
     ]);
   });
 
-  it("reorders lessons within a module and appends unlisted lessons at the end", () => {
-    const result = applyContentOverrides(pathway, { publications: {}, orders: { module_one: ["lesson_c", "lesson_a"] } });
+  it("applies only an exact permutation of the current lesson ids", () => {
+    const result = applyContentOverrides(pathway, { publications: {}, orders: { module_one: ["lesson_c", "lesson_a", "lesson_b"] } });
     expect(result.modules[0].lessons.map((lesson) => lesson.id)).toEqual(["lesson_c", "lesson_a", "lesson_b"]);
   });
 
-  it("ignores stale lesson ids left in a stored order", () => {
+  it("rejects stale or incomplete stored orders", () => {
     const result = applyContentOverrides(pathway, { publications: {}, orders: { module_one: ["lesson_deleted", "lesson_b", "lesson_a"] } });
-    expect(result.modules[0].lessons.map((lesson) => lesson.id)).toEqual(["lesson_b", "lesson_a", "lesson_c"]);
+    expect(result.modules[0].lessons.map((lesson) => lesson.id)).toEqual(["lesson_a", "lesson_b", "lesson_c"]);
+
+    const incomplete = applyContentOverrides(pathway, { publications: {}, orders: { module_one: ["lesson_b", "lesson_a"] } });
+    expect(incomplete.modules[0].lessons.map((lesson) => lesson.id)).toEqual(["lesson_a", "lesson_b", "lesson_c"]);
   });
 });

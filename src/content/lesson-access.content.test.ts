@@ -12,10 +12,10 @@ function normalizeWhitespace(value: string): string {
 }
 
 describe("public lesson source boundaries", () => {
-  it("keeps every OSI foundation and interactive experience in the account block", () => {
-    expect(publicFiles).not.toContain("networking-foundations/osi-and-tcp-ip-models.public.mdx");
-    const source = readFileSync(join(contentRoot, "networking-foundations/osi-and-tcp-ip-models.account.mdx"), "utf8");
-    expect(source).toContain("Layered models help teams describe one browser-to-server exchange");
+  it("serves the introductory OSI foundation publicly", () => {
+    expect(publicFiles).toContain("networking-foundations/osi-and-tcp-ip-models.public.mdx");
+    const source = readFileSync(join(contentRoot, "networking-foundations/osi-and-tcp-ip-models.public.mdx"), "utf8");
+    expect(source).toContain("Layered models divide networking work into smaller responsibilities");
     for (const id of ["why-layers", "osi-model", "tcp-ip-model", "model-mapping", "encapsulation-lab"]) {
       expect(source).toContain(`id="${id}"`);
     }
@@ -23,10 +23,23 @@ describe("public lesson source boundaries", () => {
     expect(source).toContain("<EncapsulationExperience progressItemId=");
   });
 
-  it.each(publicFiles)("excludes account practice and answers from %s", (file) => {
+  it.each(publicFiles)("excludes advanced practice from %s", (file) => {
     const source = readFileSync(join(contentRoot, file), "utf8");
-    expect(source).not.toMatch(/<(?:KnowledgeCheck|InterviewScenario|WiresharkCheck)\b/);
-    expect(source).not.toMatch(/\bcorrectIndex\s*=/);
+    const publicKnowledgeCheckAllowlist = new Set([
+      "networking-foundations/how-networks-communicate.public.mdx",
+      "networking-foundations/hosts-and-network-devices.public.mdx",
+      "networking-foundations/hubs.public.mdx",
+      "networking-foundations/bridges.public.mdx",
+      "networking-foundations/switches.public.mdx",
+      "networking-foundations/routers-default-gateways-and-network-boundaries.public.mdx",
+      "networking-foundations/physical-and-logical-addressing.public.mdx",
+      "networking-foundations/osi-and-tcp-ip-models.public.mdx",
+    ]);
+    expect(source).not.toMatch(/<(?:InterviewScenario|WiresharkCheck)\b/);
+    if (!publicKnowledgeCheckAllowlist.has(file)) {
+      expect(source).not.toMatch(/<KnowledgeCheck\b/);
+      expect(source).not.toMatch(/\bcorrectIndex\s*=/);
+    }
   });
 
   it("keeps connection-media scenarios, answers, and advanced preview copy out of the public module", () => {

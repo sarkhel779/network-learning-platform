@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(25);
+    expect(lessonProgressManifests).toHaveLength(29);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -68,6 +68,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609110004_add_nat_pat_progress.sql",
       "supabase/migrations/202609110005_add_troubleshooting_capstone_progress.sql",
       "supabase/migrations/202609200001_quiz_only_completion.sql",
+      "supabase/migrations/202609200002_computer_network_basics_restructure.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -78,7 +79,22 @@ describe("lessonProgressManifests", () => {
 
     const registeredLessons = [...migration.matchAll(/^  \('path_networking_foundations', '(lesson_[^']+)', 1, \d+\)[,;]?$/gm)]
       .map((match) => match[1]);
-    expect(new Set(registeredLessons)).toEqual(new Set(lessonProgressManifests.map(({ lessonId }) => lessonId)));
+    expect(new Set(registeredLessons.filter((lessonId) => lessonId !== "lesson_hubs_bridges_and_switches")))
+      .toEqual(new Set(lessonProgressManifests.map(({ lessonId }) => lessonId)));
+  });
+
+  it("requires only correct knowledge checks for the new basics lessons", () => {
+    const requiredIds = (lessonId: string) => getLessonProgressManifest("path_networking_foundations", lessonId)
+      .items.filter(({ required }) => required).map(({ itemId }) => itemId);
+    expect(requiredIds("lesson_hubs")).toEqual(["hubs_check_1"]);
+    expect(requiredIds("lesson_bridges")).toEqual(["bridges_check_1"]);
+    expect(requiredIds("lesson_switches")).toEqual(["switches_check_1"]);
+    expect(requiredIds("lesson_physical_and_logical_addressing")).toEqual([
+      "physical_and_logical_addressing_check_1", "physical_and_logical_addressing_check_2", "physical_and_logical_addressing_check_3",
+    ]);
+    expect(requiredIds("lesson_computer_network_basics_final_quiz")).toEqual(
+      Array.from({ length: 8 }, (_, index) => `computer_network_basics_final_quiz_check_${index + 1}`),
+    );
   });
 
   it("registers the routing lesson players and three checks as 18 required items", () => {
@@ -209,10 +225,21 @@ describe("lessonProgressManifests", () => {
     expect(migration).toContain("else 'knowledge_check_attempted' end) then");
   });
 
-  it("assigns every knowledge check its manifest ID in account content", () => {
+  it("assigns every knowledge check its manifest ID in registered lesson content", () => {
     const seen = new Set<string>();
+    const publicOnlyLessons = new Set([
+      "how-networks-communicate",
+      "hosts-and-network-devices",
+      "hubs",
+      "bridges",
+      "switches",
+      "routers-default-gateways-and-network-boundaries",
+      "physical-and-logical-addressing",
+      "osi-and-tcp-ip-models",
+    ]);
     for (const { pathway, lesson } of publishedLessons) {
-      const source = ["public", "account"].map((tier) => resolve(
+      const tiers = publicOnlyLessons.has(lesson.slug) ? ["public"] : ["public", "account"];
+      const source = tiers.map((tier) => resolve(
         `src/content/${pathway.slug}/${lesson.slug}.${tier}.mdx`,
       )).filter(existsSync).map((path) => readFileSync(path, "utf8")).join("\n");
       const contentIds = [...source.matchAll(/<KnowledgeCheck\s+progressItemId="([^"]+)"/g)]

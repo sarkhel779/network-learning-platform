@@ -13,14 +13,10 @@ const lessonImports = {
   "networking-foundations/how-networks-communicate": {
     public: () =>
       import("@/content/networking-foundations/how-networks-communicate.public.mdx"),
-    account: () =>
-      import("@/content/networking-foundations/how-networks-communicate.account.mdx"),
   },
   "networking-foundations/hosts-and-network-devices": {
     public: () =>
       import("@/content/networking-foundations/hosts-and-network-devices.public.mdx"),
-    account: () =>
-      import("@/content/networking-foundations/hosts-and-network-devices.account.mdx"),
   },
   "networking-foundations/cables-fibre-wireless-and-network-connections": {
     public: () =>
@@ -34,6 +30,15 @@ const lessonImports = {
     account: () =>
       import("@/content/networking-foundations/hubs-bridges-and-switches.account.mdx"),
   },
+  "networking-foundations/hubs": {
+    public: () => import("@/content/networking-foundations/hubs.public.mdx"),
+  },
+  "networking-foundations/bridges": {
+    public: () => import("@/content/networking-foundations/bridges.public.mdx"),
+  },
+  "networking-foundations/switches": {
+    public: () => import("@/content/networking-foundations/switches.public.mdx"),
+  },
   "networking-foundations/unicast-broadcast-and-multicast-communication": {
     public: () =>
       import("@/content/networking-foundations/unicast-broadcast-and-multicast-communication.public.mdx"),
@@ -43,8 +48,13 @@ const lessonImports = {
   "networking-foundations/routers-default-gateways-and-network-boundaries": {
     public: () =>
       import("@/content/networking-foundations/routers-default-gateways-and-network-boundaries.public.mdx"),
-    account: () =>
-      import("@/content/networking-foundations/routers-default-gateways-and-network-boundaries.account.mdx"),
+  },
+  "networking-foundations/physical-and-logical-addressing": {
+    public: () => import("@/content/networking-foundations/physical-and-logical-addressing.public.mdx"),
+  },
+  "networking-foundations/computer-network-basics-final-quiz": {
+    public: () => import("@/content/networking-foundations/computer-network-basics-final-quiz.public.mdx"),
+    account: () => import("@/content/networking-foundations/computer-network-basics-final-quiz.account.mdx"),
   },
   "networking-foundations/access-points-modems-onts-and-firewalls": {
     public: () =>
@@ -128,8 +138,7 @@ const lessonImports = {
     pro: () => import("@/content/networking-foundations/systematic-network-troubleshooting-capstone.pro.mdx"),
   },
   "networking-foundations/osi-and-tcp-ip-models": {
-    account: () =>
-      import("@/content/networking-foundations/osi-and-tcp-ip-models.account.mdx"),
+    public: () => import("@/content/networking-foundations/osi-and-tcp-ip-models.public.mdx"),
   },
 } satisfies LessonContentRegistry;
 

@@ -1,83 +1,43 @@
-This lesson answers a different question from **How Networks Communicate**. The first lesson
-followed the data; this lesson identifies the devices on that path, the evidence each device
-uses, and the point where you would investigate when communication fails.
+<h2 id="what-makes-a-device-a-host">What makes a device a host?</h2>
 
-<h2 id="what-is-a-host">What is a host?</h2>
+A **host** is an end device that can send, receive, or process network data. A desktop computer, laptop, phone, printer, camera, physical server, and cloud virtual server can all be hosts.
 
-A **host** is an endpoint that originates, receives, or processes network data. A laptop,
-desktop, server, printer, phone, and IP camera can all be hosts. Applications run on hosts;
-switches and routers help their traffic reach other hosts.
+The shape of a device does not determine whether it is a host. Its network role does. **A printer with a network interface is a host.**
 
-The words *client* and *server* describe roles, not permanent device types. A laptop may be a
-client while requesting a web page and a server while sharing a file. The source and
-destination can also reverse when the reply travels back.
+<h2 id="network-interfaces">Network interfaces</h2>
 
-Before sending IPv4 traffic, a host makes one crucial decision:
+A host connects through a **network interface**. The interface may use a cable or a wireless radio. A device can have more than one interface, such as Ethernet and Wi-Fi, but each interface is a connection point rather than a separate user device.
 
-1. Compare the destination IP address with its own address and subnet mask.
-2. If the destination is local, send toward that host's MAC address.
-3. If the destination is remote, send toward the default gateway's MAC address.
+Interfaces allow hosts to join a network. Detailed addressing and link behavior come later in the course.
 
-ARP can supply the required local-link MAC address. ARP is introduced here only as evidence
-of that decision; a later lesson will examine ARP and MAC learning in depth.
+<h2 id="clients-and-servers">Clients and servers</h2>
 
-<SectionContinue itemId="hosts_and_network_devices_section_what_is_a_host" anchor="what-is-a-host" />
+A **client** application asks for a service. A **server** application provides a service and responds to requests. When a browser asks a web service for a page, the browser is the client and the web service is the server.
 
-<h2 id="connecting-devices">Devices that connect hosts</h2>
+Client and server describe application roles, not permanent categories of hardware. A large machine is not automatically a server, and a phone is not always only a client.
 
-An **intermediary device** connects endpoints or network segments. It forwards, filters, or
-translates traffic; it is not normally the application endpoint for the user's conversation.
+<h2 id="one-host-more-than-one-role">One host, more than one role</h2>
 
-<div className="lesson-table" role="region" aria-label="Network device roles table" tabIndex={0}>
-  <table>
-    <caption>Network device roles</caption>
-    <thead>
-      <tr><th scope="col">Device</th><th scope="col">Primary evidence</th><th scope="col">Main decision</th><th scope="col">What changes or stays the same</th></tr>
-    </thead>
-    <tbody>
-      <tr><th scope="row">Layer 2 switch</th><td>Destination MAC address and MAC table</td><td>Which LAN port should receive the frame?</td><td>Forwards the frame; does not route the IP packet</td></tr>
-      <tr><th scope="row">Wireless access point</th><td>Wi-Fi association plus link-layer addressing</td><td>Which wired or wireless side should carry the frame?</td><td>Bridges wireless and wired LAN traffic</td></tr>
-      <tr><th scope="row">Router/default gateway</th><td>Destination IP address and routing table</td><td>Which next network or next hop should receive the packet?</td><td>Removes the incoming frame and builds a new frame for the next link</td></tr>
-      <tr><th scope="row">Firewall</th><td>Session state, zones, addresses, ports, applications, and policy</td><td>Is this traffic permitted across the boundary?</td><td>May allow, deny, log, or translate traffic</td></tr>
-      <tr><th scope="row">Server</th><td>Destination address and listening service</td><td>Which local application should process the request?</td><td>Receives the request and can originate the return traffic</td></tr>
-    </tbody>
-  </table>
-</div>
+One host can run several applications at once. **The same computer can run a client application and serve a file to another device.** Its role depends on what each application is doing in that conversation.
 
-A home device may combine an access point, switch, router, firewall, and DHCP service in one
-box. The functions remain distinct even when the hardware is shared. This lesson introduces
-the firewall boundary briefly; policy design and Palo Alto behavior belong in the separate
-firewall module.
+A cloud server is still a host even though you may not see its physical machine. A network printer is also a host because it receives data through a network interface.
 
-<SectionContinue itemId="hosts_and_network_devices_section_connecting_devices" anchor="connecting-devices" />
+<h2 id="classify-host-roles">Classify host roles</h2>
 
-<h2 id="explore-topology">Explore the topology</h2>
+Select each example to decide whether the application is acting as a client, a server, or both.
 
-Select any visible device in the topology. The animation pauses and opens a plain-language
-profile showing the device's purpose, addressing, observable evidence, and a common failure.
-Expand **Technical details** only when you want the deeper explanation.
+<HostRoleClassifier />
 
-<HostsAndDevicesStaticOverview />
+<h2 id="knowledge-check">Knowledge check</h2>
 
-<HostsAndDevicesExperience progressItemId="hosts_and_network_devices_interactive_compare_journeys" />
+<KnowledgeCheck progressItemId="hosts_and_network_devices_check_1"
+  question="Which device is a network host?"
+  options={["A printer with a network interface", "Only a desktop computer", "Only a dedicated data-centre server"]}
+  correctIndex={0}
+  explanation="A printer with a network interface is a host because it can receive and process network data." />
 
-Use the explorer as a diagnostic map: identify the source host, decide whether the destination
-is local or remote, find the expected next hop, and then follow both the outbound and return
-paths. A successful request does not guarantee a successful reply if the return route or a
-security policy is different.
-
-<SectionContinue itemId="hosts_and_network_devices_section_explore_topology" anchor="explore-topology" />
-
-<h2 id="compare-journeys">Compare packet journeys</h2>
-
-Change the journey above and watch which devices become relevant.
-
-- **Wired to local:** host → switch → local server, then the reverse path.
-- **Wireless to local:** laptop → access point → switch → local server, then back through the switch and access point.
-- **Wired to remote:** host → switch → gateway → firewall → remote server, with a routed return.
-- **Wireless to remote:** laptop → access point → switch → gateway → firewall → remote server, followed by the complete return journey.
-
-The switch is still important in a remote journey, but it does not decide the end-to-end IP
-route. The access point does not become the laptop's IP gateway merely because it provides the
-wireless connection. At every routed hop, the link-layer frame can change while the source and
-destination IP addresses normally continue to identify the communicating hosts.
+<KnowledgeCheck progressItemId="hosts_and_network_devices_check_2"
+  question="Can one computer act as both a client and a server?"
+  options={["Yes, different applications can perform different roles.", "No, hardware fixes the role permanently.", "Only when the computer has two screens."]}
+  correctIndex={0}
+  explanation="The same computer can run a client application and serve a file to another device. Client and server are application roles." />

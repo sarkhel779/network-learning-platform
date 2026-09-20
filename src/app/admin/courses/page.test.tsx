@@ -18,7 +18,7 @@ describe("admin courses page", () => {
     const html = renderToStaticMarkup(await CoursesPage());
     expect(mocks.requireStaff).toHaveBeenCalledWith("courses");
     expect(html).toContain("Courses and labs");
-    expect(html).toContain("What Is a Computer Network?");
+    expect(html).toContain("Introduction to Computer Networks and Network Devices");
     expect(html).toContain("Published");
     expect(html).not.toContain("not connected yet");
   });

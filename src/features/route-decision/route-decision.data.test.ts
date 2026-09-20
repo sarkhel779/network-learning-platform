@@ -30,15 +30,13 @@ describe("public route-decision scenarios", () => {
     expect(serialized).not.toMatch(/off-link-gateway|wrong-prefix|more-specific-route|router-no-onward-route/);
   });
 
-  it("keeps the complete public teaching fallback in the MDX source", () => {
+  it("keeps introductory router teaching in the MDX source", () => {
     const lesson = readFileSync(resolve("src/content/networking-foundations/routers-default-gateways-and-network-boundaries.public.mdx"), "utf8");
-    for (const id of ["why-network-boundaries-matter", "what-a-router-does", "local-or-remote", "default-gateway", "direct-and-routed-delivery", "what-changes-at-each-hop", "route-decision-player"]) {
+    for (const id of ["what-a-router-does", "router-interfaces", "network-boundaries", "default-gateway", "place-the-router", "knowledge-check"]) {
       expect(lesson).toContain(`id="${id}"`);
     }
-    expect(lesson).toContain("matching the first three octets is not a general subnet rule");
-    expect(lesson).toContain("This example does not use NAT");
-    expect(lesson).toContain("Ordinary Layer 2 broadcasts stop at the router boundary");
-    expect(lesson).toContain("<RouteDecisionPlayer progressItemId=");
-    expect(lesson).toMatch(/Question[\s\S]*Direct delivery[\s\S]*Routed delivery[\s\S]*No route/);
+    expect(lesson).toContain("A **router** connects different IP networks.");
+    expect(lesson).toContain("A host's **default gateway** is normally a router interface on the host's own network.");
+    expect(lesson).toContain("<RouterBoundaryPlacement />");
   });
 });

@@ -1,0 +1,27 @@
+<h2 id="what-is-a-bridge">What is a bridge?</h2>
+
+A **bridge** connects two local network segments. Unlike a hub, it can keep some traffic on the segment where that traffic belongs instead of repeating everything everywhere.
+
+<h2 id="why-bridges-were-introduced">Why bridges were introduced</h2>
+
+One large shared segment becomes busy as more hosts communicate. Bridges were introduced to split that shared space while still allowing the two sides to communicate when necessary.
+
+<h2 id="network-segments">Network segments</h2>
+
+A **segment** is a portion of a local network. Imagine one group of hosts on the left and another group on the right. The bridge sits between them. Communication within one side can remain on that side, while communication between sides crosses the bridge.
+
+This is the introductory idea behind selective local connections. Detailed switching behavior belongs in the Data Link Layer module.
+
+<h2 id="compare-segments">Compare segments</h2>
+
+Compare one shared segment with two segments joined by a bridge.
+
+<BridgeSegmentComparison />
+
+<h2 id="knowledge-check">Knowledge check</h2>
+
+<KnowledgeCheck progressItemId="bridges_check_1"
+  question="Why was a bridge useful on a shared local network?"
+  options={["It divided the network into segments and could filter some traffic", "It converted every host into a server", "It replaced all physical links"]}
+  correctIndex={0}
+  explanation="A bridge divides a shared network into segments and can filter some traffic while keeping the segments connected." />
