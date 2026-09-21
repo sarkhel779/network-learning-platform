@@ -216,6 +216,8 @@ describe("system theme and table styles", () => {
     expect(css).toMatch(/\.host-role-conversation__choices\s*\{[^}]*display:\s*flex[^}]*flex-wrap:\s*wrap/);
     expect(css).toMatch(/\.host-role-conversation__role-label\s*\{[^}]*color:\s*var\(--muted\)/);
     expect(css).toMatch(/\.host-role-conversation__role-label\[data-active-role\]\s*\{[^}]*color:\s*var\(--accent\)/);
+    expect(css).toMatch(/\.host-role-conversation__role-label\s*\{[^}]*inset-block-end:\s*2\.5rem/);
+    expect(css).toMatch(/\.host-role-conversation \.network-topology__device-role\s*\{[^}]*display:\s*none/);
     const cloud = css.match(/\.host-role-conversation__cloud\s*\{([^}]+)\}/)?.[1] ?? "";
     expect(cloud).toMatch(/inset-inline-start:\s*clamp\([^;]*var\(--host-role-anchor\)/);
     expect(cloud).toMatch(/inline-size:\s*min\(/);
