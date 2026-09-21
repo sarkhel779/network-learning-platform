@@ -182,6 +182,8 @@ export function NetworkTopology({
             data-broadcast={packet.broadcast ? "true" : undefined}
             data-packet-marker="true"
             data-link-id={link.id}
+            data-from={packet.from}
+            data-to={packet.to}
             data-step-id={step.id}
             data-packet-state={packetState}
             data-playing={packetAnimationPlaying ? "true" : "false"}

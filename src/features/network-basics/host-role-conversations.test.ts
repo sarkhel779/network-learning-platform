@@ -23,7 +23,9 @@ describe("hostRoleConversations", () => {
   ] as const)("models the request and response directions for %s", (id, expectedDirections) => {
     const conversation = hostRoleConversations[id];
 
-    expect(conversation.scenario.steps.map((step) => [step.packet?.from, step.packet?.to])).toEqual(expectedDirections);
+    expect(conversation.scenario.steps.flatMap((step) =>
+      step.packet ? [[step.packet.from, step.packet.to]] : [],
+    )).toEqual(expectedDirections);
     expect(conversation.scenario.steps.every((step) => step.durationMs === 5200)).toBe(true);
   });
 
@@ -31,6 +33,7 @@ describe("hostRoleConversations", () => {
     const fileSharing = hostRoleConversations["file-sharing"];
 
     expect(fileSharing.stepRoles.map(({ clientId, serverId }) => [clientId, serverId])).toEqual([
+      ["computer-a", "computer-b"],
       ["computer-a", "computer-b"],
       ["computer-a", "computer-b"],
       ["computer-b", "computer-a"],
@@ -48,9 +51,19 @@ describe("hostRoleConversations", () => {
         expect(deviceIds.has(roles.clientId)).toBe(true);
         expect(deviceIds.has(roles.serverId)).toBe(true);
         expect(step.activeDeviceIds).toContain(roles.bubble.deviceId);
-        expect(deviceIds.has(step.packet?.from ?? "")).toBe(true);
-        expect(deviceIds.has(step.packet?.to ?? "")).toBe(true);
+        if (step.packet) {
+          expect(deviceIds.has(step.packet.from)).toBe(true);
+          expect(deviceIds.has(step.packet.to)).toBe(true);
+        }
       });
+    }
+  });
+
+  it("opens every conversation on a quiet teaching step before packet movement", () => {
+    for (const conversation of Object.values(hostRoleConversations)) {
+      const firstStep = conversation.scenario.steps[0];
+      expect(firstStep.packet).toBeUndefined();
+      expect(firstStep.activeLinkIds).toEqual([]);
     }
   });
 });

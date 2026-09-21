@@ -68,6 +68,19 @@ function roleStep(
   return { clientId, serverId, bubble: { deviceId, eyebrow, title, description } };
 }
 
+function introStep(deviceId: string, title: string, explanation: string): PacketFlowStep {
+  return {
+    id: `meet-${deviceId}`,
+    title,
+    explanation,
+    durationMs: TEACHING_STEP_DURATION_MS,
+    activeDeviceIds: [deviceId],
+    activeLinkIds: [],
+    summaryFields: [{ label: "Starting host", value: title, layer: "context" }],
+    detailFields: [],
+  };
+}
+
 const webScenario = parsePacketFlowScenario({
   id: "host-role-web-request",
   title: "Open a website",
@@ -79,6 +92,7 @@ const webScenario = parsePacketFlowScenario({
   ],
   links: [{ id: "laptop-web-server", from: "laptop", to: "web-server" }],
   steps: [
+    introStep("laptop", "Meet the laptop", "The laptop is a host running the browser application."),
     packetStep({
       id: "browser-requests-page",
       title: "The browser asks for a page",
@@ -111,6 +125,7 @@ const printScenario = parsePacketFlowScenario({
   ],
   links: [{ id: "laptop-printer", from: "laptop", to: "printer" }],
   steps: [
+    introStep("laptop", "Meet the laptop", "The laptop is a host running the print application."),
     packetStep({
       id: "laptop-sends-print-job",
       title: "The laptop requests printing",
@@ -143,6 +158,7 @@ const fileSharingScenario = parsePacketFlowScenario({
   ],
   links: [{ id: "computer-a-computer-b", from: "computer-a", to: "computer-b" }],
   steps: [
+    introStep("computer-a", "Meet the two hosts", "Both computers are hosts and can take different roles in each conversation."),
     packetStep({
       id: "computer-a-requests-file",
       title: "Computer A requests a file",
@@ -189,6 +205,7 @@ export const hostRoleConversations: Readonly<Record<HostConversationId, HostConv
     summary: "A browser requests a page from a web server.",
     scenario: webScenario,
     stepRoles: [
+      roleStep("laptop", "web-server", "laptop", "HOST", "Laptop", "This host runs the browser that will begin the conversation."),
       roleStep("laptop", "web-server", "laptop", "CLIENT", "Laptop requests a page", "The browser starts the conversation, so it is the client application."),
       roleStep("laptop", "web-server", "web-server", "SERVER", "Web server provides the page", "The web service answers the request, so it is the server application."),
     ],
@@ -199,6 +216,7 @@ export const hostRoleConversations: Readonly<Record<HostConversationId, HostConv
     summary: "A laptop asks a network printer to print.",
     scenario: printScenario,
     stepRoles: [
+      roleStep("laptop", "printer", "laptop", "HOST", "Laptop", "This host runs the application that will request printing."),
       roleStep("laptop", "printer", "laptop", "CLIENT", "Laptop requests printing", "The print application asks for a service, so it is the client."),
       roleStep("laptop", "printer", "printer", "SERVER", "Printer returns its status", "The printer provides the service and responds like a server."),
     ],
@@ -209,6 +227,7 @@ export const hostRoleConversations: Readonly<Record<HostConversationId, HostConv
     summary: "Two computers reverse client and server roles.",
     scenario: fileSharingScenario,
     stepRoles: [
+      roleStep("computer-a", "computer-b", "computer-a", "HOST", "Two network hosts", "Either computer can request or provide a shared file."),
       roleStep("computer-a", "computer-b", "computer-a", "CLIENT", "Computer A asks for a file", "Computer A is the client in the first conversation."),
       roleStep("computer-a", "computer-b", "computer-b", "SERVER", "Computer B provides the file", "Computer B is the server in the first conversation."),
       roleStep("computer-b", "computer-a", "computer-b", "CLIENT", "Computer B asks for another file", "The roles reverse when Computer B starts a new request."),

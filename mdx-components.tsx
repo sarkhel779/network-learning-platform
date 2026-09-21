@@ -69,6 +69,7 @@ import { ProtocolFormatDiagram } from "@/features/packet-formats/protocol-format
 import { AddressFormatInspector } from "@/features/network-basics/address-format-inspector";
 import { BridgeSegmentComparison } from "@/features/network-basics/bridge-segment-comparison";
 import { DeviceRoleIdentifier } from "@/features/network-basics/device-role-identifier";
+import { HostRoleConversationPlayer } from "@/features/network-basics/host-role-conversation-player";
 import { HostRoleClassifier } from "@/features/network-basics/host-role-classifier";
 import { HostTypesGallery } from "@/features/network-basics/host-types-gallery";
 import { HubRepeaterDemo } from "@/features/network-basics/hub-repeater-demo";
@@ -115,6 +116,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     DeliveryScopePlayer,
     HostsAndDevicesExperience,
     HostsAndDevicesStaticOverview,
+    HostRoleConversationPlayer,
     HostRoleClassifier,
     HostTypesGallery,
     HubRepeaterDemo,
