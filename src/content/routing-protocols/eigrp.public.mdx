@@ -1,0 +1,37 @@
+<LearningObjective>Explain how EIGRP's DUAL algorithm finds loop-free successors and feasible successors, and how its composite metric is calculated per RFC 7868.</LearningObjective>
+
+<h2 id="what-eigrp-is">What EIGRP is</h2>
+
+**EIGRP (Enhanced Interior Gateway Routing Protocol)** was a Cisco-proprietary protocol for most of its life; Cisco published its operation as an informational standard in **RFC 7868** (2016). EIGRP is often called an **"advanced distance-vector"** or **hybrid** protocol: like RIP, it only learns routes from directly connected neighbors and never builds a full topology map the way OSPF does, but its **DUAL** algorithm gives it link-state-like fast, loop-free convergence. EIGRP runs directly over IP (**IP protocol 88**) and uses five packet types: Hello, Update, Query, Reply, and Ack.
+
+<SectionContinue itemId="eigrp_section_what_eigrp_is" anchor="what-eigrp-is" />
+
+<h2 id="the-composite-metric">The composite metric</h2>
+
+EIGRP's full composite metric formula is `Metric = 256 × ((K1×BW + (K2×BW)/(256−load) + K3×Delay) × (K5/(reliability+K4)))`. With EIGRP's default K-values (K1 = K3 = 1, K2 = K4 = K5 = 0), this collapses to `Metric = 256 × (BW + Delay)`, where `BW = 10,000,000 ÷ minimum bandwidth (kbps)` along the path (using the slowest link, not the sum), and `Delay` is the cumulative interface delay in tens of microseconds, summed across every link in the path.
+
+<SectionContinue itemId="eigrp_section_the_composite_metric" anchor="the-composite-metric" />
+
+<h2 id="dual-and-loop-free-paths">DUAL and loop-free paths</h2>
+
+**DUAL (Diffusing Update Algorithm)** is what makes EIGRP fast without sacrificing loop-freedom. For each destination, a router tracks its neighbors' **Reported Distance (RD)** — the metric each neighbor reports for reaching that destination — and computes its own **Feasible Distance (FD)**, the lowest total metric to that destination through any neighbor. The neighbor that produces the FD becomes the **successor** — the currently installed best path. Any other neighbor whose Reported Distance is **strictly less than the FD** satisfies the **feasibility condition** and qualifies as a **feasible successor**: a pre-verified, loop-free backup path that can be installed immediately, with no risk that traffic would loop back through the router being replaced.
+
+<SectionContinue itemId="eigrp_section_dual_and_loop_free_paths" anchor="dual-and-loop-free-paths" />
+
+<h2 id="eigrp-packet-types">EIGRP packet types</h2>
+
+**Hello** packets (sent unreliably to multicast 224.0.0.10) discover and maintain neighbor relationships. **Update** packets (sent reliably) carry route information. When a router loses its successor and has no feasible successor available, it goes **active** on that route and sends **Query** packets asking its neighbors whether they have a path; each neighbor must respond with a **Reply**. **Ack** packets confirm reliable delivery of Updates, Queries, and Replies.
+
+<SectionContinue itemId="eigrp_section_eigrp_packet_types" anchor="eigrp-packet-types" />
+
+<h2 id="interactive-eigrp-dual">Interactive EIGRP DUAL</h2>
+
+Step through R1 computing its feasible distance via two neighbors, qualifying one as a feasible successor, and instantly rerouting to it the moment its successor link fails — with no query needed.
+
+<EigrpDualPacketFlow progressItemId="eigrp_interactive_interactive_eigrp_dual" />
+
+<h2 id="eigrp-vs-classic-distance-vector">EIGRP vs. classic distance-vector</h2>
+
+Unlike RIP, EIGRP does not send its full routing table on a fixed timer. Bounded, incremental Updates are sent only when something changes, and each router maintains a **topology table** listing every advertised path to each destination — not just the single best one — which is exactly what makes instant feasible-successor reroutes possible. This combination of distance-vector's simplicity (no full topology database) with link-state-like convergence speed is why EIGRP occupies a middle ground between RIP and OSPF.
+
+<SectionContinue itemId="eigrp_section_eigrp_vs_classic_distance_vector" anchor="eigrp-vs-classic-distance-vector" />

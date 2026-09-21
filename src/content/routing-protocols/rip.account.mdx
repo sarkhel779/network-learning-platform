@@ -1,0 +1,42 @@
+{/* RIP_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-rip-evidence">Inspect RIP evidence</h2>
+
+On a representative network device, `show ip protocols` confirms RIP is running, which interfaces are participating, and the configured timers. `show ip rip database` (or the equivalent RIP topology command) lists every route RIP has learned, including ones a lower-administrative-distance source has kept out of the actual routing table.
+
+<WiresharkCheck displayFilter="rip">Capture on a RIP-enabled interface for at least one full 30-second cycle. Confirm the destination is UDP port 520 to 224.0.0.9, identify the command field (Request vs. Response), and read each route entry's address, mask, and metric.</WiresharkCheck>
+
+<SectionContinue itemId="rip_section_inspect_rip_evidence" anchor="inspect-rip-evidence" />
+
+<h2 id="guided-rip-convergence-practice">Guided RIP convergence practice</h2>
+
+Work through "counting to infinity" by hand: three routers in a line, A–B–C, all know about a network attached to A with metrics 1 (at B) and 2 (at C). A's link to that network fails. Without split horizon, B might momentarily still hear C's old, now-stale route (metric 2) and re-advertise it as metric 3, C then re-advertises 4, and so on — climbing toward infinity instead of converging immediately.
+
+<InterviewScenario title="Why doesn't split horizon alone fully solve this?">Split horizon stops B from advertising the route straight back to A, and stops C from advertising it back to B. Explain why RIP still benefits from poisoned reverse and triggered updates on top of plain split horizon, even in this simple line topology.</InterviewScenario>
+
+<SectionContinue itemId="rip_section_guided_rip_convergence_practice" anchor="guided-rip-convergence-practice" />
+
+<h2 id="troubleshoot-rip">Troubleshoot RIP</h2>
+
+1. Confirm RIP is enabled on the correct interfaces with `show ip protocols`, and that the network statements cover the intended subnets.
+2. Verify RIPv2 is in use, not RIPv1, if VLSM or discontiguous subnets are in play — RIPv1 cannot carry a subnet mask.
+3. Check for a mismatched RIP version or missing multicast/broadcast reachability between neighbors (RIPv1 broadcasts, RIPv2 multicasts to 224.0.0.9 by default).
+4. Inspect the RIP database for routes stuck at metric 16 — that is a poisoned, not a missing, route, and points at a real reachability change.
+5. Confirm passive-interface configuration is not silently suppressing updates on an interface that should be participating.
+6. If routes flap, check whether split horizon has been disabled on a hub-and-spoke or NBMA-style topology, which is one of the few cases where doing so is intentional — and risky.
+
+<InterviewScenario title="A route is stuck at metric 16">A network that should be reachable shows metric 16 in the RIP database on every router. Explain what metric 16 actually means, and how you would find the router that originated the poison rather than assuming the whole network is unreachable.</InterviewScenario>
+
+<SectionContinue itemId="rip_section_troubleshoot_rip" anchor="troubleshoot-rip" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="rip_check_1" question="What metric does RIP use, and what value means 'unreachable'?" options={["Bandwidth-based cost; 0 means unreachable", "Hop count; 16 means unreachable", "Delay in milliseconds; 255 means unreachable"]} correctIndex={1} explanation="RIP's metric is hop count, capped at a maximum usable value of 15; 16 explicitly signals an unreachable destination." />
+
+<KnowledgeCheck progressItemId="rip_check_2" question="What does split horizon with poisoned reverse do differently from plain split horizon?" options={["It advertises the route back with an infinite metric instead of omitting it", "It doubles the update interval", "It disables triggered updates"]} correctIndex={0} explanation="Plain split horizon just omits the route on the interface it was learned from; poisoned reverse explicitly re-advertises it as unreachable (metric 16), which resolves loops faster." />
+
+<KnowledgeCheck progressItemId="rip_check_3" question="Why couldn't RIPv1 support VLSM or discontiguous subnets?" options={["It used TCP instead of UDP", "Its route entries carried no subnet mask, forcing classful assumptions", "It had no metric field"]} correctIndex={1} explanation="RIPv1's packet format has no subnet mask field, so it must infer network boundaries classfully. RIPv2 added an explicit mask to every route entry." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">See how RIPv2 authentication works (RFC 2453's simple cleartext password, and RFC 2082's MD5 option), how RIPng adapts the same design for IPv6 over UDP port 521, and the specific lab and legacy-branch scenarios where RIP's simplicity still makes it the pragmatic choice today.</PremiumPreview>

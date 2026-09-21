@@ -10,7 +10,7 @@ import { ThemeToggle } from "./theme-toggle";
 export function SiteHeader({ lessons = [], signedIn = false }: { lessons?: HeaderSearchLesson[]; signedIn?: boolean }) {
   const pathname = usePathname() ?? "";
   const [menuOpen, setMenuOpen] = useState(false);
-  const currentSection = pathname === "/" ? "Home" : pathname === "/labs" || pathname.startsWith("/labs/") ? "Labs" : pathname === "/dashboard" || pathname.startsWith("/dashboard/") ? "My dashboard" : pathname === "/pricing" || pathname.startsWith("/pricing/") ? "Pricing" : pathname.startsWith("/paths/") || pathname.startsWith("/learn/") ? "Courses" : null;
+  const currentSection = pathname === "/" ? "Home" : pathname === "/labs" || pathname.startsWith("/labs/") ? "Labs" : pathname === "/dashboard" || pathname.startsWith("/dashboard/") ? "My dashboard" : pathname === "/pricing" || pathname.startsWith("/pricing/") ? "Pricing" : pathname === "/courses" || pathname.startsWith("/paths/") || pathname.startsWith("/learn/") ? "Courses" : null;
 
   useEffect(() => {
     setMenuOpen(false);
@@ -46,7 +46,7 @@ export function SiteHeader({ lessons = [], signedIn = false }: { lessons?: Heade
         <div id="site-header-menu" className="site-header__actions" data-open={menuOpen}>
           <nav aria-label="Primary navigation" className="site-nav">
             <Link href="/" aria-current={currentSection === "Home" ? "page" : undefined}>Home</Link>
-            <Link href="/paths/networking-foundations" aria-current={currentSection === "Courses" ? "page" : undefined}>Courses</Link>
+            <Link href="/courses" aria-current={currentSection === "Courses" ? "page" : undefined}>Courses</Link>
             <Link href="/labs" aria-current={currentSection === "Labs" ? "page" : undefined}>Labs</Link>
             <Link href="/dashboard" aria-current={currentSection === "My dashboard" ? "page" : undefined}>My dashboard</Link>
             <Link href="/pricing" aria-current={currentSection === "Pricing" ? "page" : undefined}>Pricing</Link>

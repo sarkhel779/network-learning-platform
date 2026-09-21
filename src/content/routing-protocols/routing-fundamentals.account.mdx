@@ -1,0 +1,46 @@
+{/* ROUTING_FUNDAMENTALS_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-routing-table-evidence">Inspect routing table evidence</h2>
+
+On a representative network device, `show ip route` prints a legend before the route list — read it first. Each line's leading code (`C` for connected, `S` for static, `O` for OSPF, `D` for EIGRP, `R` for RIP, `B` for BGP) tells you the **source**, and therefore which administrative distance applied when this route was chosen. The bracketed pair after the prefix, such as `[110/64]`, is `[administrative distance/metric]` — the exact two numbers this lesson has been building toward. On Linux, `ip route show` lists the winning routes only; `ip route show table all` and per-protocol tools (`vtysh` on FRRouting, for example) are needed to see routes that lost the AD comparison and were never installed.
+
+<WiresharkCheck displayFilter="ospf || eigrp || rip || bgp">Capture on a router's interface while it exchanges routing updates. Confirm you can identify each protocol's own packets (OSPF uses IP protocol 89, EIGRP uses IP protocol 88, RIP uses UDP port 520, BGP uses TCP port 179) before looking at their contents.</WiresharkCheck>
+
+<SectionContinue itemId="routing_fundamentals_section_inspect_routing_table_evidence" anchor="inspect-routing-table-evidence" />
+
+<h2 id="guided-metric-calculation-practice">Guided metric-calculation practice</h2>
+
+Work this by hand before checking the answer. A path crosses two links: a 100 Mbps link and a 10 Mbps link.
+
+For **OSPF** (reference bandwidth 100 Mbps): cost = 100,000,000 ÷ 100,000,000 = 1 for the first link, and 100,000,000 ÷ 10,000,000 = 10 for the second link. Total path cost = 1 + 10 = **11**.
+
+For **EIGRP** (default K-values, so Metric = 256 × (BW + Delay)): the bandwidth term uses the *minimum* bandwidth on the path, not the sum — so BW term = 10,000,000 ÷ 10,000 kbps = 1,000, using the slower 10 Mbps link. Delay is cumulative across both links, not just the slowest one.
+
+<InterviewScenario title="Why does EIGRP use the minimum bandwidth, not the sum?">A candidate answer says EIGRP should add the bandwidth of every link in the path, the way delay is added. Explain why that would misrepresent the path, and why "minimum bandwidth along the path" correctly models a path's real throughput ceiling.</InterviewScenario>
+
+<SectionContinue itemId="routing_fundamentals_section_guided_metric_calculation_practice" anchor="guided-metric-calculation-practice" />
+
+<h2 id="troubleshoot-routing-selection">Troubleshoot routing selection</h2>
+
+1. Identify every source currently advertising the destination prefix (`show ip route <prefix>` or the equivalent protocol-specific command, e.g. `show ip ospf database`, `show ip eigrp topology`).
+2. Confirm which source actually won by reading the installed route's `[AD/metric]` pair, not by assuming which protocol "should" win.
+3. If the installed source is a surprise, compare its administrative distance against every other candidate source first — a lower-AD source anywhere overrides a better metric everywhere else.
+4. Only if two candidates share the same source and the same administrative distance, compare their metrics using that protocol's own formula.
+5. Check for a static route with an unexpectedly low administrative distance (including a floating static route intentionally configured with a higher AD as a backup) before assuming a dynamic protocol misbehaved.
+6. Confirm the metric components themselves are correct at the source — a misconfigured interface bandwidth or delay value produces a mathematically correct but practically wrong EIGRP or OSPF metric.
+
+<InterviewScenario title="The 'faster' path was never installed">A network has both an OSPF path (three fast links, cost 3) and a static route (administrative distance 1) to the same destination. The static route is installed even though the OSPF path is objectively faster. Explain why this is expected behavior, not a bug, and what an administrator should do if they actually want OSPF to win.</InterviewScenario>
+
+<SectionContinue itemId="routing_fundamentals_section_troubleshoot_routing_selection" anchor="troubleshoot-routing-selection" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="routing_fundamentals_check_1" question="A router has both a static route (AD 1) and an OSPF route (AD 110) to the same destination. Which one is installed?" options={["The OSPF route, because it has a real metric", "The static route, because it has the lower administrative distance", "Whichever route was learned most recently"]} correctIndex={1} explanation="Administrative distance is checked before metric. A lower AD always wins regardless of the other route's metric." />
+
+<KnowledgeCheck progressItemId="routing_fundamentals_check_2" question="Two OSPF routes reach the same destination with costs of 5 and 8. Which is preferred, and why?" options={["Cost 8, because higher cost means a more reliable path", "Cost 5, because OSPF prefers the lowest cumulative cost", "Neither — OSPF requires an administrator to pick manually"]} correctIndex={1} explanation="Cost is OSPF's metric, and lower cost (a cheaper, effectively faster path) wins when two routes share the same source." />
+
+<KnowledgeCheck progressItemId="routing_fundamentals_check_3" question="Which pair correctly matches a routing protocol to its algorithm family?" options={["RIP is link-state, OSPF is distance-vector", "OSPF is link-state, BGP is path-vector", "EIGRP is path-vector, BGP is distance-vector"]} correctIndex={1} explanation="OSPF floods link-state information and runs Dijkstra's algorithm; BGP exchanges full AS-paths, which makes it path-vector." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">Tune OSPF's reference bandwidth for modern high-speed links, compute the full EIGRP metric with all five K-values (including load and reliability), and see exactly how redistribution and route maps can change a route's effective administrative distance and metric as it crosses from one routing domain into another.</PremiumPreview>

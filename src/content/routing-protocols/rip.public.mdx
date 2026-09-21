@@ -1,0 +1,40 @@
+<LearningObjective>Explain how RIP exchanges routes by hop count, prevents loops with split horizon and triggered updates, and where its RFC 2453 packet format and limits show up in practice.</LearningObjective>
+
+<h2 id="what-rip-is">What RIP is</h2>
+
+**RIP (Routing Information Protocol)** is the oldest interior gateway protocol still seen in production and lab networks. RIPv1 was standardized in **RFC 1058** (1988); the classless version in wide use today, **RIPv2**, is standardized in **RFC 2453** (1998). RIP is a **distance-vector** protocol: each router tells its neighbors only "here is my distance to each network I know," using a single metric — **hop count** — the number of routers between here and the destination. RIP runs over **UDP port 520**, and RIPv2 sends its periodic updates to the multicast address **224.0.0.9** (RIPv1 used broadcast).
+
+<SectionContinue itemId="rip_section_what_rip_is" anchor="what-rip-is" />
+
+<h2 id="rip-packet-format">RIP packet format</h2>
+
+An RFC 2453 RIPv2 message starts with a **command** field (1 = Request, 2 = Response), a **version** field, and then up to 25 route entries. Each route entry carries an **address family identifier**, the destination **IP address**, a **subnet mask** (the field RIPv1 lacked, forcing it to assume classful boundaries), a **next hop** address, and the **metric** itself — a single byte, since RIP's whole distance space only needs to represent 0 through 16.
+
+<SectionContinue itemId="rip_section_rip_packet_format" anchor="rip-packet-format" />
+
+<h2 id="how-rip-updates-work">How RIP updates work</h2>
+
+RIP routers send their full routing table as a periodic **Response** roughly every **30 seconds**. If a route hasn't been reheard within **180 seconds**, it is marked invalid and advertised with a poisoned metric of 16; if it stays unreachable, it is flushed from the table entirely around **240 seconds** after it was last valid. Beyond the periodic cycle, RIP also sends **triggered updates**: the instant a route changes — a link fails, or a better route appears — the affected router advertises the change immediately, without waiting for its next 30-second cycle.
+
+<SectionContinue itemId="rip_section_how_rip_updates_work" anchor="how-rip-updates-work" />
+
+<h2 id="preventing-routing-loops">Preventing routing loops</h2>
+
+A pure distance-vector protocol is naturally vulnerable to routing loops: if two routers each believe the other has a valid path to a now-dead network, they can bounce updates back and forth, each incrementing the hop count, until they **"count to infinity."** RIP caps this at hop count 16 (defined as unreachable), and adds two loop-prevention rules to stop it happening in the first place:
+
+- **Split horizon**: never advertise a route back out the same interface it was learned on.
+- **Split horizon with poisoned reverse**: go further — advertise that route back out the same interface, but with a metric of 16, explicitly telling the neighbor "don't route through me for this."
+
+<SectionContinue itemId="rip_section_preventing_routing_loops" anchor="preventing-routing-loops" />
+
+<h2 id="interactive-rip-exchange">Interactive RIP exchange</h2>
+
+Step through two RIP routers exchanging a route, applying split horizon with poisoned reverse, and reacting instantly to a link failure with a triggered update.
+
+<RipExchangePacketFlow progressItemId="rip_interactive_interactive_rip_exchange" />
+
+<h2 id="rip-limits-and-ripng">RIP's limits and RIPng</h2>
+
+Hop count treats every link as equal, so a 15-hop path of gigabit Ethernet loses to a 2-hop path of dial-up — RIP has no concept of bandwidth. A maximum usable hop count of 15 also puts a hard ceiling on how large a RIP network can grow. RIPv1's lack of a subnet mask in its route entries meant it could not support Variable Length Subnet Masking (VLSM) or discontiguous subnets; RIPv2 fixed this by carrying a mask with every route. For IPv6, **RIPng** (RFC 2080) adapts the same distance-vector, hop-count design to 128-bit addresses, sent over UDP port 521 to the multicast group `FF02::9`.
+
+<SectionContinue itemId="rip_section_rip_limits_and_ripng" anchor="rip-limits-and-ripng" />

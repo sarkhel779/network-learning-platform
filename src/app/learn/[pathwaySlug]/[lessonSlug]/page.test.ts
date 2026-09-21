@@ -138,7 +138,7 @@ vi.mock("@/content/networking-foundations/systematic-network-troubleshooting-cap
 });
 
 import * as contentRepository from "@/features/lessons/lesson-content.repository";
-import { listPublishedLessons } from "@/features/catalog/catalog.repository";
+import { listPathways, listPublishedLessons } from "@/features/catalog/catalog.repository";
 
 import * as lessonPage from "./page";
 
@@ -288,10 +288,11 @@ describe("lesson route generation", () => {
 
   it("emits only published lessons from the validated catalogue", () => {
     expect(staticLessonPage.generateStaticParams?.()).toEqual(
-      listPublishedLessons("networking-foundations").map(({ slug: lessonSlug }) => ({
-        pathwaySlug: "networking-foundations",
-        lessonSlug,
-      })),
+      listPathways().flatMap(({ slug: pathwaySlug }) =>
+        listPublishedLessons(pathwaySlug).map(({ slug: lessonSlug }) => ({
+          pathwaySlug,
+          lessonSlug,
+        }))),
     );
     expect(staticLessonPage.generateStaticParams?.()).not.toContainEqual({
       pathwaySlug: "networking-foundations",

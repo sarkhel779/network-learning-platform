@@ -21,7 +21,9 @@ describe("public sitemap", () => {
     const entries = await sitemap();
     expect(entries).toEqual([
       { url: "https://packetsecrets.com" },
+      { url: "https://packetsecrets.com/courses" },
       { url: "https://packetsecrets.com/paths/networking-foundations" },
+      { url: "https://packetsecrets.com/paths/routing-protocols" },
       { url: "https://packetsecrets.com/learn/networking-foundations/how-networks-communicate" },
       { url: "https://packetsecrets.com/learn/networking-foundations/hosts-and-network-devices" },
       { url: "https://packetsecrets.com/learn/networking-foundations/hubs" },
@@ -51,6 +53,11 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/networking-foundations/nat-pat-and-the-complete-internet-packet-journey" },
       { url: "https://packetsecrets.com/learn/networking-foundations/first-packet-journey-through-a-small-network" },
       { url: "https://packetsecrets.com/learn/networking-foundations/systematic-network-troubleshooting-capstone" },
+      { url: "https://packetsecrets.com/learn/routing-protocols/routing-fundamentals" },
+      { url: "https://packetsecrets.com/learn/routing-protocols/rip" },
+      { url: "https://packetsecrets.com/learn/routing-protocols/ospf" },
+      { url: "https://packetsecrets.com/learn/routing-protocols/eigrp" },
+      { url: "https://packetsecrets.com/learn/routing-protocols/bgp" },
     ]);
     const urls = entries.map(({ url }) => url);
     for (const pathway of listPathways()) {

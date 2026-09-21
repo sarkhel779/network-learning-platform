@@ -1,0 +1,42 @@
+{/* EIGRP_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-eigrp-evidence">Inspect EIGRP evidence</h2>
+
+`show ip eigrp neighbors` lists every EIGRP neighbor along with the Hold time and uptime — a neighbor that keeps resetting its uptime is dropping and reforming, not staying stable. `show ip eigrp topology` shows every path EIGRP knows for each destination, not just the installed one: entries marked as the successor and any feasible successors are visible here, along with their Feasible Distance and Reported Distance.
+
+<WiresharkCheck displayFilter="eigrp">Capture on an EIGRP-enabled interface. Identify Hello, Update, Query, Reply, and Ack packets, and confirm the Autonomous System number matches between neighbors.</WiresharkCheck>
+
+<SectionContinue itemId="eigrp_section_inspect_eigrp_evidence" anchor="inspect-eigrp-evidence" />
+
+<h2 id="guided-eigrp-metric-practice">Guided EIGRP metric practice</h2>
+
+With default K-values, compute the composite metric for a path with a 1,000,000 kbps (1 Gbps) minimum bandwidth and a cumulative delay of 100 (tens of microseconds): `BW term = 10,000,000 / 1,000,000 = 10`. `Metric = 256 × (10 + 100) = 28,160`.
+
+<InterviewScenario title="Why is the metric dominated by delay here, not bandwidth?">On this fast 1 Gbps path, the bandwidth term (10) is small compared to the delay term (100). Explain what this implies about when EIGRP's default metric formula is most sensitive to bandwidth differences, and when it is not.</InterviewScenario>
+
+<SectionContinue itemId="eigrp_section_guided_eigrp_metric_practice" anchor="guided-eigrp-metric-practice" />
+
+<h2 id="troubleshoot-eigrp">Troubleshoot EIGRP</h2>
+
+1. Confirm both routers are configured with the same Autonomous System number — EIGRP neighbors will not form across mismatched AS numbers.
+2. Check for a K-value mismatch: routers must agree on which K-values are enabled, or the neighbor relationship will not come up at all.
+3. Verify Hello and Hold timers are compatible, and that no access list or firewall rule is silently dropping EIGRP's IP protocol 88 traffic.
+4. In `show ip eigrp topology`, distinguish a missing feasible successor (no backup exists, so a failure forces a Query) from a stable feasible successor already in place.
+5. If a route stays Active for an extended period, suspect a **Stuck-In-Active (SIA)** condition: a neighbor never replied to a Query, often because that neighbor is overloaded or the query propagated too far across a large network.
+6. Check interface bandwidth and delay configuration for accuracy — a misconfigured value produces a mathematically valid but practically wrong composite metric, same as with OSPF cost.
+
+<InterviewScenario title="A route has been stuck in the Active state for minutes">A destination has been stuck Active far longer than expected. Explain what "Active" actually means in EIGRP's DUAL state machine, why this points at a slow or missing Query Reply rather than a simple link failure, and how query scope (stub routing) helps prevent it in large networks.</InterviewScenario>
+
+<SectionContinue itemId="eigrp_section_troubleshoot_eigrp" anchor="troubleshoot-eigrp" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="eigrp_check_1" question="What condition must a neighbor's Reported Distance satisfy to qualify as a feasible successor?" options={["It must equal the Feasible Distance exactly", "It must be strictly less than the router's own Feasible Distance", "It must be the lowest Reported Distance among all neighbors"]} correctIndex={1} explanation="The feasibility condition requires Reported Distance < Feasible Distance, which guarantees the backup path cannot loop back through the current router." />
+
+<KnowledgeCheck progressItemId="eigrp_check_2" question="Why can EIGRP reroute to a feasible successor instantly, without sending a Query?" options={["Feasible successors are always the fastest path available", "The feasibility condition already proves the backup path is loop-free", "EIGRP does not use Queries at all"]} correctIndex={1} explanation="Because the feasibility condition was already verified when the feasible successor was learned, DUAL can trust it as loop-free without waiting for a Query/Reply round trip." />
+
+<KnowledgeCheck progressItemId="eigrp_check_3" question="What does it mean when a route is 'Stuck-In-Active' (SIA)?" options={["The route was manually configured as always-active", "A Query was sent but a Reply was never received in time from at least one neighbor", "The route has the lowest possible metric"]} correctIndex={1} explanation="SIA happens when DUAL cannot get a timely Reply to a Query from every neighbor it queried, leaving the route stuck in the Active state." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">Work through the full five K-value composite metric including load and reliability, EIGRP's variance command for unequal-cost load balancing, stub routing and how it limits query scope to prevent SIA in large networks, and EIGRP for IPv6.</PremiumPreview>

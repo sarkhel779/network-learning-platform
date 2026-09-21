@@ -1,0 +1,65 @@
+<LearningObjective>Explain how a router chooses between competing routes using administrative distance and protocol metrics, and identify which algorithm family (distance-vector, link-state, or path-vector) each routing protocol belongs to.</LearningObjective>
+
+<h2 id="why-routing-protocols-exist">Why routing protocols exist</h2>
+
+A router's routing table can hold routes from several different sources at once: directly connected interfaces, routes an administrator typed in by hand, and routes learned automatically from one or more routing protocols. When only one source knows about a destination, there is nothing to decide. The interesting question — the one this whole course is built around — is what happens when **two or more sources disagree** about how to reach the same network. Every routing protocol exists to answer a version of that question automatically, without an administrator re-typing routes every time the topology changes.
+
+<SectionContinue itemId="routing_fundamentals_section_why_routing_protocols_exist" anchor="why-routing-protocols-exist" />
+
+<h2 id="administrative-distance-and-trustworthiness">Administrative distance and trustworthiness</h2>
+
+**Administrative distance (AD)** is a per-source trust rating a router uses to pick between routes to the *same destination* learned from *different sources*. Lower is more trusted. It says nothing about path quality — it only ranks how much the router should believe each source. The commonly used default values (as implemented by Cisco IOS, and taught as the industry-standard reference table) are:
+
+| Source | Administrative distance |
+| --- | --- |
+| Connected interface | 0 |
+| Static route | 1 |
+| EIGRP summary route | 5 |
+| External BGP (eBGP) | 20 |
+| Internal EIGRP | 90 |
+| IGRP | 100 |
+| OSPF | 110 |
+| IS-IS | 115 |
+| RIP | 120 |
+| External EIGRP | 170 |
+| Internal BGP (iBGP) | 200 |
+| Unreachable / unknown | 255 |
+
+Administrative distance is checked **first**, before any protocol looks at its own metric. If a static route and an OSPF route both claim the same prefix, the static route wins outright at AD 1 versus AD 110 — even if the OSPF path is objectively shorter. Only when two candidate routes come from the **same** source does the router move on to compare metric.
+
+<SectionContinue itemId="routing_fundamentals_section_administrative_distance_and_trustworthiness" anchor="administrative-distance-and-trustworthiness" />
+
+<h2 id="how-routing-metrics-are-calculated">How routing metrics are calculated</h2>
+
+A **metric** ranks multiple routes that came from the *same* routing source, so it only matters after administrative distance has already narrowed the field to one protocol. Each protocol defines its own metric, and the four protocols in this course make four different choices:
+
+- **RIP** uses **hop count** — literally the number of routers between here and the destination. Maximum usable hop count is 15; 16 means "unreachable." Simple, but blind to bandwidth: a 15-hop path of gigabit links loses to a 2-hop path of dial-up links.
+- **OSPF** uses **cost**, an inverse function of interface bandwidth: `cost = reference bandwidth ÷ interface bandwidth`, summed over every link in the path. With the common default reference bandwidth of 100 Mbps, a 100 Mbps link costs 1 and a 10 Mbps link costs 10 — faster links are cheaper.
+- **EIGRP** uses a **composite metric**: `Metric = 256 × (K1×BW + (K2×BW)/(256−load) + K3×Delay) × (K5/(reliability+K4))`. With EIGRP's default K-values (K1=K3=1, K2=K4=K5=0) this collapses to `Metric = 256 × (BW + Delay)`, where `BW = 10,000,000 ÷ minimum bandwidth (kbps)` along the path and `Delay` is the cumulative interface delay. Slower bandwidth and higher delay both push the metric up.
+- **BGP** does not really have a single "metric" the way the others do. It compares **path attributes** — most importantly AS-path length and local preference — through a policy-driven decision process rather than a single arithmetic score.
+
+<SectionContinue itemId="routing_fundamentals_section_how_routing_metrics_are_calculated" anchor="how-routing-metrics-are-calculated" />
+
+<h2 id="distance-vector-link-state-and-path-vector">Distance-vector, link-state, and path-vector</h2>
+
+Every routing protocol belongs to one of three algorithm families, based on *what* each router tells its neighbors and *how much of the topology* each router actually knows:
+
+- **Distance-vector** protocols (RIP, and — with significant differences — EIGRP) tell each neighbor only "here is my distance to each destination I know." A router trusts what its neighbors report and never builds a map of the whole network. This is simple to run but historically slower to converge and more prone to routing loops, which is why distance-vector protocols need loop-prevention mechanisms such as split horizon and route poisoning.
+- **Link-state** protocols (OSPF) instead flood each router's list of directly connected links to every other router in the same area. Every router ends up with an identical link-state database and independently computes the shortest path with Dijkstra's algorithm. This converges faster and avoids most routing loops, at the cost of more memory and CPU on each router.
+- **Path-vector** protocols (BGP) are related to distance-vector but exchange the entire path (the sequence of autonomous systems a route has crossed), not just a distance. This lets BGP detect and reject routes that loop back through its own autonomous system, and lets policy — not just shortest-path math — decide which route wins.
+
+EIGRP is sometimes called an "advanced distance-vector" or "hybrid" protocol: it still only learns routes from directly connected neighbors like a classic distance-vector protocol, but its DUAL algorithm (covered in the EIGRP lesson) gives it link-state-like fast, loop-free convergence.
+
+<SectionContinue itemId="routing_fundamentals_section_distance_vector_link_state_and_path_vector" anchor="distance-vector-link-state-and-path-vector" />
+
+<h2 id="interactive-route-selection">Interactive route selection</h2>
+
+Step through a router that hears about the same network from three different neighbors — one over OSPF, two over EIGRP — and watch it apply administrative distance first, then metric, to decide which single route actually gets installed.
+
+<RouteSelectionPacketFlow progressItemId="routing_fundamentals_interactive_interactive_route_selection" />
+
+<h2 id="choosing-an-igp-or-egp">Choosing an IGP or EGP</h2>
+
+RIP, OSPF, and EIGRP are **Interior Gateway Protocols (IGPs)**: they run inside a single organization's network, under one administrative authority, and are tuned to converge quickly when an internal link fails. BGP is an **Exterior Gateway Protocol (EGP)**: it runs *between* independently administered networks (autonomous systems), where the priority is policy control and stability, not the fastest possible convergence. This split — IGP inside an autonomous system, EGP between autonomous systems — is exactly why the next four lessons are organized the way they are: RIP, OSPF, and EIGRP first, as three different answers to the same interior-routing problem, then BGP as a fundamentally different kind of protocol built for a different problem.
+
+<SectionContinue itemId="routing_fundamentals_section_choosing_an_igp_or_egp" anchor="choosing-an-igp-or-egp" />

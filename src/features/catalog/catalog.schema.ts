@@ -143,4 +143,23 @@ export const pathwaySchema = z
     });
   });
 
-export const pathwayCatalogSchema = z.array(pathwaySchema);
+export const pathwayCatalogSchema = z
+  .array(pathwaySchema)
+  .superRefine((pathways, context) => {
+    const lessonIds = new Set<string>();
+
+    pathways.forEach((pathway, pathwayIndex) => {
+      pathway.modules.forEach((module, moduleIndex) => {
+        module.lessons.forEach((lesson, lessonIndex) => {
+          if (lessonIds.has(lesson.id)) {
+            context.addIssue({
+              code: "custom",
+              message: `Duplicate lesson id across pathways: ${lesson.id}`,
+              path: [pathwayIndex, "modules", moduleIndex, "lessons", lessonIndex, "id"],
+            });
+          }
+          lessonIds.add(lesson.id);
+        });
+      });
+    });
+  });

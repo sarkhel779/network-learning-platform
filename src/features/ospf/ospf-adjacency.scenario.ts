@@ -1,0 +1,130 @@
+import { parsePacketFlowScenario, type PacketFlowScenario } from "@/features/packet-flow/packet-flow.schema";
+
+export const ospfAdjacencyScenario: PacketFlowScenario = parsePacketFlowScenario({
+  id: "ospf-adjacency-down-to-full",
+  title: "OSPF: forming a full adjacency",
+  description: "Watch two OSPF routers move through Down, Init, 2-Way, ExStart, Exchange, Loading, and Full while forming an adjacency over a point-to-point link.",
+  defaultSpeed: 1,
+  devices: [
+    { id: "r1", label: "R1", role: "OSPF router", x: 260, y: 135 },
+    { id: "r2", label: "R2", role: "OSPF router", x: 560, y: 135 },
+  ],
+  links: [
+    { id: "r1-r2", from: "r1", to: "r2" },
+  ],
+  steps: [
+    {
+      id: "down-state",
+      title: "Both routers start in the Down state",
+      explanation: "Neither router has heard a Hello from the other yet. Down is the default starting state for every OSPF neighbor relationship.",
+      durationMs: 2200,
+      activeDeviceIds: ["r1", "r2"],
+      activeLinkIds: [],
+      summaryFields: [
+        { label: "R1 state", value: "Down" },
+        { label: "R2 state", value: "Down" },
+      ],
+      detailFields: [],
+    },
+    {
+      id: "r1-sends-hello",
+      title: "R1 sends a Hello packet",
+      explanation: "R1 sends an OSPF Hello (IP protocol 89) with an empty neighbor list, since it hasn't heard from R2 yet. This moves R1 toward Init.",
+      durationMs: 1800,
+      activeDeviceIds: ["r1", "r2"],
+      activeLinkIds: ["r1-r2"],
+      packet: { kind: "packet", label: "OSPF Hello", from: "r1", to: "r2" },
+      summaryFields: [
+        { label: "Packet type", value: "1 (Hello)" },
+        { label: "Router ID", value: "1.1.1.1" },
+        { label: "Area", value: "0.0.0.0" },
+      ],
+      detailFields: [
+        { label: "Hello interval", value: "10 seconds" },
+        { label: "Dead interval", value: "40 seconds" },
+        { label: "Neighbor list", value: "(empty)" },
+      ],
+    },
+    {
+      id: "r2-replies-hello-with-r1-listed",
+      title: "R2 replies with R1 listed as a neighbor",
+      explanation: "R2 sends its own Hello, this time listing 1.1.1.1 in its neighbor field. Once R1 sees its own Router ID in R2's Hello, the relationship becomes bidirectional: 2-Way.",
+      durationMs: 1800,
+      activeDeviceIds: ["r2", "r1"],
+      activeLinkIds: ["r1-r2"],
+      packet: { kind: "packet", label: "OSPF Hello (neighbor: 1.1.1.1)", from: "r2", to: "r1" },
+      summaryFields: [
+        { label: "Packet type", value: "1 (Hello)" },
+        { label: "Router ID", value: "2.2.2.2" },
+        { label: "Neighbor list", value: "1.1.1.1", changed: true },
+      ],
+      detailFields: [
+        { label: "R1 state", value: "2-Way", changed: true },
+        { label: "R2 state", value: "2-Way", changed: true },
+      ],
+    },
+    {
+      id: "exstart-negotiate-master",
+      title: "ExStart: negotiating master and slave",
+      explanation: "Both routers move to ExStart and exchange empty Database Description (DBD) packets to negotiate a master/slave relationship. The higher Router ID wins, so R2 (2.2.2.2) becomes master and picks the initial DBD sequence number.",
+      durationMs: 2600,
+      activeDeviceIds: ["r1", "r2"],
+      activeLinkIds: ["r1-r2"],
+      packet: { kind: "packet", label: "OSPF DBD (negotiation)", from: "r2", to: "r1" },
+      summaryFields: [
+        { label: "Packet type", value: "2 (Database Description)" },
+        { label: "Master", value: "R2 (higher Router ID)" },
+        { label: "Initial sequence number", value: "0x1F3A2001" },
+      ],
+      detailFields: [],
+    },
+    {
+      id: "exchange-dbd",
+      title: "Exchange: trading link-state database summaries",
+      explanation: "Both routers now send a series of DBD packets summarizing every LSA header in their own link-state database, so each side can identify what the other has that it does not.",
+      durationMs: 2600,
+      activeDeviceIds: ["r1", "r2"],
+      activeLinkIds: ["r1-r2"],
+      packet: { kind: "packet", label: "OSPF DBD (LSA headers)", from: "r1", to: "r2" },
+      summaryFields: [
+        { label: "Packet type", value: "2 (Database Description)" },
+        { label: "R1 state", value: "Exchange", changed: true },
+        { label: "R2 state", value: "Exchange", changed: true },
+      ],
+      detailFields: [
+        { label: "Contents", value: "LSA headers only, not full LSAs" },
+      ],
+    },
+    {
+      id: "loading-lsr-lsu",
+      title: "Loading: requesting the full LSAs",
+      explanation: "Each router sends Link State Request (LSR) packets for any LSA it saw summarized but does not yet have in full, and receives the complete LSA in a Link State Update (LSU).",
+      durationMs: 2600,
+      activeDeviceIds: ["r1", "r2"],
+      activeLinkIds: ["r1-r2"],
+      packet: { kind: "packet", label: "OSPF LSR / LSU", from: "r2", to: "r1" },
+      summaryFields: [
+        { label: "Packet types", value: "3 (LSR), 4 (LSU)" },
+        { label: "R1 state", value: "Loading", changed: true },
+        { label: "R2 state", value: "Loading", changed: true },
+      ],
+      detailFields: [
+        { label: "Acknowledgement", value: "Type 5 (LSAck) confirms each LSU" },
+      ],
+    },
+    {
+      id: "full-adjacency",
+      title: "Full: the adjacency is complete",
+      explanation: "Both routers now hold identical link-state databases and can run Dijkstra's shortest-path algorithm against the same topology. The neighbor relationship reaches Full — OSPF is only fully functional once every required neighbor is in this state.",
+      durationMs: 2600,
+      activeDeviceIds: ["r1", "r2"],
+      activeLinkIds: [],
+      summaryFields: [
+        { label: "R1 state", value: "Full", changed: true },
+        { label: "R2 state", value: "Full", changed: true },
+      ],
+      detailFields: [],
+      stateNote: "Full means the link-state databases are synchronized, not that the link is merely reachable.",
+    },
+  ],
+} as const);

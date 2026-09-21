@@ -1,0 +1,115 @@
+import { parsePacketFlowScenario, type PacketFlowScenario } from "@/features/packet-flow/packet-flow.schema";
+
+export const eigrpDualScenario: PacketFlowScenario = parsePacketFlowScenario({
+  id: "eigrp-dual-feasible-successor",
+  title: "EIGRP: DUAL picks a successor and a feasible successor",
+  description: "Watch R1 compute EIGRP's composite metric via two neighbors, qualify a feasible successor, and instantly reroute to it when the successor link fails.",
+  defaultSpeed: 1,
+  devices: [
+    { id: "r2", label: "R2", role: "EIGRP neighbor", x: 140, y: 60 },
+    { id: "r1", label: "R1", role: "EIGRP router", x: 420, y: 150 },
+    { id: "r3", label: "R3", role: "EIGRP neighbor", x: 140, y: 240 },
+  ],
+  links: [
+    { id: "r1-r2", from: "r1", to: "r2" },
+    { id: "r1-r3", from: "r1", to: "r3" },
+  ],
+  steps: [
+    {
+      id: "r1-discovers-neighbors",
+      title: "R1 discovers both neighbors with Hello",
+      explanation: "R1 sends EIGRP Hello packets (IP protocol 88) to the multicast address 224.0.0.10, and hears Hellos back from R2 and R3, forming two neighbor relationships.",
+      durationMs: 2200,
+      activeDeviceIds: ["r1", "r2", "r3"],
+      activeLinkIds: ["r1-r2", "r1-r3"],
+      summaryFields: [
+        { label: "Protocol", value: "EIGRP Hello" },
+        { label: "Destination", value: "224.0.0.10" },
+      ],
+      detailFields: [],
+    },
+    {
+      id: "r2-advertises-network-x",
+      title: "R2 advertises network X",
+      explanation: "R2 sends a reliable EIGRP Update advertising network X with its own metric (Reported Distance) of 51,200.",
+      durationMs: 1800,
+      activeDeviceIds: ["r2", "r1"],
+      activeLinkIds: ["r1-r2"],
+      packet: { kind: "packet", label: "EIGRP Update: network X, RD 51,200", from: "r2", to: "r1" },
+      summaryFields: [
+        { label: "Protocol", value: "EIGRP Update" },
+        { label: "Reported distance", value: "51,200" },
+      ],
+      detailFields: [],
+    },
+    {
+      id: "r1-computes-fd-via-r2",
+      title: "R1 computes its total metric via R2",
+      explanation: "R1 adds the cost of its own link to R2 (delay 100) to R2's reported distance, giving a total Feasible Distance of 256 × (100 + (100 + 100)) = 76,800. With no other candidate yet, R2 becomes the successor.",
+      durationMs: 2600,
+      activeDeviceIds: ["r1"],
+      activeLinkIds: [],
+      summaryFields: [
+        { label: "Feasible Distance via R2", value: "76,800" },
+        { label: "Successor", value: "R2", changed: true },
+      ],
+      detailFields: [],
+    },
+    {
+      id: "r3-advertises-network-x",
+      title: "R3 also advertises network X",
+      explanation: "R3 sends its own Update for network X, reporting a distance of 51,200 — the same as R2, but reaching R1 over a slower link.",
+      durationMs: 1800,
+      activeDeviceIds: ["r3", "r1"],
+      activeLinkIds: ["r1-r3"],
+      packet: { kind: "packet", label: "EIGRP Update: network X, RD 51,200", from: "r3", to: "r1" },
+      summaryFields: [
+        { label: "Protocol", value: "EIGRP Update" },
+        { label: "Reported distance", value: "51,200" },
+      ],
+      detailFields: [],
+    },
+    {
+      id: "r1-checks-feasibility-of-r3",
+      title: "R1 checks whether R3 qualifies as a feasible successor",
+      explanation: "R1's total metric via R3 (256 × (100 + (100 + 200)) = 102,400) is worse than via R2, so R3 is not the successor. But the feasibility condition only asks whether R3's own reported distance (51,200) is less than R1's current Feasible Distance (76,800) — it is, so R3 qualifies as a loop-free feasible successor.",
+      durationMs: 2600,
+      activeDeviceIds: ["r1"],
+      activeLinkIds: [],
+      summaryFields: [
+        { label: "Total metric via R3", value: "102,400" },
+        { label: "R3 reported distance", value: "51,200" },
+        { label: "Feasible successor", value: "R3 (51,200 < 76,800)", changed: true },
+      ],
+      detailFields: [
+        { label: "Feasibility condition", value: "Reported distance < Feasible Distance" },
+      ],
+    },
+    {
+      id: "r1-r2-link-fails",
+      title: "R1's link to R2 fails",
+      explanation: "The successor path goes down. Because R3 already satisfied the feasibility condition, R1 does not need to send any Query packets or wait for replies — DUAL can reroute using only locally stored information.",
+      durationMs: 2200,
+      activeDeviceIds: ["r1"],
+      activeLinkIds: [],
+      summaryFields: [
+        { label: "Link R1–R2", value: "Down", changed: true },
+      ],
+      detailFields: [],
+      stateNote: "This is DUAL's key advantage over plain distance-vector: a pre-qualified feasible successor allows an instant, loop-free local reroute.",
+    },
+    {
+      id: "r1-switches-to-feasible-successor",
+      title: "R1 promotes R3 to successor instantly",
+      explanation: "R1 installs the route to network X via R3 with a metric of 102,400, with no query/reply round trip and no risk of a routing loop.",
+      durationMs: 2600,
+      activeDeviceIds: ["r1", "r3"],
+      activeLinkIds: [],
+      summaryFields: [
+        { label: "New successor", value: "R3", changed: true },
+        { label: "New metric", value: "102,400", changed: true },
+      ],
+      detailFields: [],
+    },
+  ],
+} as const);

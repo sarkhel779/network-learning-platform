@@ -11,7 +11,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     { url: "https://packetsecrets.com" },
-    { url: "https://packetsecrets.com/paths/networking-foundations" },
+    { url: "https://packetsecrets.com/courses" },
+    ...listPathways().map((pathway) => ({ url: `https://packetsecrets.com/paths/${pathway.slug}` })),
     ...listPathways().flatMap((pathway) =>
       applyContentOverrides(pathway, overrides)
         .modules.flatMap(({ lessons }) => lessons)

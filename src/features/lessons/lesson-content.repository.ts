@@ -140,6 +140,26 @@ const lessonImports = {
   "networking-foundations/osi-and-tcp-ip-models": {
     public: () => import("@/content/networking-foundations/osi-and-tcp-ip-models.public.mdx"),
   },
+  "routing-protocols/routing-fundamentals": {
+    public: () => import("@/content/routing-protocols/routing-fundamentals.public.mdx"),
+    account: () => import("@/content/routing-protocols/routing-fundamentals.account.mdx"),
+  },
+  "routing-protocols/rip": {
+    public: () => import("@/content/routing-protocols/rip.public.mdx"),
+    account: () => import("@/content/routing-protocols/rip.account.mdx"),
+  },
+  "routing-protocols/ospf": {
+    public: () => import("@/content/routing-protocols/ospf.public.mdx"),
+    account: () => import("@/content/routing-protocols/ospf.account.mdx"),
+  },
+  "routing-protocols/eigrp": {
+    public: () => import("@/content/routing-protocols/eigrp.public.mdx"),
+    account: () => import("@/content/routing-protocols/eigrp.account.mdx"),
+  },
+  "routing-protocols/bgp": {
+    public: () => import("@/content/routing-protocols/bgp.public.mdx"),
+    account: () => import("@/content/routing-protocols/bgp.account.mdx"),
+  },
 } satisfies LessonContentRegistry;
 
 async function loadFromRegistry(
