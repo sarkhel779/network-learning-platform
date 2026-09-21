@@ -359,6 +359,14 @@ a { color: inherit; }
 .pathway-toc a span { display: grid; place-items: center; width: 1.3rem; height: 1.3rem; border-radius: 50%; background: var(--background); border: 1px solid var(--border); font-size: 0.7rem; }
 .pathway-content { padding: 1.5rem 0 clamp(3rem, 8vw, 6rem); }
 .pathway-content > h2, .module h2, .lesson-card h3 { line-height: 1.2; }
+.courses-hero { width: min(100% - 2rem, var(--content-width)); margin: 0 auto; padding: clamp(3rem, 8vw, 6rem) 0 2rem; }
+.courses-hero h1 { max-width: 22ch; }
+.courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem; width: min(100% - 2rem, var(--content-width)); margin: 0 auto; padding: 0 0 clamp(3rem, 8vw, 6rem); }
+.course-card { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.5rem; border: 1px solid var(--border); border-radius: 1rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); color: var(--foreground); text-decoration: none; transition: border-color 150ms ease, transform 150ms ease; }
+.course-card:hover, .course-card:focus-visible { border-color: var(--accent); transform: translateY(-2px); }
+.course-card h2 { margin: 0; font-size: 1.25rem; }
+.course-card__audience { margin: 0; color: var(--muted); font-size: 0.9rem; }
+.course-card__scale { margin-top: auto; padding-top: 0.5rem; font-weight: 700; font-size: 0.85rem; color: var(--accent); }
 .module-list { display: grid; gap: 2.5rem; margin-top: 1.5rem; }
 .module { scroll-margin-top: 11rem; }
 .module__head { display: flex; align-items: flex-start; gap: 0.9rem; }

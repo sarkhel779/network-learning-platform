@@ -17,7 +17,7 @@ describe("SiteHeader", () => {
     render(<SiteHeader />);
     const nav = screen.getByRole("navigation", { name: "Primary navigation" });
     expect(nav.querySelector('a[href="/"]')).toHaveTextContent("Home");
-    expect(nav.querySelector('a[href="/paths/networking-foundations"]')).toHaveTextContent("Courses");
+    expect(nav.querySelector('a[href="/courses"]')).toHaveTextContent("Courses");
     expect(screen.getByRole("link", { name: "Sign in" })).toHaveAttribute("href", "/sign-in");
     expect(nav.querySelector('a[href="/labs"]')).toHaveTextContent("Labs");
     expect(nav.querySelector('a[href="/dashboard"]')).toHaveTextContent("My dashboard");

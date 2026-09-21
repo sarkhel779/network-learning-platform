@@ -21,6 +21,7 @@ describe("public sitemap", () => {
     const entries = await sitemap();
     expect(entries).toEqual([
       { url: "https://packetsecrets.com" },
+      { url: "https://packetsecrets.com/courses" },
       { url: "https://packetsecrets.com/paths/networking-foundations" },
       { url: "https://packetsecrets.com/paths/routing-protocols" },
       { url: "https://packetsecrets.com/learn/networking-foundations/how-networks-communicate" },
