@@ -210,4 +210,18 @@ describe("system theme and table styles", () => {
       style.remove();
     }
   });
+
+  it("keeps the host conversation player responsive and theme-safe", () => {
+    expect(css).toMatch(/\.host-role-conversation\s*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%[^}]*overflow:\s*hidden/);
+    expect(css).toMatch(/\.host-role-conversation__choices\s*\{[^}]*display:\s*flex[^}]*flex-wrap:\s*wrap/);
+    expect(css).toMatch(/\.host-role-conversation__role-label\s*\{[^}]*color:\s*var\(--muted\)/);
+    expect(css).toMatch(/\.host-role-conversation__role-label\[data-active-role\]\s*\{[^}]*color:\s*var\(--accent\)/);
+    const cloud = css.match(/\.host-role-conversation__cloud\s*\{([^}]+)\}/)?.[1] ?? "";
+    expect(cloud).toMatch(/inset-inline-start:\s*clamp\([^;]*var\(--host-role-anchor\)/);
+    expect(cloud).toMatch(/inline-size:\s*min\(/);
+    expect(css).toMatch(/\.host-role-conversation__cloud-shape (?:path|path,)[^\{]*\{[^}]*fill:\s*color-mix\([^}]*var\(--accent\)[^}]*stroke:\s*var\(--accent\)/);
+    expect(css).toMatch(/@media\s*\(max-width:\s*44rem\)[\s\S]*\.host-role-conversation\s+\.packet-flow-topology-stage\s*\{[^}]*padding-block-start:\s*(?!0)/);
+    expect(css).toMatch(/@media\s*\(max-width:\s*44rem\)[\s\S]*\.host-role-conversation__choices > \*\s*\{[^}]*flex:/);
+    expect(css).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.host-role-conversation__cloud\s*\{[^}]*animation:\s*none/);
+  });
 });
