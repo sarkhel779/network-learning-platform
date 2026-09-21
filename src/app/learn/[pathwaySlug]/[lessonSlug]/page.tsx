@@ -13,6 +13,7 @@ import {
   loadContentOverridesSnapshot,
 } from "@/features/catalog/content-publication.repository";
 import { resolveLessonAlias } from "@/features/catalog/lesson-aliases";
+import { resolveViewerAccess } from "@/features/lessons/access-policy";
 import { loadAuthorizedLessonContent } from "@/features/lessons/lesson-content.repository";
 import type { LessonContentKey, LessonContentModule } from "@/features/lessons/lesson-content.types";
 import { LessonShell } from "@/features/lessons/lesson-shell";
@@ -125,7 +126,7 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
   let myLearning: MyLearningModel | undefined;
 
   try {
-    const content = await loadAuthorizedLessonContent(key, auditMode ? "pro" : viewer ? "account" : "anonymous");
+    const content = await loadAuthorizedLessonContent(key, resolveViewerAccess(Boolean(viewer), auditMode));
     PublicContent = content.public?.default;
     AccountContent = content.account?.default;
     ProContent = content.pro?.default;

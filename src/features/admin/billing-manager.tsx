@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 
 import { grantSubscriptionAction, revokeSubscriptionAction } from "@/app/admin/billing/actions";
+import { PRO_UNLOCKED_FOR_EVERYONE } from "@/features/lessons/access-policy";
 
 import type { BillingPlan, SubscriptionRow } from "./admin.types";
 
@@ -36,6 +37,9 @@ export function BillingManager({ plans, subscriptions }: { plans: BillingPlan[];
   return <section className="admin-panel admin-billing-manager">
     <h2>Plans</h2>
     <p>No payment gateway is connected yet. Prices below are placeholders until one is attached.</p>
+    {PRO_UNLOCKED_FOR_EVERYONE ? (
+      <p role="note">Pro content is currently unlocked for every visitor site-wide, regardless of subscription status. Granting or revoking access below has no visible effect until this is turned off (see access-policy.ts).</p>
+    ) : null}
     <ul className="admin-plan-list">
       <li><strong>Free</strong> — the default for every learner without an active subscription.</li>
       {plans.map((plan) => (
