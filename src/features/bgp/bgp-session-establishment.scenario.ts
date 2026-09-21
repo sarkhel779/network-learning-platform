@@ -27,9 +27,23 @@ export const bgpSessionEstablishmentScenario: PacketFlowScenario = parsePacketFl
       detailFields: [],
     },
     {
+      id: "connect-state",
+      title: "R1 attempts a TCP connection: Connect",
+      explanation: "R1 moves to Connect and tries to open a TCP connection to R2 on port 179. If this attempt failed, BGP would fall back to Active and keep retrying; here the attempt succeeds.",
+      durationMs: 1800,
+      activeDeviceIds: ["r1"],
+      activeLinkIds: [],
+      summaryFields: [
+        { label: "R1 state", value: "Connect", changed: true },
+      ],
+      detailFields: [
+        { label: "On failure", value: "Falls back to Active and retries the TCP connection" },
+      ],
+    },
+    {
       id: "tcp-connection-established",
       title: "A TCP connection forms on port 179",
-      explanation: "R1 initiates a TCP three-way handshake (SYN, SYN-ACK, ACK) to R2 on TCP port 179. Once the connection is up, both routers move from Connect to OpenSent.",
+      explanation: "R1 completes a TCP three-way handshake (SYN, SYN-ACK, ACK) with R2 on TCP port 179. Once the connection is up, both routers move from Connect to OpenSent.",
       durationMs: 1800,
       activeDeviceIds: ["r1", "r2"],
       activeLinkIds: ["r1-r2"],

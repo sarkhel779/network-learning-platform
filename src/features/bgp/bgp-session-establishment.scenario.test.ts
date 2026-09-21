@@ -18,12 +18,18 @@ describe("BGP session establishment scenario", () => {
   it("moves through the finite state machine from Idle to Established in order", () => {
     expect(bgpSessionEstablishmentScenario.steps.map((step) => step.id)).toEqual([
       "idle-state",
+      "connect-state",
       "tcp-connection-established",
       "r1-sends-open",
       "r2-sends-open",
       "keepalives-exchanged-established",
       "r1-sends-update",
     ]);
+  });
+
+  it("shows the Connect state before the TCP handshake, with Active as the documented retry path", () => {
+    expect(summaryValue("connect-state", "R1 state")).toBe("Connect");
+    expect(detailValue("connect-state", "On failure")).toMatch(/Active/);
   });
 
   it("exchanges OPEN messages carrying each peer's AS number and Router ID", () => {
