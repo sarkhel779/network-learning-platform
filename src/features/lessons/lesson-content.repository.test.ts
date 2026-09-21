@@ -159,6 +159,17 @@ function createFixture() {
 }
 
 describe("loadAuthorizedLessonContent", () => {
+  it("serves the same beginner hosts lesson body to anonymous and signed-in viewers", async () => {
+    const key = "networking-foundations/hosts-and-network-devices";
+
+    const anonymous = await loadAuthorizedLessonContent(key, "anonymous");
+    const account = await loadAuthorizedLessonContent(key, "account");
+
+    expect(account.public).toBe(anonymous.public);
+    expect(account.account).toBeUndefined();
+    expect(account.pro).toBeUndefined();
+  });
+
   it.each(["how-networks-communicate", "hosts-and-network-devices"])("loads only the public block for an anonymous viewer of %s", async (slug) => {
     const result = await loadAuthorizedLessonContent(
       `networking-foundations/${slug}`,
