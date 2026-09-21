@@ -70,8 +70,6 @@ describe("compiled lesson markup", () => {
   });
 
   it.each([
-    ["hosts-and-network-devices.account.mdx", "Hosts Wireshark display filters", 3, 6],
-    ["hosts-and-network-devices.account.mdx", "Hosts and network devices summary", 2, 7],
     ["osi-and-tcp-ip-models.account.mdx", "Wireshark layer identification filters", 2, 8],
     ["cables-fibre-wireless-and-network-connections.public.mdx", "Connection media at a glance", 5, 4],
     ["cables-fibre-wireless-and-network-connections.account.mdx", "Connection selection summary", 3, 4],

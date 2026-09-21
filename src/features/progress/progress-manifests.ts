@@ -9,6 +9,7 @@ type LessonProgressDefinition = Readonly<{
   itemPrefix?: string;
   stripInteractiveAnchorPrefix?: boolean;
   interactiveAnchors: readonly string[];
+  excludedAnchors?: readonly string[];
   interactiveItemIds?: Readonly<Record<string, string>>;
   knowledgeCheckCount: number;
   knowledgeCheckItemIds?: readonly string[];
@@ -19,7 +20,7 @@ type LessonProgressDefinition = Readonly<{
 
 const definitions = [
   { lessonId: "lesson_how_networks_communicate", interactiveAnchors: ["identify-device-roles"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
-  { lessonId: "lesson_hosts_and_network_devices", interactiveAnchors: ["classify-host-roles"], knowledgeCheckCount: 2, knowledgeAnchor: "knowledge-check" },
+  { lessonId: "lesson_hosts_and_network_devices", interactiveAnchors: ["classify-host-roles"], excludedAnchors: ["follow-host-conversations"], knowledgeCheckCount: 2, knowledgeAnchor: "knowledge-check" },
   { lessonId: "lesson_hubs", interactiveAnchors: ["repeat-a-signal"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
   { lessonId: "lesson_bridges", interactiveAnchors: ["compare-segments"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
   { lessonId: "lesson_switches", interactiveAnchors: ["match-hosts-to-ports"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
@@ -133,7 +134,7 @@ function buildItems(
 ) {
   const prefix = definition.itemPrefix ?? itemPrefix(lessonId);
   const items = sections
-    .filter(({ access, id }) => access !== "pro" && !(definition.knowledgeAnchors ?? [definition.knowledgeAnchor]).includes(id))
+    .filter(({ access, id }) => access !== "pro" && !(definition.knowledgeAnchors ?? [definition.knowledgeAnchor]).includes(id) && !definition.excludedAnchors?.includes(id))
     .map((section) => definition.interactiveAnchors.includes(section.id)
       ? interactiveItem(lessonId, section, prefix, definition.stripInteractiveAnchorPrefix, definition.interactiveItemIds?.[section.id])
       : sectionItem(lessonId, section, prefix));

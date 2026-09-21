@@ -28,14 +28,15 @@ describe("Computer Network Basics content", () => {
     const hosts = source("hosts-and-network-devices");
     expect(headings(hosts)).toEqual([
       "what-makes-a-device-a-host", "network-interfaces", "clients-and-servers",
-      "one-host-more-than-one-role", "classify-host-roles", "knowledge-check",
+      "follow-host-conversations", "one-host-more-than-one-role", "classify-host-roles", "knowledge-check",
     ]);
+    expect(hosts).toContain("<HostRoleConversationPlayer />");
     expect(hosts).toContain("<HostRoleClassifier />");
     expect(hosts).toContain('progressItemId="hosts_and_network_devices_check_1"');
     expect(hosts).toContain('progressItemId="hosts_and_network_devices_check_2"');
     expect(hosts).toContain("A printer with a network interface is a host.");
     expect(hosts).toContain("The same computer can run a client application and serve a file to another device.");
-    expect(hosts).not.toMatch(/DNS query|ARP request|subnet mask|route lookup|MAC table|packet journey/i);
+    expect(hosts).not.toMatch(/DNS query|ARP request|ARP cache|subnet mask|route lookup|route print|MAC table|packet journey|Wireshark|\bNAT\b|firewall policy/i);
   });
 
   it.each([

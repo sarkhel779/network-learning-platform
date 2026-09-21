@@ -91,6 +91,11 @@ describe("lessonProgressManifests", () => {
   it("requires only correct knowledge checks for the new basics lessons", () => {
     const requiredIds = (lessonId: string) => getLessonProgressManifest("path_networking_foundations", lessonId)
       .items.filter(({ required }) => required).map(({ itemId }) => itemId);
+    const hostsManifest = getLessonProgressManifest("path_networking_foundations", "lesson_hosts_and_network_devices");
+    expect(requiredIds("lesson_hosts_and_network_devices")).toEqual([
+      "hosts_and_network_devices_check_1", "hosts_and_network_devices_check_2",
+    ]);
+    expect(hostsManifest.items.some(({ anchor }) => anchor === "follow-host-conversations")).toBe(false);
     expect(requiredIds("lesson_hubs")).toEqual(["hubs_check_1"]);
     expect(requiredIds("lesson_bridges")).toEqual(["bridges_check_1"]);
     expect(requiredIds("lesson_switches")).toEqual(["switches_check_1"]);
