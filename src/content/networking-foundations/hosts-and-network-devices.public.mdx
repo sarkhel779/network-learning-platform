@@ -2,25 +2,31 @@
 
 A **host** is an end device that can send, receive, or process network data. A desktop computer, laptop, phone, printer, camera, physical server, and cloud virtual server can all be hosts.
 
-The shape of a device does not determine whether it is a host. Its network role does. **A printer with a network interface is a host.**
+The shape or price of a device does not decide whether it is a host. Its participation in the network does. **A printer with a network interface is a host.**
 
 <h2 id="network-interfaces">Network interfaces</h2>
 
-A host connects through a **network interface**. The interface may use a cable or a wireless radio. A device can have more than one interface, such as Ethernet and Wi-Fi, but each interface is a connection point rather than a separate user device.
+A host joins a network through a **network interface**. Ethernet is a familiar wired interface, and Wi-Fi is a familiar wireless interface. A laptop may have both.
 
-Interfaces allow hosts to join a network. Detailed addressing and link behavior come later in the course.
+An interface is a connection point, not another host. Detailed addressing and link behaviour come later in the course.
 
 <h2 id="clients-and-servers">Clients and servers</h2>
 
-A **client** application asks for a service. A **server** application provides a service and responds to requests. When a browser asks a web service for a page, the browser is the client and the web service is the server.
+A **client application** asks for a service. A **server application** provides that service and responds. When a browser asks a web service for a page, the browser is the client and the web service is the server.
 
-Client and server describe application roles, not permanent categories of hardware. A large machine is not automatically a server, and a phone is not always only a client.
+Client and server describe what applications are doing in one conversation. They are not permanent hardware categories: a large computer is not automatically a server, and a phone is not always only a client.
+
+<h2 id="follow-host-conversations">Follow host conversations</h2>
+
+Watch who asks, who provides, and how the response returns. Focus on the role each host has in the current conversation.
+
+<HostRoleConversationPlayer />
 
 <h2 id="one-host-more-than-one-role">One host, more than one role</h2>
 
 One host can run several applications at once. **The same computer can run a client application and serve a file to another device.** Its role depends on what each application is doing in that conversation.
 
-A cloud server is still a host even though you may not see its physical machine. A network printer is also a host because it receives data through a network interface.
+In the file-sharing player, Computer A first requests a file from Computer B. The next conversation reverses those roles. The computers did not change type; their applications changed jobs.
 
 <h2 id="classify-host-roles">Classify host roles</h2>
 
