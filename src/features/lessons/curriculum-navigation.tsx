@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { Module, Pathway } from "@/features/catalog/catalog.types";
+import { getLessonAccessLabel } from "@/features/catalog/lesson-access-label";
 import type { LessonProgressStatus } from "@/features/progress/progress.types";
 
 type CurriculumNavigationProps = {
@@ -96,7 +97,7 @@ function ModuleSection({
                 <span className="curriculum-navigation__lesson-title">{lesson.title}</span>
                 {lesson.published ? (
                   <span className="curriculum-navigation__lesson-tag">
-                    {status === "completed" ? "Completed" : status === "in_progress" ? "In progress" : "Free"}
+                    {status === "completed" ? "Completed" : status === "in_progress" ? "In progress" : getLessonAccessLabel(lesson)}
                   </span>
                 ) : null}
                 {!lesson.published ? <span className="curriculum-navigation__lesson-tag">Coming later</span> : null}

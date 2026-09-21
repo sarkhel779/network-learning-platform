@@ -20,6 +20,7 @@ export type LessonSummary = {
   seo: LessonSeo;
   estimatedMinutes: number;
   published: boolean;
+  format?: "lesson" | "assessment";
   sections?: LessonSection[];
 };
 

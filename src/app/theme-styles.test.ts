@@ -13,6 +13,29 @@ describe("system theme and table styles", () => {
     expect(css).toMatch(/\.site-logo__packet\s*\{[^}]*color:\s*#fff/);
     expect(css).toMatch(/\.site-logo__secrets\s*\{[^}]*color:\s*#23d6a8/);
   });
+  it("keeps inactive header navigation readable in light theme", () => {
+    const style = document.createElement("style");
+    style.textContent = css;
+    const header = document.createElement("header");
+    header.className = "site-header";
+    const nav = document.createElement("nav");
+    nav.className = "site-nav";
+    const link = document.createElement("a");
+    link.href = "/";
+    link.textContent = "Home";
+    nav.append(link);
+    header.append(nav);
+    document.head.append(style);
+    document.body.append(header);
+    document.documentElement.dataset.theme = "light";
+    try {
+      expect(getComputedStyle(nav).color).toBe("rgb(20, 43, 58)");
+    } finally {
+      delete document.documentElement.dataset.theme;
+      header.remove();
+      style.remove();
+    }
+  });
   it("keeps the landing glow static and unable to intercept clicks", () => {
     expect(css).toMatch(/\.home-refresh::before\s*\{[^}]*radial-gradient\([^}]*pointer-events:\s*none/);
     expect(css).not.toMatch(/@keyframes\s+home-ambient-shift/);
@@ -58,6 +81,16 @@ describe("system theme and table styles", () => {
     const envelope = css.match(/\.network-topology__packet-marker path\s*\{([^}]+)\}/)?.[1];
     expect(envelope).toMatch(/fill:\s*none\s*;/);
     expect(envelope).toMatch(/stroke:\s*var\(--background\)\s*;/);
+  });
+
+  it("uses a teal glow instead of a rectangular outline for focused topology devices", () => {
+    expect(css).toMatch(/\.device-role-tour \.network-topology__device\[role="button"\]:focus\s*\{[^}]*outline:\s*none/);
+    expect(css).toMatch(/\.device-role-tour \.network-topology__device\[role="button"\]:focus-visible\s*\{[^}]*outline:\s*none[^}]*filter:\s*drop-shadow/);
+  });
+
+  it("keeps the device thought cloud above the topology on narrow screens", () => {
+    expect(css).toMatch(/@media\s*\(max-width:\s*44rem\)[\s\S]*\.device-role-tour \.packet-flow-topology-stage\s*\{[^}]*padding-block-start:\s*(?!0)/);
+    expect(css).toMatch(/@media\s*\(max-width:\s*44rem\)[\s\S]*\.device-role-tour__cloud\s*\{[^}]*position:\s*absolute/);
   });
 
   it("defines a desktop workspace rail and mobile bottom sheet", () => {

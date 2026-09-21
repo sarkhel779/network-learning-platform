@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import type { Module } from "./catalog.types";
 import { formatEstimatedTime } from "./estimated-time";
+import { getLessonAccessLabel } from "./lesson-access-label";
 
 type ModuleListProps = {
   modules: Module[];
@@ -34,7 +35,7 @@ export function ModuleList({ modules, pathwaySlug }: ModuleListProps) {
                 </div>
                 <div className="lesson-meta">
                   <span>{formatEstimatedTime(lesson.estimatedMinutes)}</span>
-                  {lesson.published ? <span className="access-label">Free</span> : <span>Coming later</span>}
+                  {lesson.published ? <span className="access-label">{getLessonAccessLabel(lesson)}</span> : <span>Coming later</span>}
                 </div>
               </li>
             ))}

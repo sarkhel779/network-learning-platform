@@ -1,0 +1,29 @@
+<h2 id="what-is-a-hub">What is a hub?</h2>
+
+A **hub** is a simple device that connects several devices on one shared Ethernet segment. When a signal arrives on one port, the hub repeats that signal through every other active port.
+
+<h2 id="why-hubs-existed">Why hubs existed</h2>
+
+Early Ethernet networks needed an easy central connection point. A hub provided that physical meeting place without examining the information being carried.
+
+Modern networks usually use switches instead because switches can be more selective. Hubs remain useful for understanding how shared early networks behaved.
+
+<h2 id="shared-traffic-and-bandwidth">Shared traffic and bandwidth</h2>
+
+All devices connected to a hub share the same communication space. Every repeated signal reaches the other connected devices, even when only one device is the intended receiver. The hosts must decide whether the received data is meant for them.
+
+Because the connection is shared, simultaneous activity can interfere and available capacity is shared among the devices.
+
+<h2 id="repeat-a-signal">Repeat a signal</h2>
+
+Send one signal into the four-port example and observe which ports receive a copy.
+
+<HubRepeaterDemo />
+
+<h2 id="knowledge-check">Knowledge check</h2>
+
+<KnowledgeCheck progressItemId="hubs_check_1"
+  question="What does a hub do when a signal arrives on one port?"
+  options={["Repeats it to every other active port", "Sends it only to the router", "Stores it until the destination asks"]}
+  correctIndex={0}
+  explanation="A hub repeats an incoming signal to every other port. It does not choose one destination." />

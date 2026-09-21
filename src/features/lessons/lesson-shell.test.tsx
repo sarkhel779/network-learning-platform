@@ -132,6 +132,25 @@ describe("LessonShell", () => {
     expect(screen.queryByText(/learner-1|private@example|access_token/i)).not.toBeInTheDocument();
   });
 
+  it("does not render lesson progress or restart controls", () => {
+    render(
+      <LessonShell
+        viewer={{ id: "learner-1", displayName: "Pranita", avatarUrl: null }}
+        pathway={pathway}
+        lesson={lesson}
+        progressManifest={{ pathwayId: pathway.id, lessonId: lesson.id, contentVersion: 1, items: [
+          { itemId: "hosts_check_1", kind: "knowledge_check", label: "Knowledge check 1", anchor: "hosts-check-1", required: true },
+        ] }}
+        initialProgress={null}
+      >
+        <p>Lesson content</p>
+      </LessonShell>,
+    );
+
+    expect(screen.queryByText(/% complete/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /restart lesson/i })).not.toBeInTheDocument();
+  });
+
   it("renders section navigation separately from the course curriculum", async () => {
     const user = userEvent.setup();
     render(
@@ -170,12 +189,25 @@ describe("LessonShell", () => {
     );
 
     const content = screen.getByText("Public explanation and player content.");
-    const boundary = screen.getByRole("region", { name: "Continue this lesson for free" });
+    const boundary = screen.getByRole("region", { name: "Save your progress" });
     const navigation = screen.getByRole("navigation", { name: "Lesson navigation" });
     expect(content.compareDocumentPosition(boundary) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(boundary.compareDocumentPosition(navigation) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(screen.getByRole("link", { name: "Continue with Google or email" })).toHaveAttribute(
       "href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fhosts",
     );
+  });
+
+  it("uses the unlock boundary only when a lesson has protected sections", () => {
+    render(
+      <LessonShell viewer={null} pathway={pathway} lesson={{ ...lesson, format: "assessment", sections: [
+        { id: "overview", label: "Overview", access: "public" },
+        { id: "quiz", label: "Quiz", access: "account" },
+      ] }}>
+        <p>Assessment overview</p>
+      </LessonShell>,
+    );
+    expect(screen.getByRole("region", { name: "Take the final quiz" })).toBeVisible();
+    expect(screen.queryByRole("region", { name: "Save your progress" })).not.toBeInTheDocument();
   });
 });

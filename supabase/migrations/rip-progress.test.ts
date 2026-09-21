@@ -9,7 +9,7 @@ describe("RIP progress migration", () => {
     expect(sql).toMatch(/^begin;/);
     expect(sql.trimEnd()).toMatch(/commit;$/);
     expect(sql).toContain("on conflict (pathway_id, lesson_id, content_version) do update");
-    expect(sql).toContain("'lesson_rip', 1, 12");
+    expect(sql).toContain("'lesson_rip', 1, 3");
     expect(sql.match(/'rip_[^']+'/g)).toHaveLength(12);
     expect(sql).toContain("'interactive-rip-exchange'");
     expect(sql.match(/'knowledge_check'/g)).toHaveLength(3);

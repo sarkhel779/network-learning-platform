@@ -1,83 +1,43 @@
-<figure className="network-journey">
-  <svg
-    aria-label="Data path from a PC through a switch and router to a server"
-    className="network-journey-diagram"
-    role="img"
-    viewBox="0 0 800 230"
-  >
-    <desc>
-      A PC sends a frame to a switch. The switch forwards it to a router. The router
-      builds a new frame for the next link and sends it toward the destination server.
-    </desc>
-    <defs>
-      <marker id="arrowhead" markerHeight="8" markerWidth="8" orient="auto" refX="7" refY="4">
-        <path d="M0,0 L8,4 L0,8 Z" className="network-arrowhead" />
-      </marker>
-    </defs>
-    <line className="network-link" markerEnd="url(#arrowhead)" x1="130" x2="260" y1="100" y2="100" />
-    <line className="network-link" markerEnd="url(#arrowhead)" x1="340" x2="460" y1="100" y2="100" />
-    <line className="network-link" markerEnd="url(#arrowhead)" x1="535" x2="670" y1="100" y2="100" />
-    <g className="network-node">
-      <NetworkDeviceSymbol kind="host" transform="translate(95 100)" />
-      <text textAnchor="middle" x="95" y="150">PC</text>
-      <text className="network-node-role" textAnchor="middle" x="95" y="168">source host</text>
-    </g>
-    <g className="network-node">
-      <NetworkDeviceSymbol kind="switch" transform="translate(300 100)" />
-      <text textAnchor="middle" x="300" y="150">Switch</text>
-      <text className="network-node-role" textAnchor="middle" x="300" y="168">local link</text>
-    </g>
-    <g className="network-node">
-      <NetworkDeviceSymbol kind="router" transform="translate(500 100)" />
-      <text textAnchor="middle" x="500" y="150">Router</text>
-      <text className="network-node-role" textAnchor="middle" x="500" y="168">between networks</text>
-    </g>
-    <g className="network-node">
-      <NetworkDeviceSymbol kind="server" transform="translate(705 100)" />
-      <text textAnchor="middle" x="705" y="150">Server</text>
-      <text className="network-node-role" textAnchor="middle" x="705" y="168">destination host</text>
-    </g>
-    <text className="network-link-label" textAnchor="middle" x="400" y="205">Each link carries a frame; the IP packet is forwarded across the route.</text>
-  </svg>
-  <figcaption>PC → switch → router → server: a simplified end-to-end journey.</figcaption>
-  <div className="sr-only">
-    Text alternative: The source PC sends a local frame through a switch to its router.
-    The router reads the packet destination, chooses another network, and places the packet
-    in a new frame for the path to the destination server.
-  </div>
-</figure>
+<h2 id="what-is-a-computer-network">What is a computer network?</h2>
 
-<h2 id="communication-decisions">The decisions behind communication</h2>
+A **computer network** is a group of connected devices that can exchange data and share resources. The devices may be close together in one room or separated across countries. What makes them a network is their ability to communicate through agreed rules and connections.
 
-For communication to work, the source host must identify the destination, choose a usable
-communication medium, and follow shared protocols. The **source** creates the data. The
-**destination** is the intended receiver. A **medium**—such as copper, fiber, or radio—carries
-signals. **Protocols** are agreed rules for how devices format, address, send, receive, and
-interpret those signals.
+**A network lets connected devices exchange data and share resources.** For example, a laptop can send a document to a printer, or a phone can request a page from a web server.
 
-Consider a PC sending a small request to a server on another IPv4 network. The packet keeps the
-PC's source IP address and the server's destination IP address. The PC compares the destination
-with its own network information and decides that the server is remote, so the next hop is its
-default router. For IPv4, the PC can use ARP to learn the router interface's MAC address. It
-then places the packet inside an Ethernet **frame** addressed to that next-hop MAC address.
+<h2 id="why-networks-exist">Why networks exist</h2>
 
-Frames and packets solve different parts of the trip. A frame carries data across one local
-link and uses link-layer addresses such as MAC addresses. A packet carries network-layer
-addresses across connected networks. At a router, the incoming frame ends. The router examines
-the packet's destination IP address, chooses a route, and builds a new frame for the next link.
+Networks make it practical to share information, devices, and services. A family can share one Internet connection. An office can share printers and files. A school can make the same learning service available to many students.
 
-The devices therefore make different forwarding decisions:
+The useful result is communication: one device creates or requests information and another device receives or supplies it.
 
-- A **host** decides whether the destination is local or remote and chooses the next hop.
-- A **switch** primarily reads the frame's destination MAC address and uses its MAC address
-  table to select a port. Broadcasts and unknown destinations may be sent out multiple ports.
-- A **router** removes the incoming link-layer frame, reads the destination IP address, and
-  uses its routing table to choose the next network and next hop.
-- The **destination host** accepts traffic addressed to it and passes the data to the relevant
-  protocol or application.
+<h2 id="lan-wan-and-the-internet">LANs, WANs and the Internet</h2>
 
-<SectionContinue itemId="how_networks_communicate_section_communication_decisions" anchor="communication-decisions" />
+A **local area network (LAN)** connects devices in a limited place such as a home, office, or school. A **wide area network (WAN)** connects networks across larger distances. The **Internet** is a global system of interconnected networks.
 
-<h2 id="packet-journey">Interactive packet journey</h2>
+These names describe scope. They do not change the basic idea: connected devices exchange data through network links and intermediary devices.
 
-<NetworkCommunicationPacketFlow progressItemId="how_networks_communicate_interactive_packet_journey" />
+<h2 id="end-and-intermediary-devices">End and intermediary devices</h2>
+
+An **end device**, or host, is where user data is created or received. Computers, phones, printers, cameras, and servers can be hosts. An **intermediary device** helps connect, direct, or protect traffic. Switches, routers, wireless access points, and firewalls are common examples.
+
+This module introduces each role. Later modules explain the detailed decisions these devices make.
+
+<h2 id="types-of-hosts">Types of hosts</h2>
+
+Hosts appear in many forms. The icons below establish the device symbols used throughout this course. A device counts as a host when it can send, receive, or process network data—not because of its size or shape.
+
+<HostTypesGallery />
+
+<h2 id="identify-device-roles">Identify device roles</h2>
+
+Choose the hub, bridge, switch, or routed-network example. The animated packet stays within that valid arrangement, and a cloud pop-up introduces each active device. You can pause the tour or select a device directly.
+
+<DeviceRoleIdentifier />
+
+<h2 id="knowledge-check">Knowledge check</h2>
+
+<KnowledgeCheck progressItemId="how_networks_communicate_check_1"
+  question="Which statement best describes a computer network?"
+  options={["Connected devices exchange data and share resources.", "Every device must be in the same room.", "Only computers can join a network."]}
+  correctIndex={0}
+  explanation="A network lets connected devices exchange data and share resources. Those devices can be nearby or far apart and can include many kinds of hosts." />

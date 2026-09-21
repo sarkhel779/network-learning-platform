@@ -75,14 +75,14 @@ describe("KnowledgeCheck", () => {
     expect(complete).not.toHaveBeenCalled();
   });
 
-  it("keeps feedback visible and offers retry when saving fails", async () => {
+  it("keeps feedback visible without exposing progress-saving controls", async () => {
     progressState.value = "error";
     render(<KnowledgeCheck {...checkProps} />);
     await userEvent.click(screen.getByRole("radio", { name: "Routing table" }));
     await userEvent.click(screen.getByRole("button", { name: "Check answer" }));
     expect(screen.getByText("Not quite.")).toBeVisible();
-    await userEvent.click(screen.getByRole("button", { name: "Retry saving answer" }));
-    expect(retry).toHaveBeenCalledOnce();
+    expect(screen.queryByRole("button", { name: /retry saving/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/progress was not saved/i)).not.toBeInTheDocument();
   });
 
   it("rejects a correct answer index outside the options", () => {

@@ -38,6 +38,14 @@ describe("packet flow playback", () => {
     expect(playbackReducer({ ...state, stepIndex: 2 }, { type: "next" })).toMatchObject({ stepIndex: 2, playing: false });
   });
 
+  it("moves directly to a selected step and pauses playback", () => {
+    const state = createPlaybackState(5, 1, false);
+
+    expect(playbackReducer(state, { type: "go-to", stepIndex: 4 })).toMatchObject({ stepIndex: 4, playing: false });
+    expect(playbackReducer(state, { type: "go-to", stepIndex: -1 })).toMatchObject({ stepIndex: 0, playing: false });
+    expect(playbackReducer(state, { type: "go-to", stepIndex: 99 })).toMatchObject({ stepIndex: 4, playing: false });
+  });
+
   it("does not advance a paused tick and does not play at the end", () => {
     const paused = createPlaybackState(3, 1, true);
     expect(playbackReducer(paused, { type: "tick" })).toEqual(paused);

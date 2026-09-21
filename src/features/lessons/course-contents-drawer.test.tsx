@@ -42,7 +42,7 @@ describe("CourseContentsDrawer", () => {
 
     await user.click(trigger);
     const dialog = screen.getByRole("dialog", { name: "Course contents" });
-    const lessonLink = within(dialog).getByRole("link", { name: /hosts, clients, servers/i });
+    const lessonLink = within(dialog).getByRole("link", { name: /hosts, clients and servers/i });
     lessonLink.addEventListener("click", (event) => event.preventDefault());
     await user.click(lessonLink);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();

@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(30);
+    expect(lessonProgressManifests).toHaveLength(34);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -72,6 +72,8 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609190003_add_ospf_progress.sql",
       "supabase/migrations/202609190004_add_eigrp_progress.sql",
       "supabase/migrations/202609190005_add_bgp_progress.sql",
+      "supabase/migrations/202609200001_quiz_only_completion.sql",
+      "supabase/migrations/202609200002_computer_network_basics_restructure.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -82,7 +84,22 @@ describe("lessonProgressManifests", () => {
 
     const registeredLessons = [...migration.matchAll(/^  \('path_[a-z_]+', '(lesson_[^']+)', 1, \d+\)[,;]?$/gm)]
       .map((match) => match[1]);
-    expect(new Set(registeredLessons)).toEqual(new Set(lessonProgressManifests.map(({ lessonId }) => lessonId)));
+    expect(new Set(registeredLessons.filter((lessonId) => lessonId !== "lesson_hubs_bridges_and_switches")))
+      .toEqual(new Set(lessonProgressManifests.map(({ lessonId }) => lessonId)));
+  });
+
+  it("requires only correct knowledge checks for the new basics lessons", () => {
+    const requiredIds = (lessonId: string) => getLessonProgressManifest("path_networking_foundations", lessonId)
+      .items.filter(({ required }) => required).map(({ itemId }) => itemId);
+    expect(requiredIds("lesson_hubs")).toEqual(["hubs_check_1"]);
+    expect(requiredIds("lesson_bridges")).toEqual(["bridges_check_1"]);
+    expect(requiredIds("lesson_switches")).toEqual(["switches_check_1"]);
+    expect(requiredIds("lesson_physical_and_logical_addressing")).toEqual([
+      "physical_and_logical_addressing_check_1", "physical_and_logical_addressing_check_2", "physical_and_logical_addressing_check_3",
+    ]);
+    expect(requiredIds("lesson_computer_network_basics_final_quiz")).toEqual(
+      Array.from({ length: 8 }, (_, index) => `computer_network_basics_final_quiz_check_${index + 1}`),
+    );
   });
 
   it("registers the routing fundamentals lesson with one player and three checks as 12 required items", () => {
@@ -221,15 +238,26 @@ describe("lessonProgressManifests", () => {
   it("registers guided milestones and optional Pro milestones without blocking Account completion", () => {
     const manifest = getLessonProgressManifest("path_networking_foundations", "lesson_systematic_network_troubleshooting_capstone");
     expect(manifest.contentVersion).toBe(1);
-    expect(manifest.items).toHaveLength(15);
+    expect(manifest.items).toHaveLength(18);
     expect(manifest.items.map(({ itemId }) => itemId)).toContain("capstone_guided_incident");
-    expect(manifest.items.filter(({ kind, required }) => kind === "interactive" && required).map(({ anchor }) => anchor)).toEqual([
-      "guided-branch-incident", "guided-vlan-check", "guided-route-check", "guided-dns-check", "restoration-verification",
+    expect(manifest.items.filter(({ kind, required }) => kind === "knowledge_check" && required).map(({ itemId }) => itemId)).toEqual([
+      "capstone_check_1", "capstone_check_2", "capstone_check_3",
     ]);
-    expect(manifest.items.filter(({ required }) => required)).toHaveLength(12);
+    expect(manifest.items.filter(({ required }) => required)).toHaveLength(3);
     expect(manifest.items.filter(({ required }) => !required).map(({ itemId }) => itemId)).toEqual([
+      "capstone_section_scope_the_incident", "capstone_section_form_a_hypothesis", "capstone_section_collect_evidence",
+      "capstone_section_isolate_the_fault", "capstone_section_restore_the_service", "capstone_section_report_and_prevent",
+      "capstone_guided_incident", "capstone_section_guided_incident_debrief", "capstone_guided_vlan_check",
+      "capstone_guided_route_check", "capstone_guided_dns_check", "capstone_restoration_verification",
       "capstone_pro_evidence", "capstone_pro_validation", "capstone_pro_report",
     ]);
+  });
+
+  it("uses only knowledge checks as required completion items", () => {
+    for (const manifest of lessonProgressManifests) {
+      expect(manifest.items.filter(({ required }) => required).length, manifest.lessonId).toBeGreaterThan(0);
+      expect(manifest.items.filter(({ required }) => required).every(({ kind }) => kind === "knowledge_check"), manifest.lessonId).toBe(true);
+    }
   });
 
   it("parenthesizes the CASE expression used by the progress event guard", () => {
@@ -242,10 +270,21 @@ describe("lessonProgressManifests", () => {
     expect(migration).toContain("else 'knowledge_check_attempted' end) then");
   });
 
-  it("assigns every knowledge check its manifest ID in account content", () => {
+  it("assigns every knowledge check its manifest ID in registered lesson content", () => {
     const seen = new Set<string>();
+    const publicOnlyLessons = new Set([
+      "how-networks-communicate",
+      "hosts-and-network-devices",
+      "hubs",
+      "bridges",
+      "switches",
+      "routers-default-gateways-and-network-boundaries",
+      "physical-and-logical-addressing",
+      "osi-and-tcp-ip-models",
+    ]);
     for (const { pathway, lesson } of publishedLessons) {
-      const source = ["public", "account"].map((tier) => resolve(
+      const tiers = publicOnlyLessons.has(lesson.slug) ? ["public"] : ["public", "account"];
+      const source = tiers.map((tier) => resolve(
         `src/content/${pathway.slug}/${lesson.slug}.${tier}.mdx`,
       )).filter(existsSync).map((path) => readFileSync(path, "utf8")).join("\n");
       const contentIds = [...source.matchAll(/<KnowledgeCheck\s+progressItemId="([^"]+)"/g)]

@@ -1,0 +1,12 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 64 64"
+  role="img"
+  aria-label="PacketSecrets logo"
+>
+  <rect x="5" y="5" width="54" height="54" rx="12" fill="#0b1b2b" stroke="#2dd4bf" stroke-width="4" />
+  <path d="M24.5 32 39.5 22M24.5 32 39.5 42" fill="none" stroke="#2dd4bf" stroke-width="3.5" stroke-linecap="round" />
+  <circle cx="20" cy="32" r="5" fill="#2dd4bf" />
+  <circle cx="44" cy="21" r="5" fill="#2dd4bf" />
+  <circle cx="44" cy="43" r="5" fill="#2dd4bf" />
+</svg>

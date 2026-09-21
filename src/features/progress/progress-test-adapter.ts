@@ -24,15 +24,17 @@ export function recordTestProgress(userId: string, input: ProgressMutationInput)
   const entryKey = key(userId, input.pathwayId, input.lessonId);
   const previous = attempts.get(entryKey);
   const completed = new Set(previous?.completedItemIds ?? []);
-  completed.add(input.itemId);
-  const completedItemIds = manifest.items.filter(({ itemId }) => completed.has(itemId)).map(({ itemId }) => itemId);
-  const next = manifest.items.find(({ itemId }) => !completed.has(itemId));
+  const item = manifest.items.find(({ itemId }) => itemId === input.itemId);
+  if (item?.required && input.itemKind === "knowledge_check" && input.answerCorrect) completed.add(input.itemId);
+  const requiredItems = manifest.items.filter(({ required }) => required);
+  const completedItemIds = requiredItems.filter(({ itemId }) => completed.has(itemId)).map(({ itemId }) => itemId);
+  const next = requiredItems.find(({ itemId }) => !completed.has(itemId));
   const status = next ? "in_progress" as const : "completed" as const;
   const summary: LessonProgressSummary = {
     attemptId: previous?.attemptId ?? crypto.randomUUID(), pathwayId: input.pathwayId, lessonId: input.lessonId,
     contentVersion: input.contentVersion, attemptNumber: previous?.attemptNumber ?? 1, status, completedItemIds,
     nextItemId: next?.itemId ?? null, lastItemId: input.itemId, lastAnchor: input.anchor,
-    completionPercent: Math.floor(completedItemIds.length * 100 / manifest.items.length),
+    completionPercent: Math.floor(completedItemIds.length * 100 / requiredItems.length),
     incorrectCheckCount: (previous?.incorrectCheckCount ?? 0) + (input.itemKind === "knowledge_check" && !input.answerCorrect ? 1 : 0),
     updatedAt: new Date().toISOString(),
   };

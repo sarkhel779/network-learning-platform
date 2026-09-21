@@ -33,6 +33,7 @@ const packetSchema = z.object({
   to: nonEmptyString,
   broadcast: z.boolean().optional(),
   fanOut: z.boolean().optional(),
+  settled: z.boolean().optional(),
 }).readonly();
 
 const stepSchema = z.object({

@@ -18,7 +18,9 @@ describe("Packetsecrets site branding", () => {
       </>,
     );
 
-    expect(screen.getByRole("link", { name: "Packetsecrets" })).toHaveAttribute("href", "/");
+    const brandLink = screen.getByRole("link", { name: "Packetsecrets" });
+    expect(brandLink).toHaveAttribute("href", "/");
+    expect(brandLink.querySelector(".site-logo__mark-svg")).toHaveAttribute("src", "/icon.svg");
     expect(screen.getByText("Packet", { selector: ".site-logo__packet" })).toBeVisible();
     expect(screen.getByText("secrets", { selector: ".site-logo__secrets" })).toBeVisible();
     expect(screen.getByText("Packetsecrets", { selector: "footer p" })).toBeVisible();

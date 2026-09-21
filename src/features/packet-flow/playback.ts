@@ -15,6 +15,7 @@ export type PlaybackAction =
   | { type: "tick" }
   | { type: "next" }
   | { type: "previous" }
+  | { type: "go-to"; stepIndex: number }
   | { type: "restart"; autoplay: boolean }
   | { type: "set-speed"; speed: PlaybackSpeed };
 
@@ -53,6 +54,12 @@ export function playbackReducer(state: PlaybackState, action: PlaybackAction): P
       return { ...state, stepIndex: Math.min(state.stepCount - 1, state.stepIndex + 1), playing: false };
     case "previous":
       return { ...state, stepIndex: Math.max(0, state.stepIndex - 1), playing: false };
+    case "go-to":
+      return {
+        ...state,
+        stepIndex: Math.min(state.stepCount - 1, Math.max(0, action.stepIndex)),
+        playing: false,
+      };
     case "restart":
       return { ...state, stepIndex: 0, playing: action.autoplay };
     case "set-speed":
