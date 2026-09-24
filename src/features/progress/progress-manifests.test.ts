@@ -89,6 +89,19 @@ describe("lessonProgressManifests", () => {
       .toEqual(new Set(lessonProgressManifests.map(({ lessonId }) => lessonId)));
   });
 
+  it("replaces the previous Hubs catalog rows before reusing their ordinals", () => {
+    const migration = readFileSync(
+      resolve("supabase/migrations/202609210001_expand_hubs_lesson.sql"),
+      "utf8",
+    );
+    const catalogDelete = migration.indexOf("delete from public.lesson_progress_items");
+    const catalogInsert = migration.indexOf("insert into public.lesson_progress_items");
+
+    expect(catalogDelete).toBeGreaterThan(-1);
+    expect(catalogDelete).toBeLessThan(catalogInsert);
+    expect(migration.slice(catalogDelete, catalogInsert)).toContain("lesson_id = 'lesson_hubs'");
+  });
+
   it("requires only correct knowledge checks for the new basics lessons", () => {
     const requiredIds = (lessonId: string) => getLessonProgressManifest("path_networking_foundations", lessonId)
       .items.filter(({ required }) => required).map(({ itemId }) => itemId);

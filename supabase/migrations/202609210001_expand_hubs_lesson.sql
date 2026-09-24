@@ -8,6 +8,13 @@ insert into public.lesson_progress_manifests (
 on conflict (pathway_id, lesson_id, content_version) do update
 set required_item_count = excluded.required_item_count;
 
+-- Replace the previous Hubs catalog atomically so reused ordinals and anchors
+-- cannot collide with the rows created by the basics restructure migration.
+delete from public.lesson_progress_items
+where pathway_id = 'path_networking_foundations'
+  and lesson_id = 'lesson_hubs'
+  and content_version = 1;
+
 insert into public.lesson_progress_items (
   pathway_id, lesson_id, content_version, item_id, ordinal, kind, label, anchor, required
 ) values
