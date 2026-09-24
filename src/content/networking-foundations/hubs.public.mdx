@@ -1,29 +1,49 @@
 <h2 id="what-is-a-hub">What is a hub?</h2>
 
-A **hub** is a simple device that connects several devices on one shared Ethernet segment. When a signal arrives on one port, the hub repeats that signal through every other active port.
+A **hub** is a simple central device that connects several hosts on one shared Ethernet network. Each host uses a cable connected to one of the hub's ports.
 
-<h2 id="why-hubs-existed">Why hubs existed</h2>
+A hub works with the signal arriving on a port. It does not identify the intended recipient and it does not choose the best outgoing port.
 
-Early Ethernet networks needed an easy central connection point. A hub provided that physical meeting place without examining the information being carried.
+<h2 id="how-a-hub-handles-a-signal">How a hub handles a signal</h2>
 
-Modern networks usually use switches instead because switches can be more selective. Hubs remain useful for understanding how shared early networks behaved.
+When a signal enters one port, the hub repeats that signal through **every other active port**. If a laptop is connected to Port 1 and three other hosts use Ports 2, 3, and 4, all three hosts receive a copy.
 
-<h2 id="shared-traffic-and-bandwidth">Shared traffic and bandwidth</h2>
+The hub behaves like a loudspeaker in a room: it repeats what it receives so everyone connected can hear it. The receiving hosts determine whether the information is useful to them.
 
-All devices connected to a hub share the same communication space. Every repeated signal reaches the other connected devices, even when only one device is the intended receiver. The hosts must decide whether the received data is meant for them.
+<h2 id="repeat-a-signal">Watch a hub repeat a signal</h2>
 
-Because the connection is shared, simultaneous activity can interfere and available capacity is shared among the devices.
-
-<h2 id="repeat-a-signal">Repeat a signal</h2>
-
-Send one signal into the four-port example and observe which ports receive a copy.
+Follow one signal from a laptop into a hub. Notice that the hub sends a copy toward the workstation, printer, and server even though the server is the intended host.
 
 <HubRepeaterDemo />
+
+<h2 id="shared-network-behaviour">Shared network behaviour</h2>
+
+Every device connected to the hub shares the same communication space and the same available capacity. This is called **shared bandwidth**: more active devices must share the network rather than receiving a separate connection of their own.
+
+If two hosts transmit at the same time, their signals can interfere with one another. This is called a **collision**. For this introductory lesson, remember only that a hub creates one shared environment in which simultaneous transmissions can conflict.
+
+<h2 id="why-switches-replaced-hubs">Why switches replaced hubs</h2>
+
+Modern Ethernet networks normally use switches instead of hubs. A hub repeats a signal everywhere, while a switch can be more selective about where it sends network traffic.
+
+That difference makes switches more efficient for modern local networks. How switches make their decisions will be taught later; here, the important distinction is **hub: repeat to every other port**.
 
 <h2 id="knowledge-check">Knowledge check</h2>
 
 <KnowledgeCheck progressItemId="hubs_check_1"
   question="What does a hub do when a signal arrives on one port?"
-  options={["Repeats it to every other active port", "Sends it only to the router", "Stores it until the destination asks"]}
+  options={["Repeats it through every other active port", "Sends it only to the intended host", "Stores it until a router asks for it"]}
   correctIndex={0}
-  explanation="A hub repeats an incoming signal to every other port. It does not choose one destination." />
+  explanation="A hub repeats an incoming signal through every other active port. It does not select one destination." />
+
+<KnowledgeCheck progressItemId="hubs_check_2"
+  question="Why can two hosts transmitting at the same time be a problem on a hub network?"
+  options={["Their signals can collide in the shared communication space", "The hub permanently disconnects both hosts", "Each host receives its own private bandwidth"]}
+  correctIndex={0}
+  explanation="All hosts on a hub share the same communication space, so simultaneous transmissions can interfere and collide." />
+
+<KnowledgeCheck progressItemId="hubs_check_3"
+  question="Which statement best explains why switches replaced hubs in modern networks?"
+  options={["Switches can send traffic more selectively", "Switches repeat every signal to every port", "Switches do not connect local devices"]}
+  correctIndex={0}
+  explanation="Unlike a hub, a switch can be selective about where it sends traffic, making the local network more efficient." />

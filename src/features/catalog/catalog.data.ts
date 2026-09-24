@@ -65,9 +65,10 @@ const curriculum: Pathway[] = [
             published: true, estimatedMinutes: 8,
             sections: [
               { id: "what-is-a-hub", label: "What is a hub?", access: "public" },
-              { id: "why-hubs-existed", label: "Why hubs existed", access: "public" },
-              { id: "shared-traffic-and-bandwidth", label: "Shared traffic and bandwidth", access: "public" },
-              { id: "repeat-a-signal", label: "Repeat a signal", access: "public" },
+              { id: "how-a-hub-handles-a-signal", label: "How a hub handles a signal", access: "public" },
+              { id: "repeat-a-signal", label: "Watch a hub repeat a signal", access: "public" },
+              { id: "shared-network-behaviour", label: "Shared network behaviour", access: "public" },
+              { id: "why-switches-replaced-hubs", label: "Why switches replaced hubs", access: "public" },
               { id: "knowledge-check", label: "Knowledge check", access: "public" },
             ],
           },

@@ -1,5 +1,7 @@
 export type NetworkDeviceSymbolKind =
   | "host"
+  | "laptop"
+  | "printer"
   | "server"
   | "switch"
   | "router"
@@ -45,6 +47,12 @@ export function NetworkDeviceSymbol({ kind, transform }: NetworkDeviceSymbolProp
   }
   if (kind === "server") {
     return <g {...commonProps}><rect className="network-topology__device-surface" x="-25" y="-29" width="50" height="54" rx="3" /><path d="M-25 -11 H25 M-25 7 H25" /><circle cx="16" cy="-20" r="2" /><circle cx="16" cy="-2" r="2" /><circle cx="16" cy="16" r="2" /></g>;
+  }
+  if (kind === "laptop") {
+    return <g {...commonProps}><path className="network-topology__device-surface" d="M-29 -25 H29 V12 H-29 Z" /><path d="M-29 12 H29 L37 27 H-37 Z M-12 21 H12" /></g>;
+  }
+  if (kind === "printer") {
+    return <g {...commonProps}><rect className="network-topology__device-surface" x="-31" y="-15" width="62" height="38" rx="5" /><path d="M-20 -15 V-29 H20 V-15 M-20 10 H20 V30 H-20 Z M20 -5 H24" /></g>;
   }
   return <g {...commonProps}><rect className="network-topology__device-surface" x="-29" y="-26" width="58" height="38" rx="3" /><path d="M-11 27 H11 M0 12 V27 M-18 27 H18" /></g>;
 }

@@ -74,6 +74,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609190005_add_bgp_progress.sql",
       "supabase/migrations/202609200001_quiz_only_completion.sql",
       "supabase/migrations/202609200002_computer_network_basics_restructure.sql",
+      "supabase/migrations/202609210001_expand_hubs_lesson.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -88,6 +89,19 @@ describe("lessonProgressManifests", () => {
       .toEqual(new Set(lessonProgressManifests.map(({ lessonId }) => lessonId)));
   });
 
+  it("replaces the previous Hubs catalog rows before reusing their ordinals", () => {
+    const migration = readFileSync(
+      resolve("supabase/migrations/202609210001_expand_hubs_lesson.sql"),
+      "utf8",
+    );
+    const catalogDelete = migration.indexOf("delete from public.lesson_progress_items");
+    const catalogInsert = migration.indexOf("insert into public.lesson_progress_items");
+
+    expect(catalogDelete).toBeGreaterThan(-1);
+    expect(catalogDelete).toBeLessThan(catalogInsert);
+    expect(migration.slice(catalogDelete, catalogInsert)).toContain("lesson_id = 'lesson_hubs'");
+  });
+
   it("requires only correct knowledge checks for the new basics lessons", () => {
     const requiredIds = (lessonId: string) => getLessonProgressManifest("path_networking_foundations", lessonId)
       .items.filter(({ required }) => required).map(({ itemId }) => itemId);
@@ -96,7 +110,7 @@ describe("lessonProgressManifests", () => {
       "hosts_and_network_devices_check_1", "hosts_and_network_devices_check_2",
     ]);
     expect(hostsManifest.items.some(({ anchor }) => anchor === "follow-host-conversations")).toBe(false);
-    expect(requiredIds("lesson_hubs")).toEqual(["hubs_check_1"]);
+    expect(requiredIds("lesson_hubs")).toEqual(["hubs_check_1", "hubs_check_2", "hubs_check_3"]);
     expect(requiredIds("lesson_bridges")).toEqual(["bridges_check_1"]);
     expect(requiredIds("lesson_switches")).toEqual(["switches_check_1"]);
     expect(requiredIds("lesson_physical_and_logical_addressing")).toEqual([

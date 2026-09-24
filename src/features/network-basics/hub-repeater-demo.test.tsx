@@ -4,15 +4,45 @@ import { describe, expect, it } from "vitest";
 import { HubRepeaterDemo } from "./hub-repeater-demo";
 
 describe("HubRepeaterDemo", () => {
-  it("shows that a hub repeats a signal to every other port", async () => {
+  it("waits for Play before showing a teaching bubble", async () => {
     const user = userEvent.setup();
-    render(<HubRepeaterDemo />);
-    expect(screen.getByText(/a hub does not choose a destination/i)).toBeVisible();
-    await user.tab();
-    const send = screen.getByRole("button", { name: /send signal into port 1/i });
-    expect(send).toHaveFocus();
-    await user.click(send);
-    expect(screen.getByRole("status")).toHaveTextContent(/repeated to ports 2, 3, and 4/i);
-    expect(screen.queryByText(/mac table|collision algorithm/i)).not.toBeInTheDocument();
+    const { container } = render(<HubRepeaterDemo />);
+
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(container.querySelector('[data-device-id="laptop"] [data-device-symbol="laptop"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-device-id="printer"] [data-device-symbol="printer"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-device-id="server"] [data-device-symbol="server"]')).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Play" }));
+    expect(screen.getByRole("status")).toHaveTextContent(/laptop sends one signal/i);
+  });
+
+  it("moves one signal to the hub and then repeats three copies", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<HubRepeaterDemo />);
+
+    await user.click(screen.getByRole("button", { name: "Play" }));
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    expect(container.querySelector('[data-packet-marker][data-link-id="laptop-hub"]')).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    expect(container.querySelectorAll("[data-packet-marker]")).toHaveLength(3);
+    for (const linkId of ["hub-workstation", "hub-printer", "hub-server"]) {
+      expect(container.querySelector(`[data-packet-marker][data-link-id="${linkId}"]`)).toBeInTheDocument();
+    }
+  });
+
+  it("highlights the intended server copy and mutes the other received copies", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<HubRepeaterDemo />);
+
+    await user.click(screen.getByRole("button", { name: "Play" }));
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    await user.click(screen.getByRole("button", { name: "Next" }));
+
+    expect(container.querySelector('[data-link-id="hub-server"][data-packet-state="emphasized"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-link-id="hub-workstation"][data-packet-state="muted"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-link-id="hub-printer"][data-packet-state="muted"]')).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(/server accepts the signal meant for it/i);
   });
 });
