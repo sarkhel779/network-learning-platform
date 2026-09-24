@@ -52,6 +52,8 @@ function insetLinkPoint(
 
 function deviceSymbolKind(device: PacketFlowScenario["devices"][number]): NetworkDeviceSymbolKind {
   const identity = `${device.id} ${device.label} ${device.role}`.toLowerCase();
+  if (identity.includes("printer")) return "printer";
+  if (identity.includes("laptop")) return "laptop";
   if (identity.includes("firewall") || identity.includes("security boundary")) return "firewall";
   if (identity.includes("access point") || identity.includes("wireless bridge")) return "access-point";
   if (identity.includes("hub") || identity.includes("bridge")) return "switch";

@@ -21,7 +21,7 @@ type LessonProgressDefinition = Readonly<{
 const definitions = [
   { lessonId: "lesson_how_networks_communicate", interactiveAnchors: ["identify-device-roles"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
   { lessonId: "lesson_hosts_and_network_devices", interactiveAnchors: ["classify-host-roles"], excludedAnchors: ["follow-host-conversations"], knowledgeCheckCount: 2, knowledgeAnchor: "knowledge-check" },
-  { lessonId: "lesson_hubs", interactiveAnchors: ["repeat-a-signal"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
+  { lessonId: "lesson_hubs", interactiveAnchors: ["repeat-a-signal"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check" },
   { lessonId: "lesson_bridges", interactiveAnchors: ["compare-segments"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
   { lessonId: "lesson_switches", interactiveAnchors: ["match-hosts-to-ports"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
   { lessonId: "lesson_cables_fibre_wireless_and_network_connections", interactiveAnchors: ["compare-media", "design-a-connection"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },

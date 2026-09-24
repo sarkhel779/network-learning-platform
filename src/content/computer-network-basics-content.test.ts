@@ -40,7 +40,7 @@ describe("Computer Network Basics content", () => {
   });
 
   it.each([
-    ["hubs", ["what-is-a-hub", "why-hubs-existed", "shared-traffic-and-bandwidth", "repeat-a-signal", "knowledge-check"], "<HubRepeaterDemo />", "hubs_check_1"],
+    ["hubs", ["what-is-a-hub", "how-a-hub-handles-a-signal", "repeat-a-signal", "shared-network-behaviour", "why-switches-replaced-hubs", "knowledge-check"], "<HubRepeaterDemo />", "hubs_check_1"],
     ["bridges", ["what-is-a-bridge", "why-bridges-were-introduced", "network-segments", "compare-segments", "knowledge-check"], "<BridgeSegmentComparison />", "bridges_check_1"],
     ["switches", ["what-is-a-switch", "switch-ports", "more-selective-than-a-hub", "switches-and-routers", "match-hosts-to-ports", "knowledge-check"], "<SwitchPortMatcher />", "switches_check_1"],
   ])("keeps %s introductory and interactive", (slug, expectedHeadings, interaction, checkId) => {
@@ -49,6 +49,17 @@ describe("Computer Network Basics content", () => {
     expect(lesson).toContain(interaction);
     expect(lesson).toContain(`progressItemId="${checkId}"`);
     expect(lesson).not.toMatch(/MAC table|learn the source|\bflood\b|\bage\b|collision domain calculation|forwarding decision/i);
+  });
+
+  it("teaches hubs with three completion checks and no advanced forwarding mechanics", () => {
+    const lesson = source("hubs");
+    expect(lesson.match(/<KnowledgeCheck\b/g)).toHaveLength(3);
+    for (let index = 1; index <= 3; index += 1) {
+      expect(lesson).toContain(`progressItemId="hubs_check_${index}"`);
+    }
+    expect(lesson).toMatch(/shared bandwidth/i);
+    expect(lesson).toMatch(/collision/i);
+    expect(lesson).not.toMatch(/MAC table|learn the source|collision detection algorithm|forwarding table/i);
   });
 
   it("keeps Routers introductory", () => {
