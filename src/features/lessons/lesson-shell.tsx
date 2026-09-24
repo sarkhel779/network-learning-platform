@@ -8,6 +8,7 @@ import type { LessonProgressManifest, LessonProgressSummary } from "@/features/p
 import { LessonProgressProvider } from "@/features/progress/lesson-progress-context";
 import type { MyLearningModel } from "@/features/progress/my-learning";
 
+import { PRO_UNLOCKED_FOR_EVERYONE, resolveViewerAccess } from "./access-policy";
 import { CurriculumNavigation } from "./curriculum-navigation";
 import { formatEstimatedTime } from "@/features/catalog/estimated-time";
 import { LearningObjective } from "./learning-objective";
@@ -109,9 +110,11 @@ export function LessonShell({
           <p className="eyebrow">Lesson</p>
           <h1>{lesson.title}</h1>
           <p className="lesson-byline">
-            {formatEstimatedTime(lesson.estimatedMinutes)} · {lesson.sections?.some(({ access }) => access === "public")
-              ? "Public introduction · Free account to continue"
-              : "Free account required"}
+            {formatEstimatedTime(lesson.estimatedMinutes)} · {PRO_UNLOCKED_FOR_EVERYONE
+              ? "Full lesson access · Sign in to save your progress"
+              : lesson.sections?.some(({ access }) => access === "public")
+                ? "Public introduction · Free account to continue"
+                : "Free account required"}
           </p>
         </header>
 
@@ -125,12 +128,12 @@ export function LessonShell({
           panelId={lesson.slug === "http-https-tls-and-essential-network-services" ? "service-page-contents" : lesson.slug === "nat-pat-and-the-complete-internet-packet-journey" ? "nat-page-contents" : lesson.slug === "systematic-network-troubleshooting-capstone" ? "troubleshooting-page-contents" : lesson.slug === "dns-and-name-resolution" ? "dns-page-contents" : "lesson-page-contents"}
           presentation={lesson.slug === "dns-and-name-resolution" ? "dns-network-map" : lesson.slug === "nat-pat-and-the-complete-internet-packet-journey" ? "nat-network-map" : lesson.slug === "systematic-network-troubleshooting-capstone" ? "troubleshooting-network-map" : "network-map"}
           sections={lesson.sections}
-          viewerAccess={auditMode ? "pro" : viewer ? "account" : "anonymous"}
+          viewerAccess={resolveViewerAccess(Boolean(viewer), auditMode)}
         />
 
         <div className="lesson-content">{lessonContent}</div>
 
-        {!viewer && !auditMode ? <RegistrationBoundary mode={boundaryMode} returnTo={`/learn/${pathway.slug}/${lesson.slug}`} /> : null}
+        {!viewer && !auditMode && !PRO_UNLOCKED_FOR_EVERYONE ? <RegistrationBoundary mode={boundaryMode} returnTo={`/learn/${pathway.slug}/${lesson.slug}`} /> : null}
 
         <nav aria-label="Lesson navigation" className="lesson-navigation">
           <LessonDirection

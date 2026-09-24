@@ -1,3 +1,4 @@
+import { PRO_UNLOCKED_FOR_EVERYONE } from "@/features/lessons/access-policy";
 import { isPublishedLessonSlug } from "@/features/waitlist/waitlist-input.schema";
 import { getWaitlistStatus } from "@/features/waitlist/waitlist.repository";
 import { WaitlistForm } from "@/features/waitlist/waitlist-form";
@@ -17,7 +18,11 @@ export default async function ContactPage({ searchParams = Promise.resolve({}) }
     <main className="informational-page" id="main-content">
       <p className="eyebrow">Early access</p>
       <h1>Founding Pro waitlist</h1>
-      <p className="summary">Pro learning is being shaped around real learner needs.</p>
+      <p className="summary">
+        {PRO_UNLOCKED_FOR_EVERYONE
+          ? "Pro content is already unlocked for everyone — this waitlist is just for launch and pricing updates."
+          : "Pro learning is being shaped around real learner needs."}
+      </p>
       <p>
         Join for occasional product and launch updates. The waitlist is free, does not unlock paid
         content, and does not collect payment details.
