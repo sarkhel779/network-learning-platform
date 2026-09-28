@@ -204,8 +204,11 @@
 .host-role-conversation .packet-flow-topology-stage {
   min-width: 0;
   max-width: 100%;
-  padding-block-start: 16rem;
+  padding-block-start: 0;
 }
+
+.host-role-conversation[data-started="false"] .packet-flow-topology-stage { padding-block-start: 0; }
+.host-role-conversation[data-started="true"] .packet-flow-topology-stage { padding-block-start: 12.75rem; }
 
 .host-role-conversation__overlay {
   position: absolute;
@@ -245,8 +248,8 @@
   position: absolute;
   z-index: 3;
   inset-block-start: .25rem;
-  inset-inline-start: clamp(10rem, var(--host-role-anchor), calc(100% - 10rem));
-  inline-size: min(20rem, calc(100% - 1rem));
+  inset-inline-start: clamp(8.75rem, var(--host-role-anchor), calc(100% - 8.75rem));
+  inline-size: min(17rem, calc(100% - 1rem));
   aspect-ratio: 330 / 250;
   isolation: isolate;
   animation: device-role-callout-pop 220ms ease-out;
@@ -295,11 +298,11 @@
 .host-role-conversation .network-topology__device:focus { outline: none; }
 
 @media (max-width: 44rem) {
-  .host-role-conversation .packet-flow-topology-stage { padding-block-start: 14.5rem; }
+  .host-role-conversation[data-started="true"] .packet-flow-topology-stage { padding-block-start: 12rem; }
   .host-role-conversation__choices > * { flex: 1 1 10rem; }
   .host-role-conversation__cloud {
-    inset-inline-start: clamp(8.5rem, var(--host-role-anchor), calc(100% - 8.5rem));
-    inline-size: min(17rem, calc(100% - .75rem));
+    inset-inline-start: clamp(7.9rem, var(--host-role-anchor), calc(100% - 7.9rem));
+    inline-size: min(15.5rem, calc(100% - .75rem));
   }
   .host-role-conversation__role-label { inset-block-end: 2.5rem; padding: .18rem .42rem; font-size: .68rem; }
 }

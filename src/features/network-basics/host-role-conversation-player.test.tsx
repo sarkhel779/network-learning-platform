@@ -23,7 +23,7 @@ describe("HostRoleConversationPlayer", () => {
     const choices = screen.getByRole("group", { name: "Choose a host conversation" });
 
     expect(within(choices).getByRole("button", { name: "Open a website" })).toHaveAttribute("aria-pressed", "true");
-    expect(container.querySelector('[data-device-symbol="host"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-device-symbol="laptop"]')).toBeInTheDocument();
     expect(container.querySelector('[data-device-symbol="server"]')).toBeInTheDocument();
     expect(container.querySelector("[data-packet-marker]")).toBeNull();
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
