@@ -9,11 +9,12 @@ const lesson = readFileSync(
 );
 
 describe("Hosts and Network Devices lesson content", () => {
-  it("keeps the approved seven-section navigation structure", () => {
+  it("keeps the approved eight-section navigation structure", () => {
     const headingIds = [...lesson.matchAll(/<h2 id="([^"]+)">/g)].map((match) => match[1]);
 
     expect(headingIds).toEqual([
       "what-makes-a-device-a-host",
+      "types-of-hosts",
       "network-interfaces",
       "clients-and-servers",
       "follow-host-conversations",

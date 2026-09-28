@@ -50,6 +50,7 @@ const curriculum: Pathway[] = [
             published: true, estimatedMinutes: 15,
             sections: [
               { id: "what-makes-a-device-a-host", label: "What makes a device a host?", access: "public" },
+              { id: "types-of-hosts", label: "Types of hosts", access: "public" },
               { id: "network-interfaces", label: "Network interfaces", access: "public" },
               { id: "clients-and-servers", label: "Clients and servers", access: "public" },
               { id: "follow-host-conversations", label: "Follow host conversations", access: "public" },

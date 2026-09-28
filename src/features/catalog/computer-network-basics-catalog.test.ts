@@ -33,6 +33,7 @@ describe("Computer Network Basics catalogue", () => {
     const hostsLesson = basicsModule?.lessons.find(({ id }) => id === "lesson_hosts_and_network_devices");
     expect(hostsLesson?.sections?.map(({ id }) => id)).toEqual([
       "what-makes-a-device-a-host",
+      "types-of-hosts",
       "network-interfaces",
       "clients-and-servers",
       "follow-host-conversations",

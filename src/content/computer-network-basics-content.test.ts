@@ -15,9 +15,9 @@ describe("Computer Network Basics content", () => {
     const introduction = source("how-networks-communicate");
     expect(headings(introduction)).toEqual([
       "what-is-a-computer-network", "why-networks-exist", "lan-wan-and-the-internet",
-      "end-and-intermediary-devices", "types-of-hosts", "identify-device-roles", "knowledge-check",
+      "end-and-intermediary-devices", "identify-device-roles", "knowledge-check",
     ]);
-    expect(introduction).toContain("<HostTypesGallery />");
+    expect(introduction).not.toContain("<HostTypesGallery />");
     expect(introduction).toContain("<DeviceRoleIdentifier />");
     expect(introduction).toContain('progressItemId="how_networks_communicate_check_1"');
     expect(introduction).toContain("A network lets connected devices exchange data and share resources.");
@@ -27,9 +27,10 @@ describe("Computer Network Basics content", () => {
   it("keeps the host lesson focused on host and application roles", () => {
     const hosts = source("hosts-and-network-devices");
     expect(headings(hosts)).toEqual([
-      "what-makes-a-device-a-host", "network-interfaces", "clients-and-servers",
+      "what-makes-a-device-a-host", "types-of-hosts", "network-interfaces", "clients-and-servers",
       "follow-host-conversations", "one-host-more-than-one-role", "classify-host-roles", "knowledge-check",
     ]);
+    expect(hosts).toContain("<HostTypesGallery />");
     expect(hosts).toContain("<HostRoleConversationPlayer />");
     expect(hosts).toContain("<HostRoleClassifier />");
     expect(hosts).toContain('progressItemId="hosts_and_network_devices_check_1"');
