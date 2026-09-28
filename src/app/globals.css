@@ -354,6 +354,128 @@
 .host-types-gallery__card p { margin: 0; color: var(--muted); font-size: .88rem; line-height: 1.45; }
 .host-device-icon { display: block; width: 4.25rem; height: 4.25rem; overflow: visible; fill: color-mix(in srgb, var(--accent) 8%, var(--background)); stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 
+.switch-port-matcher__topology {
+  display: grid;
+  grid-template-columns: minmax(7rem, .8fr) minmax(4rem, 7rem) minmax(7rem, .8fr) minmax(15rem, 1.6fr);
+  align-items: center;
+  min-width: 0;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  border: 1px solid var(--border);
+  border-radius: .85rem;
+  background: color-mix(in srgb, var(--accent) 5%, var(--background));
+}
+
+.switch-port-matcher__device,
+.switch-port-matcher__switch {
+  display: grid;
+  justify-items: center;
+  gap: .2rem;
+  min-width: 0;
+  color: var(--foreground);
+  text-align: center;
+}
+
+.switch-port-matcher__device > span,
+.switch-port-matcher__switch > span,
+.switch-port-matcher__port-copy > span { color: var(--muted); font-size: .78rem; }
+
+.switch-port-matcher__switch svg { display: block; width: 5rem; height: 4.4rem; overflow: visible; }
+
+.switch-port-matcher__inbound-path {
+  position: relative;
+  height: 4px;
+  background: var(--muted);
+}
+
+.switch-port-matcher__ports {
+  display: grid;
+  gap: .65rem;
+  min-width: 0;
+  margin-inline-start: 4rem;
+}
+
+.switch-port-matcher__port {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  align-items: center;
+  gap: .75rem;
+  min-width: 0;
+  min-height: 5rem;
+  padding: .6rem .8rem;
+  border: 1px solid var(--border);
+  border-radius: .7rem;
+  color: var(--foreground);
+  background: var(--surface-raised, var(--surface));
+  cursor: pointer;
+  text-align: start;
+}
+
+.switch-port-matcher__port:hover,
+.switch-port-matcher__port:focus-visible,
+.switch-port-matcher__port[data-selected="true"] {
+  border-color: var(--accent);
+  outline: none;
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+
+.switch-port-matcher__port[data-correct="true"] { box-shadow: 0 0 1.1rem color-mix(in srgb, var(--accent) 48%, transparent); }
+.switch-port-matcher__port .host-device-icon { width: 3.15rem; height: 3.15rem; }
+.switch-port-matcher__port-copy { display: grid; gap: .15rem; min-width: 0; }
+
+.switch-port-matcher__branch {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: 100%;
+  width: 4rem;
+  border-block-start: 3px solid var(--muted);
+}
+
+.switch-port-matcher__port[data-selected="true"] .switch-port-matcher__branch { border-color: var(--accent); }
+
+.switch-port-matcher__packet {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: 50%;
+  inset-inline-start: 0;
+  width: 1.15rem;
+  height: .82rem;
+  border: 2px solid var(--accent);
+  border-radius: .18rem;
+  background: var(--background);
+  box-shadow: 0 0 .65rem var(--accent);
+  animation: switch-frame-travel .8s linear both;
+}
+
+.switch-port-matcher__packet::after {
+  position: absolute;
+  inset: .05rem .12rem auto;
+  height: .45rem;
+  border-block-end: 2px solid var(--accent);
+  content: "";
+  transform: skewY(-28deg);
+}
+
+.switch-port-matcher__inbound-path .switch-port-matcher__packet { transform: translateY(-50%); }
+.switch-port-matcher__branch .switch-port-matcher__packet { transform: translateY(calc(-50% - 2px)); }
+.switch-port-matcher__prompt { margin: 0; font-weight: 800; }
+
+@keyframes switch-frame-travel {
+  from { inset-inline-start: 0; }
+  to { inset-inline-start: calc(100% - 1.15rem); }
+}
+
+@media (max-width: 44rem) {
+  .switch-port-matcher__topology { display: flex; flex-direction: column; gap: .8rem; }
+  .switch-port-matcher__inbound-path { width: 4px; height: 2.75rem; }
+  .switch-port-matcher__ports { width: 100%; margin-inline-start: 0; }
+  .switch-port-matcher__branch { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switch-port-matcher__packet { animation: none; inset-inline-start: calc(100% - 1.15rem); }
+}
+
 @media (max-width: 32rem) {
   .host-types-gallery { grid-template-columns: minmax(0, 1fr); }
 }

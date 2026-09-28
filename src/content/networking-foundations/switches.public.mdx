@@ -2,23 +2,27 @@
 
 A **switch** connects devices in a local network. It is the modern, multi-port development of the bridge idea: instead of treating all connected devices as one shared signal space, it can be selective about which port carries local traffic.
 
+Picture a switch as the central connection point for nearby hosts. A laptop, printer, and server can each use a separate cable while still belonging to the same local network.
+
 <h2 id="switch-ports">Switch ports</h2>
 
-Each physical switch port is a connection point for a host or another network device. Port labels help people trace cables and understand which devices are connected where.
+Each physical switch port is a labelled connection point for a host or another network device. If a printer cable is plugged into Port 3, Port 3 is the physical path between that printer and the switch.
 
-At this stage, remember the simple relationship: local devices connect to labelled switch ports. The detailed process a switch uses is taught later.
+At this stage, remember the simple relationship: **one cable connects a device to one switch port**. The detailed learning and forwarding process belongs in the Data Link Layer module.
 
 <h2 id="more-selective-than-a-hub">More selective than a hub</h2>
 
-A hub repeats an incoming signal to all other ports. A switch can send local traffic through a suitable port rather than treating every port the same. This makes switches a better fit for modern local networks.
+A hub repeats an incoming signal to all other active ports. A switch can use the port that leads toward the relevant local device instead of treating every port the same. This makes switches a better fit for modern local networks.
+
+For now, focus on the result: traffic for the printer can use the printer's path. Later, you will learn how a switch builds and uses its forwarding information.
 
 <h2 id="switches-and-routers">Switches and routers</h2>
 
-A switch primarily connects devices inside a local network. A router connects different IP networks. Home equipment may combine both functions in one box, but the roles remain different.
+A switch primarily connects devices **inside one local network**. A router connects **different IP networks** and can provide a path beyond the local network. Home equipment may combine both functions in one box, but the two roles remain different.
 
 <h2 id="match-hosts-to-ports">Match hosts to ports</h2>
 
-Use the cable description to match the printer with its labelled switch port.
+Follow the visible cables and choose which labelled switch port leads to the printer. Selecting a port sends the teaching frame through that path so you can check the decision.
 
 <SwitchPortMatcher />
 
