@@ -221,8 +221,11 @@ describe("system theme and table styles", () => {
     const cloud = css.match(/\.host-role-conversation__cloud\s*\{([^}]+)\}/)?.[1] ?? "";
     expect(cloud).toMatch(/inset-inline-start:\s*clamp\([^;]*var\(--host-role-anchor\)/);
     expect(cloud).toMatch(/inline-size:\s*min\(/);
+    expect(css).toMatch(/\.host-role-conversation\[data-started="false"\]\s+\.packet-flow-topology-stage\s*\{[^}]*padding-block-start:\s*0/);
+    expect(css).toMatch(/\.host-role-conversation\[data-started="true"\]\s+\.packet-flow-topology-stage\s*\{[^}]*padding-block-start:\s*12\.75rem/);
+    expect(cloud).toMatch(/inline-size:\s*min\(17rem,/);
     expect(css).toMatch(/\.host-role-conversation__cloud-shape (?:path|path,)[^\{]*\{[^}]*fill:\s*color-mix\([^}]*var\(--accent\)[^}]*stroke:\s*var\(--accent\)/);
-    expect(css).toMatch(/@media\s*\(max-width:\s*44rem\)[\s\S]*\.host-role-conversation\s+\.packet-flow-topology-stage\s*\{[^}]*padding-block-start:\s*(?!0)/);
+    expect(css).toMatch(/@media\s*\(max-width:\s*44rem\)[\s\S]*\.host-role-conversation\[data-started="true"\]\s+\.packet-flow-topology-stage\s*\{[^}]*padding-block-start:\s*12rem/);
     expect(css).toMatch(/@media\s*\(max-width:\s*44rem\)[\s\S]*\.host-role-conversation__choices > \*\s*\{[^}]*flex:/);
     expect(css).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.host-role-conversation__cloud\s*\{[^}]*animation:\s*none/);
   });
