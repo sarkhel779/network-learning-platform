@@ -107,6 +107,10 @@
 }
 
 .device-role-tour .packet-flow-topology-stage {
+  padding-block-start: 0;
+}
+
+.device-role-tour[data-started="true"] .packet-flow-topology-stage {
   padding-block-start: 17rem;
 }
 
@@ -163,7 +167,7 @@
 .device-role-tour .network-topology__device[role="button"]:focus-visible { outline: none; filter: drop-shadow(0 0 9px #23d6a8); }
 
 @media (max-width: 44rem) {
-  .device-role-tour .packet-flow-topology-stage { padding-block-start: 15rem; }
+  .device-role-tour[data-started="true"] .packet-flow-topology-stage { padding-block-start: 15rem; }
   .device-role-tour__cloud {
     position: absolute;
     inset-block-start: .25rem;

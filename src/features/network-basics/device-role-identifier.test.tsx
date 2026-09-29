@@ -17,6 +17,20 @@ afterEach(() => {
 });
 
 describe("DeviceRoleIdentifier", () => {
+  it("only reserves space for the teaching cloud after playback starts", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<DeviceRoleIdentifier />);
+    const tour = container.querySelector(".device-role-tour");
+
+    expect(tour).toHaveAttribute("data-started", "false");
+
+    await user.click(screen.getByRole("button", { name: "Play" }));
+    expect(tour).toHaveAttribute("data-started", "true");
+
+    await user.click(screen.getByRole("button", { name: "Bridge" }));
+    expect(tour).toHaveAttribute("data-started", "false");
+  });
+
   it("keeps the device description hidden until Play and resets it for a new scenario", async () => {
     const user = userEvent.setup();
     render(<DeviceRoleIdentifier />);
