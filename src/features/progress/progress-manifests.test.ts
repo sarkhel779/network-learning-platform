@@ -75,6 +75,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609200001_quiz_only_completion.sql",
       "supabase/migrations/202609200002_computer_network_basics_restructure.sql",
       "supabase/migrations/202609210001_expand_hubs_lesson.sql",
+      "supabase/migrations/202609290001_move_host_types_progress.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -100,6 +101,20 @@ describe("lessonProgressManifests", () => {
     expect(catalogDelete).toBeGreaterThan(-1);
     expect(catalogDelete).toBeLessThan(catalogInsert);
     expect(migration.slice(catalogDelete, catalogInsert)).toContain("lesson_id = 'lesson_hubs'");
+  });
+
+  it("replaces the previous Hosts catalog rows before inserting the relocated host-types section", () => {
+    const migration = readFileSync(
+      resolve("supabase/migrations/202609290001_move_host_types_progress.sql"),
+      "utf8",
+    );
+    const catalogDelete = migration.indexOf("delete from public.lesson_progress_items");
+    const catalogInsert = migration.indexOf("insert into public.lesson_progress_items");
+
+    expect(catalogDelete).toBeGreaterThan(-1);
+    expect(catalogDelete).toBeLessThan(catalogInsert);
+    expect(migration.slice(catalogDelete, catalogInsert)).toContain("lesson_id = 'lesson_hosts_and_network_devices'");
+    expect(migration).toContain("'hosts_and_network_devices_section_types_of_hosts'");
   });
 
   it("requires only correct knowledge checks for the new basics lessons", () => {

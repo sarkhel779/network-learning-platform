@@ -1,7 +1,14 @@
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { HubRepeaterDemo } from "./hub-repeater-demo";
+
+vi.mock("@/features/packet-flow/use-reduced-motion", () => ({
+  useReducedMotion: () => false,
+  useReducedMotionState: () => ({ reducedMotion: false, isHydrated: true }),
+}));
+
+afterEach(cleanup);
 
 describe("HubRepeaterDemo", () => {
   it("waits for Play before showing a teaching bubble", async () => {
