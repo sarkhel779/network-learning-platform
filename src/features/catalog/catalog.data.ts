@@ -781,6 +781,58 @@ const curriculum: Pathway[] = [
       },
     ],
   },
+  {
+    id: "path_network_security",
+    slug: "network-security",
+    title: "Network Security",
+    description: "Apply the networking fundamentals from earlier courses to how real traffic is protected, from the TLS handshake to common misconfigurations and attacks.",
+    audience: "Learners who already understand basic networking and want a practical, evidence-driven grounding in network security.",
+    modules: [
+      {
+        id: "module_tls_and_transport_security",
+        slug: "tls-and-transport-security",
+        title: "TLS and Transport Security",
+        description: "Understand how TLS protects data in transit: the handshake, certificates and trust, version and cipher-suite choices, and the failures that show up in practice.",
+        lessons: [
+          plannedLesson({
+            id: "lesson_tls_fundamentals_and_the_handshake", slug: "tls-fundamentals-and-the-handshake",
+            title: "TLS Fundamentals and the Handshake",
+            objective: "Explain what TLS protects, and trace a TLS handshake from ClientHello to application data.",
+            seo: { title: "TLS Fundamentals and the Handshake", description: "Learn what TLS protects and trace a TLS handshake step by step, from ClientHello to encrypted application data." },
+            estimatedMinutes: 25,
+          }),
+          plannedLesson({
+            id: "lesson_certificates_and_the_chain_of_trust", slug: "certificates-and-the-chain-of-trust",
+            title: "Certificates and the Chain of Trust",
+            objective: "Read an X.509 certificate and explain how a chain of trust lets a client validate a server's identity.",
+            seo: { title: "Certificates and the Chain of Trust", description: "Understand X.509 certificates, certificate authorities, and how a chain of trust is validated up to a root." },
+            estimatedMinutes: 25,
+          }),
+          plannedLesson({
+            id: "lesson_tls_versions_and_cipher_suites", slug: "tls-versions-and-cipher-suites",
+            title: "TLS Versions, Cipher Suites and Deprecated Protocols",
+            objective: "Compare TLS versions and cipher suites, and explain why older protocols and ciphers are considered unsafe.",
+            seo: { title: "TLS Versions and Cipher Suites", description: "Compare TLS 1.2 and TLS 1.3, understand cipher suite negotiation, and see why SSL and weak ciphers are deprecated." },
+            estimatedMinutes: 20,
+          }),
+          plannedLesson({
+            id: "lesson_common_tls_attacks_and_misconfigurations", slug: "common-tls-attacks-and-misconfigurations",
+            title: "Common TLS Attacks and Misconfigurations",
+            objective: "Identify common TLS misconfigurations and the attacks they enable, such as downgrade attacks and weak certificate validation.",
+            seo: { title: "Common TLS Attacks and Misconfigurations", description: "Learn about TLS downgrade attacks, weak certificate validation, and other common misconfigurations attackers exploit." },
+            estimatedMinutes: 25,
+          }),
+          plannedLesson({
+            id: "lesson_tls_in_practice_inspecting_and_troubleshooting", slug: "tls-in-practice-inspecting-and-troubleshooting",
+            title: "TLS in Practice: Inspecting and Troubleshooting",
+            objective: "Use packet captures and command-line tools to inspect a TLS session and diagnose common TLS failures.",
+            seo: { title: "TLS in Practice: Inspecting and Troubleshooting", description: "Inspect TLS handshakes with packet captures and command-line tools, and diagnose common real-world TLS failures." },
+            estimatedMinutes: 25,
+          }),
+        ],
+      },
+    ],
+  },
 ];
 
 export const pathways = pathwayCatalogSchema.parse(curriculum);
