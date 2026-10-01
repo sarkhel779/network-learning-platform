@@ -26,7 +26,7 @@ EIGRP's full composite metric formula is `Metric = 256 × ((K1×BW + (K2×BW)/(2
 
 <h2 id="interactive-eigrp-dual">Interactive EIGRP DUAL</h2>
 
-Step through R1 computing its feasible distance via two neighbors, qualifying one as a feasible successor, and instantly rerouting to it the moment its successor link fails — with no query needed.
+Step through R1 tracking two networks through the same two neighbors: one has a feasible successor and reroutes instantly the moment its successor link fails, the other doesn't and has to go Active, send a Query, and wait for a Reply — showing exactly what a feasible successor saves you from.
 
 <EigrpDualPacketFlow progressItemId="eigrp_interactive_interactive_eigrp_dual" />
 

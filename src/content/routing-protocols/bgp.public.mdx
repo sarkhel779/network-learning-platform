@@ -26,7 +26,7 @@ Every BGP UPDATE carries **path attributes** describing the route, which the dec
 
 <h2 id="interactive-bgp-session-establishment">Interactive BGP session establishment</h2>
 
-Step through two eBGP peers moving through the finite state machine from Idle to Established, then advertising a prefix with its path attributes.
+Step through two eBGP peers moving through the finite state machine from Idle to Established, then watch a third router receive the same prefix from two different peers and apply the decision process — tying on LOCAL_PREF before AS_PATH length picks a winner.
 
 <BgpSessionEstablishmentPacketFlow progressItemId="bgp_interactive_interactive_bgp_session_establishment" />
 
