@@ -180,6 +180,10 @@ const lessonImports = {
     public: () => import("@/content/security-protocols/pki.public.mdx"),
     account: () => import("@/content/security-protocols/pki.account.mdx"),
   },
+  "wireless-networking/wireless-fundamentals": {
+    public: () => import("@/content/wireless-networking/wireless-fundamentals.public.mdx"),
+    account: () => import("@/content/wireless-networking/wireless-fundamentals.account.mdx"),
+  },
 } satisfies LessonContentRegistry;
 
 async function loadFromRegistry(

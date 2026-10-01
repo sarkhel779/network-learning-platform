@@ -27,6 +27,7 @@ describe("pathway route generation", () => {
       { pathwaySlug: "networking-foundations" },
       { pathwaySlug: "routing-protocols" },
       { pathwaySlug: "security-protocols" },
+      { pathwaySlug: "wireless-networking" },
     ]);
   });
 

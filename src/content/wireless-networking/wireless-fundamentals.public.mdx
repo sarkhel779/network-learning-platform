@@ -1,0 +1,37 @@
+<LearningObjective>Explain how Wi-Fi uses radio frequency bands and channels, the roles access points and clients play in a basic service set, why CSMA/CA replaces Ethernet's collision detection over a half-duplex radio medium, and how RTS/CTS solves the hidden node problem.</LearningObjective>
+
+<h2 id="what-wireless-networking-is">What wireless networking is</h2>
+
+Every lesson so far in this course has assumed a wired medium: a cable that carries one signal between two known endpoints. **Wi-Fi (IEEE 802.11)** replaces that cable with a shared radio medium that every nearby device transmits into and listens on at once. That single change has consequences that ripple through the rest of this lesson: a radio can't reliably listen and transmit on the same frequency at the same time, so it can't detect its own collisions the way Ethernet can; a device's "range" isn't a cable's fixed endpoints but a fading signal that different neighbors receive differently; and the medium is shared with everything else in the building, not just other Wi-Fi networks — microwave ovens, Bluetooth devices, and neighboring access points all compete for the same airtime.
+
+<SectionContinue itemId="wireless_fundamentals_section_what_wireless_networking_is" anchor="what-wireless-networking-is" />
+
+<h2 id="radio-frequency-bands-and-channels">Radio frequency bands and channels</h2>
+
+Wi-Fi operates in three unlicensed frequency bands: **2.4 GHz** (longer range, better at penetrating walls, but only three non-overlapping 20 MHz channels — 1, 6, and 11 in most regions — and heavy interference from Bluetooth, microwave ovens, and other 2.4 GHz gear), **5 GHz** (shorter range, far more non-overlapping channels, and wider channel widths of up to 160 MHz for higher throughput), and **6 GHz** (added by Wi-Fi 6E, with even more spectrum and no legacy devices to share it with, at the cost of the shortest range of the three). Each band is divided into **channels** — specific frequency ranges a radio tunes to — and two overlapping access points using the same or adjacent channels compete for the same airtime exactly as if they were one shared medium, even if they belong to different networks entirely.
+
+<SectionContinue itemId="wireless_fundamentals_section_radio_frequency_bands_and_channels" anchor="radio-frequency-bands-and-channels" />
+
+<h2 id="wireless-network-roles-and-topologies">Wireless network roles and topologies</h2>
+
+An **access point (AP)** bridges the wireless medium to a wired network and coordinates every client associated with it; the AP and its associated clients together form a **Basic Service Set (BSS)**, identified by a human-readable **SSID** (the network name shown in a device's Wi-Fi list) and a unique **BSSID** (the AP radio's MAC address). Multiple APs sharing the same SSID but covering different physical areas form an **Extended Service Set (ESS)**, letting a client roam from one AP to another without changing networks. A far less common **ad-hoc (IBSS)** mode lets devices talk directly to each other with no AP at all, but it has no central coordinator and is rarely used outside of specialized peer-to-peer scenarios.
+
+<SectionContinue itemId="wireless_fundamentals_section_wireless_network_roles_and_topologies" anchor="wireless-network-roles-and-topologies" />
+
+<h2 id="csma-ca-and-collision-avoidance">CSMA/CA and collision avoidance</h2>
+
+Wired Ethernet historically used **CSMA/CD** (Carrier Sense Multiple Access with Collision *Detection*): a station could listen while transmitting and immediately detect a collision on the shared cable. A Wi-Fi radio generally can't do that — transmitting and receiving on the same frequency at the same time would mean listening for a faint incoming signal while its own transmission overwhelms the receiver, so it can't detect a collision while one is happening. Wi-Fi uses **CSMA/CA** (Collision *Avoidance*) instead: a station listens before transmitting, waits for the channel to be idle for a required interval, then waits an additional random backoff before sending — the randomness makes two stations choosing the exact same instant unlikely, but not impossible.
+
+<SectionContinue itemId="wireless_fundamentals_section_csma_ca_and_collision_avoidance" anchor="csma-ca-and-collision-avoidance" />
+
+<h2 id="interactive-csma-ca-and-the-hidden-node-problem">Interactive CSMA/CA and the hidden node problem</h2>
+
+Step through two clients that are out of radio range of each other but both in range of the same access point — hidden nodes. Watch plain carrier sensing fail to prevent a collision between them, then watch an RTS/CTS exchange fix exactly that problem by making the AP's reply reach both clients at once.
+
+<CsmaCaHiddenNodePacketFlow progressItemId="wireless_fundamentals_interactive_interactive_csma_ca_and_the_hidden_node_problem" />
+
+<h2 id="signal-strength-and-interference">Signal strength and interference</h2>
+
+Wi-Fi signal strength is measured in **RSSI (Received Signal Strength Indicator)**, typically expressed in **dBm** — a logarithmic scale where values closer to 0 are stronger and more negative values are weaker (-50 dBm is a strong signal; -80 dBm is barely usable). Signal strength fades with distance and is further degraded by **attenuation** (walls, floors, and other obstacles absorbing energy) and **interference** (overlapping channels from neighboring networks, or non-Wi-Fi devices like microwave ovens and Bluetooth radios sharing the 2.4 GHz band). Because the hidden node problem from the player above gets worse as physical obstacles increase — two clients separated by a wall are more likely to be hidden from each other — dense, obstacle-filled environments benefit the most from RTS/CTS, even though its extra round trip costs airtime that an open environment might not need to spend.
+
+<SectionContinue itemId="wireless_fundamentals_section_signal_strength_and_interference" anchor="signal-strength-and-interference" />

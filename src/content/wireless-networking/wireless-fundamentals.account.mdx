@@ -1,0 +1,42 @@
+{/* WIRELESS_FUNDAMENTALS_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-wireless-evidence">Inspect wireless evidence</h2>
+
+Most operating systems expose a Wi-Fi diagnostics view (`airport -I` on older macOS, `iw dev <interface> link` on Linux, or the Wi-Fi details panel on Windows) that reports the associated BSSID, channel, and RSSI in real time — the fastest way to confirm which physical AP a client actually associated with in an ESS with several APs sharing one SSID.
+
+<WiresharkCheck displayFilter="wlan.fc.type_subtype == 0x001b || wlan.fc.type_subtype == 0x001c">Capture on a monitor-mode-capable wireless adapter during association. Identify the RTS (subtype 0x1b) and CTS (subtype 0x1c) control frames when present, and compare their short duration fields against the much longer data frames they protect.</WiresharkCheck>
+
+<SectionContinue itemId="wireless_fundamentals_section_inspect_wireless_evidence" anchor="inspect-wireless-evidence" />
+
+<h2 id="guided-channel-planning-practice">Guided channel-planning practice</h2>
+
+Work through why channel choice matters even between networks that have nothing to do with each other. Two neighboring apartments each run their own access point on 2.4 GHz. If both routers are left on their factory-default channel, there's a good chance they land on the same channel or on adjacent, overlapping ones — meaning every transmission from either network occupies airtime the other network also needs, regardless of which network a given frame is addressed to. The fix is to explicitly set non-overlapping channels (1, 6, or 11 in the 2.4 GHz band) on each AP, so the two networks' transmissions no longer collide with each other at the physical layer, even though they're still sharing the same unlicensed spectrum.
+
+<InterviewScenario title="A user reports slow Wi-Fi only during certain hours of the day">A candidate immediately assumes the ISP is throttling the connection. Explain a more likely wireless-specific cause to investigate first: a neighboring network's AP whose usage spikes during those hours, operating on the same or an overlapping channel, which would reduce available airtime without an ISP needing to throttle anything.</InterviewScenario>
+
+<SectionContinue itemId="wireless_fundamentals_section_guided_channel_planning_practice" anchor="guided-channel-planning-practice" />
+
+<h2 id="troubleshoot-wireless-basics">Troubleshoot wireless basics</h2>
+
+1. Check RSSI first: a signal weaker than roughly -70 dBm commonly explains dropped connections and poor throughput that no configuration change will fix — the real problem is distance or obstruction, not settings.
+2. Confirm the client and AP actually agree on a channel and band — a dual-band AP broadcasting the same SSID on both 2.4 GHz and 5 GHz can leave a client "stuck" on the weaker band if band steering isn't configured correctly.
+3. Look for channel overlap from neighboring networks using a Wi-Fi scanning tool, especially in the crowded 2.4 GHz band, before assuming the problem is with the AP itself.
+4. Distinguish a hidden-node-style collision problem (intermittent, worse with more clients, improved by enabling RTS/CTS) from simple congestion (consistently slow, correlated with the number of active clients, not fixed by RTS/CTS).
+5. Check for non-Wi-Fi interference sources — microwave ovens, cordless phones, and Bluetooth devices all share the 2.4 GHz band and can degrade performance without showing up as another Wi-Fi network in a scan.
+6. Verify physical placement: an AP mounted low, behind metal, or in a closet performs far worse than the same hardware mounted centrally and in the open, regardless of how its radio settings are tuned.
+
+<InterviewScenario title="A warehouse Wi-Fi network works fine with a few scanners active but degrades badly once dozens of handheld scanners log on simultaneously">Explain why this points toward collision and contention overhead on a shared medium rather than a bandwidth problem, and why enabling RTS/CTS — despite its extra round-trip overhead per frame — can improve overall throughput once enough hidden or semi-hidden devices are contending for the same AP.</InterviewScenario>
+
+<SectionContinue itemId="wireless_fundamentals_section_troubleshoot_wireless_basics" anchor="troubleshoot-wireless-basics" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="wireless_fundamentals_check_1" question="Why does Wi-Fi use CSMA/CA instead of the CSMA/CD that wired Ethernet historically used?" options={["CSMA/CA is simply a newer, universally better standard than CSMA/CD", "A radio generally can't transmit and receive on the same frequency at the same time, so it can't detect a collision while one is happening", "CSMA/CA eliminates the need for any random backoff before transmitting"]} correctIndex={1} explanation="A Wi-Fi radio can't reliably listen for a collision while its own transmission is active on the same frequency, so Wi-Fi avoids collisions proactively (CSMA/CA) instead of detecting them after the fact (CSMA/CD)." />
+
+<KnowledgeCheck progressItemId="wireless_fundamentals_check_2" question="In the hidden node scenario, why does client B defer to client A's transmission even though B never receives A's RTS frame?" options={["B eventually receives a retransmitted copy of A's RTS frame", "B hears the AP's CTS frame, which both clients can receive even though only the AP could hear the original RTS", "B is manually configured with a fixed transmission schedule"]} correctIndex={1} explanation="The CTS comes from the AP, which both clients can hear, even when the two clients can't hear each other. Client B sets its NAV based on the CTS, deferring without ever hearing client A's RTS directly." />
+
+<KnowledgeCheck progressItemId="wireless_fundamentals_check_3" question="Which 2.4 GHz Wi-Fi channels are chosen specifically because they don't overlap with each other?" options={["Channels 1, 6, and 11", "Every channel from 1 through 11", "Only channel 6, since it sits in the middle of the band"]} correctIndex={0} explanation="In the 2.4 GHz band's 20 MHz-wide channels, only channels 1, 6, and 11 are spaced far enough apart to avoid overlapping with each other, which is why network planning conventionally sticks to those three." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">See how MIMO and MU-MIMO use multiple antennas to carry several spatial streams at once, how beamforming focuses a signal toward a specific client instead of radiating it evenly in every direction, and how 802.11ax's OFDMA subdivides a single channel into smaller resource units so an AP can serve multiple clients simultaneously instead of one at a time.</PremiumPreview>
