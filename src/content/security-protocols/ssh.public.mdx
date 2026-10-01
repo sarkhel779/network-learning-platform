@@ -1,0 +1,37 @@
+<LearningObjective>Explain how SSH's transport layer establishes an encrypted session, why public-key authentication is preferred over passwords, how trust-on-first-use verifies a server's host key, and how one SSH connection multiplexes multiple channels, per RFC 4251.</LearningObjective>
+
+<h2 id="what-ssh-is">What SSH is</h2>
+
+**SSH (Secure Shell)**, defined in **RFC 4251**, secures interactive remote administration, command execution, and file transfer over TCP — it's the direct, encrypted replacement for older cleartext protocols like Telnet, rlogin, and FTP, all of which sent commands, output, and credentials in the open. SSH's architecture is layered into three protocols working together: a **transport layer** (RFC 4253) that handles encryption, integrity, and server authentication; an **authentication layer** (RFC 4252) that verifies the connecting user; and a **connection layer** (RFC 4254) that multiplexes everything the session actually does — a shell, file transfer, port forwarding — over that one secured connection.
+
+<SectionContinue itemId="ssh_section_what_ssh_is" anchor="what-ssh-is" />
+
+<h2 id="the-ssh-transport-layer">The SSH transport layer</h2>
+
+Before any authentication happens, the transport layer runs a key exchange — the same Diffie-Hellman primitive from the fundamentals lesson — to derive session keys for encryption and integrity, so everything from this point forward, including the authentication step itself, is encrypted. As part of this exchange, the server presents a **host key**, proving it is the same server the client has connected to before (or establishing that identity for the first time) — this is SSH's equivalent of TLS's server certificate, but, as the later section on trust-on-first-use covers, verified very differently.
+
+<SectionContinue itemId="ssh_section_the_ssh_transport_layer" anchor="the-ssh-transport-layer" />
+
+<h2 id="ssh-authentication-methods">SSH authentication methods</h2>
+
+SSH supports several authentication methods, but two matter most in practice. **Password authentication** sends a password over the already-encrypted connection — safe from eavesdropping in transit, but still vulnerable to brute-forcing, credential reuse, and phishing, since the secret itself can be guessed, stolen, or typed into a fake prompt. **Public-key authentication** is preferred instead: the server stores only the user's *public* key (typically in `authorized_keys`), and the client proves it holds the matching *private* key — which never leaves the client's machine — by signing a value the server provides. There is no shared secret to brute-force or phish, because nothing secret ever crosses the network at all.
+
+<SectionContinue itemId="ssh_section_ssh_authentication_methods" anchor="ssh-authentication-methods" />
+
+<h2 id="the-ssh-connection-protocol-and-channels">The SSH connection protocol and channels</h2>
+
+Once authenticated, a single SSH connection doesn't have to carry just one thing. The **connection protocol** multiplexes multiple logical **channels** over that one encrypted TCP connection: an interactive shell, a single command execution, an SFTP file transfer, and port-forwarded traffic can all run concurrently, each in its own channel, without opening a second TCP connection or repeating the handshake and authentication for each one.
+
+<SectionContinue itemId="ssh_section_the_ssh_connection_protocol_and_channels" anchor="the-ssh-connection-protocol-and-channels" />
+
+<h2 id="interactive-ssh-key-authentication">Interactive SSH key authentication</h2>
+
+Step through a complete SSH connection: the host-key check, the key exchange that encrypts everything that follows, and public-key authentication — where the client proves it holds a private key without ever sending it, by signing a challenge the server provides.
+
+<SshKeyAuthenticationPacketFlow progressItemId="ssh_interactive_interactive_ssh_key_authentication" />
+
+<h2 id="host-key-verification-and-trust-on-first-use">Host-key verification and trust-on-first-use</h2>
+
+SSH doesn't rely on certificate authorities the way TLS does by default — it uses **trust-on-first-use (TOFU)**. The first time a client connects to a server, it has no way to independently verify the host key, so it prompts the user to accept it and stores it locally in `known_hosts`. Every later connection then checks the server's host key against that stored value: a match means the client is still talking to the same server; a **mismatch produces a loud warning**, because it means either the server's key legitimately changed (a reinstall or key rotation) or a man-in-the-middle is now presenting a different key. TOFU's real weakness is exactly that first connection — it trusts blindly once, which is why the Pro deep dive covers SSH certificates as the way to remove that blind spot at scale.
+
+<SectionContinue itemId="ssh_section_host_key_verification_and_trust_on_first_use" anchor="host-key-verification-and-trust-on-first-use" />

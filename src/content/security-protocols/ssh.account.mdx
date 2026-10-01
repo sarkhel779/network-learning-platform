@@ -1,0 +1,42 @@
+{/* SSH_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-ssh-evidence">Inspect SSH evidence</h2>
+
+`ssh -v user@host` prints the full handshake to the terminal: the negotiated key exchange and host-key algorithms, the host-key fingerprint being checked against `known_hosts`, and which authentication methods were offered and accepted. `ssh-keygen -lf ~/.ssh/known_hosts` lists the fingerprints SSH has already trusted for past connections, which is exactly what a client compares a server's host key against on every new connection.
+
+<WiresharkCheck displayFilter="ssh">Capture an SSH connection being established. You'll see the initial cleartext version banner and the KEXINIT algorithm negotiation — but almost everything after the key exchange, including authentication and all session data, is encrypted and shows up as opaque SSH binary packets, not readable content.</WiresharkCheck>
+
+<SectionContinue itemId="ssh_section_inspect_ssh_evidence" anchor="inspect-ssh-evidence" />
+
+<h2 id="guided-ssh-key-practice">Guided SSH key practice</h2>
+
+Work through why public-key authentication specifically defeats phishing, not just brute-forcing. With password authentication, an attacker who tricks a user into typing their password into a fake prompt now has the actual secret, and can use it to authenticate anywhere that password is valid. With public-key authentication, the server sends a *different* random challenge on every single connection attempt, and the client's response (a signature over that challenge) is only valid for that one exchange — capturing a signed response from a previous login doesn't let an attacker authenticate again, because the next challenge will be different. There is simply no reusable secret for a phishing page to capture.
+
+<InterviewScenario title="An attacker phishes a user's SSH password — would public-key authentication have prevented this?">Explain precisely why: with public-key authentication there is no password for a fake login page to capture, and even capturing a legitimate signed response from a real session doesn't help an attacker, since the private key itself never leaves the user's machine and each authentication challenge is different.</InterviewScenario>
+
+<SectionContinue itemId="ssh_section_guided_ssh_key_practice" anchor="guided-ssh-key-practice" />
+
+<h2 id="troubleshoot-ssh">Troubleshoot SSH</h2>
+
+1. Check private key file permissions first: SSH clients refuse to use a private key file that is readable by other users on the system (commonly reported as "Permissions 0644 for 'id_rsa' are too open").
+2. A "WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED" message means the server's host key no longer matches what's stored in `known_hosts` — treat this as a possible man-in-the-middle until you've verified the change out-of-band (for example, confirming with the server's administrator that it was rebuilt or re-keyed).
+3. If the wrong identity is offered during authentication, confirm which private key the client is actually using (`-i` to specify one explicitly, or check what's loaded in `ssh-agent`) rather than assuming the default key is the one on the server's `authorized_keys`.
+4. Rule out a network-layer problem (firewall blocking TCP 22, or the server listening on a nonstandard port) before assuming the issue is cryptographic — a connection that never completes the TCP handshake isn't an SSH problem at all.
+5. An "no matching key exchange method found" (or similar algorithm-negotiation) error means the client and server share no common algorithm — often a hardened modern client refusing to use a legacy server's outdated options, or vice versa.
+6. On the server, confirm `authorized_keys` and the `.ssh` directory have the expected ownership and restrictive permissions — SSH servers, like clients, often silently ignore a key file whose permissions are too permissive.
+
+<InterviewScenario title="A user reports the host-key warning and wants to just delete the known_hosts entry and reconnect">Walk through how you'd verify whether this is a legitimate change (a server rebuild, a planned host-key rotation) or an active attack before telling them to proceed — and why simply deleting the warning without investigating defeats the entire purpose of trust-on-first-use.</InterviewScenario>
+
+<SectionContinue itemId="ssh_section_troubleshoot_ssh" anchor="troubleshoot-ssh" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="ssh_check_1" question="Why is public-key authentication generally preferred over password authentication in SSH?" options={["It's faster to type than a password", "No secret crosses the network — the client proves possession of a private key by signing a challenge, rather than sending something that could be phished or brute-forced", "Password authentication is not supported by any SSH implementation"]} correctIndex={1} explanation="Public-key authentication never transmits a reusable secret: the private key never leaves the client, and each login's challenge is different, so there's nothing for a phishing page or brute-force attempt to capture and reuse." />
+
+<KnowledgeCheck progressItemId="ssh_check_2" question="What does SSH's trust-on-first-use (TOFU) model do differently from TLS's certificate-based trust?" options={["TOFU uses a certificate authority, exactly like TLS", "TOFU trusts whatever host key it sees on the very first connection and remembers it, rather than verifying it against a pre-trusted certificate authority", "TOFU never stores the host key at all, checking it fresh every time"]} correctIndex={1} explanation="TLS verifies a certificate against a CA the client already trusts before the first connection. SSH's TOFU model instead blindly trusts whatever host key it sees the first time, then compares against that stored value on every later connection." />
+
+<KnowledgeCheck progressItemId="ssh_check_3" question="What lets one SSH connection carry a shell session, an SFTP transfer, and port-forwarded traffic all at once?" options={["SSH opens a separate TCP connection for each one", "The connection protocol multiplexes each of them as a separate channel over the same encrypted connection", "Only one of these can run per SSH connection at a time"]} correctIndex={1} explanation="SSH's connection protocol (RFC 4254) multiplexes multiple logical channels over a single encrypted transport connection, so a shell, file transfer, and forwarded traffic can all run concurrently without separate handshakes." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">See how SSH certificates solve trust-on-first-use's scaling problem by letting a trusted CA sign host and user keys instead of trusting each one individually, the real risk agent forwarding introduces (a compromised intermediate host can use your forwarded agent), and the practical difference between local, remote, and dynamic port forwarding.</PremiumPreview>
