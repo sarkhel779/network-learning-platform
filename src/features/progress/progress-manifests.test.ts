@@ -197,9 +197,9 @@ describe("lessonProgressManifests", () => {
     expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
   });
 
-  it("registers the IPsec lesson with one player and three checks as 12 required items", () => {
+  it("registers the IPsec lesson with one player and three checks as 13 required items", () => {
     const manifest = getLessonProgressManifest("path_security_protocols", "lesson_ipsec");
-    expect(manifest.items).toHaveLength(12);
+    expect(manifest.items).toHaveLength(13);
     expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-ipsec-tunnel-establishment"]);
     expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
     expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);

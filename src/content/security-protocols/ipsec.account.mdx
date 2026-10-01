@@ -1,5 +1,27 @@
 {/* IPSEC_ACCOUNT_SENTINEL */}
 
+<h2 id="ikev1-modes-main-aggressive-and-quick">IKEv1 vs. IKEv2: modes and phases</h2>
+
+The lesson so far has described IKEv2. Its predecessor, **IKEv1**, negotiates in two phases, and Phase 1 can run as one of two different modes — a design IKEv2 deliberately replaced.
+
+**Phase 1** establishes the ISAKMP SA, the protected control channel equivalent to IKEv2's IKE SA:
+
+- **Main Mode** takes 6 messages (3 round trips). The first two negotiate the ISAKMP SA's own parameters (encryption, hash, authentication method, DH group); the next two perform the Diffie-Hellman exchange and nonces; the last two exchange identity and authentication — and those last two are already encrypted under keys derived from the DH exchange. That's **identity protection**: nothing identifying either peer is ever visible to an eavesdropper.
+- **Aggressive Mode** compresses the same job into 3 messages. It sends the SA proposal, DH exchange, nonce, and identity together in the opening messages — identity included, in the clear, before any encryption exists. It's faster, but gives up identity protection, and with pre-shared-key authentication specifically, that cleartext exchange exposes enough material to make an offline dictionary attack against a weak PSK realistic. This is the standard reason to prefer Main Mode over Aggressive Mode whenever both are available.
+
+**Phase 2** uses **Quick Mode** to negotiate the actual IPsec (Child) SAs that protect real traffic — entirely inside the already-encrypted Phase 1 SA. One Phase 1 SA can run Quick Mode repeatedly, to rekey or to negotiate additional Child SAs, without repeating the expensive Phase 1 exchange each time.
+
+| | Purpose | Round trips | Identity protected? |
+| --- | --- | --- | --- |
+| IKEv1 Main Mode | Establish the ISAKMP SA (Phase 1) | 3 | Yes |
+| IKEv1 Aggressive Mode | Establish the ISAKMP SA (Phase 1), faster | 1.5 | No |
+| IKEv1 Quick Mode | Negotiate the IPsec SA (Phase 2), inside Phase 1 | 1.5, already protected | N/A — already inside a secured SA |
+| IKEv2 IKE_SA_INIT + IKE_AUTH | Both phases, collapsed into one exchange | 2 total | Yes, always |
+
+IKEv2 replaces this entire two-phase, three-mode structure with just two exchanges, **IKE_SA_INIT** and **IKE_AUTH** (covered earlier in this lesson), which always provide identity protection — IKE_AUTH only ever happens after IKE_SA_INIT's encrypted channel already exists — in a fixed two round trips, with no mode to choose between. Rekeying or adding a Child SA later reuses the same generic **CREATE_CHILD_SA** exchange rather than a separate mode like Quick Mode.
+
+<SectionContinue itemId="ipsec_section_ikev1_modes_main_aggressive_and_quick" anchor="ikev1-modes-main-aggressive-and-quick" />
+
 <h2 id="inspect-ipsec-evidence">Inspect IPsec evidence</h2>
 
 On a representative network device, `show crypto isakmp sa` (or the equivalent IKE SA command) confirms Phase 1 (the IKE SA) is established between the expected peers, and `show crypto ipsec sa` confirms Phase 2 (the Child SA) shows the expected encapsulation, encryption, and traffic counters actually incrementing — a tunnel showing zero packets encrypted is a tunnel carrying no traffic, whatever its status says.
@@ -39,4 +61,4 @@ Work through why both site-to-site and remote-access VPNs use tunnel mode, even 
 
 <h2 id="pro-deep-dive">Pro deep dive</h2>
 
-<PremiumPreview title="Pro Deep Dive">See exactly how IKEv2's two round trips compare to IKEv1's longer exchange, how MOBIKE lets a tunnel survive a mobile peer changing networks mid-session, how Diffie-Hellman group selection trades off security and performance, and how GRE-over-IPsec lets dynamic routing protocols run across a VPN that IPsec alone can't carry.</PremiumPreview>
+<PremiumPreview title="Pro Deep Dive">See how MOBIKE lets a tunnel survive a mobile peer changing networks mid-session, how Diffie-Hellman group selection trades off security and performance, and how GRE-over-IPsec lets dynamic routing protocols run across a VPN that IPsec alone can't carry.</PremiumPreview>

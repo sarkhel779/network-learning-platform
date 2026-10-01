@@ -25,9 +25,9 @@ describe("IPsec content", () => {
 
   it("protects evidence, guided practice, troubleshooting, checks, and the RFC-level deep dive", () => {
     const lesson = read("ipsec.account.mdx");
-    for (const id of ["inspect-ipsec-evidence", "guided-ipsec-mode-practice", "troubleshoot-ipsec", "knowledge-check-summary", "pro-deep-dive"])
+    for (const id of ["ikev1-modes-main-aggressive-and-quick", "inspect-ipsec-evidence", "guided-ipsec-mode-practice", "troubleshoot-ipsec", "knowledge-check-summary", "pro-deep-dive"])
       expect(lesson).toContain(`id="${id}"`);
-    for (const phrase of ["IPSEC_ACCOUNT_SENTINEL", "show crypto isakmp sa", "show crypto ipsec sa", "isakmp || esp"])
+    for (const phrase of ["IPSEC_ACCOUNT_SENTINEL", "show crypto isakmp sa", "show crypto ipsec sa", "isakmp || esp", "Main Mode", "Aggressive Mode", "Quick Mode", "IKEv1", "CREATE_CHILD_SA"])
       expect(lesson).toContain(phrase);
     expect(lesson.match(/<KnowledgeCheck\b/g)).toHaveLength(3);
     expect(lesson).toContain("<PremiumPreview");
