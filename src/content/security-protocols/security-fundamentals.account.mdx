@@ -1,0 +1,42 @@
+{/* SECURITY_FUNDAMENTALS_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-security-evidence">Inspect security evidence</h2>
+
+`openssl s_client -connect host:443` opens a raw TLS connection and prints the negotiated protocol version, cipher suite, and the full certificate chain the server presented — the fastest way to see a real handshake's outcome without a packet capture. Reading the chain from the leaf certificate up to the root shows exactly which certificate authorities a client is being asked to trust.
+
+<WiresharkCheck displayFilter="tls.handshake">Capture a browser connecting to an HTTPS site. Identify the Client Hello (the cipher suites and TLS version the client offers), the Server Hello (what the server actually selected), and the Certificate message carrying the server's public key and identity — all sent before any application data is encrypted.</WiresharkCheck>
+
+<SectionContinue itemId="security_fundamentals_section_inspect_security_evidence" anchor="inspect-security-evidence" />
+
+<h2 id="guided-cryptography-practice">Guided cryptography practice</h2>
+
+Work through why hybrid encryption is universal, not just common. Alice wants to send Bob a 50 MB file confidentially. Encrypting the whole file directly with an asymmetric algorithm like RSA would be thousands of times slower than symmetric encryption and is not what any real protocol does. Instead: Alice generates a random symmetric session key, encrypts the 50 MB file with that key using AES (fast, regardless of size), and encrypts only the small session key itself with Bob's public RSA key (or, as in TLS 1.3, both sides derive the session key together via a Diffie-Hellman exchange, so no key ever needs to be encrypted and sent at all). Bob decrypts the session key with his private key, then uses it to decrypt the file.
+
+<InterviewScenario title="Why not just use a longer RSA key everywhere instead of hybrid encryption?">A candidate suggests that since asymmetric cryptography is "more secure," using it for everything — not just the session key — would be the safer design. Explain why this reasoning is wrong: it conflates key length with practical throughput, and a sufficiently long symmetric key (AES-256) is already considered infeasible to brute-force, so there is no realized security benefit to abandoning the hybrid approach, only a catastrophic performance cost.</InterviewScenario>
+
+<SectionContinue itemId="security_fundamentals_section_guided_cryptography_practice" anchor="guided-cryptography-practice" />
+
+<h2 id="troubleshoot-security-basics">Troubleshoot security basics</h2>
+
+1. Check for clock skew first: certificate validity windows and several handshake protocols depend on roughly synchronized time (NTP), and a large clock skew produces confusing "not yet valid" or "expired" certificate errors on a certificate that is actually fine.
+2. Confirm the client and server share at least one common cipher suite or key-exchange algorithm — a "handshake failure" with no application-layer error usually means negotiation failed, not that credentials were wrong.
+3. Walk the certificate chain from leaf to root and confirm every intermediate certificate is present — a missing intermediate is one of the most common causes of "untrusted certificate" errors on an otherwise correctly issued certificate.
+4. Check whether a deprecated or weak algorithm (RC4, DES, SSLv3) is still enabled for legacy compatibility, since its presence can itself be the finding during a security review even if nothing is actively "broken."
+5. Distinguish "connection refused" (a network- or firewall-layer problem, before any cryptography is involved) from "handshake failure" (the connection reached the service, but cryptographic negotiation itself failed) — they point to completely different layers.
+6. Consider whether a middlebox (a TLS-inspecting proxy or firewall) is intercepting the connection, which replaces the real server's certificate with one of its own and breaks certificate validation unless the proxy's certificate was explicitly trusted.
+
+<InterviewScenario title="A browser reports an untrusted certificate for a server you believe is configured correctly">List the most likely causes in the order you'd check them: a missing intermediate certificate in the chain served by the server, significant clock skew on the client, a hostname that doesn't match any name on the certificate, and a self-signed certificate the client was never told to trust.</InterviewScenario>
+
+<SectionContinue itemId="security_fundamentals_section_troubleshoot_security_basics" anchor="troubleshoot-security-basics" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="security_fundamentals_check_1" question="What does the 'C' in the CIA triad mean in a network-security context?" options={["Compliance with a specific regulatory framework", "Confidentiality: only authorized parties can read the data", "Convergence: how quickly a network reaches a stable state"]} correctIndex={1} explanation="Confidentiality means only authorized parties can read the data — it says nothing about who can alter it (integrity) or whether the service stays up (availability)." />
+
+<KnowledgeCheck progressItemId="security_fundamentals_check_2" question="Why do TLS, IPsec, and SSH all use a hybrid encryption approach instead of pure asymmetric encryption for bulk data?" options={["Asymmetric encryption cannot provide confidentiality on its own", "Symmetric encryption is far faster for bulk data, so asymmetric cryptography (or Diffie-Hellman) is used only to establish the symmetric session key", "Symmetric encryption cannot be combined with hashing for integrity"]} correctIndex={1} explanation="Asymmetric operations are far too slow for bulk data. Every major secure protocol uses asymmetric cryptography or Diffie-Hellman only to establish a fast symmetric session key, then encrypts the actual data symmetrically." />
+
+<KnowledgeCheck progressItemId="security_fundamentals_check_3" question="In a Diffie-Hellman exchange, why can't an eavesdropper who captures the public prime, generator, and both public values compute the shared secret?" options={["Those values are themselves encrypted with AES before being sent", "Recovering a private exponent from its public value requires solving the discrete logarithm problem, which is computationally infeasible at real key sizes", "The shared secret is never actually derived mathematically from those values"]} correctIndex={1} explanation="Diffie-Hellman's security rests on the discrete logarithm problem: computing g^a mod p is easy, but recovering a from g, p, and g^a mod p is computationally infeasible for properly sized real-world parameters." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">See the elliptic-curve math behind modern TLS and SSH key exchange (ECDHE), why perfect forward secrecy matters even if a server's long-term private key is later compromised, and where post-quantum key exchange is headed.</PremiumPreview>

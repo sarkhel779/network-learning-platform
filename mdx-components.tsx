@@ -40,6 +40,7 @@ import { RipExchangePacketFlow } from "@/features/rip/rip-exchange-packet-flow";
 import { OspfAdjacencyPacketFlow } from "@/features/ospf/ospf-adjacency-packet-flow";
 import { EigrpDualPacketFlow } from "@/features/eigrp/eigrp-dual-packet-flow";
 import { BgpSessionEstablishmentPacketFlow } from "@/features/bgp/bgp-session-establishment-packet-flow";
+import { DiffieHellmanKeyExchangePacketFlow } from "@/features/security-fundamentals/diffie-hellman-key-exchange-packet-flow";
 import { PingEvidencePlayer } from "@/features/icmp/ping-evidence-player";
 import { TracerouteDiscoveryPlayer } from "@/features/icmp/traceroute-discovery-player";
 import { TcpConnectionPlayer } from "@/features/transport/tcp-connection-player";
@@ -131,6 +132,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     OspfAdjacencyPacketFlow,
     EigrpDualPacketFlow,
     BgpSessionEstablishmentPacketFlow,
+    DiffieHellmanKeyExchangePacketFlow,
     InterviewScenario,
     Ipv4AddressBoundaryPlayer,
     Ipv4BinaryExplorer,

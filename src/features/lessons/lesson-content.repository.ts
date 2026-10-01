@@ -160,6 +160,10 @@ const lessonImports = {
     public: () => import("@/content/routing-protocols/bgp.public.mdx"),
     account: () => import("@/content/routing-protocols/bgp.account.mdx"),
   },
+  "security-protocols/security-fundamentals": {
+    public: () => import("@/content/security-protocols/security-fundamentals.public.mdx"),
+    account: () => import("@/content/security-protocols/security-fundamentals.account.mdx"),
+  },
 } satisfies LessonContentRegistry;
 
 async function loadFromRegistry(

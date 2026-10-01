@@ -12,6 +12,8 @@ describe("Courses index", () => {
     expect(html).toContain('href="/paths/networking-foundations"');
     expect(html).toContain("Routing Protocols");
     expect(html).toContain('href="/paths/routing-protocols"');
+    expect(html).toContain("Security Protocols");
+    expect(html).toContain('href="/paths/security-protocols"');
   });
 
   it("is reachable from the header and footer navigation", () => {

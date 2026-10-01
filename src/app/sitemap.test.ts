@@ -24,6 +24,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/courses" },
       { url: "https://packetsecrets.com/paths/networking-foundations" },
       { url: "https://packetsecrets.com/paths/routing-protocols" },
+      { url: "https://packetsecrets.com/paths/security-protocols" },
       { url: "https://packetsecrets.com/learn/networking-foundations/how-networks-communicate" },
       { url: "https://packetsecrets.com/learn/networking-foundations/hosts-and-network-devices" },
       { url: "https://packetsecrets.com/learn/networking-foundations/hubs" },
@@ -58,6 +59,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/routing-protocols/ospf" },
       { url: "https://packetsecrets.com/learn/routing-protocols/eigrp" },
       { url: "https://packetsecrets.com/learn/routing-protocols/bgp" },
+      { url: "https://packetsecrets.com/learn/security-protocols/security-fundamentals" },
     ]);
     const urls = entries.map(({ url }) => url);
     for (const pathway of listPathways()) {

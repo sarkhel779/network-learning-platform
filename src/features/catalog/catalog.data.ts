@@ -781,6 +781,43 @@ const curriculum: Pathway[] = [
       },
     ],
   },
+  {
+    id: "path_security_protocols",
+    slug: "security-protocols",
+    title: "Security Protocols",
+    description: "Go deep on how network security protocols actually protect data in transit: cryptographic fundamentals, then RFC-grounded, packet-by-packet internals of TLS, IPsec, SSH, and PKI.",
+    audience: "Learners who already understand basic networking and want a rigorous, protocol-by-protocol understanding of how confidentiality, integrity, and authentication are achieved on the wire.",
+    modules: [
+      {
+        id: "module_introduction_to_network_security",
+        slug: "introduction-to-network-security",
+        title: "Introduction to Network Security",
+        description: "The concepts every security protocol builds on: the CIA triad, common threats, symmetric and asymmetric cryptography, and hashing.",
+        lessons: [
+          {
+            id: "lesson_security_fundamentals", slug: "security-fundamentals",
+            title: "Security Fundamentals: Cryptography and the CIA Triad",
+            objective: "Explain the CIA triad and common network threats, how symmetric and asymmetric cryptography and hashing provide confidentiality and integrity, and see a Diffie-Hellman key exchange derive a shared secret without ever transmitting it.",
+            seo: { title: "Security Fundamentals: Cryptography and the CIA Triad", description: "Learn the CIA triad, common network threats, symmetric vs. asymmetric cryptography, hashing, and Diffie-Hellman key exchange." },
+            published: true, estimatedMinutes: 25,
+            sections: [
+              { id: "why-network-security-matters", label: "Why network security matters", access: "public" },
+              { id: "common-threats-and-attacks", label: "Common threats and attacks", access: "public" },
+              { id: "symmetric-and-asymmetric-cryptography", label: "Symmetric and asymmetric cryptography", access: "public" },
+              { id: "hashing-and-integrity", label: "Hashing and integrity", access: "public" },
+              { id: "interactive-diffie-hellman-key-exchange", label: "Interactive Diffie-Hellman key exchange", access: "public" },
+              { id: "where-these-protocols-fit", label: "Where these protocols fit", access: "public" },
+              { id: "inspect-security-evidence", label: "Inspect security evidence", access: "account" },
+              { id: "guided-cryptography-practice", label: "Guided cryptography practice", access: "account" },
+              { id: "troubleshoot-security-basics", label: "Troubleshoot security basics", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "The elliptic-curve math behind modern TLS/SSH key exchange, why perfect forward secrecy matters, and where post-quantum key exchange is headed." },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export const pathways = pathwayCatalogSchema.parse(curriculum);
