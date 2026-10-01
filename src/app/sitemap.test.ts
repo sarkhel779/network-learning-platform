@@ -66,6 +66,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/security-protocols/ssh" },
       { url: "https://packetsecrets.com/learn/security-protocols/pki" },
       { url: "https://packetsecrets.com/learn/wireless-networking/wireless-fundamentals" },
+      { url: "https://packetsecrets.com/learn/wireless-networking/wifi-security" },
     ]);
     const urls = entries.map(({ url }) => url);
     for (const pathway of listPathways()) {

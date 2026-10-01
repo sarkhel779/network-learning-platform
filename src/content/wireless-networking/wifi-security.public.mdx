@@ -1,0 +1,37 @@
+<LearningObjective>Explain how WPA2-Personal derives per-session keys from a pre-shared key via the 4-way handshake, why a captured handshake lets an attacker run an offline dictionary attack against the password, how WPA3's SAE (Simultaneous Authentication of Equals) closes that gap, and the difference between Personal and Enterprise authentication.</LearningObjective>
+
+<h2 id="what-wifi-security-protects-against">What Wi-Fi security protects against</h2>
+
+Because Wi-Fi is a shared radio medium, anyone within range can receive every frame a network sends, whether or not they're authorized to join it — so confidentiality and authentication have to be built into the Wi-Fi standard itself rather than assumed from physical access. The original **WEP** standard tried to do this with RC4 encryption and a static key, but its key-reuse flaws make it crackable in minutes with modern tools, and it should never be used today. **WPA** followed as a stopgap, and **WPA2** (certified 2004) became the long-standing baseline, using **AES-CCMP** encryption and the 4-way handshake covered below. **WPA3** (certified 2018) is the current standard, replacing WPA2's weakest step — covered later in this lesson — while keeping the same AES-based encryption for the data itself.
+
+<SectionContinue itemId="wifi_security_section_what_wifi_security_protects_against" anchor="what-wifi-security-protects-against" />
+
+<h2 id="wpa2-and-the-4-way-handshake">WPA2 and the 4-way handshake</h2>
+
+In **WPA2-Personal**, the client and AP both already know a shared password and the network's SSID. Both sides independently derive a **Pairwise Master Key (PMK)** from these using PBKDF2, without transmitting anything. The **4-way handshake** then derives a unique **Pairwise Transient Key (PTK)** for this specific session: the AP sends a random ANonce (message 1), the client replies with its own SNonce and a Message Integrity Code proving it holds the correct PMK (message 2), the AP verifies this and sends the Group Temporal Key used for broadcast traffic (message 3), and the client confirms installation (message 4). After these four messages, the PTK encrypts all unicast traffic for the rest of the session.
+
+<SectionContinue itemId="wifi_security_section_wpa2_and_the_4_way_handshake" anchor="wpa2-and-the-4-way-handshake" />
+
+<h2 id="the-offline-dictionary-attack-problem">The offline dictionary attack problem</h2>
+
+All four handshake messages are sent in the clear — there's no shared key yet to encrypt them with. This means anyone within radio range can passively capture a complete copy of the handshake without ever interacting with the client or AP. Because the handshake's Message Integrity Code can be recomputed entirely from public values (the captured nonces and MAC addresses) plus any candidate password, an attacker can test password guesses on their own hardware indefinitely, with no further contact with the network and nothing for the AP to rate-limit or lock out. A long, random password makes this infeasible in practice, but a short or common one can eventually be recovered — this is WPA2-Personal's core structural weakness, not a bug in any particular implementation.
+
+<SectionContinue itemId="wifi_security_section_the_offline_dictionary_attack_problem" anchor="the-offline-dictionary-attack-problem" />
+
+<h2 id="wpa3-and-sae">WPA3 and SAE</h2>
+
+**WPA3-Personal** replaces WPA2's PSK-derived first step with **SAE (Simultaneous Authentication of Equals)**, a Diffie-Hellman-based exchange also known as the **Dragonfly handshake**. Instead of deriving a key purely from values an eavesdropper can passively capture, SAE requires a live, interactive exchange with the AP to derive each session's key — so an attacker who captures the exchange still can't test password guesses offline, because every guess would require its own real, rate-limitable round trip with the AP. SAE also provides **forward secrecy**: even if the password is later discovered, traffic from past sessions captured earlier still can't be decrypted, since each session's key was never purely a function of the password alone.
+
+<SectionContinue itemId="wifi_security_section_wpa3_and_sae" anchor="wpa3-and-sae" />
+
+<h2 id="interactive-wpa2-handshake-and-the-wpa3-fix">Interactive WPA2 handshake and the WPA3 fix</h2>
+
+Step through a complete WPA2 4-way handshake message by message, then watch a passive eavesdropper use a captured copy of it to test passwords entirely offline — and see exactly what WPA3's SAE changes to close that gap.
+
+<Wpa2HandshakeAndWpa3FixPacketFlow progressItemId="wifi_security_interactive_interactive_wpa2_handshake_and_the_wpa3_fix" />
+
+<h2 id="personal-vs-enterprise-authentication">Personal vs. Enterprise authentication</h2>
+
+Everything above describes **Personal** mode (WPA2-Personal or WPA3-Personal), identified by a single shared password used by every device on the network — appropriate for homes and small offices, where issuing individual credentials isn't practical. **Enterprise** mode instead authenticates each user individually against a backend **RADIUS** server using **802.1X**, so every device gets its own credentials (and its own unique session keys) rather than sharing one password across the whole network — letting a compromised or departing user's access be revoked individually, without having to change a password shared by everyone else. WPA3-Enterprise also adds an optional 192-bit security suite with stronger cryptographic algorithms throughout, intended for higher-security government and enterprise deployments.
+
+<SectionContinue itemId="wifi_security_section_personal_vs_enterprise_authentication" anchor="personal-vs-enterprise-authentication" />

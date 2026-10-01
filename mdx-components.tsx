@@ -46,6 +46,7 @@ import { IpsecTunnelEstablishmentPacketFlow } from "@/features/ipsec/ipsec-tunne
 import { SshKeyAuthenticationPacketFlow } from "@/features/ssh/ssh-key-authentication-packet-flow";
 import { CertificateChainValidationPacketFlow } from "@/features/pki/certificate-chain-validation-packet-flow";
 import { CsmaCaHiddenNodePacketFlow } from "@/features/wireless/csma-ca-hidden-node-packet-flow";
+import { Wpa2HandshakeAndWpa3FixPacketFlow } from "@/features/wireless/wpa2-handshake-and-wpa3-fix-packet-flow";
 import { PingEvidencePlayer } from "@/features/icmp/ping-evidence-player";
 import { TracerouteDiscoveryPlayer } from "@/features/icmp/traceroute-discovery-player";
 import { TcpConnectionPlayer } from "@/features/transport/tcp-connection-player";
@@ -143,6 +144,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     SshKeyAuthenticationPacketFlow,
     CertificateChainValidationPacketFlow,
     CsmaCaHiddenNodePacketFlow,
+    Wpa2HandshakeAndWpa3FixPacketFlow,
     InterviewScenario,
     Ipv4AddressBoundaryPlayer,
     Ipv4BinaryExplorer,

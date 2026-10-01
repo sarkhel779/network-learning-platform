@@ -184,6 +184,10 @@ const lessonImports = {
     public: () => import("@/content/wireless-networking/wireless-fundamentals.public.mdx"),
     account: () => import("@/content/wireless-networking/wireless-fundamentals.account.mdx"),
   },
+  "wireless-networking/wifi-security": {
+    public: () => import("@/content/wireless-networking/wifi-security.public.mdx"),
+    account: () => import("@/content/wireless-networking/wifi-security.account.mdx"),
+  },
 } satisfies LessonContentRegistry;
 
 async function loadFromRegistry(
