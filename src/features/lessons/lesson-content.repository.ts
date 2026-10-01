@@ -168,6 +168,10 @@ const lessonImports = {
     public: () => import("@/content/security-protocols/tls.public.mdx"),
     account: () => import("@/content/security-protocols/tls.account.mdx"),
   },
+  "security-protocols/ipsec": {
+    public: () => import("@/content/security-protocols/ipsec.public.mdx"),
+    account: () => import("@/content/security-protocols/ipsec.account.mdx"),
+  },
 } satisfies LessonContentRegistry;
 
 async function loadFromRegistry(

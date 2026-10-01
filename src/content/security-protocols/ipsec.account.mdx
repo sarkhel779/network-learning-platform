@@ -1,0 +1,42 @@
+{/* IPSEC_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-ipsec-evidence">Inspect IPsec evidence</h2>
+
+On a representative network device, `show crypto isakmp sa` (or the equivalent IKE SA command) confirms Phase 1 (the IKE SA) is established between the expected peers, and `show crypto ipsec sa` confirms Phase 2 (the Child SA) shows the expected encapsulation, encryption, and traffic counters actually incrementing — a tunnel showing zero packets encrypted is a tunnel carrying no traffic, whatever its status says.
+
+<WiresharkCheck displayFilter="isakmp || esp">Capture while a tunnel establishes. Identify the IKE_SA_INIT exchange (cleartext, since the secure channel doesn't exist yet), note that IKE_AUTH is encrypted once the IKE SA exists, and confirm subsequent traffic appears as ESP (protocol 50) with no visible payload.</WiresharkCheck>
+
+<SectionContinue itemId="ipsec_section_inspect_ipsec_evidence" anchor="inspect-ipsec-evidence" />
+
+<h2 id="guided-ipsec-mode-practice">Guided IPsec mode practice</h2>
+
+Work through why both site-to-site and remote-access VPNs use tunnel mode, even though a remote-access VPN is technically host-to-gateway rather than gateway-to-gateway. The deciding factor isn't how many hosts are involved — it's whether the IPsec peer is acting *on behalf of* other addressing that needs to be preserved. A remote worker's laptop connecting to a VPN concentrator needs to appear on the internal network with an internal address, exactly like a branch office does in a site-to-site tunnel: tunnel mode's new outer header carries the original (internal) packet, headers included, across the untrusted public path. Transport mode is reserved for the much narrower case where the two IPsec peers *are* the two original endpoints exchanging traffic directly, with no gateway standing in for anyone else.
+
+<InterviewScenario title="Why do site-to-site VPNs use tunnel mode even though it adds header overhead?">A candidate suggests transport mode would be more efficient for a site-to-site VPN since it has less overhead. Explain why this doesn't work: the original hosts behind each gateway were never configured as IPsec peers themselves, so their original IP headers must survive the trip across the public path, inside a new outer header the gateways add and remove — which is specifically what tunnel mode provides and transport mode does not.</InterviewScenario>
+
+<SectionContinue itemId="ipsec_section_guided_ipsec_mode_practice" anchor="guided-ipsec-mode-practice" />
+
+<h2 id="troubleshoot-ipsec">Troubleshoot IPsec</h2>
+
+1. Confirm Phase 1 (IKE SA) proposals match on both peers first — a mismatched encryption algorithm, hash, or Diffie-Hellman group here fails the negotiation before any traffic is even discussed.
+2. If Phase 1 succeeds but Phase 2 (Child SA) fails, check the traffic selectors (proxy IDs): both sides must agree on exactly which subnets the tunnel protects, not just that a tunnel should exist.
+3. Verify the authentication method and credentials match exactly — an identical pre-shared key on both sides, or certificates that both chain to a mutually trusted CA.
+4. If a NAT device sits between the peers, confirm NAT-T was actually negotiated (both sides must detect the NAT during IKE) — a tunnel that reports "up" but passes no traffic often means ESP packets are arriving unencapsulated and being silently dropped.
+5. Distinguish "tunnel up, zero traffic" from "tunnel won't come up at all": the first points at routing or ACLs (packets never reach the tunnel), the second points at IKE or Child SA negotiation itself.
+6. Confirm routing actually sends traffic for the protected subnets toward the tunnel interface or policy — a perfectly negotiated SA carries nothing if nothing is routed into it.
+
+<InterviewScenario title="A tunnel shows 'up' in both IKE and IPsec SA status, but no traffic passes">Walk through the most likely causes in order: a traffic-selector mismatch that happens to allow the SA to form but excludes the actual subnets being tested, routing that doesn't send the relevant traffic toward the tunnel at all, and an interface ACL blocking ESP or the IKE UDP ports somewhere along the path.</InterviewScenario>
+
+<SectionContinue itemId="ipsec_section_troubleshoot_ipsec" anchor="troubleshoot-ipsec" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="ipsec_check_1" question="What is the main practical reason ESP is used far more often than AH?" options={["AH is not supported by any modern vendor", "ESP provides confidentiality and can survive NAT via NAT-T, while AH's outer-header integrity check breaks the moment NAT rewrites that header", "AH only works over IPv6"]} correctIndex={1} explanation="ESP provides encryption and can be wrapped in UDP (NAT-T) to survive NAT. AH authenticates the outer IP header itself, which NAT must rewrite, breaking AH's integrity check with no equivalent fix." />
+
+<KnowledgeCheck progressItemId="ipsec_check_2" question="Why do site-to-site VPNs use tunnel mode instead of transport mode?" options={["Tunnel mode is faster because it skips encryption", "Tunnel mode wraps the entire original packet in a new one between gateways, preserving the original hosts' addressing without either host needing to run IPsec itself", "Transport mode cannot use ESP, only AH"]} correctIndex={1} explanation="The original hosts behind each gateway were never configured as IPsec peers. Tunnel mode's new outer header lets their original packet, headers included, travel across the public path between the two gateways acting on their behalf." />
+
+<KnowledgeCheck progressItemId="ipsec_check_3" question="What problem does NAT-T solve for ESP traffic?" options={["It adds a sequence number to prevent replay attacks", "It wraps ESP inside UDP so a NAT device has a port number to rewrite, since ESP has none of its own", "It upgrades AH so it can also survive NAT"]} correctIndex={1} explanation="NAT relies on port numbers to multiplex hosts behind one public address. ESP has no ports of its own, so NAT-T wraps it in UDP on port 4500, giving NAT something to rewrite." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">See exactly how IKEv2's two round trips compare to IKEv1's longer exchange, how MOBIKE lets a tunnel survive a mobile peer changing networks mid-session, how Diffie-Hellman group selection trades off security and performance, and how GRE-over-IPsec lets dynamic routing protocols run across a VPN that IPsec alone can't carry.</PremiumPreview>

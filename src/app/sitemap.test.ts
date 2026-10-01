@@ -61,6 +61,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/routing-protocols/bgp" },
       { url: "https://packetsecrets.com/learn/security-protocols/security-fundamentals" },
       { url: "https://packetsecrets.com/learn/security-protocols/tls" },
+      { url: "https://packetsecrets.com/learn/security-protocols/ipsec" },
     ]);
     const urls = entries.map(({ url }) => url);
     for (const pathway of listPathways()) {
