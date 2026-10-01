@@ -14,6 +14,8 @@ describe("Courses index", () => {
     expect(html).toContain('href="/paths/routing-protocols"');
     expect(html).toContain("Security Protocols");
     expect(html).toContain('href="/paths/security-protocols"');
+    expect(html).toContain("Wireless Networking");
+    expect(html).toContain('href="/paths/wireless-networking"');
   });
 
   it("is reachable from the header and footer navigation", () => {

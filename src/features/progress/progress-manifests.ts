@@ -99,6 +99,7 @@ const definitions = [
   { lessonId: "lesson_ipsec", interactiveAnchors: ["interactive-ipsec-tunnel-establishment"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_ssh", interactiveAnchors: ["interactive-ssh-key-authentication"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_pki", interactiveAnchors: ["interactive-certificate-chain-validation"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_wireless_fundamentals", interactiveAnchors: ["interactive-csma-ca-and-the-hidden-node-problem"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
 ] as const satisfies readonly LessonProgressDefinition[];
 
 function itemPrefix(lessonId: string) {
