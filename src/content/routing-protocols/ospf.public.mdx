@@ -26,7 +26,7 @@ Two OSPF routers move through a well-defined sequence of neighbor states on thei
 
 <h2 id="interactive-ospf-adjacency">Interactive OSPF adjacency</h2>
 
-Step through two routers forming a full adjacency over a point-to-point link, from the first Hello through Database Description negotiation to a synchronized link-state database.
+Step through four routers on a shared multi-access segment: Hellos exchanged with everyone at once, a Designated Router and Backup Designated Router elected by priority, the DR and BDR each building a full adjacency with every other router, and the key fact that two non-DR/BDR routers stop at 2-Way and never exchange a full database directly with each other.
 
 <OspfAdjacencyPacketFlow progressItemId="ospf_interactive_interactive_ospf_adjacency" />
 
