@@ -88,8 +88,8 @@ describe("system theme and table styles", () => {
     expect(css).toMatch(/\.device-role-tour \.network-topology__device\[role="button"\]:focus-visible\s*\{[^}]*outline:\s*none[^}]*filter:\s*drop-shadow/);
   });
 
-  it("keeps the device thought cloud above the topology on narrow screens", () => {
-    expect(css).toMatch(/@media\s*\(max-width:\s*44rem\)[\s\S]*\.device-role-tour \.packet-flow-topology-stage\s*\{[^}]*padding-block-start:\s*(?!0)/);
+  it("keeps the device thought cloud above the topology on narrow screens after playback starts", () => {
+    expect(css).toMatch(/@media\s*\(max-width:\s*44rem\)[\s\S]*\.device-role-tour\[data-started="true"\]\s+\.packet-flow-topology-stage\s*\{[^}]*padding-block-start:\s*15rem/);
     expect(css).toMatch(/@media\s*\(max-width:\s*44rem\)[\s\S]*\.device-role-tour__cloud\s*\{[^}]*position:\s*absolute/);
   });
 
