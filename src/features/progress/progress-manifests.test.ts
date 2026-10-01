@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(39);
+    expect(lessonProgressManifests).toHaveLength(40);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -81,7 +81,8 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202610030001_add_ipsec_progress.sql",
       "supabase/migrations/202610040001_add_ssh_progress.sql",
       "supabase/migrations/202610050001_add_pki_progress.sql",
-      "supabase/migrations/202610060001_restructure_routers_lesson.sql",
+      "supabase/migrations/202610060001_add_wireless_fundamentals_progress.sql",
+      "supabase/migrations/202610060002_restructure_routers_lesson.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -125,7 +126,7 @@ describe("lessonProgressManifests", () => {
 
   it("replaces the previous Routers catalog rows before inserting the beginner lesson", () => {
     const migration = readFileSync(
-      resolve("supabase/migrations/202610060001_restructure_routers_lesson.sql"),
+      resolve("supabase/migrations/202610060002_restructure_routers_lesson.sql"),
       "utf8",
     );
     const catalogDelete = migration.indexOf("delete from public.lesson_progress_items");

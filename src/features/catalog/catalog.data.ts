@@ -931,6 +931,43 @@ const curriculum: Pathway[] = [
       },
     ],
   },
+  {
+    id: "path_wireless_networking",
+    slug: "wireless-networking",
+    title: "Wireless Networking",
+    description: "How Wi-Fi actually works over the air: radio frequency bands and channels, access point roles, and the media-access rules that let many devices share one invisible, half-duplex medium.",
+    audience: "Learners who already understand basic wired networking and want to understand how Wi-Fi's shared radio medium changes the rules for addressing, media access, and troubleshooting.",
+    modules: [
+      {
+        id: "module_wireless_fundamentals",
+        slug: "wireless-fundamentals",
+        title: "Wireless Fundamentals",
+        description: "The physical and media-access layer concepts every Wi-Fi standard builds on: frequency bands, channels, network roles, and collision avoidance over radio.",
+        lessons: [
+          {
+            id: "lesson_wireless_fundamentals", slug: "wireless-fundamentals",
+            title: "Wireless Fundamentals: Radio, Channels, and Media Access",
+            objective: "Explain how Wi-Fi uses radio frequency bands and channels, the roles access points and clients play in a basic service set, why CSMA/CA replaces Ethernet's collision detection over a half-duplex radio medium, and how RTS/CTS solves the hidden node problem.",
+            seo: { title: "Wireless Fundamentals: Radio, Channels, and Media Access", description: "Learn Wi-Fi frequency bands and channels, BSS/ESS roles, CSMA/CA collision avoidance, and how RTS/CTS solves the hidden node problem." },
+            published: true, estimatedMinutes: 25,
+            sections: [
+              { id: "what-wireless-networking-is", label: "What wireless networking is", access: "public" },
+              { id: "radio-frequency-bands-and-channels", label: "Radio frequency bands and channels", access: "public" },
+              { id: "wireless-network-roles-and-topologies", label: "Wireless network roles and topologies", access: "public" },
+              { id: "csma-ca-and-collision-avoidance", label: "CSMA/CA and collision avoidance", access: "public" },
+              { id: "interactive-csma-ca-and-the-hidden-node-problem", label: "Interactive CSMA/CA and the hidden node problem", access: "public" },
+              { id: "signal-strength-and-interference", label: "Signal strength and interference", access: "public" },
+              { id: "inspect-wireless-evidence", label: "Inspect wireless evidence", access: "account" },
+              { id: "guided-channel-planning-practice", label: "Guided channel-planning practice", access: "account" },
+              { id: "troubleshoot-wireless-basics", label: "Troubleshoot wireless basics", access: "account" },
+              { id: "knowledge-check-summary", label: "Knowledge check and summary", access: "account" },
+              { id: "pro-deep-dive", label: "Pro Deep Dive", access: "pro", preview: "MIMO and MU-MIMO spatial streams, beamforming, and how 802.11ax OFDMA subdivides a single channel so an AP can serve multiple clients at once." },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export const pathways = pathwayCatalogSchema.parse(curriculum);
