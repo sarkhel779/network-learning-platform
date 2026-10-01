@@ -328,10 +328,10 @@ describe("catalog repository", () => {
       published: true,
     });
     expect(lesson.sections?.map(({ id, access }) => [id, access])).toEqual([
-      ["what-a-router-does", "public"],
+      ["what-is-a-router", "public"],
       ["router-interfaces", "public"],
-      ["network-boundaries", "public"],
-      ["default-gateway", "public"],
+      ["routers-connect-networks", "public"],
+      ["routers-as-default-gateways", "public"],
       ["place-the-router", "public"],
       ["knowledge-check", "public"],
     ]);

@@ -41,6 +41,16 @@ describe("Computer Network Basics catalogue", () => {
       "classify-host-roles",
       "knowledge-check",
     ]);
+
+    const routersLesson = basicsModule?.lessons.find(({ id }) => id === "lesson_routers_default_gateways_and_network_boundaries");
+    expect(routersLesson?.sections?.map(({ id }) => id)).toEqual([
+      "what-is-a-router",
+      "router-interfaces",
+      "routers-connect-networks",
+      "routers-as-default-gateways",
+      "place-the-router",
+      "knowledge-check",
+    ]);
   });
 
   it("relocates existing lessons without changing their stable routes", () => {

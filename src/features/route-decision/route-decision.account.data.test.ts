@@ -25,7 +25,7 @@ describe("account route-decision data", () => {
   });
 
   it("contains routing evidence, troubleshooting, assessment, and the exact Pro waitlist action", () => {
-    const content = readFileSync(resolve("src/content/networking-foundations/routers-default-gateways-and-network-boundaries.account.mdx"), "utf8");
+    const content = readFileSync(resolve("docs/reference/routers-default-gateways-and-network-boundaries-advanced-reference.mdx"), "utf8");
     expect(content).toMatch(/Destination\/prefix[\s\S]*Next hop[\s\S]*Interface[\s\S]*Purpose/);
     expect(content).toContain("route print");
     expect(content).toContain("ip route");
