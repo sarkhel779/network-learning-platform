@@ -1,0 +1,37 @@
+<LearningObjective>Explain what an X.509 certificate contains, how a chain of trust is verified from a leaf certificate up to a pre-trusted root, and how certificate revocation is checked, per RFC 5280.</LearningObjective>
+
+<h2 id="what-pki-is">What PKI is</h2>
+
+**PKI (Public Key Infrastructure)** is the trust system that lets TLS, IPsec, and SSH certificates actually mean something: a framework of certificates, **certificate authorities (CAs)**, and the rules for issuing and verifying them, standardized for the X.509 certificate format in **RFC 5280**. Every certificate-based check in the previous three lessons — a TLS server's identity, an IPsec gateway's certificate-based authentication, an SSH certificate replacing trust-on-first-use — ultimately depends on the same underlying PKI concepts this lesson covers: what a certificate contains, how trust is chained, and how a certificate can be invalidated before it expires.
+
+<SectionContinue itemId="pki_section_what_pki_is" anchor="what-pki-is" />
+
+<h2 id="x509-certificates">X.509 certificates</h2>
+
+An **X.509 certificate** binds a public key to an identity, signed by whoever issued it. The fields that matter most: the **subject** (who the certificate identifies — a hostname, for a TLS server), the **issuer** (the CA that signed it), the **public key** itself, a **validity period** (not-before and not-after dates), the **Subject Alternative Name (SAN)** extension (the actual list of hostnames a TLS certificate is valid for — the field clients check against, not the subject field alone), and the issuer's **digital signature** over everything else — the part that makes tampering detectable.
+
+<SectionContinue itemId="pki_section_x509_certificates" anchor="x509-certificates" />
+
+<h2 id="the-chain-of-trust">The chain of trust</h2>
+
+Certificates don't stand alone — they form a **chain of trust**. A **root CA** sits at the top, is self-signed, and is pre-installed as trusted in an operating system's or browser's **trust store**. Rather than signing every end-entity certificate directly, a root CA signs one or more **intermediate CA** certificates, which then sign the actual **leaf (end-entity)** certificates servers present. This indirection exists specifically so the root CA's private key — the single most sensitive key in the entire system — can stay offline and rarely used, while intermediates handle day-to-day issuance and can be revoked and replaced individually if one is ever compromised, without having to distrust the root itself.
+
+<SectionContinue itemId="pki_section_the_chain_of_trust" anchor="the-chain-of-trust" />
+
+<h2 id="certificate-validation">Certificate validation</h2>
+
+Validating a certificate means walking this chain and checking it at every link: verifying the leaf's signature using the intermediate's public key, the intermediate's signature using the root's public key, and confirming that root is actually present in the client's trust store — plus checking the leaf's validity dates haven't expired and that the hostname being connected to actually appears in its SAN extension. This pre-installed trust store is precisely what lets PKI solve the problem SSH's trust-on-first-use leaves open: a client can trust a server it has *never connected to before*, because it already trusts the root the server's certificate chains up to — at the cost of placing a lot of trust in that fixed set of root CAs.
+
+<SectionContinue itemId="pki_section_certificate_validation" anchor="certificate-validation" />
+
+<h2 id="interactive-certificate-chain-validation">Interactive certificate chain validation</h2>
+
+Step through a client validating a server's certificate: checking the leaf's signature against the intermediate, the intermediate's signature against the root, confirming the root is already trusted, and checking validity and hostname before the chain is accepted.
+
+<CertificateChainValidationPacketFlow progressItemId="pki_interactive_interactive_certificate_chain_validation" />
+
+<h2 id="certificate-revocation">Certificate revocation</h2>
+
+A certificate's validity period alone isn't enough — a private key can be stolen long before its certificate expires, and that certificate needs to stop being trusted immediately, not months later. **CRLs (Certificate Revocation Lists)** are periodically published lists of revoked certificate serial numbers a client can download and check. **OCSP (Online Certificate Status Protocol)** instead lets a client query a CA in real time for one certificate's current status. **OCSP stapling** improves on plain OCSP by having the *server* periodically fetch its own signed OCSP response and attach ("staple") it to the handshake — the client gets the same proof without a separate round trip to the CA for every connection, and without revealing to the CA which sites a particular client is visiting.
+
+<SectionContinue itemId="pki_section_certificate_revocation" anchor="certificate-revocation" />
