@@ -1,0 +1,42 @@
+{/* TLS_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-tls-evidence">Inspect TLS evidence</h2>
+
+`openssl s_client -connect host:443 -tls1_3` forces a TLS 1.3 connection and prints the negotiated cipher suite and the full certificate chain — useful for confirming a server actually supports 1.3 rather than silently falling back. Adding `-servername host` sends SNI explicitly, which matters when testing a server that hosts multiple sites on one IP.
+
+<WiresharkCheck displayFilter="tls">Capture a browser connecting to an HTTPS site. In TLS 1.3, identify the Client Hello (its guessed key_share and supported cipher suites) and note that everything from the server's Certificate message onward is encrypted — unlike TLS 1.2, where the certificate was sent in the clear.</WiresharkCheck>
+
+<SectionContinue itemId="tls_section_inspect_tls_evidence" anchor="inspect-tls-evidence" />
+
+<h2 id="guided-tls-handshake-practice">Guided TLS handshake practice</h2>
+
+Work through why removing static RSA key exchange specifically improves confidentiality over time, not just at the moment of the handshake. Suppose an attacker records a full year of a server's encrypted traffic without being able to decrypt any of it in real time. A year later, the attacker compromises the server and steals its long-term private key. Under TLS 1.2's static RSA key exchange, that one stolen key would let the attacker decrypt every recorded session from that entire year, because each session's premaster secret was encrypted directly with that same long-term public key. Under TLS 1.3's mandatory (EC)DHE, every session generated its own ephemeral key pair that was discarded immediately after use — the stolen long-term key only proves the server's identity during future handshakes and cannot reconstruct any past session's keys.
+
+<InterviewScenario title="Why did TLS 1.3 remove RSA key exchange entirely, instead of just discouraging it?">A candidate argues TLS 1.3 should have kept static RSA key exchange available as a fallback option for compatibility. Explain why making it unavailable, rather than merely deprecated, was the deliberate design choice: an optional insecure mode is eventually misconfigured or left enabled somewhere, while removing it entirely makes the lack-of-forward-secrecy failure mode structurally impossible.</InterviewScenario>
+
+<SectionContinue itemId="tls_section_guided_tls_handshake_practice" anchor="guided-tls-handshake-practice" />
+
+<h2 id="troubleshoot-tls">Troubleshoot TLS</h2>
+
+1. Confirm which TLS version was actually negotiated (`openssl s_client` or a packet capture) rather than assuming — a client falling back to an older version it still supports can hide a server misconfiguration.
+2. Check for a cipher suite mismatch: if the client and server share no common cipher suite for the negotiated version, the handshake fails immediately with no application-layer error.
+3. Walk the certificate chain from leaf to root and confirm every intermediate is present — exactly the same most-common cause of "untrusted certificate" errors covered in the fundamentals lesson, but now specific to this one connection.
+4. Confirm the hostname the client requested (via SNI) matches a name on the certificate the server presented — a mismatch here, not a broken handshake, is the single most common cause of browser certificate warnings.
+5. Check for significant clock skew between client and server; certificate validity windows depend on both having roughly correct time.
+6. Rule out a middlebox performing TLS interception (common in some corporate networks), which replaces the real server's certificate with one the client was never told to trust.
+
+<InterviewScenario title="A client reports a handshake failure with no certificate warning at all">Distinguish this from a certificate-trust problem: a handshake failure before any certificate is evaluated usually means no common TLS version or cipher suite exists between client and server, not a problem with the certificate itself. Explain how you'd confirm which side is right using a packet capture.</InterviewScenario>
+
+<SectionContinue itemId="tls_section_troubleshoot_tls" anchor="troubleshoot-tls" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="tls_check_1" question="What is the main advantage of TLS 1.3's handshake over TLS 1.2's?" options={["It eliminates the need for a certificate entirely", "It completes a full handshake in one round trip instead of two", "It no longer encrypts application data"]} correctIndex={1} explanation="TLS 1.3's client guesses the server's key-exchange group and sends its own key share immediately, letting the server respond with everything needed in a single flight — one round trip instead of TLS 1.2's two." />
+
+<KnowledgeCheck progressItemId="tls_check_2" question="Why does removing static RSA key exchange improve TLS 1.3's security?" options={["RSA keys are mathematically weaker than elliptic-curve keys at any size", "It guarantees perfect forward secrecy, since every session uses a fresh ephemeral key pair instead of the server's long-term key", "It removes the need for a certificate authority"]} correctIndex={1} explanation="Static RSA key exchange encrypts the session secret with the server's long-term key, so stealing that key later decrypts every past recorded session. Mandatory (EC)DHE means each session's key is ephemeral and discarded, so a later key compromise can't expose past traffic." />
+
+<KnowledgeCheck progressItemId="tls_check_3" question="What does SNI (Server Name Indication) let a TLS server do?" options={["Encrypt the ClientHello message itself", "Know which hostname the client is trying to reach, so it can present the right certificate when multiple sites share one IP address", "Skip certificate validation for a trusted client"]} correctIndex={1} explanation="SNI is sent in the clear in the ClientHello specifically so the server knows which certificate to present before the handshake can proceed, which is essential when many unrelated hostnames are served from the same IP address." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">See how 0-RTT session resumption lets a returning client send application data before the handshake even finishes, how session tickets make that possible, how ALPN negotiates the application protocol (such as HTTP/2) during the handshake, and why supporting a TLS 1.2 fallback still matters for compatibility with older clients.</PremiumPreview>

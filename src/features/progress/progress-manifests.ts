@@ -94,6 +94,11 @@ const definitions = [
   { lessonId: "lesson_ospf", interactiveAnchors: ["interactive-ospf-adjacency"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_eigrp", interactiveAnchors: ["interactive-eigrp-dual"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_bgp", interactiveAnchors: ["interactive-bgp-session-establishment"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_security_fundamentals", interactiveAnchors: ["interactive-diffie-hellman-key-exchange"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_tls", interactiveAnchors: ["interactive-tls-handshake"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_ipsec", interactiveAnchors: ["interactive-ipsec-tunnel-establishment"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_ssh", interactiveAnchors: ["interactive-ssh-key-authentication"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_pki", interactiveAnchors: ["interactive-certificate-chain-validation"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
 ] as const satisfies readonly LessonProgressDefinition[];
 
 function itemPrefix(lessonId: string) {

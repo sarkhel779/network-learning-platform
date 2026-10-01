@@ -29,7 +29,7 @@ A pure distance-vector protocol is naturally vulnerable to routing loops: if two
 
 <h2 id="interactive-rip-exchange">Interactive RIP exchange</h2>
 
-Step through two RIP routers exchanging a route, applying split horizon with poisoned reverse, and reacting instantly to a link failure with a triggered update.
+Step through three RIP routers connected in a triangle: one router advertises its network to both neighbors at once, a neighbor that hears about that same network twice keeps whichever path has the lower hop count, split horizon with poisoned reverse closes the loop back to the source, and a link failure triggers an immediate update instead of waiting for the next scheduled one.
 
 <RipExchangePacketFlow progressItemId="rip_interactive_interactive_rip_exchange" />
 

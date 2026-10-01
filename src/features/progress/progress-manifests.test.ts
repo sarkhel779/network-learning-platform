@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(34);
+    expect(lessonProgressManifests).toHaveLength(39);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -76,6 +76,11 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609200002_computer_network_basics_restructure.sql",
       "supabase/migrations/202609210001_expand_hubs_lesson.sql",
       "supabase/migrations/202609290001_move_host_types_progress.sql",
+      "supabase/migrations/202610010001_add_security_fundamentals_progress.sql",
+      "supabase/migrations/202610020001_add_tls_progress.sql",
+      "supabase/migrations/202610030001_add_ipsec_progress.sql",
+      "supabase/migrations/202610040001_add_ssh_progress.sql",
+      "supabase/migrations/202610050001_add_pki_progress.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -172,6 +177,46 @@ describe("lessonProgressManifests", () => {
     const manifest = getLessonProgressManifest("path_routing_protocols", "lesson_bgp");
     expect(manifest.items).toHaveLength(12);
     expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-bgp-session-establishment"]);
+    expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
+    expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
+  });
+
+  it("registers the Security Fundamentals lesson with one player and three checks as 12 required items", () => {
+    const manifest = getLessonProgressManifest("path_security_protocols", "lesson_security_fundamentals");
+    expect(manifest.items).toHaveLength(12);
+    expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-diffie-hellman-key-exchange"]);
+    expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
+    expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
+  });
+
+  it("registers the TLS lesson with one player and three checks as 12 required items", () => {
+    const manifest = getLessonProgressManifest("path_security_protocols", "lesson_tls");
+    expect(manifest.items).toHaveLength(12);
+    expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-tls-handshake"]);
+    expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
+    expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
+  });
+
+  it("registers the IPsec lesson with one player and three checks as 13 required items", () => {
+    const manifest = getLessonProgressManifest("path_security_protocols", "lesson_ipsec");
+    expect(manifest.items).toHaveLength(13);
+    expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-ipsec-tunnel-establishment"]);
+    expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
+    expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
+  });
+
+  it("registers the SSH lesson with one player and three checks as 12 required items", () => {
+    const manifest = getLessonProgressManifest("path_security_protocols", "lesson_ssh");
+    expect(manifest.items).toHaveLength(12);
+    expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-ssh-key-authentication"]);
+    expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
+    expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
+  });
+
+  it("registers the PKI lesson with one player and three checks as 12 required items", () => {
+    const manifest = getLessonProgressManifest("path_security_protocols", "lesson_pki");
+    expect(manifest.items).toHaveLength(12);
+    expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-certificate-chain-validation"]);
     expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
     expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
   });

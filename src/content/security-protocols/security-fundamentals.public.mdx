@@ -1,0 +1,46 @@
+<LearningObjective>Explain the CIA triad and common network threats, how symmetric and asymmetric cryptography and hashing provide confidentiality and integrity, and see a Diffie-Hellman key exchange derive a shared secret without ever transmitting it.</LearningObjective>
+
+<h2 id="why-network-security-matters">Why network security matters</h2>
+
+Every security protocol in this course exists to defend some combination of three properties, known as the **CIA triad**: **Confidentiality** (only authorized parties can read the data), **Integrity** (the data wasn't altered in transit, whether by accident or by an attacker), and **Availability** (the service stays reachable to the people who legitimately need it). A plaintext protocol like Telnet or unencrypted HTTP provides none of these guarantees for the data it carries: anyone who can observe the wire can read it, silently modify it in flight, or replay a captured copy of it later. TLS, IPsec, SSH, and PKI — the next four lessons — are four different, RFC-standardized answers to how confidentiality and integrity are actually achieved on real networks.
+
+<SectionContinue itemId="security_fundamentals_section_why_network_security_matters" anchor="why-network-security-matters" />
+
+<h2 id="common-threats-and-attacks">Common threats and attacks</h2>
+
+- **Eavesdropping (sniffing)**: a passive attacker captures traffic off the wire or over the air without altering it, violating confidentiality.
+- **Man-in-the-middle (MITM)**: an active attacker secretly relays and can alter traffic between two parties who believe they're talking directly to each other.
+- **Spoofing**: an attacker forges the source of traffic — a spoofed source IP, a spoofed ARP reply, or a spoofed DNS response — to impersonate a trusted host.
+- **Replay attacks**: an attacker captures a legitimate message (such as an authentication exchange) and resends it later to repeat its effect without needing to break any encryption.
+- **Denial of service (DoS)**: an attacker floods a target with traffic or requests to exhaust its resources, attacking availability rather than confidentiality or integrity.
+
+<SectionContinue itemId="security_fundamentals_section_common_threats_and_attacks" anchor="common-threats-and-attacks" />
+
+<h2 id="symmetric-and-asymmetric-cryptography">Symmetric and asymmetric cryptography</h2>
+
+**Symmetric cryptography** uses a single shared key for both encryption and decryption (AES is the modern standard). It's fast enough to encrypt bulk data at line rate, but it has a distribution problem: both parties need the same secret key before they can communicate, and sending that key over the same untrusted network it's meant to protect defeats the purpose. **Asymmetric cryptography** (RSA and elliptic-curve algorithms) solves exactly this problem with a mathematically linked **key pair**: data encrypted with a public key can only be decrypted with its matching private key, and data signed with a private key can be verified by anyone holding the public key. The catch is that asymmetric operations are orders of magnitude slower than symmetric ones. Because of this, TLS, IPsec, and SSH all use a **hybrid approach**: asymmetric cryptography (or a Diffie-Hellman exchange, below) establishes a short-lived symmetric session key, and all the actual bulk data is then encrypted with fast symmetric cryptography using that key.
+
+<SectionContinue itemId="security_fundamentals_section_symmetric_and_asymmetric_cryptography" anchor="symmetric-and-asymmetric-cryptography" />
+
+<h2 id="hashing-and-integrity">Hashing and integrity</h2>
+
+A **cryptographic hash function** (SHA-256 is the modern standard) takes an input of any size and produces a fixed-length digest, with two properties that matter here: the same input always produces the same digest, and even a one-bit change to the input produces a completely different digest. A hash alone proves nothing about *who* sent a message, only that it matches a known digest. **HMAC** (Hash-based Message Authentication Code) fixes this by combining the hash function with a shared secret key, producing a digest that only someone holding that key could have generated — proving both integrity (the message wasn't altered) and authenticity (it came from a party who knows the key). This is exactly the mechanism IPsec's AH and ESP headers and TLS's record-layer MAC use to detect tampering.
+
+<SectionContinue itemId="security_fundamentals_section_hashing_and_integrity" anchor="hashing-and-integrity" />
+
+<h2 id="interactive-diffie-hellman-key-exchange">Interactive Diffie-Hellman key exchange</h2>
+
+Step through the classic Diffie-Hellman example: two parties agree on public parameters in the clear, each generates a private value they never transmit, and both independently derive the identical shared secret — one an eavesdropper who captured every public value still cannot feasibly compute, because doing so means solving the discrete logarithm problem.
+
+<DiffieHellmanKeyExchangePacketFlow progressItemId="security_fundamentals_interactive_interactive_diffie_hellman_key_exchange" />
+
+<h2 id="where-these-protocols-fit">Where these protocols fit</h2>
+
+With these building blocks in place, the next four lessons each apply them at a different layer and for a different purpose:
+
+- **TLS** (RFC 8446) encrypts and authenticates application data over TCP — the protocol behind HTTPS and most other secure application traffic.
+- **IPsec** (RFC 4301) encrypts and authenticates at the network layer, most commonly for site-to-site and remote-access VPNs.
+- **SSH** (RFC 4251) secures interactive remote administration and file transfer sessions.
+- **PKI** (RFC 5280) is the trust infrastructure — certificates and certificate authorities — that lets TLS, IPsec, and SSH actually verify *whose* public key they're using in the first place, rather than just that a key exchange succeeded with someone.
+
+<SectionContinue itemId="security_fundamentals_section_where_these_protocols_fit" anchor="where-these-protocols-fit" />

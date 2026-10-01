@@ -160,6 +160,26 @@ const lessonImports = {
     public: () => import("@/content/routing-protocols/bgp.public.mdx"),
     account: () => import("@/content/routing-protocols/bgp.account.mdx"),
   },
+  "security-protocols/security-fundamentals": {
+    public: () => import("@/content/security-protocols/security-fundamentals.public.mdx"),
+    account: () => import("@/content/security-protocols/security-fundamentals.account.mdx"),
+  },
+  "security-protocols/tls": {
+    public: () => import("@/content/security-protocols/tls.public.mdx"),
+    account: () => import("@/content/security-protocols/tls.account.mdx"),
+  },
+  "security-protocols/ipsec": {
+    public: () => import("@/content/security-protocols/ipsec.public.mdx"),
+    account: () => import("@/content/security-protocols/ipsec.account.mdx"),
+  },
+  "security-protocols/ssh": {
+    public: () => import("@/content/security-protocols/ssh.public.mdx"),
+    account: () => import("@/content/security-protocols/ssh.account.mdx"),
+  },
+  "security-protocols/pki": {
+    public: () => import("@/content/security-protocols/pki.public.mdx"),
+    account: () => import("@/content/security-protocols/pki.account.mdx"),
+  },
 } satisfies LessonContentRegistry;
 
 async function loadFromRegistry(

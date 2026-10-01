@@ -1,0 +1,37 @@
+<LearningObjective>Explain how IKEv2 negotiates security associations, the difference between AH and ESP, why tunnel mode is used for site-to-site VPNs, and how NAT traversal lets ESP survive address translation, per RFC 4301.</LearningObjective>
+
+<h2 id="what-ipsec-is">What IPsec is</h2>
+
+**IPsec (Internet Protocol Security)**, defined in **RFC 4301**, protects IP packets at the **network layer** rather than the transport or application layer — the layer where TLS and SSH operate. Because it works below transport, it protects *everything* riding on top of IP without any application needing to know IPsec exists: TCP, UDP, and every protocol built on them all get protected automatically. This is exactly why IPsec is the standard choice for **VPNs**: a site-to-site VPN between two offices, or a remote-access VPN for an individual laptop, both rely on IPsec to make an untrusted network (the public internet) carry traffic as if it were on a private, trusted link.
+
+<SectionContinue itemId="ipsec_section_what_ipsec_is" anchor="what-ipsec-is" />
+
+<h2 id="ike-and-security-associations">IKE and security associations</h2>
+
+Before any traffic is protected, two peers need to agree on keys and algorithms — the job of **IKEv2 (Internet Key Exchange version 2, RFC 7296)**. The result of a successful negotiation is a **Security Association (SA)**: an agreed set of algorithms, keys, and parameters both sides store and use to process matching traffic. IKEv2 negotiates in two stages: first an **IKE SA**, an encrypted and authenticated control channel built with a Diffie-Hellman exchange (the same primitive from the fundamentals lesson); then, inside that already-protected channel, the peers authenticate each other and negotiate one or more **Child SAs** — the SAs that actually protect real traffic. This two-stage design is why IKEv2 needs only two round trips to go from nothing to a fully negotiated tunnel, versus IKEv1's considerably longer exchange.
+
+<SectionContinue itemId="ipsec_section_ike_and_security_associations" anchor="ike-and-security-associations" />
+
+<h2 id="ah-and-esp">AH and ESP</h2>
+
+IPsec defines two protocols for actually protecting packets. **AH (Authentication Header, IP protocol 51)** authenticates the entire packet, including the outer IP header, but provides no encryption — it proves a packet wasn't altered and came from the expected peer, but anyone can still read its contents. **ESP (Encapsulating Security Payload, IP protocol 50)** encrypts the payload and optionally authenticates it too. In practice, **ESP is used almost universally**: confidentiality is usually a requirement anyway, and AH's biggest practical weakness is that its integrity check covers the outer IP header, which breaks the instant a NAT device rewrites that header in transit — a problem that is solvable for ESP (below) but not for AH.
+
+<SectionContinue itemId="ipsec_section_ah_and_esp" anchor="ah-and-esp" />
+
+<h2 id="transport-vs-tunnel-mode">Transport vs. tunnel mode</h2>
+
+IPsec can protect a packet in one of two modes. **Transport mode** protects only the original payload, leaving the original IP header intact and visible — suited to protecting traffic directly between two hosts that are themselves the IPsec peers. **Tunnel mode** instead wraps the *entire* original IP packet, header included, inside a brand-new IP packet with its own new header between the two IPsec gateways. This is exactly what a site-to-site VPN needs: the two original hosts never need to know IPsec is involved at all, because their original packet, headers and all, travels as cargo inside a new packet exchanged by the gateways standing in for them.
+
+<SectionContinue itemId="ipsec_section_transport_vs_tunnel_mode" anchor="transport-vs-tunnel-mode" />
+
+<h2 id="interactive-ipsec-tunnel-establishment">Interactive IPsec tunnel establishment</h2>
+
+Step through two site-to-site VPN gateways building an IPsec tunnel: the IKE_SA_INIT exchange that creates an encrypted control channel, the IKE_AUTH exchange that authenticates both sides and negotiates a Child SA, and the ESP tunnel-mode encapsulation that actually carries traffic between the two private networks.
+
+<IpsecTunnelEstablishmentPacketFlow progressItemId="ipsec_interactive_interactive_ipsec_tunnel_establishment" />
+
+<h2 id="nat-traversal-and-practical-considerations">NAT traversal and practical considerations</h2>
+
+ESP has no port numbers of its own, which is a problem the moment a NAT device sits between two IPsec peers: NAT relies on port numbers to multiplex multiple internal hosts onto one public address, and plain ESP gives it nothing to rewrite. **NAT-T (NAT Traversal)** solves this by detecting a NAT in the path during IKE negotiation and, when one is found, wrapping ESP packets inside UDP on **port 4500** — giving the NAT device the port number it needs, at the cost of a small per-packet overhead. This is specifically why ESP, not AH, is the practical default: AH's integrity check over the outer header has no equivalent fix, since NAT must rewrite that header for NAT-T to work at all.
+
+<SectionContinue itemId="ipsec_section_nat_traversal_and_practical_considerations" anchor="nat-traversal-and-practical-considerations" />

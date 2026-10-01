@@ -1,0 +1,42 @@
+{/* PKI_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-pki-evidence">Inspect PKI evidence</h2>
+
+`openssl x509 -in cert.pem -text -noout` prints every field of a certificate in human-readable form — subject, issuer, validity dates, SAN entries, and the signature algorithm. `openssl s_client -connect host:443 -showcerts` dumps the entire chain a server actually presents, which is the fastest way to confirm whether a missing intermediate is the problem. `openssl verify -CAfile root.pem -untrusted intermediate.pem leaf.pem` manually walks and verifies a chain against a specific trusted root, which is useful for testing a chain independently of any particular browser's trust store.
+
+<WiresharkCheck displayFilter="tls.handshake.certificate">Capture a TLS handshake and inspect the Certificate message. Confirm whether the server sent just the leaf certificate or the leaf plus its intermediate — a server that only sends the leaf is relying on every client already having the intermediate cached, which is not a safe assumption.</WiresharkCheck>
+
+<SectionContinue itemId="pki_section_inspect_pki_evidence" anchor="inspect-pki-evidence" />
+
+<h2 id="guided-chain-of-trust-practice">Guided chain-of-trust practice</h2>
+
+Work through what actually happens if an intermediate CA's private key is compromised, and why the root doesn't need to be replaced as a result. The root CA's key itself was never exposed, so the root remains trustworthy — but every certificate that compromised intermediate ever issued is now suspect, because an attacker holding that key could have issued fraudulent certificates for any hostname. The fix is to revoke that one intermediate (added to a CRL, or simply removed from distribution) and have all genuinely legitimate certificates it issued re-issued under a new, uncompromised intermediate. This is exactly the isolation intermediates are designed to provide: a compromise is contained to what that one intermediate touched, rather than invalidating the entire chain of trust back to the root.
+
+<InterviewScenario title="If an intermediate CA is compromised, does the root CA need to be replaced too?">Explain why the answer is no: the root's own private key was never exposed, so distrusting or replacing it would be an overreaction. Revoking the compromised intermediate and re-issuing its legitimate certificates under a new one fully contains the damage — which is the entire reason the chain uses intermediates instead of having the root sign every certificate directly.</InterviewScenario>
+
+<SectionContinue itemId="pki_section_guided_chain_of_trust_practice" anchor="guided-chain-of-trust-practice" />
+
+<h2 id="troubleshoot-pki">Troubleshoot PKI</h2>
+
+1. Check for a missing intermediate certificate first: a server that only serves its leaf certificate forces every client to already have the correct intermediate cached, which many don't — this is the single most common cause of "untrusted certificate" errors on a certificate that was actually issued correctly.
+2. Confirm the certificate's actual not-after date rather than assuming it hasn't expired — an expired certificate produces the same category of browser warning as an untrusted chain, but the fix is entirely different (renewal, not a missing intermediate).
+3. Check the SAN extension against the exact hostname being requested — a certificate can be perfectly valid and trusted and still fail for the wrong hostname, such as a certificate issued for `www.example.com` being presented for `example.com` without both names listed.
+4. Distinguish a genuinely self-signed, untrusted certificate (no path to any trusted root at all) from a broken chain (a path exists but an intermediate is missing) — the first requires explicitly trusting that certificate, the second just requires the server to send its full chain.
+5. Rule out client clock skew: certificate validity checks compare absolute timestamps, so a sufficiently wrong client clock can reject a perfectly valid certificate (or fail to reject an actually-expired one).
+6. Remember that revocation checks commonly **soft-fail**: if a client can't reach an OCSP responder, many implementations proceed as though the certificate were valid rather than blocking the connection — a known trust gap, not a malfunction.
+
+<InterviewScenario title="Why do many clients 'soft-fail' when an OCSP check can't complete, instead of blocking the connection?">Explain the tradeoff: hard-failing would break connectivity every time a CA's OCSP responder is slow, overloaded, or unreachable — which happens often enough in practice that most browsers prioritize availability over catching every revoked-but-still-live certificate. This exact gap is why OCSP stapling and short-lived, frequently renewed certificates matter — they shrink the window this soft-fail behavior can be exploited in.</InterviewScenario>
+
+<SectionContinue itemId="pki_section_troubleshoot_pki" anchor="troubleshoot-pki" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="pki_check_1" question="Why do root CAs sign intermediate certificates instead of signing every server certificate directly?" options={["Intermediates can issue certificates faster than a root CA can", "It lets the root CA's extremely sensitive private key stay offline, while a compromised intermediate can be revoked individually without distrusting the root", "RFC 5280 does not permit a root CA to sign certificates directly"]} correctIndex={1} explanation="Keeping the root key offline and rarely used minimizes its exposure. If an intermediate is ever compromised, only it needs to be revoked and replaced — the root, and everything else the chain depends on, stays trustworthy." />
+
+<KnowledgeCheck progressItemId="pki_check_2" question="What specifically lets a client trust a server it has never connected to before, unlike SSH's trust-on-first-use?" options={["The client always calls the certificate authority directly before every single connection", "The client already trusts the root CA the server's certificate chains up to, via its pre-installed trust store", "TLS certificates don't need to be verified the first time a client connects"]} correctIndex={1} explanation="A pre-installed trust store means the client already trusts a fixed set of root CAs before ever connecting to a given server — so as long as the server's chain leads to one of them, trust doesn't depend on any prior connection." />
+
+<KnowledgeCheck progressItemId="pki_check_3" question="What does OCSP stapling improve on compared to a client querying OCSP directly?" options={["It removes the need for certificate revocation checking entirely", "The server fetches and attaches its own signed revocation proof, saving the client a separate round trip and avoiding revealing its browsing activity to the CA", "It makes certificates valid forever so revocation checks are never needed again"]} correctIndex={1} explanation="With stapling, the server periodically fetches its own OCSP proof and attaches it during the handshake, so the client gets the same assurance without contacting the CA itself — which also means the CA never learns which specific clients are visiting that site." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">See how Certificate Transparency logs let anyone detect a rogue or mis-issued certificate for their own domain, how OCSP stapling fits into a real TLS handshake, and how short-lived, automatically renewed certificates (the model ACME and Let's Encrypt popularized) shrink how much work revocation has to do in the first place.</PremiumPreview>
