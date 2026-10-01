@@ -226,7 +226,11 @@ export function DeviceRoleIdentifier() {
   );
 
   return (
-    <section className="network-basics-exercise device-role-tour" aria-labelledby="device-role-title">
+    <section
+      aria-labelledby="device-role-title"
+      className="network-basics-exercise device-role-tour"
+      data-started={hasStarted}
+    >
       <h3 id="device-role-title">Identify device roles</h3>
       <p>Choose one network example. Each view teaches one device arrangement without placing older and modern connectors in the same path.</p>
       <div className="device-role-tour__scenarios" aria-label="Choose a network example" role="group">
