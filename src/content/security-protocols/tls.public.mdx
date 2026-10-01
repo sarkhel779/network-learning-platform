@@ -1,0 +1,37 @@
+<LearningObjective>Explain how TLS 1.3 negotiates a session with a single round trip, authenticates the server with a certificate, and protects application data, per RFC 8446.</LearningObjective>
+
+<h2 id="what-tls-is">What TLS is</h2>
+
+**TLS (Transport Layer Security)** runs on top of TCP and gives an application confidentiality, integrity, and server authentication for everything it sends — it's the protocol behind HTTPS, and most other secure application traffic besides. It's the standardized successor to Netscape's SSL: SSL 2.0 and 3.0 and TLS 1.0 and 1.1 are now all considered broken or obsolete and should not be enabled. The current standard is **TLS 1.3**, defined in **RFC 8446** (2018), which this lesson focuses on — it's a significant redesign over TLS 1.2, not just a version bump, removing an entire category of legacy weak cipher suites and cutting the handshake down to a single round trip.
+
+<SectionContinue itemId="tls_section_what_tls_is" anchor="what-tls-is" />
+
+<h2 id="the-tls-handshake">The TLS handshake</h2>
+
+Before any application data moves, the client and server run a **handshake** to agree on a protocol version, a cipher suite, and a set of session keys, and to let the client authenticate the server. TLS 1.3's headline change is that this now takes **one round trip (1-RTT)**: the client sends a `ClientHello` that already guesses which key-exchange group the server will pick and includes its own key share, so if the server accepts that guess, it can reply with everything needed — its own key share, certificate, and a proof of identity — in a single flight back. TLS 1.2 needed two full round trips to get to the same point, because the client had to wait to learn the server's chosen parameters before it could send its own key material.
+
+<SectionContinue itemId="tls_section_the_tls_handshake" anchor="the-tls-handshake" />
+
+<h2 id="key-exchange-and-cipher-suites">Key exchange and cipher suites</h2>
+
+TLS 1.3 only supports **(EC)DHE** key exchange — the Diffie-Hellman exchange from the previous lesson, run with ephemeral (freshly generated, thrown away after one session) key pairs on elliptic curves. This is a deliberate removal: TLS 1.2 also allowed static RSA key exchange, where the client encrypted a premaster secret directly with the server's long-term public key — a design with no **perfect forward secrecy**, since recording the traffic and later stealing that one long-term private key would decrypt every past session it was ever used for. Because every (EC)DHE exchange generates a brand-new ephemeral key pair, compromising the server's long-term certificate key later does not expose any past session's traffic.
+
+<SectionContinue itemId="tls_section_key_exchange_and_cipher_suites" anchor="key-exchange-and-cipher-suites" />
+
+<h2 id="certificates-and-server-authentication">Certificates and server authentication</h2>
+
+Key exchange alone proves the two sides share a secret — it says nothing about *who* is on the other end, which is exactly the gap a man-in-the-middle attack exploits. TLS closes it with a **certificate**: the server sends an X.509 certificate binding its public key to a hostname, signed by a certificate authority the client already trusts (the PKI lesson covers exactly how that trust chain is built and verified), and then proves it actually holds the matching private key by signing the handshake transcript itself. The client also sends the hostname it's trying to reach in cleartext, in an extension called **SNI (Server Name Indication)** — necessary because many unrelated sites can share one IP address, so the server needs to know which certificate to present before the handshake can even complete.
+
+<SectionContinue itemId="tls_section_certificates_and_server_authentication" anchor="certificates-and-server-authentication" />
+
+<h2 id="interactive-tls-handshake">Interactive TLS handshake</h2>
+
+Step through a complete TLS 1.3 handshake in one round trip: the client's guessed key share, the server's response bundling its own key share, certificate, and proof of identity, and the final exchange that unlocks encrypted application data.
+
+<TlsHandshakePacketFlow progressItemId="tls_interactive_interactive_tls_handshake" />
+
+<h2 id="tls-record-protocol-and-data-protection">TLS record protocol and data protection</h2>
+
+Once the handshake derives session keys, the **record protocol** takes over: every subsequent record is encrypted and integrity-protected together using an **AEAD** (Authenticated Encryption with Associated Data) cipher such as AES-128-GCM or ChaCha20-Poly1305 — a single operation that provides both confidentiality and the same tamper-detection an HMAC would, without needing a separate MAC computation. This is the layer that actually carries the HTTP request and response once the handshake is done; everything before this point exists purely to get two strangers to this shared, authenticated key.
+
+<SectionContinue itemId="tls_section_tls_record_protocol_and_data_protection" anchor="tls-record-protocol-and-data-protection" />

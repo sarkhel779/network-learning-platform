@@ -19,7 +19,7 @@ const publishedLessons = pathways.flatMap((pathway) =>
 
 describe("lessonProgressManifests", () => {
   it("defines exactly one manifest for every published lesson", () => {
-    expect(lessonProgressManifests).toHaveLength(35);
+    expect(lessonProgressManifests).toHaveLength(36);
 
     expect(lessonProgressManifests.map(({ lessonId }) => lessonId).sort()).toEqual(
       publishedLessons.map(({ lesson }) => lesson.id).sort(),
@@ -77,6 +77,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202609210001_expand_hubs_lesson.sql",
       "supabase/migrations/202609290001_move_host_types_progress.sql",
       "supabase/migrations/202610010001_add_security_fundamentals_progress.sql",
+      "supabase/migrations/202610020001_add_tls_progress.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
       items.map(({ itemId }) => itemId));
@@ -181,6 +182,14 @@ describe("lessonProgressManifests", () => {
     const manifest = getLessonProgressManifest("path_security_protocols", "lesson_security_fundamentals");
     expect(manifest.items).toHaveLength(12);
     expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-diffie-hellman-key-exchange"]);
+    expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
+    expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
+  });
+
+  it("registers the TLS lesson with one player and three checks as 12 required items", () => {
+    const manifest = getLessonProgressManifest("path_security_protocols", "lesson_tls");
+    expect(manifest.items).toHaveLength(12);
+    expect(manifest.items.filter(({ kind }) => kind === "interactive").map(({ anchor }) => anchor)).toEqual(["interactive-tls-handshake"]);
     expect(manifest.items.filter(({ kind }) => kind === "knowledge_check")).toHaveLength(3);
     expect(manifest.items.some(({ anchor }) => anchor === "pro-deep-dive")).toBe(false);
   });
