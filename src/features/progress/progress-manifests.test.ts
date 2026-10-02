@@ -82,6 +82,7 @@ describe("lessonProgressManifests", () => {
       "supabase/migrations/202610040001_add_ssh_progress.sql",
       "supabase/migrations/202610050001_add_pki_progress.sql",
       "supabase/migrations/202610060001_add_wireless_fundamentals_progress.sql",
+      "supabase/migrations/202610060002_restructure_routers_lesson.sql",
       "supabase/migrations/202610070001_add_wifi_security_progress.sql",
     ].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
     const itemIds = lessonProgressManifests.flatMap(({ items }) =>
@@ -124,6 +125,26 @@ describe("lessonProgressManifests", () => {
     expect(migration).toContain("'hosts_and_network_devices_section_types_of_hosts'");
   });
 
+  it("replaces the previous Routers catalog rows before inserting the beginner lesson", () => {
+    const migration = readFileSync(
+      resolve("supabase/migrations/202610060002_restructure_routers_lesson.sql"),
+      "utf8",
+    );
+    const catalogDelete = migration.indexOf("delete from public.lesson_progress_items");
+    const catalogInsert = migration.indexOf("insert into public.lesson_progress_items");
+
+    expect(catalogDelete).toBeGreaterThan(-1);
+    expect(catalogDelete).toBeLessThan(catalogInsert);
+    expect(migration.slice(catalogDelete, catalogInsert)).toContain("lesson_id = 'lesson_routers_default_gateways_and_network_boundaries'");
+    expect(migration).toContain("'routers_default_gateways_and_network_boundaries_check_1'");
+    expect(migration).toContain("from public.learner_lesson_attempts");
+    expect(migration).toContain("answer_correct is true");
+    expect(migration).toContain("'lesson_completed'");
+    expect(migration).toContain('"completionRule": "quiz-only-v1"');
+    expect(migration).toContain("create or replace function public.record_learner_progress_event");
+    expect(migration).toMatch(/incorrect_check_count\s*=\s*\([\s\S]*join public\.lesson_progress_items i[\s\S]*i\.required[\s\S]*i\.kind = 'knowledge_check'/);
+  });
+
   it("requires only correct knowledge checks for the new basics lessons", () => {
     const requiredIds = (lessonId: string) => getLessonProgressManifest("path_networking_foundations", lessonId)
       .items.filter(({ required }) => required).map(({ itemId }) => itemId);
@@ -135,6 +156,9 @@ describe("lessonProgressManifests", () => {
     expect(requiredIds("lesson_hubs")).toEqual(["hubs_check_1", "hubs_check_2", "hubs_check_3"]);
     expect(requiredIds("lesson_bridges")).toEqual(["bridges_check_1"]);
     expect(requiredIds("lesson_switches")).toEqual(["switches_check_1"]);
+    expect(requiredIds("lesson_routers_default_gateways_and_network_boundaries")).toEqual([
+      "routers_default_gateways_and_network_boundaries_check_1",
+    ]);
     expect(requiredIds("lesson_physical_and_logical_addressing")).toEqual([
       "physical_and_logical_addressing_check_1", "physical_and_logical_addressing_check_2", "physical_and_logical_addressing_check_3",
     ]);

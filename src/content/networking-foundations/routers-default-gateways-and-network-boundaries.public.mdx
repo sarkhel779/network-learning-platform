@@ -1,46 +1,36 @@
-<h2 id="what-a-router-does">What a router does</h2>
+<h2 id="what-is-a-router">What is a router?</h2>
 
-A **router** connects different IP networks. It gives devices on one network a way to reach devices on another network. A home router, for example, connects the home LAN to the provider's network.
+A **router** is a network device that connects different IP networks. It gives devices on one network a doorway to another network. A home router, for example, connects a home network to an internet provider's network.
 
-A router is different from a switch. A switch mainly connects devices inside one local network; a router sits between networks.
+A switch mainly connects devices inside one local network. A router connects that network to other networks. Later modules will explain how a router chooses paths; for now, focus on its place between networks.
 
 <h2 id="router-interfaces">Router interfaces</h2>
 
-A router has two or more network interfaces. Each interface joins a network and normally has an IP address that belongs to that network. The router provides a controlled connection between those sides.
+A router has two or more network interfaces. Each interface connects to a different network and normally has an IP address that belongs to that network.
 
-The interfaces may be physical ports or logical interfaces. For this introduction, the important idea is that a router has a presence in every network it directly connects.
+Think of each interface as one side of a doorway. One interface may face the office network while another faces the internet provider.
 
-<h2 id="network-boundaries">Network boundaries</h2>
+<h2 id="routers-connect-networks">Routers connect networks</h2>
 
-A boundary is the point between differently named IP networks. A router belongs at that boundary. Ordinary local traffic can remain within one network, while traffic that must leave uses a router.
+A network boundary is where one IP network ends and another begins. A router belongs at this boundary because it has an interface connected to each side.
 
-Detailed path selection is covered in the Network Layer module. Here, focus only on where the router belongs and why it connects different networks.
+For example, an office switch connects laptops and printers inside the Office LAN. A router then connects the Office LAN to the internet. Detailed forwarding decisions belong in the later Network Layer module.
 
-<h2 id="default-gateway">The default gateway</h2>
+<h2 id="routers-as-default-gateways">Routers as default gateways</h2>
 
-A host's **default gateway** is normally a router interface on the host's own network. The host uses that gateway when it needs help reaching another network. The gateway is the first router, not necessarily the final destination.
+A host's **default gateway** is normally the router interface on its own network. When a destination is outside the local network, the host sends the traffic to this gateway for help reaching the other network.
+
+The default gateway is the first router on the journey. It is not the remote website or the final destination.
 
 <h2 id="place-the-router">Place the router</h2>
 
-Choose where the router belongs in a simple office example.
+Use the device icons to choose where the router belongs in a simple office example.
 
 <RouterBoundaryPlacement />
 
 <h2 id="knowledge-check">Knowledge check</h2>
 
 <KnowledgeCheck progressItemId="routers_default_gateways_and_network_boundaries_check_1"
-  question="What is the main introductory role of a router?"
-  options={["Connect different IP networks", "Print documents", "Repeat every signal to every port"]}
-  correctIndex={0}
-  explanation="A router connects different IP networks and provides a boundary between them." />
-
-<KnowledgeCheck progressItemId="routers_default_gateways_and_network_boundaries_check_2"
-  question="Where should a router be placed?"
-  options={["Between different networks", "Between a monitor and a keyboard", "Only inside one host"]}
-  correctIndex={0}
-  explanation="A router belongs at the boundary between different IP networks." />
-
-<KnowledgeCheck progressItemId="routers_default_gateways_and_network_boundaries_check_3"
   question="What is a host's default gateway normally?"
   options={["A router interface on the host's network", "The final remote server", "Every switch port"]}
   correctIndex={0}
