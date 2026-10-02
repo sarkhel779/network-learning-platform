@@ -1,40 +1,79 @@
 <h2 id="why-layers">Why layered models exist</h2>
 
-Layered models divide networking work into smaller responsibilities. Each layer describes a useful group of tasks, making a complex system easier to learn, build, and discuss.
+Layered models divide networking work into smaller responsibilities. You already know about hosts, network devices, MAC addresses, and IP addresses. The models give those ideas a place on one map.
 
-The models are guides rather than physical stacks of boxes. Real products may combine responsibilities while the concepts remain useful.
+Imagine sending a short message from a laptop to another host. One part of the system creates the message, another supplies delivery information, and another carries signals across a cable or wireless link. Separating those jobs lets us study one responsibility at a time.
+
+A **protocol** is an agreed set of communication rules. A **model** groups responsibilities; it is not itself a protocol. Neither model is a physical stack of seven or four devices. A host's software and network interface work together, and real products can combine responsibilities.
+
+For now, aim to explain each layer's main job rather than memorize every protocol or header field.
 
 <h2 id="osi-model">The seven OSI layers</h2>
 
-The **OSI model** has seven conceptual layers:
+**OSI** means **Open Systems Interconnection**. Its seven conceptual layers are numbered from Physical (1) to Application (7). The table is shown from the top down, as data is prepared for sending.
 
-1. **Physical** — signals, media, and bits.
-2. **Data Link** — local frames and link identifiers.
-3. **Network** — logical addressing between networks.
-4. **Transport** — end-to-end application conversations.
-5. **Session** — organizing an application exchange.
-6. **Presentation** — representation, compression, and encryption formats.
-7. **Application** — services used by applications.
+<div className="lesson-table" role="region" aria-label="OSI layer responsibilities" tabIndex={0}>
+  <table>
+    <caption>Seven layers, seven responsibilities</caption>
+    <thead>
+      <tr><th scope="col">OSI layer</th><th scope="col">Main job</th><th scope="col">Simple example</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">7 — Application</th><td>Provides network services to applications.</td><td>HTTP supplies a web service; DNS supplies name lookup.</td></tr>
+      <tr><th scope="row">6 — Presentation</th><td>Handles how data is represented, compressed, or encrypted.</td><td>Representing text in a format the receiver can understand.</td></tr>
+      <tr><th scope="row">5 — Session</th><td>Organizes the dialogue between applications.</td><td>Coordinating an exchange or its checkpoints.</td></tr>
+      <tr><th scope="row">4 — Transport</th><td>Supports communication between application processes.</td><td>TCP and UDP; ports distinguish application endpoints.</td></tr>
+      <tr><th scope="row">3 — Network</th><td>Provides logical addressing and delivery between networks.</td><td>IP addresses and a router's network role.</td></tr>
+      <tr><th scope="row">2 — Data Link</th><td>Handles frames on a local link.</td><td>Ethernet frames, MAC addresses, and a switch's usual role.</td></tr>
+      <tr><th scope="row">1 — Physical</th><td>Carries bits using signals.</td><td>Electrical signals on copper, light in fiber, or radio.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+The Application layer is not the entire browser or phone app: it describes the network-service responsibility used by that app. Session and Presentation describe useful jobs, but modern Internet software does not always implement them as separate layers.
+
+Devices are useful reminders, not rigid labels. A hub repeats signals; an ordinary Ethernet switch works with frames; a router connects IP networks. A host uses the whole stack, and one physical product can contain several functions.
 
 <h2 id="tcp-ip-model">The TCP/IP model</h2>
 
-The practical **TCP/IP model** commonly groups responsibilities into four layers: Network Access, Internet, Transport, and Application. The name refers to the Internet protocol suite; it does not mean every exchange must use TCP.
+**TCP/IP** stands for **Transmission Control Protocol / Internet Protocol**. The name also refers to the Internet protocol suite, a family of protocols used together. It does not mean every exchange must use TCP: UDP is another transport protocol in that suite.
+
+We use the common **four-layer TCP/IP model**:
+
+- **Application:** services and the application's data exchange, such as HTTP or DNS.
+- **Transport:** communication between application processes, using TCP or UDP.
+- **Internet:** IP addressing and delivery across networks.
+- **Network Access:** local-link frames and the signals that carry them.
+
+Network Access is also called the **Link** layer. Some teaching resources split it into Data Link and Physical to make a five-layer model. That is a different grouping, not a different Internet. This course's comparison uses four TCP/IP layers consistently.
 
 <h2 id="model-mapping">OSI-to-TCP/IP mapping</h2>
 
-TCP/IP Network Access roughly combines OSI Physical and Data Link. TCP/IP Internet aligns with OSI Network. Transport aligns with Transport. TCP/IP Application groups the OSI Session, Presentation, and Application responsibilities.
+Read across the diagram to compare responsibilities, rather than comparing layer numbers. OSI has seven layers while this TCP/IP model has four, so their numbers are not interchangeable.
+
+TCP/IP Network Access roughly combines OSI Physical and Data Link. TCP/IP Internet aligns with OSI Network. Transport aligns with Transport. TCP/IP Application groups the OSI Session, Presentation, and Application responsibilities. These are helpful conceptual mappings, not a requirement that every protocol fit perfectly into one box.
 
 <LayerModelComparison />
 
-Use the short exercise to place Ethernet, IP, TCP, and DNS into their introductory model groups.
-
-<LayerMatchingExercise />
-
 <h2 id="encapsulation-lab">Encapsulation and layer matching</h2>
 
-When a sender prepares data, each layer supplies information needed for its responsibility. The receiver interprets those layers in the other direction. This process is called **encapsulation** and **decapsulation**.
+**Encapsulation** means adding delivery information around data as it moves down the sender's stack. **Decapsulation** means examining and removing that information as the receiver passes the data upward.
+
+Think of putting a message inside labeled envelopes. The labels help deliver the message; they do not replace it. In this simplified TCP example, the names change as delivery information is added:
+
+**Application data → TCP segment → IP packet → Ethernet frame → bits carried as signals.**
+
+A **header** is delivery information placed before the data it carries. Ethernet also uses information at the end, called a **trailer**. A **protocol data unit (PDU)** is simply the name for the unit of data at a particular layer. You do not need to learn detailed header fields yet. With UDP, the transport unit is called a datagram rather than a TCP segment.
+
+The player shows the sender going down the stack and the receiver going up. It is one simplified transfer, not the complete process of opening a website. The top three OSI responsibilities are grouped into the Application step; no separate Session or Presentation header is assumed.
 
 <EncapsulationExperience progressItemId="osi_and_tcp_ip_models_interactive_encapsulation_lab" />
+
+Use **Pause**, **Next**, **Previous**, and **Restart** to compare the original application data with the delivery information around it. Watch the active layer and PDU change together. Detailed protocol mechanics belong in the later layer modules.
+
+Now match four familiar examples to their TCP/IP groups. You can retry an answer or move between examples; this practice is not an additional completion requirement.
+
+<LayerMatchingExercise />
 
 <h2 id="knowledge-check">Knowledge check</h2>
 
@@ -46,6 +85,12 @@ When a sender prepares data, each layer supplies information needed for its resp
 
 <KnowledgeCheck progressItemId="osi_and_tcp_ip_models_check_2"
   question="How does TCP/IP Application relate to OSI?"
-  options={["It groups OSI Session, Presentation, and Application responsibilities", "It replaces the Physical layer only", "It is identical to the OSI Network layer"]}
-  correctIndex={0}
+  options={["It replaces the Physical layer only", "It groups OSI Session, Presentation, and Application responsibilities", "It is identical to the OSI Network layer"]}
+  correctIndex={1}
   explanation="The TCP/IP Application layer groups responsibilities described by the top three OSI layers." />
+
+**How we will use this map:** after Computer Network Basics, the course restructure follows Physical → Data Link → Network → Transport → Application, Session & Presentation. We will start with the signals and build upward. A separate later module will connect those ideas into how hosts communicate.
+
+For this introduction, remember the jobs: signals, local frames, IP delivery, application transport, and the application's exchange. The OSI model separates the upper responsibilities; TCP/IP groups them. Both help you organize the same networking concepts.
+
+References: [OSI reference model (ITU-T X.200)](https://www.itu.int/rec/T-REC-X.200-199407-I/en) and [Internet protocol layers (RFC 1122, section 1.1.3)](https://www.rfc-editor.org/rfc/rfc1122.html#section-1.1.3).
