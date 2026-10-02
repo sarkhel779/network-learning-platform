@@ -1,0 +1,41 @@
+{/* WIFI_SECURITY_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-wifi-security-evidence">Inspect Wi-Fi security evidence</h2>
+
+A monitor-mode-capable wireless adapter can capture a 4-way handshake directly off the air during a client's association — the basis for every WPA2 password-recovery tool, and for legitimate password-strength auditing on networks you're authorized to test.
+
+<WiresharkCheck displayFilter="eapol">Capture a client associating to a WPA2 network. Identify all four EAPOL (Extensible Authentication Protocol over LAN) frames of the handshake, and note that the ANonce, SNonce, and MIC fields are all readable in plaintext — only the GTK field in message 3 is actually encrypted.</WiresharkCheck>
+
+<SectionContinue itemId="wifi_security_section_inspect_wifi_security_evidence" anchor="inspect-wifi-security-evidence" />
+
+<h2 id="guided-handshake-practice">Guided handshake practice</h2>
+
+Work through why password length matters so much more for WPA2-Personal than it does for, say, an online login form. An online login form can lock an account after a handful of failed attempts, making brute-forcing impractical regardless of password length. A captured WPA2 handshake has no such limit: the attacker's guessing happens entirely on their own hardware, so the only real defense is making the search space itself infeasibly large — a long, high-entropy passphrase (16+ random characters, or a multi-word passphrase) resists this kind of attack even though the exact same captured handshake would be available to attack either way.
+
+<InterviewScenario title="A company's WPA2-Personal Wi-Fi password is 8 characters, all lowercase letters">A candidate argues this is safe because WPA2 uses strong AES encryption. Explain why the encryption strength is irrelevant to this specific weakness: the vulnerability is in deriving the key from a low-entropy password via a handshake anyone can capture, not in the strength of the cipher used afterward — an attacker doesn't need to break AES at all, only to guess the password offline.</InterviewScenario>
+
+<SectionContinue itemId="wifi_security_section_guided_handshake_practice" anchor="guided-handshake-practice" />
+
+<h2 id="troubleshoot-wifi-security">Troubleshoot Wi-Fi security</h2>
+
+1. Confirm both the client and AP are actually configured for the same WPA version and cipher — a client that only supports WPA2 cannot connect to an AP configured for WPA3-only, and the resulting failure often looks like a wrong-password error instead of a compatibility mismatch.
+2. Check for a "WPA3 transition mode" AP broadcasting both WPA2 and WPA3 simultaneously — while this maximizes compatibility, it reintroduces WPA2's offline dictionary-attack surface for any client (or attacker) that connects via the WPA2 side.
+3. Rule out a simple typo or case-sensitivity issue in the password before assuming a security or configuration problem — Wi-Fi passwords are case-sensitive and this remains the most common cause of authentication failures.
+4. If 802.1X/Enterprise authentication fails, check the RADIUS server's logs directly rather than the client, since Enterprise failures (expired certificates, misconfigured EAP methods) usually surface clearly server-side but only as a generic failure on the client.
+5. Distinguish an authentication failure (wrong password or incompatible security settings, happens before any IP configuration) from a DHCP or IP-layer failure (associates and authenticates fine but can't get an address) — they point to completely different layers of the connection process.
+
+<InterviewScenario title="A guest network was recently switched from WPA2 to WPA3, and a handful of older employee devices can no longer connect at all">Explain the most likely cause and the trade-off in the two ways to fix it: enabling WPA3 transition mode restores compatibility for the older devices but reopens WPA2's offline dictionary-attack surface on that network, while keeping WPA3-only forces those specific older devices to be replaced or moved to a separate, WPA2-only network instead.</InterviewScenario>
+
+<SectionContinue itemId="wifi_security_section_troubleshoot_wifi_security" anchor="troubleshoot-wifi-security" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="wifi_security_check_1" question="Why can an attacker test WPA2 password guesses completely offline after capturing a 4-way handshake?" options={["The AP accidentally transmits the password itself during the handshake", "The handshake's Message Integrity Code can be recomputed from publicly captured values plus any candidate password, with no AP interaction needed to check a guess", "WPA2's encryption algorithm (AES) has a known mathematical weakness"]} correctIndex={1} explanation="The MIC in the captured handshake can be recomputed entirely from public values (nonces, MAC addresses) plus a candidate password. Since checking a guess needs no interaction with the AP, there's nothing to rate-limit, letting an attacker try candidates indefinitely offline." />
+
+<KnowledgeCheck progressItemId="wifi_security_check_2" question="What does WPA3's SAE (Simultaneous Authentication of Equals) change about key derivation compared to WPA2's 4-way handshake?" options={["It encrypts the entire handshake with AES so it can't be captured at all", "It requires a live, interactive exchange with the AP to derive the session key, so a captured exchange alone can't be used to test password guesses offline", "It eliminates the need for a shared password entirely"]} correctIndex={1} explanation="SAE's Diffie-Hellman-based exchange means deriving the session key requires a real round trip with the AP. An eavesdropper who captures the exchange can't replicate that interaction offline, so each password guess would require its own rate-limitable attempt against the live AP." />
+
+<KnowledgeCheck progressItemId="wifi_security_check_3" question="What is the key difference between WPA2/WPA3-Personal and WPA2/WPA3-Enterprise?" options={["Enterprise uses a stronger encryption cipher than Personal", "Personal uses one shared password for every device, while Enterprise authenticates each user individually against a RADIUS server via 802.1X", "Enterprise is only available on 5 GHz and 6 GHz bands"]} correctIndex={1} explanation="Personal mode uses a single shared passphrase for the whole network. Enterprise mode authenticates each user individually via 802.1X against a RADIUS server, so each device gets unique credentials and session keys, and individual access can be revoked without changing a password shared by everyone." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">See how the KRACK (Key Reinstallation Attack) exploited retransmissions of message 3 in the 4-way handshake to force nonce reuse, why WPA3's transition mode can reintroduce WPA2's downgrade risk if not configured carefully, and what WPA3-Enterprise's 192-bit security suite changes for high-security deployments.</PremiumPreview>
