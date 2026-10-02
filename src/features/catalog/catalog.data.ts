@@ -115,9 +115,9 @@ const curriculum: Pathway[] = [
             ],
           },
           {
-            id: "lesson_physical_and_logical_addressing", slug: "physical-and-logical-addressing", title: "Physical and Logical Addressing",
+            id: "lesson_physical_and_logical_addressing", slug: "physical-and-logical-addressing", title: "Logical and Physical Addressing",
             objective: "Distinguish MAC and IP address roles and recognize their basic formats.",
-            seo: { title: "Physical and Logical Network Addressing", description: "Compare MAC and IP addresses, recognize their formats, and understand the introductory U/L and I/G bits." },
+            seo: { title: "Logical and Physical Network Addressing", description: "Compare MAC and IP addresses, recognize their formats, and explore the introductory U/L and I/G bits." },
             published: true, estimatedMinutes: 15,
             sections: [
               { id: "why-networks-use-addresses", label: "Why networks use addresses", access: "public" },

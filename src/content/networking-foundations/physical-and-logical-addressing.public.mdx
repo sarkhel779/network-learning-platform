@@ -1,33 +1,69 @@
 <h2 id="why-networks-use-addresses">Why networks use addresses</h2>
 
-Networks need identifiers so data can be associated with the right interfaces and endpoints. Two important forms are **MAC addresses**, used as local-link identifiers, and **IP addresses**, used as logical network addresses.
+You already know that a laptop, printer, or server joins a network through a **network interface**. An interface can have more than one kind of address. A Wi-Fi interface and an Ethernet interface on the same laptop are separate interfaces.
 
-They are related but not interchangeable. They have different formats and responsibilities.
+Two important forms are **MAC addresses**, used as local-link identifiers, and **IP addresses**, used as logical network addresses. They are related but not interchangeable.
+
+<div className="lesson-table" role="region" aria-label="MAC and IP address comparison" tabIndex={0}>
+  <table>
+    <caption>Two addresses, different jobs</caption>
+    <thead><tr><th scope="col">Address</th><th scope="col">Beginner meaning</th><th scope="col">Example</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">MAC — physical addressing</th><td>An interface's identity on an Ethernet or Wi-Fi link</td><td><code>02:1A:2B:3C:4D:5E</code></td></tr>
+      <tr><th scope="row">IP — logical addressing</th><td>An address assigned to an interface for a particular IP network</td><td><code>192.0.2.10</code></td></tr>
+    </tbody>
+  </table>
+</div>
+
+One laptop can use both at the same time. **Physical** does not mean a label on the cable, and **logical** does not mean imaginary: both are real values used by networking software.
 
 <h2 id="mac-addresses">MAC addresses</h2>
 
-An Ethernet MAC address is 48 bits and is commonly written as six hexadecimal pairs, such as `02:1A:2B:3C:4D:5E`. Hexadecimal uses digits 0–9 and letters A–F.
+**MAC** stands for **Media Access Control**. An Ethernet MAC address is 48 bits and is commonly written as six hexadecimal pairs, such as `02:1A:2B:3C:4D:5E`. Hexadecimal uses digits 0–9 and letters A–F.
 
-A MAC address identifies an interface for local-link purposes. Later lessons explain how Ethernet uses it.
+Each pair represents eight bits, also called an **octet**. Six octets make 48 bits. You do not need to convert a whole address to binary to recognize the format.
+
+A MAC address identifies an interface for local-link purposes. A laptop's Wi-Fi and Ethernet interfaces normally have different MAC addresses. It is more precise to say “this interface's MAC address” than “this computer's one permanent address.”
+
+A manufacturer can assign a MAC address, but software can also assign or change it. Many devices use a randomized MAC address for privacy. Calling MAC addressing **physical addressing** does not mean that every MAC address is fixed forever.
 
 <h2 id="universal-local-and-individual-group">U/L and I/G bits</h2>
 
-The two least-significant bits of the first octet have introductory meaning:
+Two bits in the **first octet** describe the kind of MAC address. In the usual written binary form, look at the two bits on the right:
 
-- The **I/G bit** is the least-significant bit. `0` means an individual address; `1` means a group address.
-- The **U/L bit** is the next bit. `0` indicates universally administered; `1` indicates locally administered.
+<div className="lesson-table" role="region" aria-label="I/G and U/L bit meanings" tabIndex={0}>
+  <table>
+    <caption>The two introductory MAC address bits</caption>
+    <thead><tr><th scope="col">Bit</th><th scope="col">Position</th><th scope="col">If it is 0</th><th scope="col">If it is 1</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">I/G — Individual/Group</th><td>Rightmost bit, bit 0</td><td>Individual address, also called unicast</td><td>Group address, used for a group of receivers</td></tr>
+      <tr><th scope="row">U/L — Universal/Local</th><td>Next bit to the left, bit 1</td><td>Universally administered</td><td>Locally administered</td></tr>
+    </tbody>
+  </table>
+</div>
 
-For `02:1A:2B:3C:4D:5E`, the I/G bit is `0` and the U/L bit is `1`, so it is an individual, locally administered MAC address.
+The **I/G bit** tells you whether the address is for an individual interface or a group. A group address is not an ordinary host interface address. Later lessons explain delivery to groups.
+
+The **U/L bit** describes how the address is administered. Universal addresses use an IEEE-assigned prefix; local addresses can be assigned through software or by a network administrator. This is also sometimes called the Local/Global bit. “Local” here does not mean “my house,” and “universal” does not mean “reachable over the Internet.”
+
+For `02:1A:2B:3C:4D:5E`, the first octet `02` is `00000010` in binary. The **I/G bit** is `0` and the **U/L bit** is `1`, so it is an individual, locally administered MAC address. The explorer below lets you change just these two bits.
 
 <h2 id="ip-addresses">IP addresses</h2>
 
-An IP address is a logical network address. IPv4 is commonly written in **dotted decimal**, such as `192.0.2.10`. IPv6 uses hexadecimal groups separated by colons.
+**IP** stands for **Internet Protocol**. An IP address is a logical network address assigned to an interface. A host can have more than one IP address, and its IP addresses can change when it joins a different network.
 
-MAC addresses support local-link identity; IP addresses provide logical network addressing across connected networks. Detailed IPv4, IPv6, and subnet concepts come in the Network Layer module.
+There are two versions to recognize:
+
+- **IPv4:** 32 bits, commonly written in **dotted decimal**, such as `192.0.2.10`. There are four numbers separated by dots, and each number is between 0 and 255.
+- **IPv6:** 128 bits, written as hexadecimal groups separated by colons, such as `2001:db8::10`. The double colon is a shorthand for consecutive zero groups.
+
+Imagine using the same laptop interface on two different networks. It can keep the same MAC address while receiving a different IP address. That distinction is the main idea to remember; real devices may also change their MAC addresses.
+
+MAC addresses support local-link identity; IP addresses provide logical network addressing across connected networks. Detailed IPv4, IPv6, and network-prefix concepts come in the Network Layer module. The addresses in this lesson are teaching examples.
 
 <h2 id="inspect-address-formats">Inspect address formats</h2>
 
-Choose each sample to identify its format and, for MAC examples, the introductory U/L and I/G meaning.
+First compare the same interface on two example networks. Then choose an address sample to recognize its format. For MAC examples, toggle the U/L and I/G bits and observe the first octet and its meaning change.
 
 <AddressFormatInspector />
 
@@ -35,8 +71,8 @@ Choose each sample to identify its format and, for MAC examples, the introductor
 
 <KnowledgeCheck progressItemId="physical_and_logical_addressing_check_1"
   question="What kind of address is 02:1A:2B:3C:4D:5E?"
-  options={["A MAC address written in hexadecimal", "An IPv4 address in dotted decimal", "A web address"]}
-  correctIndex={0}
+  options={["An IPv4 address in dotted decimal", "A MAC address written in hexadecimal", "A web address"]}
+  correctIndex={1}
   explanation="02:1A:2B:3C:4D:5E is a MAC address written in hexadecimal." />
 
 <KnowledgeCheck progressItemId="physical_and_logical_addressing_check_2"
@@ -46,7 +82,9 @@ Choose each sample to identify its format and, for MAC examples, the introductor
   explanation="An I/G bit of 1 identifies a group address; a U/L bit of 1 identifies a locally administered address." />
 
 <KnowledgeCheck progressItemId="physical_and_logical_addressing_check_3"
-  question="Which comparison is correct?"
-  options={["MAC supports local-link identity; IP provides logical network addressing", "MAC and IP are the same format", "IP is only a physical cable label"]}
-  correctIndex={0}
-  explanation="MAC addresses support local-link delivery identity; IP addresses provide logical network addressing." />
+  question="A laptop joins a different IP network using the same interface. Which statement can be correct?"
+  options={["Its MAC address must become the same as its IP address", "Its IP address must stay the same on every network", "The interface can keep its MAC address while its IP address changes"]}
+  correctIndex={2}
+  explanation="The same interface can keep its MAC address while using a different IP address on another network. Devices can also change or randomize their MAC addresses." />
+
+The bit terminology is based on [RFC 9542, Special First Octet Bits](https://www.rfc-editor.org/rfc/rfc9542.html#section-2.1.1).
