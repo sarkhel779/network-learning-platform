@@ -102,6 +102,7 @@ const definitions = [
   { lessonId: "lesson_wireless_fundamentals", interactiveAnchors: ["interactive-csma-ca-and-the-hidden-node-problem"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_wifi_security", interactiveAnchors: ["interactive-wpa2-handshake-and-the-wpa3-fix"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_80211_standards_and_association", interactiveAnchors: ["interactive-the-association-state-machine"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
+  { lessonId: "lesson_wireless_site_design_and_roaming", interactiveAnchors: ["interactive-the-sticky-client-and-the-roaming-trigger"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
 ] as const satisfies readonly LessonProgressDefinition[];
 
 function itemPrefix(lessonId: string) {
