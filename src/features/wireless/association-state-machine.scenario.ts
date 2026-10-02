@@ -1,0 +1,125 @@
+import { parsePacketFlowScenario, type PacketFlowScenario } from "@/features/packet-flow/packet-flow.schema";
+
+export const associationStateMachineScenario: PacketFlowScenario = parsePacketFlowScenario({
+  id: "association-state-machine",
+  title: "The 802.11 association state machine: from Unassociated to ready",
+  description: "Watch a client move through scanning, authentication, and association before it can exchange a single data frame with the AP — and see why reaching Associated still isn't the same as being ready to send data on a secured network.",
+  defaultSpeed: 1,
+  devices: [
+    { id: "client", label: "Client", role: "wants to join the network", x: 160, y: 170 },
+    { id: "ap", label: "Access Point", role: "advertises the BSS", x: 560, y: 170 },
+  ],
+  links: [
+    { id: "client-ap", from: "client", to: "ap" },
+  ],
+  steps: [
+    {
+      id: "client-starts-unauthenticated-and-unassociated",
+      title: "The client starts Unauthenticated and Unassociated",
+      explanation: "Before any frames are exchanged, the client is in State 1: Unauthenticated and Unassociated. It can't exchange data frames with the AP yet — it has to pass through authentication and association first.",
+      durationMs: 2200,
+      activeDeviceIds: ["client"],
+      activeLinkIds: [],
+      summaryFields: [
+        { label: "Client state", value: "1 — Unauthenticated, Unassociated" },
+      ],
+      detailFields: [],
+    },
+    {
+      id: "client-sends-a-probe-request",
+      title: "The client actively scans with a Probe Request",
+      explanation: "Rather than waiting to overhear a periodic Beacon (passive scanning), the client actively scans by broadcasting a Probe Request naming the SSID it's looking for, prompting any matching AP to respond immediately.",
+      durationMs: 2000,
+      activeDeviceIds: ["client", "ap"],
+      activeLinkIds: ["client-ap"],
+      packet: { kind: "frame", label: "Probe Request", from: "client", to: "ap" },
+      summaryFields: [
+        { label: "Frame", value: "Probe Request" },
+      ],
+      detailFields: [],
+    },
+    {
+      id: "ap-replies-with-a-probe-response",
+      title: "The AP replies with a Probe Response",
+      explanation: "The AP answers with a Probe Response carrying the same information a Beacon would: the SSID, supported data rates, channel, and which security protocols (WPA2, WPA3) it supports.",
+      durationMs: 2200,
+      activeDeviceIds: ["ap", "client"],
+      activeLinkIds: ["client-ap"],
+      packet: { kind: "frame", label: "Probe Response", from: "ap", to: "client" },
+      summaryFields: [
+        { label: "Frame", value: "Probe Response" },
+        { label: "Carries", value: "SSID, rates, channel, supported security" },
+      ],
+      detailFields: [],
+    },
+    {
+      id: "client-sends-open-system-authentication",
+      title: "The client sends an Open System Authentication frame",
+      explanation: "The client sends an 802.11 Authentication frame using the Open System algorithm — essentially a formality dating to 1997. It doesn't actually secure anything; on a WPA2/WPA3 network, the real cryptographic authentication happens later, during the 4-way handshake.",
+      durationMs: 2200,
+      activeDeviceIds: ["client", "ap"],
+      activeLinkIds: ["client-ap"],
+      packet: { kind: "frame", label: "Authentication (1 of 2)", from: "client", to: "ap" },
+      summaryFields: [
+        { label: "Frame", value: "Authentication, Open System" },
+      ],
+      detailFields: [
+        { label: "Actually authenticates?", value: "No — this step is a near-vestigial formality" },
+      ],
+    },
+    {
+      id: "ap-confirms-authentication-success",
+      title: "The AP confirms: Authenticated, still Unassociated",
+      explanation: "The AP replies with its own Authentication frame reporting success. The client moves to State 2: Authenticated but still Unassociated — one step closer, but still unable to exchange data.",
+      durationMs: 2200,
+      activeDeviceIds: ["ap", "client"],
+      activeLinkIds: ["client-ap"],
+      packet: { kind: "frame", label: "Authentication (2 of 2) — success", from: "ap", to: "client" },
+      summaryFields: [
+        { label: "Client state", value: "2 — Authenticated, Unassociated", changed: true },
+      ],
+      detailFields: [],
+    },
+    {
+      id: "client-sends-association-request",
+      title: "The client sends an Association Request",
+      explanation: "The client sends an Association Request listing its supported rates, capabilities, and — on a secured network — the specific security settings (the RSN information element) it intends to use.",
+      durationMs: 2200,
+      activeDeviceIds: ["client", "ap"],
+      activeLinkIds: ["client-ap"],
+      packet: { kind: "frame", label: "Association Request", from: "client", to: "ap" },
+      summaryFields: [
+        { label: "Frame", value: "Association Request" },
+      ],
+      detailFields: [],
+    },
+    {
+      id: "ap-sends-association-response-with-aid",
+      title: "The AP responds with an Association ID: fully Associated",
+      explanation: "The AP accepts and replies with an Association Response carrying a unique Association ID (AID) — a number from 1 to 2007 identifying this specific client within the BSS, used among other things so the AP knows which sleeping client to buffer frames for. The client reaches State 3: Authenticated and Associated.",
+      durationMs: 2400,
+      activeDeviceIds: ["ap", "client"],
+      activeLinkIds: ["client-ap"],
+      packet: { kind: "frame", label: "Association Response + AID", from: "ap", to: "client" },
+      summaryFields: [
+        { label: "Client state", value: "3 — Authenticated, Associated", changed: true },
+        { label: "Assigned", value: "Association ID (AID)" },
+      ],
+      detailFields: [],
+    },
+    {
+      id: "associated-is-not-the-same-as-ready-for-data",
+      title: "Associated doesn't mean ready to send data — it depends on security",
+      explanation: "On an open network, State 3 is the finish line: the client can send data immediately. On a WPA2 or WPA3 network, reaching State 3 only means the client and AP have agreed to try to secure the connection — the client still can't send real traffic until the 4-way handshake (or WPA3's SAE exchange) completes and installs the actual encryption keys.",
+      durationMs: 2800,
+      activeDeviceIds: ["client", "ap"],
+      activeLinkIds: [],
+      summaryFields: [
+        { label: "Open network", value: "Ready for data now" },
+        { label: "WPA2/WPA3 network", value: "4-way handshake or SAE still required", changed: true },
+      ],
+      detailFields: [],
+      stateNote: "This is exactly where the WPA2 4-way handshake from the previous lesson picks up — association and the security handshake are two separate steps, even though they happen back to back.",
+    },
+  ],
+} as const);

@@ -188,6 +188,10 @@ const lessonImports = {
     public: () => import("@/content/wireless-networking/wifi-security.public.mdx"),
     account: () => import("@/content/wireless-networking/wifi-security.account.mdx"),
   },
+  "wireless-networking/80211-standards-and-association": {
+    public: () => import("@/content/wireless-networking/80211-standards-and-association.public.mdx"),
+    account: () => import("@/content/wireless-networking/80211-standards-and-association.account.mdx"),
+  },
 } satisfies LessonContentRegistry;
 
 async function loadFromRegistry(

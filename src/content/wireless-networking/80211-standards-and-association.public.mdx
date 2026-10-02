@@ -1,0 +1,37 @@
+<LearningObjective>Explain what each major 802.11 amendment changed and how Wi-Fi generation names map to them, the difference between passive and active scanning, the states a client moves through from Unauthenticated/Unassociated to Associated, and how 802.11r/k/v support fast roaming between access points.</LearningObjective>
+
+<h2 id="the-80211-amendment-alphabet">The 802.11 amendment alphabet</h2>
+
+Every Wi-Fi standard traces back to the IEEE 802.11 base standard, extended over the years by lettered amendments. **802.11b** (1999) and **802.11a** (1999) were the first widely deployed versions, on 2.4 GHz and 5 GHz respectively. **802.11g** (2003) brought 802.11a's speeds to the 2.4 GHz band. **802.11n** (2009) introduced **MIMO** (Multiple Input, Multiple Output — using several antennas to carry multiple data streams at once) and worked on both bands. **802.11ac** (2013) moved to 5 GHz only and widened channels up to 160 MHz. **802.11ax** (2019) added **OFDMA** (letting an AP serve multiple clients within a single transmission by subdividing the channel) and extended into the new 6 GHz band as **802.11ax-6E**. **802.11be** (2024), still rolling out, adds **Multi-Link Operation** — a single client using more than one band simultaneously.
+
+<SectionContinue itemId="80211_standards_and_association_section_the_80211_amendment_alphabet" anchor="the-80211-amendment-alphabet" />
+
+<h2 id="wi-fi-generation-names">Wi-Fi generation names</h2>
+
+Because "802.11ac" means little to most consumers, the Wi-Fi Alliance introduced simpler generation names starting in 2018: **Wi-Fi 4** is 802.11n, **Wi-Fi 5** is 802.11ac, **Wi-Fi 6** is 802.11ax, **Wi-Fi 6E** is 802.11ax extended into the 6 GHz band, and **Wi-Fi 7** is 802.11be. The generation number and the amendment letter refer to exactly the same technology — a device box advertising "Wi-Fi 6" and one advertising "802.11ax" are describing the same standard.
+
+<SectionContinue itemId="80211_standards_and_association_section_wi_fi_generation_names" anchor="wi-fi-generation-names" />
+
+<h2 id="passive-and-active-scanning">Passive and active scanning</h2>
+
+Before a client can join a network, it has to find it. **Passive scanning** means simply listening: every AP periodically broadcasts a **Beacon** frame announcing its SSID, supported rates, channel, and security settings, and a client can discover a network just by waiting to overhear one. **Active scanning** is faster: the client broadcasts a **Probe Request** (naming a specific SSID, or a wildcard to ask every nearby AP to respond), and any matching AP replies immediately with a **Probe Response** carrying the same information a Beacon would — without the client having to wait for the next scheduled Beacon.
+
+<SectionContinue itemId="80211_standards_and_association_section_passive_and_active_scanning" anchor="passive-and-active-scanning" />
+
+<h2 id="authentication-and-association">Authentication and association</h2>
+
+Once a client has found an AP, it moves through two more steps before it can exchange data. **802.11 Authentication** using the "Open System" algorithm is a two-frame formality dating back to the original 1997 standard — it doesn't actually secure anything; on a modern WPA2/WPA3 network, the real cryptographic authentication happens later, in the 4-way handshake or SAE exchange. **Association** follows: the client sends an Association Request describing its capabilities and (on a secured network) which security settings it intends to use, and the AP replies with an Association Response assigning the client a unique **Association ID (AID)** within this BSS.
+
+<SectionContinue itemId="80211_standards_and_association_section_authentication_and_association" anchor="authentication-and-association" />
+
+<h2 id="interactive-the-association-state-machine">Interactive the association state machine</h2>
+
+Step through a client's complete journey from Unauthenticated and Unassociated to fully Associated — and see exactly why reaching that final state still isn't the same thing as being ready to send data on a secured network.
+
+<AssociationStateMachinePacketFlow progressItemId="80211_standards_and_association_interactive_interactive_the_association_state_machine" />
+
+<h2 id="fast-roaming-with-80211r-k-and-v">Fast roaming with 802.11r, k, and v</h2>
+
+When a client moves between APs that share the same SSID (an ESS), repeating the full scan-authenticate-associate-handshake sequence from scratch at every AP causes noticeable gaps — unacceptable for a voice or video call. Three amendments address this directly: **802.11r (Fast BSS Transition)** lets a client pre-negotiate key material with a candidate AP before it actually roams, cutting the security handshake down to a couple of frames instead of a full exchange. **802.11k (Radio Resource Management)** lets an AP hand the client a neighbor report listing nearby APs, so the client doesn't have to scan every channel blindly to find its next hop. **802.11v (Wireless Network Management)** lets the network suggest — via BSS Transition Management — that a client move to a specific AP, rather than leaving the roaming decision entirely up to the client's own (often conservative) signal-strength threshold.
+
+<SectionContinue itemId="80211_standards_and_association_section_fast_roaming_with_80211r_k_and_v" anchor="fast-roaming-with-80211r-k-and-v" />

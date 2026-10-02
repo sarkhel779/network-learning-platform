@@ -1,0 +1,41 @@
+{/* 80211_STANDARDS_AND_ASSOCIATION_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-association-evidence">Inspect association evidence</h2>
+
+A monitor-mode wireless capture during a client joining a network shows the full scan-authenticate-associate sequence as separate, identifiable management frames — useful for confirming exactly where a slow or failed connection attempt is actually stalling.
+
+<WiresharkCheck displayFilter="wlan.fc.type_subtype == 0x0000 || wlan.fc.type_subtype == 0x0001 || wlan.fc.type_subtype == 0x000b">Capture a client joining a Wi-Fi network from a cold start. Identify the Association Request (subtype 0x00), Association Response (subtype 0x01), and Authentication frames (subtype 0x0b), and note the Association ID the AP assigns in the Association Response.</WiresharkCheck>
+
+<SectionContinue itemId="80211_standards_and_association_section_inspect_association_evidence" anchor="inspect-association-evidence" />
+
+<h2 id="guided-standards-practice">Guided standards practice</h2>
+
+Work through why a seemingly simple purchase decision — "which Wi-Fi standard does this device support?" — actually determines real-world behavior on a mixed network. A network has an 802.11ax (Wi-Fi 6) access point serving a mix of Wi-Fi 6 laptops and several older 802.11n (Wi-Fi 4) IoT sensors. Because 802.11 is backward compatible, the older devices can still associate and communicate — but every legacy device on the channel can force the AP to fall back to older, slower protection mechanisms for traffic timing to remain compatible, reducing the effective throughput available even to the Wi-Fi 6 clients sharing the same channel.
+
+<InterviewScenario title="A newly purchased 'Wi-Fi 6' router doesn't seem any faster than the old one it replaced">A candidate assumes the new router is defective. Explain a more likely explanation to check first: the actual client devices connecting to it (laptops, phones) may not themselves support 802.11ax, in which case they'll negotiate down to whatever older standard they do support, and the router's new capabilities go largely unused regardless of how capable the router itself is.</InterviewScenario>
+
+<SectionContinue itemId="80211_standards_and_association_section_guided_standards_practice" anchor="guided-standards-practice" />
+
+<h2 id="troubleshoot-association-issues">Troubleshoot association issues</h2>
+
+1. Distinguish an association failure (the client never reaches State 3 at all — check for an AP client-count limit, a MAC filter, or a band/standard mismatch) from an authentication failure after association (reaches State 3 but the WPA2/WPA3 handshake fails — almost always a wrong password or an incompatible security mode).
+2. Check the AP's maximum associated-client count before assuming a configuration problem — many consumer APs silently refuse new associations once a client limit is reached, with no obvious error shown to the user.
+3. If a client repeatedly scans but never even attempts authentication, confirm it actually received a Probe Response or Beacon for that SSID — a hidden SSID (one that suppresses Beacons) requires the client to actively probe for the exact name, and a typo there looks identical to "network not found."
+4. For a device that works near the AP but fails to associate from farther away, consider that the client's Probe Request or Association Request frame may be too weak for the AP to decode reliably even though the AP's stronger Beacon is still audible to the client — association requires a two-way link budget, not just one-way audibility.
+5. When roaming misbehaves (a client "sticks" to a weak, distant AP instead of roaming to a strong, nearby one with the same SSID), check whether 802.11k/v are enabled and supported by the client — without them, roaming is entirely the client's own decision, and many clients are deliberately conservative about giving up an existing association.
+
+<InterviewScenario title="A client device stays connected to a distant, weak AP even while standing right next to a much stronger one with the same SSID, in an office with several APs">Explain why this is normal default behavior rather than a bug: the roaming decision belongs to the client, not the network, and without 802.11k (neighbor reports) and 802.11v (network-suggested transitions) to assist it, many client radios are tuned to avoid roaming until the signal drops quite low, to avoid unnecessarily interrupting an active connection.</InterviewScenario>
+
+<SectionContinue itemId="80211_standards_and_association_section_troubleshoot_association_issues" anchor="troubleshoot-association-issues" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="80211_standards_and_association_check_1" question="What is the key functional difference between passive and active scanning?" options={["Passive scanning only works on 5 GHz, active scanning only works on 2.4 GHz", "Passive scanning waits to overhear a periodic Beacon, while active scanning broadcasts a Probe Request to get an immediate Probe Response", "Active scanning is used only by access points, never by clients"]} correctIndex={1} explanation="Passive scanning means listening for an AP's periodically broadcast Beacon frames. Active scanning is faster: the client broadcasts a Probe Request and any matching AP responds immediately with a Probe Response, without waiting for the next scheduled Beacon." />
+
+<KnowledgeCheck progressItemId="80211_standards_and_association_check_2" question="Why doesn't 802.11 Open System Authentication actually secure a WPA2 or WPA3 connection?" options={["It's a two-frame formality from the original 1997 standard; real cryptographic authentication happens later in the 4-way handshake or SAE exchange", "Open System Authentication was removed entirely in WPA2 and WPA3", "It only applies to Enterprise networks, never Personal networks"]} correctIndex={0} explanation="Open System Authentication is a vestigial two-frame exchange from the original 802.11 standard that doesn't perform any real security check. On a WPA2/WPA3 network, actual cryptographic authentication happens afterward, during the 4-way handshake (WPA2) or SAE exchange (WPA3)." />
+
+<KnowledgeCheck progressItemId="80211_standards_and_association_check_3" question="What problem does 802.11r (Fast BSS Transition) specifically solve?" options={["It increases the maximum data rate available to a single client", "It lets a client pre-negotiate key material with a candidate AP before roaming, shortening the security handshake needed after the move", "It allows a client to connect to two different SSIDs simultaneously"]} correctIndex={1} explanation="802.11r addresses roaming latency: by letting a client pre-negotiate key material with a candidate AP ahead of time, the security handshake needed immediately after roaming is reduced to just a couple of frames instead of a full exchange from scratch." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">See how 802.11ax's BSS coloring tags transmissions so overlapping networks on the same channel can tell their own traffic apart from co-channel interference, how Target Wake Time lets battery-constrained IoT devices negotiate exactly when they'll wake to check for data, and how 802.11be's Multi-Link Operation lets a single client send and receive across more than one band at the same time.</PremiumPreview>
