@@ -18,7 +18,7 @@ describe("catalog repository", () => {
         "Bridges",
         "Switches",
         "Routers",
-        "Physical and Logical Addressing",
+        "Logical and Physical Addressing",
         "OSI and TCP/IP Models",
         "Computer Network Basics Final Quiz",
       ],
