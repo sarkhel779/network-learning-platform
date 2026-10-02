@@ -1,0 +1,37 @@
+<LearningObjective>Explain how RF propagation and attenuation shape real-world Wi-Fi coverage, the difference between predictive, passive, and active site surveys, how AP placement and channel planning balance coverage against co-channel interference, and why cell overlap alone doesn't guarantee smooth roaming without client assistance from 802.11k and 802.11v.</LearningObjective>
+
+<h2 id="rf-propagation-and-attenuation">RF propagation and attenuation</h2>
+
+Radio signal strength doesn't fall off linearly with distance — it follows an inverse-square relationship, so doubling the distance from an AP reduces received power to roughly a quarter, not half. Real environments make this worse through **attenuation**: drywall barely affects a signal, but concrete, brick, and especially metal (filing cabinets, elevator shafts, HVAC ductwork) absorb or reflect it heavily, and water — including the water in a crowded room full of people — specifically absorbs 2.4 GHz energy, the same effect a microwave oven exploits deliberately. Signals also bounce off hard surfaces, creating **multipath**, where delayed reflected copies of the same signal interfere with the direct path and degrade the effective link. A site's actual coverage is the product of all of this, not just a tidy circle radiating from each AP.
+
+<SectionContinue itemId="wireless_site_design_and_roaming_section_rf_propagation_and_attenuation" anchor="rf-propagation-and-attenuation" />
+
+<h2 id="site-surveys-predictive-active-and-passive">Site surveys: predictive, active, and passive</h2>
+
+A **predictive survey** uses software to model coverage from a floor plan and building-material data before any hardware is installed — fast and cheap, but only as accurate as its assumptions about walls and interference. A **passive survey** involves walking the physical site with a spectrum or signal analyzer before APs go live, to find existing interference sources and confirm the predictive model against reality. An **active survey** — sometimes called "AP-on-a-stick" — involves walking the site with a temporary AP actually transmitting and a client actively connected and measuring real throughput and signal quality, the closest a survey gets to how the finished network will actually perform. Most serious deployments use predictive design first, then validate (and adjust) with an active survey after installation.
+
+<SectionContinue itemId="wireless_site_design_and_roaming_section_site_surveys_predictive_active_and_passive" anchor="site-surveys-predictive-active-and-passive" />
+
+<h2 id="ap-placement-and-cell-design">AP placement and cell design</h2>
+
+Adjacent APs on the same SSID need deliberate **channel reuse** — assigning non-overlapping channels so neighboring cells don't create **co-channel interference**, where two APs' transmissions compete for the same airtime even though they belong to the same network. A long-standing guideline for voice-grade networks calls for roughly **15-20% cell overlap** and a minimum signal strength around **-67 dBm** at every point a client might use voice or video, specifically so a client always has a strong next AP available before its current one becomes unusable. Modern dense deployments increasingly favor **lower transmit power with more, smaller cells** rather than fewer APs blasting at maximum power — smaller cells mean less co-channel interference and more total capacity, even though it sounds counterintuitive to deliberately shrink an AP's range.
+
+<SectionContinue itemId="wireless_site_design_and_roaming_section_ap_placement_and_cell_design" anchor="ap-placement-and-cell-design" />
+
+<h2 id="the-sticky-client-problem">The sticky client problem</h2>
+
+The AP placement above only creates an *opportunity* to roam smoothly — it doesn't guarantee the client actually takes it. A client decides entirely on its own when to roam, based on its own (often conservative) read of its current signal, and most client radios are tuned to avoid the overhead and brief interruption of scanning and roaming for as long as the current link still basically works. The result is the **sticky client problem**: a device can stay attached to a weakening, distant AP long after a much stronger one is available nearby, because nothing is forcing it to check. 802.11k and 802.11v, covered in the previous lesson, exist specifically to counteract this by giving the network a way to inform — or outright suggest — a better move.
+
+<SectionContinue itemId="wireless_site_design_and_roaming_section_the_sticky_client_problem" anchor="the-sticky-client-problem" />
+
+<h2 id="interactive-the-sticky-client-and-the-roaming-trigger">Interactive the sticky client and the roaming trigger</h2>
+
+Watch a client cling to a weakening AP well past the point a stronger one was already available, then replay the same walk with 802.11k and 802.11v enabled — same physical overlap, a dramatically earlier and smoother roam.
+
+<StickyClientRoamingPacketFlow progressItemId="wireless_site_design_and_roaming_interactive_interactive_the_sticky_client_and_the_roaming_trigger" />
+
+<h2 id="capacity-vs-coverage-design">Capacity vs. coverage design</h2>
+
+Older wireless design asked one question: can every point in the building reach an AP at all? Modern dense environments — open offices, stadiums, lecture halls — have to ask a second, often more important one: how many clients does each AP actually need to serve well, not just reach? A single powerful AP covering a huge area looks efficient on a coverage map, but if hundreds of clients associate to it, every one of them gets a shrinking slice of its airtime — "full bars" doesn't mean fast. **Capacity-based design** deliberately adds more APs at lower power specifically to divide the client load across more radios, even in an area that one AP could technically have covered.
+
+<SectionContinue itemId="wireless_site_design_and_roaming_section_capacity_vs_coverage_design" anchor="capacity-vs-coverage-design" />

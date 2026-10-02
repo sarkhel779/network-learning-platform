@@ -192,6 +192,10 @@ const lessonImports = {
     public: () => import("@/content/wireless-networking/80211-standards-and-association.public.mdx"),
     account: () => import("@/content/wireless-networking/80211-standards-and-association.account.mdx"),
   },
+  "wireless-networking/wireless-site-design-and-roaming": {
+    public: () => import("@/content/wireless-networking/wireless-site-design-and-roaming.public.mdx"),
+    account: () => import("@/content/wireless-networking/wireless-site-design-and-roaming.account.mdx"),
+  },
 } satisfies LessonContentRegistry;
 
 async function loadFromRegistry(

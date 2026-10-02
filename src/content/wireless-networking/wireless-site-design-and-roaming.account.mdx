@@ -1,0 +1,41 @@
+{/* WIRELESS_SITE_DESIGN_AND_ROAMING_ACCOUNT_SENTINEL */}
+
+<h2 id="inspect-site-design-evidence">Inspect site design evidence</h2>
+
+A Wi-Fi scanning tool that logs RSSI, channel, and BSSID over time while walking a site is the practical equivalent of an active survey, and the same captured data can retroactively reveal exactly where a sticky client stayed attached to a distant AP for too long.
+
+<WiresharkCheck displayFilter="wlan.fc.type_subtype == 0x0d">Capture while walking between two APs with the same SSID. Identify 802.11v Action frames (subtype 0x0d) carrying a BSS Transition Management Request, and compare the RSSI logged at the moment that frame arrives against the RSSI at the moment the client actually sends its next Association Request.</WiresharkCheck>
+
+<SectionContinue itemId="wireless_site_design_and_roaming_section_inspect_site_design_evidence" anchor="inspect-site-design-evidence" />
+
+<h2 id="guided-site-design-practice">Guided site design practice</h2>
+
+Work through why a predictive survey alone is never sufficient for a mission-critical deployment. A predictive survey modeled a warehouse's coverage using standard attenuation values for drywall and concrete, and the resulting AP placement looked solid on paper. After installation, an active survey revealed several dead zones near tall metal shelving racks that the predictive model's generic material library didn't account for — metal attenuates and reflects RF far more aggressively than the model assumed. The fix wasn't to question the predictive methodology itself, but to treat its output as a starting hypothesis that the active survey is specifically there to validate (or correct) against the physical reality.
+
+<InterviewScenario title="A newly installed warehouse Wi-Fi network has a dead zone right where a predictive survey showed strong coverage">A candidate assumes the AP itself must be defective. Explain a more likely cause to investigate first: a physical obstruction the predictive model's material library didn't account for accurately — dense metal shelving being a particularly common and severe real-world offender — and why an active, on-site survey after installation exists specifically to catch exactly this kind of gap.</InterviewScenario>
+
+<SectionContinue itemId="wireless_site_design_and_roaming_section_guided_site_design_practice" anchor="guided-site-design-practice" />
+
+<h2 id="troubleshoot-coverage-and-roaming">Troubleshoot coverage and roaming</h2>
+
+1. When a user reports "weak Wi-Fi" in a specific spot, check for metal, water, or dense building materials near that exact location before assuming an AP placement or power problem — the physical environment is very often the actual cause.
+2. Distinguish a coverage problem (RSSI is genuinely low everywhere in a given area, meaning more or better-placed APs are needed) from a capacity problem (RSSI looks fine, but throughput craters when many clients are active — meaning the area needs more APs at lower power, not stronger signal).
+3. For a reported "sticky client," check whether 802.11k and 802.11v are actually enabled on the network and supported by the specific client — a client without that support is relying entirely on its own, often conservative, roaming logic.
+4. When two APs on the same SSID both show strong signal at one point, check their configured channels — if they're the same or adjacent, this is co-channel interference, not a redundant coverage benefit, and it actively hurts performance for every client in that overlap zone.
+5. If users report problems specifically during peak occupancy (all-hands meetings, large classes) but not at other times, suspect a capacity rather than a coverage issue — this is exactly the symptom capacity-based design with more, lower-power APs is meant to prevent.
+
+<InterviewScenario title="A conference room's Wi-Fi is excellent during normal meetings but becomes nearly unusable during large all-hands gatherings, even though the signal strength reported by client devices looks fine">Explain why this points to a capacity problem rather than a coverage problem, and why simply increasing one AP's transmit power — the first thing many people try — would not fix it and could actually make co-channel interference with neighboring APs worse.</InterviewScenario>
+
+<SectionContinue itemId="wireless_site_design_and_roaming_section_troubleshoot_coverage_and_roaming" anchor="troubleshoot-coverage-and-roaming" />
+
+<h2 id="knowledge-check-summary">Knowledge check and summary</h2>
+
+<KnowledgeCheck progressItemId="wireless_site_design_and_roaming_check_1" question="Which site survey method involves walking the physical location with a temporarily deployed AP actually transmitting and a connected client measuring real performance?" options={["Predictive survey", "Active survey", "Passive survey"]} correctIndex={1} explanation="An active survey (sometimes called 'AP-on-a-stick') uses a live, transmitting AP and a connected client to measure real throughput and signal quality on site — the closest a survey gets to how the finished network will actually perform." />
+
+<KnowledgeCheck progressItemId="wireless_site_design_and_roaming_check_2" question="What is the 'sticky client problem'?" options={["A client's Wi-Fi adapter physically overheating and malfunctioning", "A client staying attached to a weakening, distant AP long after a much stronger nearby AP is available, because nothing forces it to check", "An AP refusing to let a client disconnect from the network"]} correctIndex={1} explanation="The sticky client problem is a client's own conservative roaming behavior: it avoids the overhead of scanning and roaming as long as its current connection still basically works, even once a much better AP has become available nearby." />
+
+<KnowledgeCheck progressItemId="wireless_site_design_and_roaming_check_3" question="Why might a wireless designer deliberately add more APs at lower transmit power instead of fewer APs at maximum power in a high-density area?" options={["Lower-power APs are always cheaper to purchase", "Smaller cells reduce co-channel interference and divide client load across more radios, increasing overall capacity even though each AP's range shrinks", "Regulations require a minimum number of APs per square foot"]} correctIndex={1} explanation="Capacity-based design trades coverage range for capacity: smaller, lower-power cells reduce co-channel interference between neighboring APs and split the total client load across more radios, which matters more in dense environments than maximizing any single AP's range." />
+
+<h2 id="pro-deep-dive">Pro deep dive</h2>
+
+<PremiumPreview title="Pro Deep Dive">See how antenna radiation patterns (omnidirectional, directional, and patch antennas) shape real coverage differently from a simple circle, how to calculate an RF link budget by accounting for transmit power, antenna gain, and path loss, and how Wi-Fi-based real-time location systems (RTLS) repurpose the exact same RSSI measurements this lesson covers to estimate indoor device positions.</PremiumPreview>

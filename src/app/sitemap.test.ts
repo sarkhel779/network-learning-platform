@@ -68,6 +68,7 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/wireless-networking/wireless-fundamentals" },
       { url: "https://packetsecrets.com/learn/wireless-networking/wifi-security" },
       { url: "https://packetsecrets.com/learn/wireless-networking/80211-standards-and-association" },
+      { url: "https://packetsecrets.com/learn/wireless-networking/wireless-site-design-and-roaming" },
     ]);
     const urls = entries.map(({ url }) => url);
     for (const pathway of listPathways()) {

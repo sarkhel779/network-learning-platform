@@ -48,6 +48,7 @@ import { CertificateChainValidationPacketFlow } from "@/features/pki/certificate
 import { CsmaCaHiddenNodePacketFlow } from "@/features/wireless/csma-ca-hidden-node-packet-flow";
 import { Wpa2HandshakeAndWpa3FixPacketFlow } from "@/features/wireless/wpa2-handshake-and-wpa3-fix-packet-flow";
 import { AssociationStateMachinePacketFlow } from "@/features/wireless/association-state-machine-packet-flow";
+import { StickyClientRoamingPacketFlow } from "@/features/wireless/sticky-client-roaming-packet-flow";
 import { PingEvidencePlayer } from "@/features/icmp/ping-evidence-player";
 import { TracerouteDiscoveryPlayer } from "@/features/icmp/traceroute-discovery-player";
 import { TcpConnectionPlayer } from "@/features/transport/tcp-connection-player";
@@ -147,6 +148,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     CsmaCaHiddenNodePacketFlow,
     Wpa2HandshakeAndWpa3FixPacketFlow,
     AssociationStateMachinePacketFlow,
+    StickyClientRoamingPacketFlow,
     InterviewScenario,
     Ipv4AddressBoundaryPlayer,
     Ipv4BinaryExplorer,
