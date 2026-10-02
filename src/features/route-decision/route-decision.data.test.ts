@@ -32,11 +32,11 @@ describe("public route-decision scenarios", () => {
 
   it("keeps introductory router teaching in the MDX source", () => {
     const lesson = readFileSync(resolve("src/content/networking-foundations/routers-default-gateways-and-network-boundaries.public.mdx"), "utf8");
-    for (const id of ["what-a-router-does", "router-interfaces", "network-boundaries", "default-gateway", "place-the-router", "knowledge-check"]) {
+    for (const id of ["what-is-a-router", "router-interfaces", "routers-connect-networks", "routers-as-default-gateways", "place-the-router", "knowledge-check"]) {
       expect(lesson).toContain(`id="${id}"`);
     }
-    expect(lesson).toContain("A **router** connects different IP networks.");
-    expect(lesson).toContain("A host's **default gateway** is normally a router interface on the host's own network.");
+    expect(lesson).toContain("A **router** is a network device that connects different IP networks.");
+    expect(lesson).toContain("A host's **default gateway** is normally the router interface on its own network.");
     expect(lesson).toContain("<RouterBoundaryPlacement />");
   });
 });

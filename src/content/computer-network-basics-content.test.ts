@@ -65,8 +65,10 @@ describe("Computer Network Basics content", () => {
 
   it("keeps Routers introductory", () => {
     const lesson = source("routers-default-gateways-and-network-boundaries");
-    expect(headings(lesson)).toEqual(["what-a-router-does", "router-interfaces", "network-boundaries", "default-gateway", "place-the-router", "knowledge-check"]);
+    expect(headings(lesson)).toEqual(["what-is-a-router", "router-interfaces", "routers-connect-networks", "routers-as-default-gateways", "place-the-router", "knowledge-check"]);
     expect(lesson).toContain("<RouterBoundaryPlacement />");
+    expect(lesson.match(/<KnowledgeCheck\b/g)).toHaveLength(1);
+    expect(lesson).toContain('progressItemId="routers_default_gateways_and_network_boundaries_check_1"');
     expect(lesson).not.toMatch(/local or remote|route lookup|routing table|longest prefix|what changes at each hop/i);
   });
 

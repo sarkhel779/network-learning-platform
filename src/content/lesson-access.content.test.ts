@@ -141,4 +141,17 @@ describe("public lesson source boundaries", () => {
     expect(source).toContain("Several wired hosts lose connectivity");
     expect(source).toContain("A wireless laptop is disconnected from its access point");
   });
+
+  it("preserves the advanced Routers material in the reference archive", () => {
+    const source = readFileSync(
+      join(process.cwd(), "docs/reference/routers-default-gateways-and-network-boundaries-advanced-reference.mdx"),
+      "utf8",
+    );
+    expect(source.match(/<KnowledgeCheck\b/g)).toHaveLength(3);
+    expect(source.match(/<InterviewScenario\b/g)).toHaveLength(1);
+    expect(source).toContain("Read a basic routing table");
+    expect(source).toMatch(/longest-prefix/i);
+    expect(source).toContain("route print");
+    expect(source).toContain("ip route");
+  });
 });

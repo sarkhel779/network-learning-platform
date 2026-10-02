@@ -26,7 +26,7 @@ const definitions = [
   { lessonId: "lesson_switches", interactiveAnchors: ["match-hosts-to-ports"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
   { lessonId: "lesson_cables_fibre_wireless_and_network_connections", interactiveAnchors: ["compare-media", "design-a-connection"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_unicast_broadcast_and_multicast_communication", interactiveAnchors: ["delivery-scope-player", "predict-delivery"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
-  { lessonId: "lesson_routers_default_gateways_and_network_boundaries", interactiveAnchors: ["place-the-router"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check" },
+  { lessonId: "lesson_routers_default_gateways_and_network_boundaries", interactiveAnchors: ["place-the-router"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
   { lessonId: "lesson_physical_and_logical_addressing", interactiveAnchors: ["inspect-address-formats"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check" },
   { lessonId: "lesson_access_points_modems_onts_and_firewalls", interactiveAnchors: ["interactive-edge-journey"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check-summary" },
   { lessonId: "lesson_osi_and_tcp_ip_models", interactiveAnchors: ["encapsulation-lab"], knowledgeCheckCount: 2, knowledgeAnchor: "knowledge-check" },

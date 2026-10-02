@@ -106,10 +106,10 @@ const curriculum: Pathway[] = [
             seo: { title: "Routers and Default Gateways", description: "Learn what routers do, where network boundaries sit, and why a router can be a host's default gateway." },
             published: true, estimatedMinutes: 12,
             sections: [
-              { id: "what-a-router-does", label: "What a router does", access: "public" },
+              { id: "what-is-a-router", label: "What is a router?", access: "public" },
               { id: "router-interfaces", label: "Router interfaces", access: "public" },
-              { id: "network-boundaries", label: "Network boundaries", access: "public" },
-              { id: "default-gateway", label: "The default gateway", access: "public" },
+              { id: "routers-connect-networks", label: "Routers connect networks", access: "public" },
+              { id: "routers-as-default-gateways", label: "Routers as default gateways", access: "public" },
               { id: "place-the-router", label: "Place the router", access: "public" },
               { id: "knowledge-check", label: "Knowledge check", access: "public" },
             ],

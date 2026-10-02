@@ -86,6 +86,95 @@
 .network-basics-exercise__result.is-incorrect { border-inline-start-color: var(--danger, #b42318); }
 .network-basics-exercise__code { font-family: var(--font-mono, monospace); }
 
+.router-boundary-placement__topology {
+  display: grid;
+  grid-template-columns: minmax(7rem, 1fr) minmax(7rem, .8fr) minmax(7rem, 1fr) minmax(8rem, .9fr) minmax(7rem, 1fr);
+  grid-template-rows: auto minmax(8.5rem, auto);
+  grid-template-areas:
+    "lan-label lan-label lan-label boundary internet-label"
+    "host lan-choice switch boundary provider";
+  align-items: center;
+  gap: .65rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: .8rem;
+  background: color-mix(in srgb, var(--surface) 84%, var(--accent) 4%);
+}
+
+.router-boundary-placement__network-label {
+  align-self: stretch;
+  padding: .55rem .75rem;
+  border-radius: .55rem;
+  text-align: center;
+  background: color-mix(in srgb, var(--surface) 82%, var(--accent) 10%);
+}
+.router-boundary-placement__lan-label { grid-area: lan-label; }
+.router-boundary-placement__internet-label { grid-area: internet-label; }
+.router-boundary-placement__host { grid-area: host; }
+.router-boundary-placement__switch { grid-area: switch; }
+.router-boundary-placement__provider { grid-area: provider; }
+.router-boundary-placement__boundary-choice { grid-area: boundary; }
+.router-boundary-placement__lan-choice { grid-area: lan-choice; }
+
+.router-boundary-placement__device,
+.router-boundary-placement__choice {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: .15rem;
+  min-width: 0;
+  color: var(--foreground);
+  text-align: center;
+}
+.router-boundary-placement__device svg,
+.router-boundary-placement__choice svg { width: 4.5rem; height: 4rem; overflow: visible; }
+.router-boundary-placement__device span,
+.router-boundary-placement__choice span { color: var(--muted); font-size: .78rem; }
+
+.router-boundary-placement__choice {
+  min-block-size: 7.5rem;
+  padding: .55rem;
+  border: 2px dashed var(--border-strong, var(--border));
+  border-radius: .7rem;
+  background: var(--surface);
+  cursor: pointer;
+}
+.router-boundary-placement__choice:hover,
+.router-boundary-placement__choice:focus-visible,
+.router-boundary-placement__choice[data-selected="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft, var(--surface));
+}
+.router-boundary-placement__choice:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.router-boundary-placement__choice::before,
+.router-boundary-placement__choice::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  width: .7rem;
+  border-top: 3px solid var(--border-strong, var(--border));
+}
+.router-boundary-placement__choice::before { right: 100%; }
+.router-boundary-placement__choice::after { left: 100%; }
+
+@media (max-width: 44rem) {
+  .router-boundary-placement__topology {
+    grid-template-columns: minmax(6rem, 1fr) minmax(6rem, 1fr);
+    grid-template-rows: auto repeat(3, auto) auto auto;
+    grid-template-areas:
+      "lan-label lan-label"
+      "host lan-choice"
+      "switch switch"
+      "boundary boundary"
+      "internet-label internet-label"
+      "provider provider";
+  }
+  .router-boundary-placement__choice::before,
+  .router-boundary-placement__choice::after { display: none; }
+}
+
 .device-role-tour .packet-flow {
   min-width: 0;
   margin: 0;
