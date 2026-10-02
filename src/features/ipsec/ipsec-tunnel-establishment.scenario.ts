@@ -3,22 +3,32 @@ import { parsePacketFlowScenario, type PacketFlowScenario } from "@/features/pac
 export const ipsecTunnelEstablishmentScenario: PacketFlowScenario = parsePacketFlowScenario({
   id: "ipsec-site-to-site-tunnel-establishment",
   title: "IPsec: building a site-to-site tunnel and carrying traffic through it",
-  description: "Watch two VPN gateways negotiate an IKEv2 tunnel in two round trips, then watch a real packet get wrapped in ESP tunnel mode to cross the public path between them.",
+  description: "Watch two site-to-site VPN routers negotiate an IKEv2 tunnel in two round trips, then watch a real packet leave one LAN, cross the public Internet wrapped in ESP tunnel mode, and arrive unmodified on the other LAN.",
   defaultSpeed: 1,
   devices: [
-    { id: "gateway-a", label: "Gateway A", role: "protects 10.0.1.0/24", x: 140, y: 135 },
-    { id: "gateway-b", label: "Gateway B", role: "protects 10.0.2.0/24", x: 640, y: 135 },
+    { id: "host-a", label: "Host 10.0.1.5", role: "10.0.1.0/24 LAN", x: 60, y: 160 },
+    { id: "gateway-a", label: "R1", role: "public IP 70.0.0.1", x: 230, y: 160 },
+    { id: "internet", label: "Internet", role: "public IPsec tunnel path", x: 400, y: 70 },
+    { id: "gateway-b", label: "R2", role: "public IP 80.0.0.1", x: 570, y: 160 },
+    { id: "host-b", label: "Host 10.0.2.5", role: "10.0.2.0/24 LAN", x: 740, y: 160 },
   ],
   links: [
-    { id: "gateway-a-gateway-b", from: "gateway-a", to: "gateway-b" },
+    { id: "host-a-gateway-a", from: "host-a", to: "gateway-a" },
+    { id: "gateway-a-internet", from: "gateway-a", to: "internet" },
+    { id: "internet-gateway-b", from: "internet", to: "gateway-b" },
+    { id: "gateway-b-host-b", from: "gateway-b", to: "host-b" },
+    {
+      id: "gateway-a-gateway-b", from: "gateway-a", to: "gateway-b",
+      fromInterface: "FE0/1 — public IP 70.0.0.1", toInterface: "FE0/1 — public IP 80.0.0.1",
+    },
   ],
   steps: [
     {
       id: "ike-sa-init-exchange",
-      title: "Gateways exchange IKE_SA_INIT",
-      explanation: "Gateway A and Gateway B exchange IKE_SA_INIT messages in the clear — Diffie-Hellman public values and nonces, along with the algorithms each is willing to use for the IKE SA itself.",
+      title: "R1 and R2 exchange IKE_SA_INIT",
+      explanation: "R1 and R2 exchange IKE_SA_INIT messages across the public Internet, in the clear — Diffie-Hellman public values and nonces, along with the algorithms each is willing to use for the IKE SA itself.",
       durationMs: 2200,
-      activeDeviceIds: ["gateway-a", "gateway-b"],
+      activeDeviceIds: ["gateway-a", "internet", "gateway-b"],
       activeLinkIds: ["gateway-a-gateway-b"],
       packet: { kind: "packet", label: "IKE_SA_INIT: DH public values, nonces (cleartext)", from: "gateway-a", to: "gateway-b" },
       summaryFields: [
@@ -32,7 +42,7 @@ export const ipsecTunnelEstablishmentScenario: PacketFlowScenario = parsePacketF
     {
       id: "ike-channel-established",
       title: "Both sides derive keys; the IKE SA becomes encrypted",
-      explanation: "Both gateways independently derive the same keys from the Diffie-Hellman exchange. From this point on, the IKE SA is an encrypted and authenticated control channel — even though neither gateway has proven its identity yet.",
+      explanation: "Both routers independently derive the same keys from the Diffie-Hellman exchange. From this point on, the IKE SA is an encrypted and authenticated control channel — even though neither router has proven its identity yet.",
       durationMs: 2200,
       activeDeviceIds: ["gateway-a", "gateway-b"],
       activeLinkIds: [],
@@ -45,10 +55,10 @@ export const ipsecTunnelEstablishmentScenario: PacketFlowScenario = parsePacketF
     },
     {
       id: "ike-auth-exchange",
-      title: "Gateways authenticate inside the encrypted channel",
-      explanation: "Inside the now-encrypted IKE SA, each gateway sends its identity and proves it (for example, a pre-shared key or certificate), and both propose a Child SA to protect traffic between their two private subnets.",
+      title: "R1 and R2 authenticate inside the encrypted channel",
+      explanation: "Inside the now-encrypted IKE SA, each router sends its identity and proves it (for example, a pre-shared key or certificate), and both propose a Child SA to protect traffic between their two private subnets.",
       durationMs: 2200,
-      activeDeviceIds: ["gateway-a", "gateway-b"],
+      activeDeviceIds: ["gateway-a", "internet", "gateway-b"],
       activeLinkIds: ["gateway-a-gateway-b"],
       packet: { kind: "packet", label: "IKE_AUTH: identity + auth (encrypted)", from: "gateway-a", to: "gateway-b" },
       summaryFields: [
@@ -74,10 +84,11 @@ export const ipsecTunnelEstablishmentScenario: PacketFlowScenario = parsePacketF
     {
       id: "original-packet-needs-protection",
       title: "A host on site A sends traffic toward site B",
-      explanation: "A host at 10.0.1.5 sends a packet addressed to 10.0.2.5. Gateway A's security policy matches this traffic against the Child SA that was just negotiated.",
+      explanation: "The host at 10.0.1.5 sends a plaintext packet addressed to 10.0.2.5 onto its own LAN. R1's security policy matches this traffic against the Child SA that was just negotiated.",
       durationMs: 2000,
-      activeDeviceIds: ["gateway-a"],
-      activeLinkIds: [],
+      activeDeviceIds: ["host-a", "gateway-a"],
+      activeLinkIds: ["host-a-gateway-a"],
+      packet: { kind: "packet", label: "10.0.1.5 → 10.0.2.5 (plaintext, LAN)", from: "host-a", to: "gateway-a" },
       summaryFields: [
         { label: "Original packet", value: "10.0.1.5 → 10.0.2.5" },
         { label: "Matched policy", value: "Protect via negotiated Child SA" },
@@ -86,14 +97,14 @@ export const ipsecTunnelEstablishmentScenario: PacketFlowScenario = parsePacketF
     },
     {
       id: "esp-tunnel-encapsulation",
-      title: "Gateway A wraps the whole packet in ESP tunnel mode",
-      explanation: "Gateway A encrypts and authenticates the entire original packet — its original header included — inside a new ESP packet, under a brand-new outer IP header from Gateway A to Gateway B.",
+      title: "R1 wraps the whole packet in ESP tunnel mode and sends it across the Internet",
+      explanation: "R1 encrypts and authenticates the entire original packet — its original header included — inside a new ESP packet, under a brand-new outer IP header from R1's public interface to R2's public interface, and sends it across the public Internet.",
       durationMs: 2200,
-      activeDeviceIds: ["gateway-a", "gateway-b"],
+      activeDeviceIds: ["gateway-a", "internet", "gateway-b"],
       activeLinkIds: ["gateway-a-gateway-b"],
-      packet: { kind: "packet", label: "ESP (tunnel mode): outer Gateway A → Gateway B, inner 10.0.1.5 → 10.0.2.5", from: "gateway-a", to: "gateway-b" },
+      packet: { kind: "packet", label: "ESP (tunnel mode): outer 70.0.0.1 → 80.0.0.1, inner 10.0.1.5 → 10.0.2.5", from: "gateway-a", to: "gateway-b" },
       summaryFields: [
-        { label: "Outer header", value: "Gateway A → Gateway B" },
+        { label: "Outer header", value: "R1 → R2" },
         { label: "Inner (encrypted) packet", value: "10.0.1.5 → 10.0.2.5" },
       ],
       detailFields: [
@@ -102,17 +113,18 @@ export const ipsecTunnelEstablishmentScenario: PacketFlowScenario = parsePacketF
     },
     {
       id: "gatewayb-decapsulates-and-forwards",
-      title: "Gateway B decapsulates and forwards the original packet",
-      explanation: "Gateway B decrypts and verifies the ESP packet using the Child SA, strips the outer header, and forwards the original, unmodified inner packet onto the 10.0.2.0/24 network — the host at 10.0.2.5 receives it exactly as it was sent.",
+      title: "R2 decapsulates and forwards the original packet onto its LAN",
+      explanation: "R2 decrypts and verifies the ESP packet using the Child SA, strips the outer header, and forwards the original, unmodified inner packet onto the 10.0.2.0/24 network — the host at 10.0.2.5 receives it exactly as it was sent.",
       durationMs: 2600,
-      activeDeviceIds: ["gateway-b"],
-      activeLinkIds: [],
+      activeDeviceIds: ["gateway-b", "host-b"],
+      activeLinkIds: ["gateway-b-host-b"],
+      packet: { kind: "packet", label: "10.0.1.5 → 10.0.2.5 (delivered, LAN)", from: "gateway-b", to: "host-b" },
       summaryFields: [
         { label: "Outer header", value: "Removed" },
         { label: "Delivered", value: "10.0.1.5 → 10.0.2.5 (unmodified)", changed: true },
       ],
       detailFields: [],
-      stateNote: "Neither original host ever needed to know IPsec was involved — the gateways handled it entirely on their behalf.",
+      stateNote: "Neither original host ever needed to know IPsec was involved — the routers handled it entirely on their behalf.",
     },
   ],
 } as const);
