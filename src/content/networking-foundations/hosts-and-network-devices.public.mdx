@@ -1,24 +1,50 @@
+<div className="host-intro-lesson">
+
 <h2 id="what-makes-a-device-a-host">What makes a device a host?</h2>
 
-A **host** is an end device that can send, receive, or process network data. A desktop computer, laptop, phone, printer, camera, physical server, and cloud virtual server can all be hosts.
+In lesson 1, your laptop created a print job and the printer received it. Both were end devices. In networking, we call these devices **hosts**.
+
+A **host** is an end device that participates in network communication. It is a source or destination of data, rather than a device whose job is to connect other devices or networks.
 
 The shape or price of a device does not decide whether it is a host. Its participation in the network does. **A printer with a network interface is a host.**
 
 <h2 id="types-of-hosts">Types of hosts</h2>
 
-Hosts appear in many forms. The icons below establish the device symbols used throughout this course. A device counts as a host when it can send, receive, or process network data—not because of its size or shape.
+Meet the hosts you will see throughout this course. Notice what each one can do on a network, and become familiar with its icon.
 
 <HostTypesGallery />
 
 <h2 id="network-interfaces">Network interfaces</h2>
 
-A host joins a network through a **network interface**. Ethernet is a familiar wired interface, and Wi-Fi is a familiar wireless interface. A laptop may have both.
+A host joins a network through a **network interface**: the hardware and software connection point it uses to send and receive network data. Think of it as the host's doorway to the network.
+
+### What is a network interface card (NIC)?
+
+A **network interface card (NIC)**, also called a **network adapter**, is the hardware that gives a host a physical connection to a network. Despite the name, it does not have to be a separate card: it can be built into a laptop or phone, installed as an expansion card, or connected as a USB adapter.
+
+<figure className="host-intro-figure" aria-label="A host sends and receives data through its network adapter">
+  <figcaption>The network adapter connects the host to the network</figcaption>
+  <p><strong>Host</strong> ↔ <strong>NIC / network adapter</strong> ↔ <strong>Network</strong></p>
+  <p className="host-intro-figure__note">Data travels in both directions. This is a simplified view of the adapter's role, not a separate host between your computer and the network.</p>
+</figure>
+
+**What does it do?** It sends the host's network data onto a connection and receives incoming data for the host to process. An Ethernet adapter uses a cable; a Wi-Fi adapter uses radio signals. These connections let the host use services such as websites, shared files, and network printing.
+
+**Where might you use one?** A desktop may use a built-in Ethernet adapter to connect to a switch. A laptop may use its built-in Wi-Fi adapter to connect to an access point, or a USB Ethernet adapter when it has no Ethernet socket.
+
+The **adapter** is the hardware; the **interface** is the connection point the host uses. We will cover its addressing and detailed data handling in later lessons.
+
+<HostInterfaceOverview />
 
 An interface is a connection point, not another host. Detailed addressing and link behaviour come later in the course.
 
 <h2 id="clients-and-servers">Clients and servers</h2>
 
-A **client application** asks for a service. A **server application** provides that service and responds. When a browser asks a web service for a page, the browser is the client and the web service is the server.
+Now that a host is connected, what does it do? Suppose you open a website. Your browser asks for a page, and a web server application provides it.
+
+A **client application** asks for a service. A **server application** provides that service and responds.
+
+<ClientServerOverview />
 
 Client and server describe what applications are doing in one conversation. They are not permanent hardware categories: a large computer is not automatically a server, and a phone is not always only a client.
 
@@ -53,3 +79,5 @@ Select each example to decide whether the application is acting as a client, a s
   options={["Yes, different applications can perform different roles.", "No, hardware fixes the role permanently.", "Only when the computer has two screens."]}
   correctIndex={0}
   explanation="The same computer can run a client application and serve a file to another device. Client and server are application roles." />
+
+</div>

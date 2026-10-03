@@ -2275,6 +2275,26 @@ a.admin-metric:hover,a.admin-metric:focus-visible{border-color:#32dcb4;transform
 @media(max-width:750px){.learner-dashboard__grid{grid-template-columns:1fr}}
 
 .network-intro-lesson > p { max-width: 66ch; }
+.host-intro-lesson > p { max-width: 66ch; }
+.host-intro-figure { margin: 1.5rem 0; padding: 1.2rem; border: 1px solid var(--border); border-radius: .8rem; background: var(--surface); }
+.host-intro-figure figcaption { font-size: 1.1rem; font-weight: 750; margin-bottom: 1rem; }
+.host-intro-connections { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; }
+.host-intro-connection { padding: 1rem; border: 1px solid var(--border); border-radius: .6rem; }
+.host-intro-connection h3 { margin-top: 0; }
+.host-intro-connection__path { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,.9fr) minmax(0,1fr); align-items: start; gap: .3rem; }
+.host-intro-connection__path > div, .host-intro-role { display: flex; flex-direction: column; align-items: center; text-align: center; gap: .35rem; }
+.host-intro-connection__path svg, .host-intro-role svg { width: 64px; height: 64px; max-width: 100%; }
+.host-intro-connection .network-topology__device-symbol { stroke: var(--accent); }
+.host-intro-connection__path span { font-size: .8rem; color: var(--muted); }
+.host-intro-connection__link { margin-top: 2rem; border-top: 3px solid var(--accent); padding-top: .6rem; text-align: center; }
+.host-intro-connection__link--wireless { border-top-style: dashed; }
+.host-intro-roles { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.4fr) minmax(0,1fr); gap: 1rem; align-items: center; }
+.host-intro-role b { color: var(--accent); border: 1px solid var(--accent); border-radius: 1rem; padding: .15rem .7rem; }
+.host-intro-role p { margin: 0; }
+.host-intro-roles__exchange { text-align: center; }
+.host-intro-roles__exchange p { padding: .65rem; border: 1px solid var(--border); border-radius: .4rem; }
+.host-intro-figure__note { color: var(--muted); font-size: .85rem; margin-bottom: 0; }
+@media (max-width: 44rem) { .host-intro-connections, .host-intro-roles { grid-template-columns: 1fr; } .host-intro-figure { padding: .75rem; } }
 .computer-basics-flow { margin: 1.5rem 0; padding: 1.2rem; border: 1px solid var(--border); border-radius: .8rem; background: var(--surface); }
 .computer-basics-flow figcaption { font-weight: 750; font-size: 1.1rem; margin-bottom: 1.2rem; }
 .computer-basics-flow__steps { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 2rem; list-style: none; padding: 0; margin: 0; }
