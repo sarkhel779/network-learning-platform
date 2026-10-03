@@ -87,6 +87,7 @@ import { NetworkBasicsDiagram, NetworkBenefits } from "@/features/network-basics
 import { HostRoleConversationPlayer } from "@/features/network-basics/host-role-conversation-player";
 import { HostRoleClassifier } from "@/features/network-basics/host-role-classifier";
 import { HostTypesGallery } from "@/features/network-basics/host-types-gallery";
+import { HostInterfaceOverview, ClientServerOverview } from "@/features/network-basics/host-introduction-diagrams";
 import { HubRepeaterDemo } from "@/features/network-basics/hub-repeater-demo";
 import { LayerMatchingExercise } from "@/features/network-basics/layer-matching-exercise";
 import { RouterBoundaryPlacement } from "@/features/network-basics/router-boundary-placement";
@@ -104,6 +105,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     DeviceRoleIdentifier,
     NetworkBasicsDiagram,
     NetworkBenefits,
+    HostInterfaceOverview,
+    ClientServerOverview,
     DhcpRelayPlayer,
     DhcpRfcCheck,
     DoraPlayer,
