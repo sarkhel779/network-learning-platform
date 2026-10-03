@@ -210,7 +210,7 @@ describe("lesson route generation", () => {
     expect(scripts).toHaveLength(1);
     const data = JSON.parse(scripts[0].textContent ?? "");
     expect(data.url).toBe("https://packetsecrets.com/learn/networking-foundations/how-networks-communicate");
-    expect(data.hasPart.map((part: { isAccessibleForFree: boolean }) => part.isAccessibleForFree)).toEqual([true, true, true, true, true, true]);
+    expect(data.hasPart.map((part: { isAccessibleForFree: boolean }) => part.isAccessibleForFree)).toEqual([true, true, true, true, true, true, true, true, true]);
   });
 
   it("renders usable public content before registration and excludes protected bodies", async () => {

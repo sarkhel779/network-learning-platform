@@ -21,7 +21,7 @@ describe("lesson structured data", () => {
       audience: { "@type": "EducationalAudience", audienceType: pathway.audience },
       isAccessibleForFree: true,
     });
-    expect(data.hasPart.map((part) => part.isAccessibleForFree)).toEqual([true, true, true, true, true, true]);
+    expect(data.hasPart.map((part) => part.isAccessibleForFree)).toEqual([true, true, true, true, true, true, true, true, true]);
   });
 
   it("allow-lists gated labels and access descriptions, excluding extra body data", () => {
@@ -34,7 +34,7 @@ describe("lesson structured data", () => {
       })),
     };
     const data = buildLessonStructuredData(pathway, untrustedExtraFields);
-    expect(data.hasPart.slice(2)).toEqual([
+    expect(data.hasPart.slice(5)).toEqual([
       { "@type": "WebPageElement", name: "LANs, WANs and the Internet", isAccessibleForFree: true, description: "Public lesson content; no account required." },
       { "@type": "WebPageElement", name: "End and intermediary devices", isAccessibleForFree: true, description: "Public lesson content; no account required." },
       { "@type": "WebPageElement", name: "Identify device roles", isAccessibleForFree: true, description: "Public lesson content; no account required." },

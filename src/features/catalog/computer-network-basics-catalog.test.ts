@@ -3,6 +3,12 @@ import { describe, expect, it } from "vitest";
 import { getPathway } from "./catalog.repository";
 
 describe("Computer Network Basics catalogue", () => {
+  it("makes the computer introduction navigable before the network introduction", () => {
+    const lesson = getPathway("networking-foundations").modules[0].lessons[0];
+    expect(lesson.sections?.slice(0, 4).map(({ id }) => id)).toEqual([
+      "what-is-a-computer", "how-a-computer-works", "hardware-and-software", "what-is-a-computer-network",
+    ]);
+  });
   it("publishes the approved nine beginner lessons in order", () => {
     const pathway = getPathway("networking-foundations");
     const basicsModule = pathway.modules.find(({ id }) => id === "module_network_and_device_essentials");

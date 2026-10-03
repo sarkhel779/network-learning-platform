@@ -19,7 +19,8 @@ type LessonProgressDefinition = Readonly<{
 }>;
 
 const definitions = [
-  { lessonId: "lesson_how_networks_communicate", interactiveAnchors: ["identify-device-roles"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
+  // Prerequisite reading is navigable but does not change the existing progress contract.
+  { lessonId: "lesson_how_networks_communicate", interactiveAnchors: ["identify-device-roles"], excludedAnchors: ["what-is-a-computer", "how-a-computer-works", "hardware-and-software"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
   { lessonId: "lesson_hosts_and_network_devices", interactiveAnchors: ["classify-host-roles"], excludedAnchors: ["follow-host-conversations"], knowledgeCheckCount: 2, knowledgeAnchor: "knowledge-check" },
   { lessonId: "lesson_hubs", interactiveAnchors: ["repeat-a-signal"], knowledgeCheckCount: 3, knowledgeAnchor: "knowledge-check" },
   { lessonId: "lesson_bridges", interactiveAnchors: ["compare-segments"], knowledgeCheckCount: 1, knowledgeAnchor: "knowledge-check" },
