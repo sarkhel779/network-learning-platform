@@ -2273,3 +2273,53 @@ a.admin-metric:hover,a.admin-metric:focus-visible{border-color:#32dcb4;transform
 .learner-dashboard__main,.learner-dashboard__side{min-width:0;padding:1.4rem;border:1px solid var(--border);border-radius:1rem;background:var(--surface)}
 .learner-dashboard__side h2{margin-top:0}.learner-dashboard__side p{color:var(--muted);line-height:1.55}.learner-dashboard__side a{color:var(--accent);font-weight:750}
 @media(max-width:750px){.learner-dashboard__grid{grid-template-columns:1fr}}
+
+.network-intro-lesson > p { max-width: 66ch; }
+.computer-basics-flow { margin: 1.5rem 0; padding: 1.2rem; border: 1px solid var(--border); border-radius: .8rem; background: var(--surface); }
+.computer-basics-flow figcaption { font-weight: 750; font-size: 1.1rem; margin-bottom: 1.2rem; }
+.computer-basics-flow__steps { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 2rem; list-style: none; padding: 0; margin: 0; }
+.computer-basics-flow__steps li { position: relative; padding: 1rem; border: 1px solid var(--border); border-radius: .6rem; }
+.computer-basics-flow__steps li:not(:last-child)::after { content: "→"; position: absolute; right: -1.65rem; top: 50%; transform: translateY(-50%); color: var(--accent); font-size: 1.5rem; }
+.computer-basics-flow__number { display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border: 1px solid var(--accent); border-radius: 50%; color: var(--accent); margin-bottom: .6rem; }
+.computer-basics-flow__steps li > strong { display: block; }
+.computer-basics-flow__steps p { margin-bottom: 0; }
+.computer-basics-flow__storage { width: 45%; margin: 0 auto; text-align: center; }
+.computer-basics-flow__storage > span { display: block; color: var(--accent); font-size: 2rem; line-height: 1.5; }
+.computer-basics-flow__storage > strong { display: block; padding-top: .7rem; border-top: 1px solid var(--border); }
+.computer-basics-flow__caption { font-size: .85rem; color: var(--muted); margin-bottom: 0; }
+.computer-basics-comparison { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; margin: 1.5rem 0; }
+.computer-basics-comparison > div { border: 1px solid var(--border); border-radius: .6rem; padding: 1rem; background: var(--surface); }
+.computer-basics-comparison h3 { margin-top: .4rem; }
+.computer-basics-comparison__tag { color: var(--accent); font-size: .85rem; }
+@media (max-width: 44rem) {
+  .computer-basics-flow__steps, .computer-basics-comparison { grid-template-columns: 1fr; }
+  .computer-basics-flow__steps li:not(:last-child)::after { content: "↓"; right: 50%; top: auto; bottom: -2rem; transform: translateX(50%); }
+  .computer-basics-flow__storage { width: 100%; margin-top: 1rem; border-left: 3px solid var(--accent); padding-left: .8rem; text-align: left; }
+  .computer-basics-flow__storage > span { display: none; }
+  .computer-basics-flow__storage > strong { border-top: 0; }
+}
+.network-intro-diagram { margin: 1.5rem 0; padding: 1.2rem; border: 1px solid var(--border); border-radius: .8rem; background: var(--surface); }
+.network-intro-diagram figcaption { font-size: 1.1rem; font-weight: 750; margin-bottom: 1rem; }
+.network-intro-diagram__lan { border: 1px dashed var(--border); border-radius: .6rem; padding: .8rem; }
+.network-intro-diagram__label { display: block; text-align: center; color: var(--muted); font-size: .85rem; margin-bottom: .6rem; }
+.network-intro-diagram__devices { position: relative; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .5rem; }
+.network-intro-diagram__devices::before { content: ""; position: absolute; top: 40px; left: 16.6%; right: 16.6%; height: 3px; background: var(--accent); }
+.network-intro-diagram__device { position: relative; display: flex; flex-direction: column; align-items: center; padding: 0 .2rem .3rem; border: 0; background: transparent; color: var(--foreground); cursor: pointer; border-radius: .4rem; }
+.network-intro-diagram svg, .network-intro-benefits svg { display: block; width: 80px; height: 80px; max-width: 100%; background: var(--surface); }
+.network-intro-diagram .network-topology__device-symbol, .network-intro-benefits .network-topology__device-symbol { stroke: var(--accent); }
+.network-intro-diagram__device[data-highlighted="false"] .network-topology__device-symbol { stroke: var(--muted); }
+.network-intro-diagram__device strong { font-size: 1rem; }
+.network-intro-diagram__device span, .network-intro-diagram__gateway > span:last-child, .network-intro-diagram__internet > span { color: var(--muted); font-size: .85rem; text-align: center; }
+.network-intro-diagram__gateway, .network-intro-diagram__internet { display: flex; flex-direction: column; align-items: center; }
+.network-intro-diagram__wire { display: block; height: 28px; width: 0; border-left: 3px solid var(--accent); }
+.network-intro-diagram__internet[data-connected="false"] .network-intro-diagram__wire { border-left: 3px dashed var(--muted); }
+.network-intro-diagram__controls { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin: .8rem 0; }
+.network-intro-diagram__controls button { min-height: 44px; padding: .5rem .8rem; border: 1px solid var(--border); border-radius: .4rem; background: var(--surface); color: var(--foreground); cursor: pointer; }
+.network-intro-diagram__controls button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.network-intro-diagram button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.network-intro-diagram__controls > span, .network-intro-diagram__note { font-size: .85rem; color: var(--muted); }
+.network-intro-diagram__explanation { border-left: 3px solid var(--accent); padding: .6rem .8rem; margin: 1rem 0 0; }
+.network-intro-benefits { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .8rem; margin: 1.2rem 0; }
+.network-intro-benefits > div { padding: 1rem; border: 1px solid var(--border); border-radius: .6rem; background: var(--surface); }
+.network-intro-benefits p { margin-bottom: 0; }
+@media (max-width: 44rem) { .network-intro-benefits { grid-template-columns: 1fr; } .network-intro-diagram { padding: .75rem; } .network-intro-diagram__lan { padding: .5rem; } .network-intro-diagram__device span { font-size: .75rem; } }

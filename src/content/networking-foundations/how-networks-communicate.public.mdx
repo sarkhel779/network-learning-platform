@@ -1,24 +1,68 @@
+<div className="network-intro-lesson">
+
+<h2 id="what-is-a-computer">What is a computer?</h2>
+
+A **computer** is an electronic device that follows instructions to process data. **Data** is information it can work with: numbers, words, pictures or sounds.
+
+You do not need to understand everything inside a computer to start learning networking. First, let's see how one computer turns a simple request into a result.
+
+<h2 id="how-a-computer-works">How does a computer work?</h2>
+
+Suppose you use a calculator app to add **2 + 2**. Follow the three steps below:
+
+<figure className="computer-basics-flow" aria-label="Input, processing and output, with storage connected to processing">
+  <figcaption>One computer: from your request to a result</figcaption>
+  <ol className="computer-basics-flow__steps" role="list">
+    <li><span className="computer-basics-flow__number">1</span><strong>Input</strong><p>You enter 2 + 2 using a keyboard or touchscreen.</p></li>
+    <li><span className="computer-basics-flow__number">2</span><strong>Processing</strong><p>The CPU follows the calculator app's instructions to add the numbers.</p></li>
+    <li><span className="computer-basics-flow__number">3</span><strong>Output</strong><p>The screen displays the result: <strong>4</strong>.</p></li>
+  </ol>
+  <div className="computer-basics-flow__storage"><span aria-hidden="true">↕</span><strong>Memory and storage</strong><p>RAM holds information in use. Storage keeps saved information after the power is off.</p></div>
+  <p className="computer-basics-flow__caption">Storage is connected to processing, not a fourth step that must happen after every output.</p>
+</figure>
+
+The **CPU (central processing unit)** executes instructions. **RAM** is temporary working memory. **Storage**, such as an SSD, keeps applications and saved files. For example, you can save a document to open again later.
+
+<h2 id="hardware-and-software">Hardware and software work together</h2>
+
+<div className="computer-basics-comparison">
+  <div><span className="computer-basics-comparison__tag">Physical parts</span><h3>Hardware</h3><p>The parts you can touch: keyboard, screen, CPU, RAM and storage.</p><p><strong>In our example:</strong> the keyboard receives your input, the CPU executes instructions, and the screen shows 4.</p></div>
+  <div><span className="computer-basics-comparison__tag">Programs and instructions</span><h3>Software</h3><p>The programs that tell the hardware what to do.</p><p><strong>In our example:</strong> the calculator app provides the instructions for adding the numbers and displaying the answer.</p></div>
+</div>
+
+**Now connect the idea to networking:** your computer can create and save a document by itself. But what if you want another device to receive it? That is where a network becomes useful.
+
 <h2 id="what-is-a-computer-network">What is a computer network?</h2>
 
-A **computer network** is a group of connected devices that can exchange data and share resources. The devices may be close together in one room or separated across countries. What makes them a network is their ability to communicate through agreed rules and connections.
+Imagine you want to print a document from your laptop. The printer is across the room, with no cable directly connecting it to your laptop. How can your document reach it?
 
-**A network lets connected devices exchange data and share resources.** For example, a laptop can send a document to a printer, or a phone can request a page from a web server.
+Both devices are connected to the same network. In this simple wired example, a switch connects them. Select each device below to meet its role.
+
+<NetworkBasicsDiagram variant="local" />
+
+**A network lets connected devices exchange data and share resources.** That connected group of devices is a **computer network**. The connections can be wired or wireless.
 
 <h2 id="why-networks-exist">Why networks exist</h2>
 
-Networks make it practical to share information, devices, and services. A family can share one Internet connection. An office can share printers and files. A school can make the same learning service available to many students.
+Think of three things you already do with networks:
 
-The useful result is communication: one device creates or requests information and another device receives or supplies it.
+<NetworkBenefits />
 
 <h2 id="lan-wan-and-the-internet">LANs, WANs and the Internet</h2>
 
 A **local area network (LAN)** connects devices in a limited place such as a home, office, or school. A **wide area network (WAN)** connects networks across larger distances. The **Internet** is a global system of interconnected networks.
 
-These names describe scope. They do not change the basic idea: connected devices exchange data through network links and intermediary devices.
+Your local network and the Internet are not the same thing. Try disconnecting the Internet in this diagram. Which connections are still available?
+
+<NetworkBasicsDiagram variant="scope" />
 
 <h2 id="end-and-intermediary-devices">End and intermediary devices</h2>
 
-An **end device**, or host, is where user data is created or received. Computers, phones, printers, cameras, and servers can be hosts. An **intermediary device** helps connect, direct, or protect traffic. Switches, routers, wireless access points, and firewalls are common examples.
+An **end device**, also called a **host**, creates or receives information. Here, the laptop and printer are end devices.
+
+An **intermediary device** connects devices or networks and helps information travel between them. Here, the switch is the intermediary.
+
+<NetworkBasicsDiagram variant="roles" />
 
 This module introduces each role. Later modules explain the detailed decisions these devices make.
 
@@ -35,3 +79,5 @@ Choose the hub, bridge, switch, or routed-network example. The animated packet s
   options={["Connected devices exchange data and share resources.", "Every device must be in the same room.", "Only computers can join a network."]}
   correctIndex={0}
   explanation="A network lets connected devices exchange data and share resources. Those devices can be nearby or far apart and can include many kinds of hosts." />
+
+</div>

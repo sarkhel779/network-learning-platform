@@ -30,10 +30,13 @@ const curriculum: Pathway[] = [
           {
             id: "lesson_how_networks_communicate", slug: stablePublishedSlugs.whatIsANetwork,
             title: "Introduction to Computer Networks and Network Devices",
-            objective: "Define a computer network and identify the broad roles of common end and intermediary devices.",
+            objective: "Describe how a computer works, define a computer network, and identify end and intermediary devices.",
             seo: { title: "Computer Networks and Network Devices", description: "Learn what computer networks are, why they exist, and the broad roles of common network devices." },
             published: true, estimatedMinutes: 12,
             sections: [
+              { id: "what-is-a-computer", label: "What is a computer?", access: "public" },
+              { id: "how-a-computer-works", label: "How does a computer work?", access: "public" },
+              { id: "hardware-and-software", label: "Hardware and software", access: "public" },
               { id: "what-is-a-computer-network", label: "What is a computer network?", access: "public" },
               { id: "why-networks-exist", label: "Why networks exist", access: "public" },
               { id: "lan-wan-and-the-internet", label: "LANs, WANs and the Internet", access: "public" },

@@ -82,6 +82,7 @@ import { ProtocolFormatDiagram } from "@/features/packet-formats/protocol-format
 import { AddressFormatInspector } from "@/features/network-basics/address-format-inspector";
 import { BridgeSegmentComparison } from "@/features/network-basics/bridge-segment-comparison";
 import { DeviceRoleIdentifier } from "@/features/network-basics/device-role-identifier";
+import { NetworkBasicsDiagram, NetworkBenefits } from "@/features/network-basics/network-basics-diagram";
 import { HostRoleConversationPlayer } from "@/features/network-basics/host-role-conversation-player";
 import { HostRoleClassifier } from "@/features/network-basics/host-role-classifier";
 import { HostTypesGallery } from "@/features/network-basics/host-types-gallery";
@@ -100,6 +101,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     EncapsulationExperience,
     DeviceLayerScope,
     DeviceRoleIdentifier,
+    NetworkBasicsDiagram,
+    NetworkBenefits,
     DhcpRelayPlayer,
     DhcpRfcCheck,
     DoraPlayer,

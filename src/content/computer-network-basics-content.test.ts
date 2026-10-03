@@ -14,6 +14,7 @@ describe("Computer Network Basics content", () => {
   it("keeps the introduction focused on beginner network vocabulary", () => {
     const introduction = source("how-networks-communicate");
     expect(headings(introduction)).toEqual([
+      "what-is-a-computer", "how-a-computer-works", "hardware-and-software",
       "what-is-a-computer-network", "why-networks-exist", "lan-wan-and-the-internet",
       "end-and-intermediary-devices", "identify-device-roles", "knowledge-check",
     ]);
