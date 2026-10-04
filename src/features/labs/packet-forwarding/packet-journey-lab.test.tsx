@@ -2,18 +2,15 @@ import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { SamplePacketLab } from "./sample-packet-lab";
+import { PacketJourneyLab } from "./packet-journey-lab";
 
 afterEach(cleanup);
 
-describe("SamplePacketLab", () => {
-  it("lets a learner configure and inspect a blocked packet run", async () => {
+describe("PacketJourneyLab", () => {
+  it("shows a blocked packet run when there is no default gateway", async () => {
     const user = userEvent.setup();
-    render(<SamplePacketLab />);
-    for (const name of ["Lab Topology", "Packet Flow", "Config", "Explanation"]) expect(screen.getByRole("tab", { name })).toBeVisible();
-    await user.click(screen.getByRole("tab", { name: "Config" }));
-    await user.click(screen.getByRole("radio", { name: /No default gateway/i }));
-    await user.click(screen.getByRole("tab", { name: "Lab Topology" }));
+    render(<PacketJourneyLab configuration="no-gateway" />);
+    for (const name of ["Lab Topology", "Packet Flow", "Explanation"]) expect(screen.getByRole("tab", { name })).toBeVisible();
     expect(screen.getByRole("status")).toHaveTextContent(/cannot leave the PC/i);
     expect(screen.queryByTestId("moving-lab-packet")).not.toBeInTheDocument();
     await user.click(screen.getByRole("tab", { name: "Packet Flow" }));
@@ -23,8 +20,8 @@ describe("SamplePacketLab", () => {
 
   it("advances a remote journey and gives immediate prediction feedback", async () => {
     const user = userEvent.setup();
-    render(<SamplePacketLab />);
-    expect(screen.getByText(/Which device’s MAC is the destination/i)).toBeVisible();
+    render(<PacketJourneyLab configuration="remote" />);
+    expect(screen.getByText(/which device's MAC is the destination/i)).toBeVisible();
     expect(screen.getByTestId("moving-lab-packet")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Next hop" }));
     expect(screen.getByRole("status")).toHaveTextContent(/Switch forwards to the router/i);
@@ -38,7 +35,7 @@ describe("SamplePacketLab", () => {
   it("stops playback when the packet reaches the final hop", () => {
     vi.useFakeTimers();
     try {
-      render(<SamplePacketLab />);
+      render(<PacketJourneyLab configuration="remote" />);
       fireEvent.click(screen.getByRole("button", { name: "Play packet flow" }));
       for (let hop = 0; hop < 5; hop += 1) {
         act(() => vi.advanceTimersByTime(1650));
@@ -49,5 +46,10 @@ describe("SamplePacketLab", () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it("asks a same-subnet-specific prediction question for the local scenario", () => {
+    render(<PacketJourneyLab configuration="local" />);
+    expect(screen.getByText(/pings a server on its own subnet/i)).toBeVisible();
   });
 });

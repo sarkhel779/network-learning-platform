@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildLabJourney } from "./sample-lab-scenarios";
+import { buildLabJourney, quizFor } from "./packet-journey-scenarios";
 
 describe("sample packet lab journeys", () => {
   it("keeps a local destination on the LAN without visiting the router", () => {
@@ -27,5 +27,26 @@ describe("sample packet lab journeys", () => {
     expect(steps).toHaveLength(1);
     expect(steps[0]).toMatchObject({ from: "pc", to: null, outcome: "blocked", destinationIp: "198.51.100.20" });
     expect(steps[0].explanation).toMatch(/no default gateway/i);
+  });
+});
+
+describe("packet forwarding quiz content", () => {
+  it("gives each configuration a distinct, answerable prediction", () => {
+    for (const configuration of ["local", "remote", "no-gateway"] as const) {
+      const quiz = quizFor(configuration);
+      expect(quiz.options.some((option) => option.id === quiz.correctId)).toBe(true);
+    }
+  });
+
+  it("matches the local scenario's forwarding behaviour", () => {
+    expect(quizFor("local").correctId).toBe("server");
+  });
+
+  it("matches the remote scenario's forwarding behaviour", () => {
+    expect(quizFor("remote").correctId).toBe("router");
+  });
+
+  it("matches the no-gateway scenario's forwarding behaviour", () => {
+    expect(quizFor("no-gateway").correctId).toBe("no-frame");
   });
 });

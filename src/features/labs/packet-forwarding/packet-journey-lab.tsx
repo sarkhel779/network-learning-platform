@@ -2,10 +2,10 @@
 
 import { useEffect, useId, useState } from "react";
 
-import { buildLabJourney, type LabConfiguration, type LabDevice } from "./sample-lab-scenarios";
+import { buildLabJourney, quizFor, type LabConfiguration, type LabDevice } from "./packet-journey-scenarios";
 
-type LabView = "Lab Topology" | "Packet Flow" | "Config" | "Explanation";
-const views: LabView[] = ["Lab Topology", "Packet Flow", "Config", "Explanation"];
+type LabView = "Lab Topology" | "Packet Flow" | "Explanation";
+const views: LabView[] = ["Lab Topology", "Packet Flow", "Explanation"];
 const deviceNames: Record<LabDevice, string> = { pc: "Your PC", switch: "Switch", router: "Gateway router", server: "Destination server" };
 
 function DeviceIcon({ device }: { device: LabDevice }) {
@@ -15,8 +15,7 @@ function DeviceIcon({ device }: { device: LabDevice }) {
   return <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="12" y="5" width="24" height="11" rx="2" /><rect x="12" y="19" width="24" height="11" rx="2" /><rect x="12" y="33" width="24" height="11" rx="2" /><path d="M17 10h11m-11 14h11m-11 14h11" /></svg>;
 }
 
-export function SamplePacketLab() {
-  const [configuration, setConfiguration] = useState<LabConfiguration>("remote");
+export function PacketJourneyLab({ configuration }: { configuration: LabConfiguration }) {
   const [view, setView] = useState<LabView>("Lab Topology");
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -25,6 +24,7 @@ export function SamplePacketLab() {
   const id = useId();
   const journey = buildLabJourney(configuration);
   const step = journey[index];
+  const quiz = quizFor(configuration);
   const devices: LabDevice[] = configuration === "local" ? ["pc", "switch", "server"] : ["pc", "switch", "router", "server"];
   const activeStart = devices.indexOf(step.from);
   const activeEnd = step.to ? devices.indexOf(step.to) : -1;
@@ -38,17 +38,9 @@ export function SamplePacketLab() {
     return () => window.clearTimeout(timer);
   }, [index, journey.length, playing]);
 
-  function chooseConfiguration(value: LabConfiguration) {
-    setConfiguration(value);
-    setIndex(0);
-    setPlaying(false);
-    setChecked(false);
-    setPrediction(null);
-  }
-
   function selectView(next: LabView) { setView(next); }
 
-  return <section aria-label="Sample packet experiment" className="sample-lab">
+  return <section aria-label="Packet forwarding experiment" className="sample-lab">
     <div className="sample-lab__tabs" role="tablist" aria-label="Lab views">
       {views.map((name, tabIndex) => <button key={name} role="tab" type="button" aria-selected={view === name} aria-controls={`${id}-panel`} tabIndex={view === name ? 0 : -1} onClick={() => selectView(name)} onKeyDown={(event) => {
         if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
@@ -68,11 +60,10 @@ export function SamplePacketLab() {
         </div>)}
       </div> : null}
       {view === "Packet Flow" ? <div className="sample-lab__flow"><h3>{step.packetKind}</h3><p>{step.explanation}</p><dl><div><dt>Source IP</dt><dd>{step.sourceIp}</dd></div><div><dt>Destination IP</dt><dd>{step.destinationIp}</dd></div><div><dt>Source MAC</dt><dd>{step.sourceMac}</dd></div><div><dt>Destination MAC</dt><dd>{step.destinationMac}</dd></div></dl></div> : null}
-      {view === "Config" ? <fieldset className="sample-lab__config"><legend>Choose a destination and gateway setup</legend><label><input type="radio" name={`${id}-configuration`} checked={configuration === "local"} onChange={() => chooseConfiguration("local")} />Local server · 192.0.2.20</label><label><input type="radio" name={`${id}-configuration`} checked={configuration === "remote"} onChange={() => chooseConfiguration("remote")} />Remote server · gateway available</label><label><input type="radio" name={`${id}-configuration`} checked={configuration === "no-gateway"} onChange={() => chooseConfiguration("no-gateway")} />No default gateway · remote server</label><p>The example assumes needed MAC addresses are already known; it focuses on forwarding decisions.</p></fieldset> : null}
       {view === "Explanation" ? <div className="sample-lab__explanation"><h3>What changed at this hop?</h3><p>{step.explanation}</p><p>{configuration === "local" ? "A local destination stays on the LAN." : configuration === "remote" ? "A router changes the Ethernet frame at the network boundary while the IP conversation keeps its endpoints." : "A missing gateway is a local configuration problem, not a packet lost in transit."}</p></div> : null}
     </div>
     <p className="sample-lab__stage" role="status">Hop {index + 1} of {journey.length}: {step.title}{step.outcome === "blocked" ? " · blocked" : step.outcome === "delivered" ? " · delivered" : ""}</p>
     <div className="sample-lab__controls"><button type="button" onClick={() => setPlaying((value) => !value)} disabled={index >= journey.length - 1}>{playing ? "Pause" : "Play packet flow"}</button><button type="button" onClick={() => { setPlaying(false); setIndex((current) => Math.min(current + 1, journey.length - 1)); }} disabled={index >= journey.length - 1}>Next hop</button><button type="button" onClick={() => { setPlaying(false); setIndex(0); }}>Restart</button></div>
-    <fieldset className="sample-lab__quiz"><legend>Predict: for a remote destination, which device’s MAC is the destination of the PC’s first Ethernet frame?</legend><label><input type="radio" name={`${id}-prediction`} checked={prediction === "server"} onChange={() => { setPrediction("server"); setChecked(false); }} />The remote server directly</label><label><input type="radio" name={`${id}-prediction`} checked={prediction === "router"} onChange={() => { setPrediction("router"); setChecked(false); }} />The router (default gateway)</label><label><input type="radio" name={`${id}-prediction`} checked={prediction === "switch"} onChange={() => { setPrediction("switch"); setChecked(false); }} />The switch</label><button type="button" disabled={!prediction} onClick={() => setChecked(true)}>Check prediction</button>{checked ? <p role="status" aria-label="Prediction feedback">{prediction === "router" ? "Correct. The PC sends to its default gateway’s MAC; the switch forwards that frame." : "Not quite. The PC sends the frame toward its default gateway, while the IP destination stays the remote server."}</p> : null}</fieldset>
+    <fieldset className="sample-lab__quiz"><legend>{quiz.question}</legend>{quiz.options.map((option) => <label key={option.id}><input type="radio" name={`${id}-prediction`} checked={prediction === option.id} onChange={() => { setPrediction(option.id); setChecked(false); }} />{option.label}</label>)}<button type="button" disabled={!prediction} onClick={() => setChecked(true)}>Check prediction</button>{checked ? <p role="status" aria-label="Prediction feedback">{prediction === quiz.correctId ? quiz.feedbackCorrect : quiz.feedbackIncorrect}</p> : null}</fieldset>
   </section>;
 }

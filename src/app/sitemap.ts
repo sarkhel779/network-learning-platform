@@ -5,6 +5,7 @@ import {
   loadContentOverridesSnapshot,
 } from "@/features/catalog/content-publication.repository";
 import { listPathways } from "@/features/catalog/catalog.repository";
+import { listLabTopics } from "@/features/labs/labs.repository";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const overrides = await loadContentOverridesSnapshot();
@@ -20,6 +21,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         .map((lesson) => ({
           url: `https://packetsecrets.com/learn/${pathway.slug}/${lesson.slug}`,
         })),
+    ),
+    { url: "https://packetsecrets.com/labs" },
+    ...listLabTopics().map((topic) => ({ url: `https://packetsecrets.com/labs/${topic.slug}` })),
+    ...listLabTopics().flatMap((topic) =>
+      topic.scenarios.map((scenario) => ({
+        url: `https://packetsecrets.com/labs/${topic.slug}/${scenario.slug}`,
+      })),
     ),
   ];
 }
