@@ -17,16 +17,18 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   const viewer = await getViewer();
-  const searchableLessons = listPathways().flatMap((pathway) => pathway.modules.flatMap((module) => module.lessons
+  const pathways = listPathways();
+  const searchableLessons = pathways.flatMap((pathway) => pathway.modules.flatMap((module) => module.lessons
     .filter((lesson) => lesson.published)
     .map((lesson) => ({ title: lesson.title, objective: lesson.objective, href: `/learn/${pathway.slug}/${lesson.slug}` }))));
+  const navPathways = pathways.map((pathway) => ({ title: pathway.title, slug: pathway.slug }));
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('packetsecrets-theme');if(t==='light'||t==='dark'){document.documentElement.dataset.theme=t}else{document.documentElement.removeAttribute('data-theme')}}catch(e){}})()` }} />
       </head>
       <body>
-        <SiteHeader lessons={searchableLessons} signedIn={Boolean(viewer)} />
+        <SiteHeader lessons={searchableLessons} pathways={navPathways} signedIn={Boolean(viewer)} />
         <PageViewRecorder />
         {children}
         <SiteFooter />
