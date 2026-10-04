@@ -69,6 +69,14 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/learn/wireless-networking/wifi-security" },
       { url: "https://packetsecrets.com/learn/wireless-networking/80211-standards-and-association" },
       { url: "https://packetsecrets.com/learn/wireless-networking/wireless-site-design-and-roaming" },
+      { url: "https://packetsecrets.com/labs" },
+      { url: "https://packetsecrets.com/labs/packet-forwarding" },
+      { url: "https://packetsecrets.com/labs/ip-subnetting" },
+      { url: "https://packetsecrets.com/labs/packet-forwarding/local-delivery" },
+      { url: "https://packetsecrets.com/labs/packet-forwarding/remote-delivery" },
+      { url: "https://packetsecrets.com/labs/packet-forwarding/missing-gateway" },
+      { url: "https://packetsecrets.com/labs/ip-subnetting/find-the-subnet-mask" },
+      { url: "https://packetsecrets.com/labs/ip-subnetting/identify-network-and-broadcast" },
     ]);
     const urls = entries.map(({ url }) => url);
     for (const pathway of listPathways()) {

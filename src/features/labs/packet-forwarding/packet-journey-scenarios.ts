@@ -1,5 +1,12 @@
 export type LabConfiguration = "local" | "remote" | "no-gateway";
 export type LabDevice = "pc" | "switch" | "router" | "server";
+export type LabQuiz = {
+  question: string;
+  options: { id: string; label: string }[];
+  correctId: string;
+  feedbackCorrect: string;
+  feedbackIncorrect: string;
+};
 export type LabHop = {
   from: LabDevice;
   to: LabDevice | null;
@@ -49,4 +56,42 @@ export function buildLabJourney(configuration: LabConfiguration): readonly LabHo
     hop("router", "switch", "Router forwards the reply on the LAN", "The router rebuilds the Ethernet frame for the PC-side network. The reply IP endpoints stay server to PC.", "ICMP echo reply", destinationIp, pcIp, routerLanMac, pcMac),
     hop("switch", "pc", "PC receives the reply", "The switch delivers the return frame to the PC.", "ICMP echo reply", destinationIp, pcIp, routerLanMac, pcMac, "delivered"),
   ];
+}
+
+export function quizFor(configuration: LabConfiguration): LabQuiz {
+  if (configuration === "local") return {
+    question: "Predict: when the PC pings a server on its own subnet, whose MAC address does the first Ethernet frame target?",
+    options: [
+      { id: "server", label: "The destination server directly" },
+      { id: "router", label: "The router (default gateway)" },
+      { id: "switch", label: "The switch" },
+    ],
+    correctId: "server",
+    feedbackCorrect: "Correct. Same-subnet traffic is addressed straight to the destination's MAC; the switch just forwards the frame.",
+    feedbackIncorrect: "Not quite. For a local destination the PC addresses the frame directly to the server's MAC — no router is involved.",
+  };
+
+  if (configuration === "no-gateway") return {
+    question: "Predict: without a default gateway configured, what happens when the PC tries to reach a remote network?",
+    options: [
+      { id: "no-frame", label: "The PC cannot address an Ethernet frame at all" },
+      { id: "switch-drops", label: "The frame is sent to the switch, which drops it" },
+      { id: "router-error", label: "The router replies with an error message" },
+    ],
+    correctId: "no-frame",
+    feedbackCorrect: "Correct. With no default gateway, the PC has no next hop to address the frame to, so nothing is sent.",
+    feedbackIncorrect: "Not quite. The problem happens before the frame is ever sent: the PC has no next-hop MAC to use as the destination.",
+  };
+
+  return {
+    question: "Predict: for a remote destination, which device's MAC is the destination of the PC's first Ethernet frame?",
+    options: [
+      { id: "server", label: "The remote server directly" },
+      { id: "router", label: "The router (default gateway)" },
+      { id: "switch", label: "The switch" },
+    ],
+    correctId: "router",
+    feedbackCorrect: "Correct. The PC sends to its default gateway's MAC; the switch forwards that frame.",
+    feedbackIncorrect: "Not quite. The PC sends the frame toward its default gateway, while the IP destination stays the remote server.",
+  };
 }

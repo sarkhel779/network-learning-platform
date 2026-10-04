@@ -6,13 +6,14 @@ import { SiteHeader } from "@/components/site-header";
 import LabsPage from "./page";
 
 describe("Labs entry points", () => {
-  it("presents the sample experiment and existing lesson practice destinations", () => {
+  it("presents independent lab topics with no links into course lessons", () => {
     const html = renderToStaticMarkup(<LabsPage />);
-    expect(html).toContain("Sample packet experiment");
-    expect(html).toContain("/learn/networking-foundations/first-packet-journey-through-a-small-network#complete-packet-journey");
-    expect(html).toContain("/learn/networking-foundations/dhcp-and-automatic-address-configuration#interactive-dora-journey");
-    expect(html).toContain("Browse lesson quizzes");
-    expect(html).toContain('href="/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Ffirst-packet-journey-through-a-small-network%23knowledge-check-summary"');
+    expect(html).toContain("Packet Forwarding");
+    expect(html).toContain("IP Addressing &amp; Subnetting");
+    expect(html).toContain('href="/labs/packet-forwarding"');
+    expect(html).toContain('href="/labs/ip-subnetting"');
+    expect(html).not.toMatch(/href="\/learn\//);
+    expect(html).not.toContain("/sign-in");
   });
 
   it("exposes Labs in real site navigation without placeholder sections", () => {
