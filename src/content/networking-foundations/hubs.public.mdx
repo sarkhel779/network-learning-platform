@@ -2,7 +2,15 @@
 
 A **hub** is a simple central device that connects several hosts on one shared Ethernet network. Each host uses a cable connected to one of the hub's ports.
 
+Think back to the hosts in the previous lesson: their Ethernet adapters need somewhere to connect. A hub provides several cable sockets, called **ports**, so those hosts can join one local network. It is a network hub, not a USB hub.
+
 A hub works with the signal arriving on a port. It does not identify the intended recipient and it does not choose the best outgoing port.
+
+### Meet the device
+
+Follow the cables below. The laptop connects to port 1; the workstation, printer and server connect to ports 2, 3 and 4. The arrows show one transmission from the laptop, copied toward every other host. On a small screen, swipe across the diagram to see the receiving hosts.
+
+<HubPortOverview />
 
 <h2 id="how-a-hub-handles-a-signal">How a hub handles a signal</h2>
 
@@ -10,11 +18,17 @@ When a signal enters one port, the hub repeats that signal through **every other
 
 The hub behaves like a loudspeaker in a room: it repeats what it receives so everyone connected can hear it. The receiving hosts determine whether the information is useful to them.
 
+This is why a hub is called a **multiport repeater**: *multiport* means several ports, and *repeater* means it repeats incoming signals. It operates at the **Physical Layer (Layer 1)**, rather than reading destination addresses to decide where to send a frame.
+
+For a message addressed only to the server, all three receiving hosts see the signal. Their network adapters examine the frame: the server accepts it, while the workstation and printer normally discard it because it is not addressed to them. **The receiving hosts make that decision—not the hub.**
+
 <h2 id="repeat-a-signal">Watch a hub repeat a signal</h2>
 
 Follow one signal from a laptop into a hub. Notice that the hub sends a copy toward the workstation, printer, and server even though the server is the intended host.
 
 <HubRepeaterDemo />
+
+As you watch, notice the copies leave the hub together. The workstation does not pass the message to the printer; each receives its own copy directly from the hub.
 
 <h2 id="shared-network-behaviour">Shared network behaviour</h2>
 
@@ -22,11 +36,29 @@ Every device connected to the hub shares the same communication space and the sa
 
 If two hosts transmit at the same time, their signals can interfere with one another. This is called a **collision**. For this introductory lesson, remember only that a hub creates one shared environment in which simultaneous transmissions can conflict.
 
+<HubSharedMediumOverview />
+
+Hub-based Ethernet uses **half-duplex** communication: only one host can transmit successfully at a time, and a host cannot send and receive simultaneously. The other hosts receive while that one host sends. We will study collision detection and recovery later.
+
 <h2 id="why-switches-replaced-hubs">Why switches replaced hubs</h2>
 
 Modern Ethernet networks normally use switches instead of hubs. A hub repeats a signal everywhere, while a switch can be more selective about where it sends network traffic.
 
 That difference makes switches more efficient for modern local networks. How switches make their decisions will be taught later; here, the important distinction is **hub: repeat to every other port**.
+
+<div className="lesson-table" role="region" aria-label="Hub and switch comparison" tabIndex={0}>
+  <table>
+    <caption>Hub and switch: the beginner comparison</caption>
+    <thead><tr><th scope="col">Hub</th><th scope="col">Switch</th></tr></thead>
+    <tbody>
+      <tr><td>Repeats incoming signals through every other active port</td><td>Can forward a frame to the port leading to a known destination</td></tr>
+      <tr><td>All attached hosts share capacity</td><td>Separate links can carry traffic independently</td></tr>
+      <tr><td>Useful for understanding older shared Ethernet</td><td>The usual choice for modern Ethernet networks</td></tr>
+    </tbody>
+  </table>
+</div>
+
+A switch does not always send to only one port: some traffic still needs to reach multiple ports. The Switches lesson will explain that distinction.
 
 <h2 id="knowledge-check">Knowledge check</h2>
 

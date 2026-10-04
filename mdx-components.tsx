@@ -89,6 +89,7 @@ import { HostRoleClassifier } from "@/features/network-basics/host-role-classifi
 import { HostTypesGallery } from "@/features/network-basics/host-types-gallery";
 import { HostInterfaceOverview, ClientServerOverview } from "@/features/network-basics/host-introduction-diagrams";
 import { HubRepeaterDemo } from "@/features/network-basics/hub-repeater-demo";
+import { HubPortOverview, HubSharedMediumOverview } from "@/features/network-basics/hub-introduction-diagrams";
 import { LayerMatchingExercise } from "@/features/network-basics/layer-matching-exercise";
 import { RouterBoundaryPlacement } from "@/features/network-basics/router-boundary-placement";
 import { SwitchPortMatcher } from "@/features/network-basics/switch-port-matcher";
@@ -140,6 +141,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     HostRoleClassifier,
     HostTypesGallery,
     HubRepeaterDemo,
+    HubPortOverview,
+    HubSharedMediumOverview,
     HopByHopForwardingPlayer,
     RouteSelectionPacketFlow,
     RipExchangePacketFlow,
