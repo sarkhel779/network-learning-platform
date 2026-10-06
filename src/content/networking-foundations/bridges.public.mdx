@@ -2,9 +2,15 @@
 
 A **bridge** connects two local network segments. Unlike a hub, it can keep some traffic on the segment where that traffic belongs instead of repeating everything everywhere.
 
+In the Hubs lesson, every other attached host received a copy of a transmission. Now imagine two groups of hosts: if two hosts in the first group communicate, must the second group receive that traffic too? A bridge can prevent that unnecessary copying between the groups.
+
+A bridge works at the **Data Link Layer (Layer 2)**. It handles Ethernet frames and can use their destination addresses to decide whether they need to cross to the other segment. The detailed address-learning process comes later.
+
 <h2 id="why-bridges-were-introduced">Why bridges were introduced</h2>
 
 One large shared segment becomes busy as more hosts communicate. Bridges were introduced to split that shared space while still allowing the two sides to communicate when necessary.
+
+This does not make every host's connection private. Hosts on each shared segment still share that segment's capacity. The benefit is that traffic belonging only to one segment does not have to occupy the other one.
 
 <h2 id="network-segments">Network segments</h2>
 
@@ -12,11 +18,26 @@ A **segment** is a portion of a local network. Imagine one group of hosts on the
 
 This is the introductory idea behind selective local connections. Detailed switching behavior belongs in the Data Link Layer module.
 
+**A segment is not automatically a separate IP network.** In this lesson, the bridge joins two shared segments of one LAN. A router has a different job: connecting different IP networks.
+
+### Two messages, two decisions
+
+- **A sends to B on the same segment:** the bridge receives the frame, but does not forward it to the other segment. This is called **filtering**.
+- **A sends to D on the other segment:** the bridge forwards the frame across, so D can receive it. This is called **forwarding**.
+
+These examples assume the bridge knows where the destination is. A bridge does not keep every kind of traffic local; we will cover unknown destinations and broadcasts later.
+
 <h2 id="compare-segments">Compare segments</h2>
 
 Compare one shared segment with two segments joined by a bridge.
 
+First choose **One shared segment**, then **Two connected segments**. Keep A sending to B and notice that the right-side cables stop carrying this frame. Next choose A to D: traffic must cross the bridge to reach its destination.
+
 <BridgeSegmentComparison />
+
+### Hub versus bridge
+
+A **hub repeats signals** to every other port without checking a destination address. A **bridge can filter or forward frames** between segments. The bridge is selective about crossing between sides; the hubs shown inside each side still repeat signals locally.
 
 <h2 id="knowledge-check">Knowledge check</h2>
 
