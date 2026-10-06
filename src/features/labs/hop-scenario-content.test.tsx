@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
 
-import { aclDirectionTroubleshootingScenario } from "./access-control-lists/acl-direction-troubleshooting-hops";
-import { aclRuleOrderScenario } from "./access-control-lists/acl-rule-order-hops";
-import { permitDenyBasicsScenario } from "./access-control-lists/permit-deny-basics-hops";
 import type { HopScenarioData } from "./hop-lab-types";
 import { natTroubleshootingScenario } from "./nat-port-forwarding/nat-troubleshooting-hops";
 import { patOverloadScenario } from "./nat-port-forwarding/pat-overload-hops";
@@ -18,9 +15,6 @@ const scenarios: Record<string, HopScenarioData> = {
   "access-vs-trunk": accessVsTrunkScenario,
   "native-vlan-mismatch": nativeVlanMismatchScenario,
   "inter-vlan-routing-design": interVlanRoutingDesignScenario,
-  "permit-deny-basics": permitDenyBasicsScenario,
-  "acl-rule-order": aclRuleOrderScenario,
-  "acl-direction-troubleshooting": aclDirectionTroubleshootingScenario,
 };
 
 describe("hop scenario content", () => {

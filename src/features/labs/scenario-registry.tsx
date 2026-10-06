@@ -1,9 +1,10 @@
 import type { ComponentType } from "react";
 
-import { aclDirectionTroubleshootingScenario } from "./access-control-lists/acl-direction-troubleshooting-hops";
 import { AclRuleListPanel } from "./access-control-lists/acl-rule-list-panel";
-import { aclRuleOrderScenario } from "./access-control-lists/acl-rule-order-hops";
-import { permitDenyBasicsScenario } from "./access-control-lists/permit-deny-basics-hops";
+import { aclDirectionTroubleshootingSim } from "./access-control-lists/acl-direction-troubleshooting-sim";
+import { aclRuleOrderSim } from "./access-control-lists/acl-rule-order-sim";
+import { AclSimulator } from "./access-control-lists/acl-simulator";
+import { permitDenyBasicsSim } from "./access-control-lists/permit-deny-basics-sim";
 import { ChallengeLab } from "./challenge-lab";
 import { dnsRecordTypesRounds } from "./dns-resolution/dns-record-types-rounds";
 import { dnsResolutionOrderRounds } from "./dns-resolution/dns-resolution-order-rounds";
@@ -70,29 +71,9 @@ const registry: Record<ScenarioKey, ComponentType> = {
   "vlans-trunking/native-vlan-mismatch": () => <HopLab ariaLabel="Native VLAN mismatch walkthrough" {...nativeVlanMismatchScenario} />,
   "vlans-trunking/inter-vlan-routing-design": () => <HopLab ariaLabel="Inter-VLAN routing design walkthrough" {...interVlanRoutingDesignScenario} />,
 
-  "access-control-lists/permit-deny-basics": () => (
-    <HopLab
-      ariaLabel="ACL implicit deny walkthrough"
-      extraPanelTitle="ACL Rules"
-      extraPanel={<AclRuleListPanel rules={[
-        { rule: "10 deny host 192.168.1.5", status: "not-matched" },
-        { rule: "(implicit) deny any", status: "matched-deny" },
-      ]} />}
-      {...permitDenyBasicsScenario}
-    />
-  ),
-  "access-control-lists/acl-rule-order": () => (
-    <HopLab
-      ariaLabel="ACL rule order walkthrough"
-      extraPanelTitle="ACL Rules"
-      extraPanel={<AclRuleListPanel rules={[
-        { rule: "10 permit any", status: "matched-permit" },
-        { rule: "20 deny host 192.168.1.50", status: "unreachable" },
-      ]} />}
-      {...aclRuleOrderScenario}
-    />
-  ),
-  "access-control-lists/acl-direction-troubleshooting": () => <HopLab ariaLabel="ACL direction troubleshooting walkthrough" {...aclDirectionTroubleshootingScenario} />,
+  "access-control-lists/permit-deny-basics": () => <AclSimulator config={permitDenyBasicsSim} />,
+  "access-control-lists/acl-rule-order": () => <AclSimulator config={aclRuleOrderSim} />,
+  "access-control-lists/acl-direction-troubleshooting": () => <AclSimulator config={aclDirectionTroubleshootingSim} />,
 
   "dns-resolution/dns-record-types": () => <ChallengeLab rounds={dnsRecordTypesRounds} />,
   "dns-resolution/dns-resolution-order": () => <ChallengeLab rounds={dnsResolutionOrderRounds} />,
