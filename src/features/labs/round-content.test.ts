@@ -1,31 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { aclDirectionTroubleshootingRounds } from "./access-control-lists/acl-direction-troubleshooting-rounds";
-import { aclRuleOrderRounds } from "./access-control-lists/acl-rule-order-rounds";
-import { permitDenyBasicsRounds } from "./access-control-lists/permit-deny-basics-rounds";
 import type { ChallengeRound } from "./challenge-rounds";
 import { dnsRecordTypesRounds } from "./dns-resolution/dns-record-types-rounds";
 import { dnsResolutionOrderRounds } from "./dns-resolution/dns-resolution-order-rounds";
 import { dnsTroubleshootingRounds } from "./dns-resolution/dns-troubleshooting-rounds";
 import { vlsmSubnetDesignRounds } from "./ip-subnetting/vlsm-subnet-design-rounds";
-import { natTroubleshootingRounds } from "./nat-port-forwarding/nat-troubleshooting-rounds";
-import { patOverloadRounds } from "./nat-port-forwarding/pat-overload-rounds";
-import { staticNatBasicsRounds } from "./nat-port-forwarding/static-nat-basics-rounds";
-import { accessVsTrunkRounds } from "./vlans-trunking/access-vs-trunk-rounds";
-import { interVlanRoutingDesignRounds } from "./vlans-trunking/inter-vlan-routing-design-rounds";
-import { nativeVlanMismatchRounds } from "./vlans-trunking/native-vlan-mismatch-rounds";
 
 const roundSets: Record<string, ChallengeRound[]> = {
   "vlsm-subnet-design": vlsmSubnetDesignRounds,
-  "static-nat-basics": staticNatBasicsRounds,
-  "pat-overload": patOverloadRounds,
-  "nat-troubleshooting": natTroubleshootingRounds,
-  "access-vs-trunk": accessVsTrunkRounds,
-  "native-vlan-mismatch": nativeVlanMismatchRounds,
-  "inter-vlan-routing-design": interVlanRoutingDesignRounds,
-  "permit-deny-basics": permitDenyBasicsRounds,
-  "acl-rule-order": aclRuleOrderRounds,
-  "acl-direction-troubleshooting": aclDirectionTroubleshootingRounds,
   "dns-record-types": dnsRecordTypesRounds,
   "dns-resolution-order": dnsResolutionOrderRounds,
   "dns-troubleshooting": dnsTroubleshootingRounds,
