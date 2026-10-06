@@ -81,6 +81,7 @@ import { TroubleshootingWorkspace } from "@/features/troubleshooting/troubleshoo
 import { TroubleshootingProExperience } from "@/features/troubleshooting/troubleshooting-pro-experience";
 import { ProtocolFormatDiagram } from "@/features/packet-formats/protocol-format-diagram";
 import { AddressFormatInspector } from "@/features/network-basics/address-format-inspector";
+import { InterfaceAddressDiagram } from "@/features/network-basics/interface-address-diagram";
 import { BridgeSegmentComparison } from "@/features/network-basics/bridge-segment-comparison";
 import { DeviceRoleIdentifier } from "@/features/network-basics/device-role-identifier";
 import { NetworkBasicsDiagram, NetworkBenefits } from "@/features/network-basics/network-basics-diagram";
@@ -99,6 +100,7 @@ import { SwitchIntroductionDiagram } from "@/features/network-basics/switch-intr
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     AddressFormatInspector,
+    InterfaceAddressDiagram,
     ArpLocalDeliveryPlayer,
     ArpVariantPlayer,
     BridgeSegmentComparison,

@@ -2465,3 +2465,20 @@ a.admin-metric:hover,a.admin-metric:focus-visible{border-color:#32dcb4;transform
 .network-intro-benefits > div { padding: 1rem; border: 1px solid var(--border); border-radius: .6rem; background: var(--surface); }
 .network-intro-benefits p { margin-bottom: 0; }
 @media (max-width: 44rem) { .network-intro-benefits { grid-template-columns: 1fr; } .network-intro-diagram { padding: .75rem; } .network-intro-diagram__lan { padding: .5rem; } .network-intro-diagram__device span { font-size: .75rem; } }
+.interface-address { margin: 1.5rem 0; padding: 1rem; border: 1px solid var(--border); border-radius: .75rem; scroll-margin-top: 12rem; }
+.interface-address figcaption { font-size: 1.2rem; font-weight: 700; }
+.interface-address__choices { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+.interface-address__choices button { border: 1px solid var(--border); padding: .6rem .8rem; border-radius: .5rem; background: transparent; color: var(--foreground); cursor: pointer; }
+.interface-address__choices button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.interface-address__choices button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.interface-address__layout { display: grid; grid-template-columns: 1fr 3fr 1fr; gap: 1.5rem; align-items: center; }
+.interface-address__laptop, .interface-address__network { display: flex; flex-direction: column; text-align: center; position: relative; }
+.interface-address__laptop svg, .interface-address__network svg { width: 100%; max-width: 9rem; margin: auto; }
+.interface-address__card { border: 2px solid var(--accent); padding: 1rem; border-radius: .75rem; min-width: 0; }
+.interface-address__card > svg { width: 9rem; display: block; margin: 0 auto .5rem; fill: none; stroke: var(--accent); stroke-width: 2; }
+.interface-address__card > strong { display: block; text-align: center; }
+.interface-address__addresses { display: grid; gap: .75rem; }
+.interface-address__addresses > div { display: grid; gap: .35rem; padding: .75rem; border: 1px solid var(--border); border-radius: .5rem; }
+.interface-address__addresses code { font-size: 1.1rem; overflow-wrap: anywhere; color: var(--accent); }
+.interface-address__note, .interface-address__addresses span, .interface-address__layout span { color: var(--muted); font-size: .9rem; }
+@media (max-width: 44rem) { .interface-address__layout { grid-template-columns: 1fr; gap: 1rem; } .interface-address__laptop svg, .interface-address__network svg { max-width: 6rem; } }
