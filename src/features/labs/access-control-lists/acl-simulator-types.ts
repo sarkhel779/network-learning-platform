@@ -17,4 +17,8 @@ export type AclSimConfig = {
   sourceOptions: AclSimSourceOption[];
   directionToggle?: { label: string; correctDirection: "in" | "out" };
   prompt: string;
+  destinationLabel?: string;
+  destinationSublabel?: string;
+  routerSublabel?: string;
+  rulesLegend?: string;
 };

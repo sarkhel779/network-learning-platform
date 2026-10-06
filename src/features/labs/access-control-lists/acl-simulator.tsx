@@ -6,17 +6,17 @@ import { HostIcon, RouterIcon, ServerIcon } from "../hop-icons";
 import { NetworkCanvas, type CanvasNode } from "../network-canvas";
 import type { AclSimConfig, AclSimRule } from "./acl-simulator-types";
 
-const nodes: CanvasNode[] = [
-  { id: "host", x: 15, y: 50, label: "Host", icon: <HostIcon /> },
-  { id: "router", x: 50, y: 50, label: "Router", icon: <RouterIcon /> },
-  { id: "destination", x: 85, y: 50, label: "Destination", icon: <ServerIcon /> },
-];
 const links = [{ from: "host", to: "router" }, { from: "router", to: "destination" }];
 
 type Result = { outcome: "permit" | "deny"; matchedLabel: string };
 
 export function AclSimulator({ config }: { config: AclSimConfig }) {
   const id = useId();
+  const nodes: CanvasNode[] = [
+    { id: "host", x: 15, y: 50, label: "Host", icon: <HostIcon /> },
+    { id: "router", x: 50, y: 50, label: "Router", sublabel: config.routerSublabel, icon: <RouterIcon /> },
+    { id: "destination", x: 85, y: 50, label: config.destinationLabel ?? "Destination", sublabel: config.destinationSublabel, icon: <ServerIcon /> },
+  ];
   const [rules, setRules] = useState<AclSimRule[]>(config.rules);
   const [enabled, setEnabled] = useState<Record<string, boolean>>(
     Object.fromEntries(config.rules.map((rule) => [rule.id, rule.enabledByDefault])),
@@ -87,7 +87,7 @@ export function AclSimulator({ config }: { config: AclSimConfig }) {
         <NetworkCanvas ariaLabel={config.canvasAriaLabel} nodes={canvasNodes} links={links} packetAt={packetAt} />
 
         <fieldset className="acl-sim__rules" aria-label="ACL rules">
-          <legend>ACL rules, in evaluation order</legend>
+          <legend>{config.rulesLegend ?? "ACL rules, in evaluation order"}</legend>
           {rules.map((rule, index) => (
             <div key={rule.id} className={`acl-sim__rule ${!rule.reorderable ? "acl-sim__rule--fixed" : ""}`}>
               {rule.toggleable ? (

@@ -1,6 +1,5 @@
 import type { ComponentType } from "react";
 
-import { AclRuleListPanel } from "./access-control-lists/acl-rule-list-panel";
 import { aclDirectionTroubleshootingSim } from "./access-control-lists/acl-direction-troubleshooting-sim";
 import { aclRuleOrderSim } from "./access-control-lists/acl-rule-order-sim";
 import { AclSimulator } from "./access-control-lists/acl-simulator";
@@ -9,18 +8,17 @@ import { ChallengeLab } from "./challenge-lab";
 import { dnsRecordTypesRounds } from "./dns-resolution/dns-record-types-rounds";
 import { dnsResolutionOrderRounds } from "./dns-resolution/dns-resolution-order-rounds";
 import { dnsTroubleshootingRounds } from "./dns-resolution/dns-troubleshooting-rounds";
-import { HopLab } from "./hop-lab";
 import { networkBroadcastRounds } from "./ip-subnetting/network-broadcast-rounds";
 import { subnetMaskRounds } from "./ip-subnetting/subnet-mask-rounds";
 import { vlsmSubnetDesignRounds } from "./ip-subnetting/vlsm-subnet-design-rounds";
-import { NatTablePanel } from "./nat-port-forwarding/nat-table-panel";
-import { natTroubleshootingScenario } from "./nat-port-forwarding/nat-troubleshooting-hops";
-import { patOverloadScenario } from "./nat-port-forwarding/pat-overload-hops";
-import { staticNatBasicsScenario } from "./nat-port-forwarding/static-nat-basics-hops";
+import { natTroubleshootingSim } from "./nat-port-forwarding/nat-troubleshooting-sim";
+import { PatSimulator } from "./nat-port-forwarding/pat-simulator";
+import { StaticNatSimulator } from "./nat-port-forwarding/static-nat-simulator";
 import { PacketJourneyLab } from "./packet-forwarding/packet-journey-lab";
-import { accessVsTrunkScenario } from "./vlans-trunking/access-vs-trunk-hops";
-import { interVlanRoutingDesignScenario } from "./vlans-trunking/inter-vlan-routing-design-hops";
-import { nativeVlanMismatchScenario } from "./vlans-trunking/native-vlan-mismatch-hops";
+import { accessVsTrunkSim } from "./vlans-trunking/access-vs-trunk-sim";
+import { interVlanRoutingDesignSim } from "./vlans-trunking/inter-vlan-routing-design-sim";
+import { LinkTypeSimulator } from "./vlans-trunking/link-type-simulator";
+import { NativeVlanSimulator } from "./vlans-trunking/native-vlan-simulator";
 
 type ScenarioKey = `${string}/${string}`;
 
@@ -33,43 +31,13 @@ const registry: Record<ScenarioKey, ComponentType> = {
   "ip-subnetting/identify-network-and-broadcast": () => <ChallengeLab rounds={networkBroadcastRounds} />,
   "ip-subnetting/vlsm-subnet-design": () => <ChallengeLab rounds={vlsmSubnetDesignRounds} />,
 
-  "nat-port-forwarding/static-nat-basics": () => (
-    <HopLab
-      ariaLabel="Static NAT walkthrough"
-      extraPanelTitle="NAT Table"
-      extraPanel={<NatTablePanel rows={[{ private: "192.168.1.10:80", public: "203.0.113.5:80", note: "Static entry" }]} />}
-      {...staticNatBasicsScenario}
-    />
-  ),
-  "nat-port-forwarding/pat-overload": () => (
-    <HopLab
-      ariaLabel="PAT / NAT overload walkthrough"
-      extraPanelTitle="NAT Table"
-      extraPanel={<NatTablePanel
-        caption="Both hosts share the same public IP; the port number is what keeps their sessions apart."
-        rows={[
-          { private: "192.168.1.10:5000", public: "203.0.113.9:40001", note: "Host A" },
-          { private: "192.168.1.11:5000", public: "203.0.113.9:40002", note: "Host B" },
-        ]}
-      />}
-      {...patOverloadScenario}
-    />
-  ),
-  "nat-port-forwarding/nat-troubleshooting": () => (
-    <HopLab
-      ariaLabel="NAT troubleshooting walkthrough"
-      extraPanelTitle="NAT ACL"
-      extraPanel={<AclRuleListPanel rules={[
-        { rule: "access-list 1 deny 192.168.1.0 0.0.0.255", status: "matched-deny" },
-        { rule: "access-list 1 permit any", status: "unreachable" },
-      ]} note="The NAT rule only translates traffic this ACL permits — denied traffic is excluded from translation entirely." />}
-      {...natTroubleshootingScenario}
-    />
-  ),
+  "nat-port-forwarding/static-nat-basics": () => <StaticNatSimulator />,
+  "nat-port-forwarding/pat-overload": () => <PatSimulator />,
+  "nat-port-forwarding/nat-troubleshooting": () => <AclSimulator config={natTroubleshootingSim} />,
 
-  "vlans-trunking/access-vs-trunk": () => <HopLab ariaLabel="Access vs. trunk port walkthrough" {...accessVsTrunkScenario} />,
-  "vlans-trunking/native-vlan-mismatch": () => <HopLab ariaLabel="Native VLAN mismatch walkthrough" {...nativeVlanMismatchScenario} />,
-  "vlans-trunking/inter-vlan-routing-design": () => <HopLab ariaLabel="Inter-VLAN routing design walkthrough" {...interVlanRoutingDesignScenario} />,
+  "vlans-trunking/access-vs-trunk": () => <LinkTypeSimulator config={accessVsTrunkSim} />,
+  "vlans-trunking/native-vlan-mismatch": () => <NativeVlanSimulator />,
+  "vlans-trunking/inter-vlan-routing-design": () => <LinkTypeSimulator config={interVlanRoutingDesignSim} />,
 
   "access-control-lists/permit-deny-basics": () => <AclSimulator config={permitDenyBasicsSim} />,
   "access-control-lists/acl-rule-order": () => <AclSimulator config={aclRuleOrderSim} />,
