@@ -4,6 +4,8 @@ A **switch** connects devices in a local network. It is the modern, multi-port d
 
 Picture a switch as the central connection point for nearby hosts. A laptop, printer, and server can each use a separate cable while still belonging to the same local network.
 
+<SwitchIntroductionDiagram />
+
 <h2 id="switch-ports">Switch ports</h2>
 
 Each physical switch port is a labelled connection point for a host or another network device. If a printer cable is plugged into Port 3, Port 3 is the physical path between that printer and the switch.
@@ -15,6 +17,14 @@ At this stage, remember the simple relationship: **one cable connects a device t
 A hub repeats an incoming signal to all other active ports. A switch can use the port that leads toward the relevant local device instead of treating every port the same. This makes switches a better fit for modern local networks.
 
 For now, focus on the result: traffic for the printer can use the printer's path. Later, you will learn how a switch builds and uses its forwarding information.
+
+<h3>Hub → bridge → switch: what changed?</h3>
+
+- **Hub:** repeats the incoming signal to every other connected host.
+- **Bridge:** separates shared segments and can keep known same-side traffic from crossing to the other segment.
+- **Switch:** extends the bridge idea to many ports, so local devices can have separate connections and known-destination traffic can use the appropriate port.
+
+These are three different arrangements—not devices that must all sit in one chain. A switch is not an Internet connection by itself, and it does not always send to only one port: unknown destinations and broadcasts are covered later.
 
 <h2 id="switches-and-routers">Switches and routers</h2>
 
