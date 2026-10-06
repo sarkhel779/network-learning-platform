@@ -16,7 +16,7 @@ describe("lab scenario route", () => {
     expect(screen.getByRole("navigation", { name: "Breadcrumb" })).toHaveTextContent("Packet Forwarding");
     expect(screen.getByRole("link", { name: "Labs" })).toHaveAttribute("href", "/labs");
     expect(screen.getByRole("link", { name: "Packet Forwarding" })).toHaveAttribute("href", "/labs/packet-forwarding");
-    expect(screen.getByRole("tab", { name: "Lab Topology" })).toBeVisible();
+    expect(screen.getByRole("img", { name: /Packet path from your PC/ })).toBeVisible();
   });
 
   it("renders a genuinely independent challenge-style scenario", async () => {
