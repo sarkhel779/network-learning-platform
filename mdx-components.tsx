@@ -93,6 +93,7 @@ import { HubPortOverview, HubSharedMediumOverview } from "@/features/network-bas
 import { LayerMatchingExercise } from "@/features/network-basics/layer-matching-exercise";
 import { RouterBoundaryPlacement } from "@/features/network-basics/router-boundary-placement";
 import { SwitchPortMatcher } from "@/features/network-basics/switch-port-matcher";
+import { SwitchIntroductionDiagram } from "@/features/network-basics/switch-introduction-diagram";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -186,6 +187,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     SectionContinue,
     SwitchingComparison,
     SwitchPortMatcher,
+    SwitchIntroductionDiagram,
     SwitchLearningPlayer,
     SubnetBoundaryPlayer,
     SubnetScenarioPlayer,
