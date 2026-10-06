@@ -2135,7 +2135,7 @@ a,a:hover,a:focus-visible,a *,a:hover *{text-decoration:none!important}
 .labs-scenario__breadcrumb{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;color:#8ca6bc;font-size:.85rem;font-weight:600}.labs-scenario__breadcrumb a{color:#8ca6bc}.labs-scenario__breadcrumb a:hover,.labs-scenario__breadcrumb a:focus-visible{color:#56eac9}
 .challenge-lab{display:grid;gap:1.1rem;padding:1.6rem;border:1px solid #30435d;border-radius:1rem;background:#111a29;box-shadow:0 20px 60px #0003}
 .challenge-lab__progress{margin:0;color:#8ca6bc;font-weight:700;font-variant-numeric:tabular-nums}
-.challenge-lab__question{display:grid;gap:.7rem;border:0;padding:0}.challenge-lab__prompt{padding:0;color:#f5f8fc;font-size:1.1rem;font-weight:800;line-height:1.4}
+.challenge-lab__question{display:grid;gap:.7rem;border:0;padding:0}.challenge-lab__prompt{padding:0;color:#f5f8fc;font-size:1.1rem;font-weight:800;line-height:1.4;white-space:pre-line}
 .challenge-lab__detail{margin:0;color:#a8bdd3;line-height:1.55}
 .challenge-lab__options{display:grid;gap:.55rem}.challenge-lab__options label{display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem;border:1px solid #30435d;border-radius:.6rem;background:#0d1a29;color:#dce9f2;cursor:pointer;line-height:1.4}.challenge-lab__options label:has(input:checked){border-color:#23d6a8;background:#0f2a26}.challenge-lab input{accent-color:#23d6a8}
 .challenge-lab__controls button,.challenge-lab__summary button{min-height:2.7rem;padding:.55rem 1.1rem;border:1px solid #23d6a8;border-radius:.45rem;background:#23d6a8;color:#08261f;font:inherit;font-weight:750;cursor:pointer;justify-self:start}.challenge-lab__controls button:disabled{cursor:not-allowed;opacity:.5}

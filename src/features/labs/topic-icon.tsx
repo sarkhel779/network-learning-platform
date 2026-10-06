@@ -24,6 +24,31 @@ const icons: Record<string, ReactNode> = {
       <path d="M3 10 H21 M9 10 V20" />
     </>
   ),
+  "nat-port-forwarding": (
+    <>
+      <path d="M4 8 H15 M12 5 L15 8 L12 11" />
+      <path d="M20 16 H9 M12 13 L9 16 L12 19" />
+    </>
+  ),
+  "vlans-trunking": (
+    <>
+      <rect x="3" y="4" width="7" height="7" rx="1" />
+      <rect x="14" y="4" width="7" height="7" rx="1" />
+      <rect x="8.5" y="14" width="7" height="7" rx="1" />
+      <path d="M6.5 11 V12.5 H17.5 V11 M12 12.5 V14" />
+    </>
+  ),
+  "access-control-lists": (
+    <>
+      <path d="M4 5 H20 L14 13 V19 L10 21 V13 Z" />
+    </>
+  ),
+  "dns-resolution": (
+    <>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M3.5 12 H20.5 M12 3.5 C9 7 9 17 12 20.5 M12 3.5 C15 7 15 17 12 20.5" />
+    </>
+  ),
 };
 
 const fallbackIcon = (

@@ -1,4 +1,4 @@
-import type { ChallengeRound } from "./challenge-rounds";
+import type { ChallengeRound } from "../challenge-rounds";
 
 export const networkBroadcastRounds: ChallengeRound[] = [
   {
