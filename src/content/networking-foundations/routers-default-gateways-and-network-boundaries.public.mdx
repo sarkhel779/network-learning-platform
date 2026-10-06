@@ -4,11 +4,15 @@ A **router** is a network device that connects different IP networks. It gives d
 
 A switch mainly connects devices inside one local network. A router connects that network to other networks. Later modules will explain how a router chooses paths; for now, focus on its place between networks.
 
+<RouterIntroductionDiagram />
+
 <h2 id="router-interfaces">Router interfaces</h2>
 
 A router has two or more network interfaces. Each interface connects to a different network and normally has an IP address that belongs to that network.
 
 Think of each interface as one side of a doorway. One interface may face the office network while another faces the internet provider.
+
+In the diagram, the two dots on the router mark its interfaces. The office-facing interface belongs to the Office LAN; the other interface faces the second network. The switch's ports connect local cables, while the router's interfaces connect it to different IP networks.
 
 <h2 id="routers-connect-networks">Routers connect networks</h2>
 
@@ -21,6 +25,8 @@ For example, an office switch connects laptops and printers inside the Office LA
 A host's **default gateway** is normally the router interface on its own network. When a destination is outside the local network, the host sends the traffic to this gateway for help reaching the other network.
 
 The default gateway is the first router on the journey. It is not the remote website or the final destination.
+
+Compare the two choices above: a print job to the office printer stays local, but a message to the server on the other network uses the gateway. A router is not a compulsory stop for every message inside the LAN.
 
 <h2 id="place-the-router">Place the router</h2>
 

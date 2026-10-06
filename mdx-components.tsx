@@ -92,6 +92,7 @@ import { HubRepeaterDemo } from "@/features/network-basics/hub-repeater-demo";
 import { HubPortOverview, HubSharedMediumOverview } from "@/features/network-basics/hub-introduction-diagrams";
 import { LayerMatchingExercise } from "@/features/network-basics/layer-matching-exercise";
 import { RouterBoundaryPlacement } from "@/features/network-basics/router-boundary-placement";
+import { RouterIntroductionDiagram } from "@/features/network-basics/router-introduction-diagram";
 import { SwitchPortMatcher } from "@/features/network-basics/switch-port-matcher";
 import { SwitchIntroductionDiagram } from "@/features/network-basics/switch-introduction-diagram";
 
@@ -183,6 +184,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     RouteDecisionPlayer,
     RouteDecisionExperience,
     RouterBoundaryPlacement,
+    RouterIntroductionDiagram,
     RoutingTableDecisionPlayer,
     SectionContinue,
     SwitchingComparison,
