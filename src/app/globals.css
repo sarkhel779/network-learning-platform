@@ -503,6 +503,44 @@
 .host-types-gallery__card p { margin: 0; color: var(--muted); font-size: .88rem; line-height: 1.45; }
 .host-device-icon { display: block; width: 4.25rem; height: 4.25rem; overflow: visible; fill: color-mix(in srgb, var(--accent) 8%, var(--background)); stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 
+.switch-intro { margin: 1.5rem 0; padding: 1rem; border: 1px solid var(--border); border-radius: .85rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); }
+.switch-intro figcaption { font-weight: 800; color: var(--foreground); }
+.switch-intro__choices { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1rem 0; }
+.switch-intro__choices button { padding: .6rem .8rem; border: 1px solid var(--border); border-radius: .5rem; color: var(--foreground); background: var(--background); cursor: pointer; }
+.switch-intro__choices button[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--background)); }
+.switch-intro__choices button:focus-visible, .switch-intro__viewport:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.switch-intro__viewport { overflow-x: auto; max-width: 100%; }
+.switch-intro__viewport svg { display: block; width: 100%; }
+.switch-intro__cable path { fill: none; stroke: var(--muted); stroke-width: 3; }
+.switch-intro__cable[data-active="true"] path { stroke: var(--accent); stroke-width: 4; }
+.switch-intro__body { fill: var(--background); stroke: var(--accent); stroke-width: 2.5; }
+.switch-intro__ports, .switch-intro__labels { fill: var(--foreground); font-weight: 800; font-size: 19px; }
+.switch-intro__outcomes { fill: var(--muted); font-size: 16px; }
+.switch-intro__arrows { fill: none; stroke: var(--accent); stroke-width: 3; }
+.switch-intro__note { font-size: .85rem; color: var(--muted); }
+@media (max-width: 30rem) { .switch-intro__viewport svg { min-width: 640px; } }
+
+.router-intro { margin: 1.5rem 0; padding: 1rem; border: 1px solid var(--border); border-radius: .85rem; background: color-mix(in srgb, var(--accent) 4%, var(--background)); }
+.router-intro { scroll-margin-top: 12rem; }
+.router-intro figcaption { font-weight: 800; color: var(--foreground); }
+.router-intro__choices { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1rem 0; }
+.router-intro__choices button { padding: .6rem .8rem; border: 1px solid var(--border); border-radius: .5rem; color: var(--foreground); background: var(--background); cursor: pointer; }
+.router-intro__choices button[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--background)); }
+.router-intro__choices button:focus-visible, .router-intro__viewport:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.router-intro__viewport { overflow-x: auto; max-width: 100%; }
+.router-intro__viewport svg { display: block; width: 100%; }
+.router-intro__boundaries { fill: none; stroke: var(--border); stroke-width: 2; stroke-dasharray: 6 5; }
+.router-intro__cable path { fill: none; stroke: var(--muted); stroke-width: 3; }
+.router-intro__cable[data-active="true"] path { stroke: var(--accent); stroke-width: 4; }
+.router-intro__labels { fill: var(--foreground); font-weight: 800; font-size: 19px; }
+.router-intro__notes { fill: var(--muted); font-size: 16px; }
+.router-intro__gateway { fill: var(--accent); font-weight: 800; }
+.router-intro__interfaces { fill: var(--accent); stroke: var(--accent); stroke-width: 2; }
+.router-intro__interfaces path { fill: none; stroke-dasharray: 3 3; }
+.router-intro__arrows { fill: none; stroke: var(--accent); stroke-width: 3; }
+.router-intro__note { font-size: .85rem; color: var(--muted); }
+@media (max-width: 30rem) { .router-intro__viewport svg { min-width: 640px; } }
+
 .switch-port-matcher__topology {
   display: grid;
   grid-template-columns: minmax(7rem, .8fr) minmax(4rem, 7rem) minmax(7rem, .8fr) minmax(15rem, 1.6fr);
