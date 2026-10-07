@@ -142,6 +142,20 @@ export const labTopics: LabTopic[] = [
     ],
   },
   {
+    slug: "arp-resolution",
+    title: "ARP Resolution",
+    description: "See how a host turns an unknown IP into a MAC address — one subnet check and one request/reply exchange at a time.",
+    scenarios: [
+      {
+        slug: "same-subnet-arp",
+        title: "ARP within the same subnet",
+        summary: "Work out whether a destination is local, then build the ARP request yourself.",
+        difficulty: "Beginner",
+        estimatedMinutes: 7,
+      },
+    ],
+  },
+  {
     slug: "dns-resolution",
     title: "DNS Resolution",
     description: "Follow a name lookup from record types through the full resolution chain to common failures.",

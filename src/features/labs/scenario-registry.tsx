@@ -4,6 +4,8 @@ import { aclDirectionTroubleshootingSim } from "./access-control-lists/acl-direc
 import { aclRuleOrderSim } from "./access-control-lists/acl-rule-order-sim";
 import { AclSimulator } from "./access-control-lists/acl-simulator";
 import { permitDenyBasicsSim } from "./access-control-lists/permit-deny-basics-sim";
+import { ArpResolutionLab } from "./arp-resolution/arp-resolution-lab";
+import { sameSubnetArpSim } from "./arp-resolution/same-subnet-arp-sim";
 import { ChallengeLab } from "./challenge-lab";
 import { dnsRecordTypesRounds } from "./dns-resolution/dns-record-types-rounds";
 import { dnsResolutionOrderRounds } from "./dns-resolution/dns-resolution-order-rounds";
@@ -46,6 +48,8 @@ const registry: Record<ScenarioKey, ComponentType> = {
   "dns-resolution/dns-record-types": () => <ChallengeLab rounds={dnsRecordTypesRounds} />,
   "dns-resolution/dns-resolution-order": () => <ChallengeLab rounds={dnsResolutionOrderRounds} />,
   "dns-resolution/dns-troubleshooting": () => <ChallengeLab rounds={dnsTroubleshootingRounds} />,
+
+  "arp-resolution/same-subnet-arp": () => <ArpResolutionLab config={sameSubnetArpSim} />,
 };
 
 export function getScenarioComponent(topicSlug: string, scenarioSlug: string): ComponentType | undefined {
