@@ -5,7 +5,9 @@ import { aclRuleOrderSim } from "./access-control-lists/acl-rule-order-sim";
 import { AclSimulator } from "./access-control-lists/acl-simulator";
 import { permitDenyBasicsSim } from "./access-control-lists/permit-deny-basics-sim";
 import { ArpResolutionLab } from "./arp-resolution/arp-resolution-lab";
+import { crossSubnetArpSim } from "./arp-resolution/cross-subnet-arp-sim";
 import { sameSubnetArpSim } from "./arp-resolution/same-subnet-arp-sim";
+import { staleArpCacheSim } from "./arp-resolution/stale-arp-cache-sim";
 import { ChallengeLab } from "./challenge-lab";
 import { dnsRecordTypesRounds } from "./dns-resolution/dns-record-types-rounds";
 import { dnsResolutionOrderRounds } from "./dns-resolution/dns-resolution-order-rounds";
@@ -50,6 +52,8 @@ const registry: Record<ScenarioKey, ComponentType> = {
   "dns-resolution/dns-troubleshooting": () => <ChallengeLab rounds={dnsTroubleshootingRounds} />,
 
   "arp-resolution/same-subnet-arp": () => <ArpResolutionLab config={sameSubnetArpSim} />,
+  "arp-resolution/cross-subnet-arp": () => <ArpResolutionLab config={crossSubnetArpSim} />,
+  "arp-resolution/stale-arp-cache": () => <ArpResolutionLab config={staleArpCacheSim} />,
 };
 
 export function getScenarioComponent(topicSlug: string, scenarioSlug: string): ComponentType | undefined {

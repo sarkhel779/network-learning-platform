@@ -93,6 +93,8 @@ describe("public sitemap", () => {
       { url: "https://packetsecrets.com/labs/access-control-lists/acl-rule-order" },
       { url: "https://packetsecrets.com/labs/access-control-lists/acl-direction-troubleshooting" },
       { url: "https://packetsecrets.com/labs/arp-resolution/same-subnet-arp" },
+      { url: "https://packetsecrets.com/labs/arp-resolution/cross-subnet-arp" },
+      { url: "https://packetsecrets.com/labs/arp-resolution/stale-arp-cache" },
       { url: "https://packetsecrets.com/labs/dns-resolution/dns-record-types" },
       { url: "https://packetsecrets.com/labs/dns-resolution/dns-resolution-order" },
       { url: "https://packetsecrets.com/labs/dns-resolution/dns-troubleshooting" },

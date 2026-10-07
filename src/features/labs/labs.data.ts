@@ -153,6 +153,20 @@ export const labTopics: LabTopic[] = [
         difficulty: "Beginner",
         estimatedMinutes: 7,
       },
+      {
+        slug: "cross-subnet-arp",
+        title: "ARP across a gateway",
+        summary: "Find out why a remote destination means ARPing for the gateway instead.",
+        difficulty: "Intermediate",
+        estimatedMinutes: 7,
+      },
+      {
+        slug: "stale-arp-cache",
+        title: "ARP cache troubleshooting",
+        summary: "Diagnose a stale ARP entry left behind after a server's NIC was replaced.",
+        difficulty: "Advanced",
+        estimatedMinutes: 8,
+      },
     ],
   },
   {
