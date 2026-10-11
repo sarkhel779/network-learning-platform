@@ -1,0 +1,111 @@
+import type { ArpResolutionConfig } from "./arp-resolution-types";
+
+export const crossSubnetArpSim: ArpResolutionConfig = {
+  title: "ARP across a gateway",
+  canvasAriaLabel: "Host A sending an ARP request on the local LAN to reach its default gateway",
+  hostLabel: "Host A",
+  hostIp: "192.168.1.10",
+  hostMac: "AA:AA:AA:AA:AA:AA",
+  destinationLabel: "Remote server",
+  destinationIp: "203.0.113.50",
+  destinationMac: "not resolved by ARP — it's off this LAN",
+  subnetMask: "255.255.255.0",
+  gateway: { label: "Gateway router", ip: "192.168.1.1", mac: "CC:CC:CC:CC:CC:CC" },
+  intro: "Host A wants to reach 203.0.113.50, a server out on the internet. Its ARP cache has no entry for that IP.",
+  andQuestion: "Before Host A can decide who to ask for a MAC address, it has to work out whether 203.0.113.50 is on its own LAN or somewhere else. Which operation compares an IP address against a subnet mask to find its network address?",
+  andOptions: [
+    { value: "XOR", label: "XOR" },
+    { value: "NOT", label: "NOT" },
+    { value: "AND", label: "AND" },
+    { value: "OR", label: "OR" },
+  ],
+  andCorrectValue: "AND",
+  nextHopConclusion: "Host A is on 192.168.1.0/24, but 203.0.113.50 ANDed with that mask lands on a completely different network. Host A can't ARP for a remote server directly — only its default gateway, 192.168.1.1, is on the same LAN.",
+  decisionStep: {
+    prompt: "Host A has worked out that the server is remote. Who should it actually send the ARP request for?",
+    options: [
+      { value: "server", label: "203.0.113.50 (the remote server)" },
+      { value: "gateway", label: "192.168.1.1 (the default gateway)" },
+    ],
+    correctValue: "gateway",
+    dropExplanation: "No reply ever comes back. An ARP request is broadcast only within the local segment — it never crosses a router, so the remote server at 203.0.113.50 never even sees it.",
+    dropAtNodeId: "switch",
+    proceedExplanation: "Right. Host A only ever needs the gateway's MAC — everything past the gateway is the gateway's problem, not Host A's.",
+  },
+  requestIntro: "Host A has an ARP cache miss for its gateway, 192.168.1.1. Here's a draft of the request it's about to send — fix anything that's wrong, then send it.",
+  requestFields: [
+    {
+      key: "etherDest",
+      label: "Ethernet destination (frame)",
+      correctValue: "ff:ff:ff:ff:ff:ff",
+      options: [
+        { value: "ff:ff:ff:ff:ff:ff", label: "FF:FF:FF:FF:FF:FF (broadcast)" },
+        { value: "cc:cc:cc:cc:cc:cc", label: "CC:CC:CC:CC:CC:CC (the gateway)" },
+        { value: "aa:aa:aa:aa:aa:aa", label: "AA:AA:AA:AA:AA:AA (Host A itself)" },
+        { value: "00:00:00:00:00:00", label: "00:00:00:00:00:00 (unknown)" },
+      ],
+    },
+    {
+      key: "senderMac",
+      label: "Sender MAC (ARP payload)",
+      correctValue: "aa:aa:aa:aa:aa:aa",
+      options: [
+        { value: "ff:ff:ff:ff:ff:ff", label: "FF:FF:FF:FF:FF:FF (broadcast)" },
+        { value: "cc:cc:cc:cc:cc:cc", label: "CC:CC:CC:CC:CC:CC (the gateway's MAC)" },
+        { value: "aa:aa:aa:aa:aa:aa", label: "AA:AA:AA:AA:AA:AA (Host A's own MAC)" },
+        { value: "00:00:00:00:00:00", label: "00:00:00:00:00:00 (unknown)" },
+      ],
+    },
+    {
+      key: "senderIp",
+      label: "Sender IP (ARP payload)",
+      correctValue: "192.168.1.10",
+      options: [
+        { value: "192.168.1.10", label: "192.168.1.10 (Host A's own IP)" },
+        { value: "192.168.1.1", label: "192.168.1.1 (the gateway's IP)" },
+        { value: "203.0.113.50", label: "203.0.113.50 (the remote server)" },
+        { value: "0.0.0.0", label: "0.0.0.0" },
+      ],
+    },
+    {
+      key: "targetMac",
+      label: "Target MAC (ARP payload)",
+      correctValue: "00:00:00:00:00:00",
+      options: [
+        { value: "00:00:00:00:00:00", label: "00:00:00:00:00:00 (unknown — this is what we're resolving)" },
+        { value: "cc:cc:cc:cc:cc:cc", label: "CC:CC:CC:CC:CC:CC (guessing the gateway's MAC)" },
+        { value: "ff:ff:ff:ff:ff:ff", label: "FF:FF:FF:FF:FF:FF (broadcast)" },
+        { value: "aa:aa:aa:aa:aa:aa", label: "AA:AA:AA:AA:AA:AA (Host A's own MAC)" },
+      ],
+    },
+    {
+      key: "targetIp",
+      label: "Target IP (ARP payload)",
+      correctValue: "192.168.1.1",
+      options: [
+        { value: "192.168.1.1", label: "192.168.1.1 (the gateway — the address we want to resolve)" },
+        { value: "203.0.113.50", label: "203.0.113.50 (the remote server)" },
+        { value: "192.168.1.10", label: "192.168.1.10 (Host A's own IP)" },
+        { value: "0.0.0.0", label: "0.0.0.0" },
+      ],
+    },
+    {
+      key: "opcode",
+      label: "Opcode",
+      correctValue: "1",
+      options: [
+        { value: "1", label: "1 (Request)" },
+        { value: "2", label: "2 (Reply)" },
+      ],
+    },
+  ],
+  replyFields: [
+    { label: "Ethernet destination (frame)", value: "AA:AA:AA:AA:AA:AA (Host A)" },
+    { label: "Sender MAC (ARP payload)", value: "CC:CC:CC:CC:CC:CC (the gateway)" },
+    { label: "Sender IP (ARP payload)", value: "192.168.1.1" },
+    { label: "Target MAC (ARP payload)", value: "AA:AA:AA:AA:AA:AA (Host A)" },
+    { label: "Target IP (ARP payload)", value: "192.168.1.10" },
+    { label: "Opcode", value: "2 (Reply)" },
+  ],
+  cacheLearnedMessage: "Host A's ARP cache now maps 192.168.1.1 to CC:CC:CC:CC:CC:CC. It can finally send the original packet — addressed to the gateway, which forwards it on toward 203.0.113.50.",
+};

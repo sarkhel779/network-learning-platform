@@ -4,13 +4,18 @@ import { aclDirectionTroubleshootingSim } from "./access-control-lists/acl-direc
 import { aclRuleOrderSim } from "./access-control-lists/acl-rule-order-sim";
 import { AclSimulator } from "./access-control-lists/acl-simulator";
 import { permitDenyBasicsSim } from "./access-control-lists/permit-deny-basics-sim";
-import { ChallengeLab } from "./challenge-lab";
-import { dnsRecordTypesRounds } from "./dns-resolution/dns-record-types-rounds";
-import { dnsResolutionOrderRounds } from "./dns-resolution/dns-resolution-order-rounds";
-import { dnsTroubleshootingRounds } from "./dns-resolution/dns-troubleshooting-rounds";
-import { networkBroadcastRounds } from "./ip-subnetting/network-broadcast-rounds";
-import { subnetMaskRounds } from "./ip-subnetting/subnet-mask-rounds";
-import { vlsmSubnetDesignRounds } from "./ip-subnetting/vlsm-subnet-design-rounds";
+import { ArpResolutionLab } from "./arp-resolution/arp-resolution-lab";
+import { crossSubnetArpSim } from "./arp-resolution/cross-subnet-arp-sim";
+import { sameSubnetArpSim } from "./arp-resolution/same-subnet-arp-sim";
+import { staleArpCacheSim } from "./arp-resolution/stale-arp-cache-sim";
+import { DnsJourneyLab } from "./dns-resolution/dns-journey-lab";
+import { dnsRecordTypesSim } from "./dns-resolution/dns-record-types-sim";
+import { dnsResolutionOrderSim } from "./dns-resolution/dns-resolution-order-sim";
+import { dnsTroubleshootingSim } from "./dns-resolution/dns-troubleshooting-sim";
+import { networkBroadcastSim } from "./ip-subnetting/network-broadcast-sim";
+import { SubnetBlockLab } from "./ip-subnetting/subnet-block-lab";
+import { subnetMaskSim } from "./ip-subnetting/subnet-mask-sim";
+import { vlsmSubnetDesignSim } from "./ip-subnetting/vlsm-subnet-design-sim";
 import { natTroubleshootingSim } from "./nat-port-forwarding/nat-troubleshooting-sim";
 import { PatSimulator } from "./nat-port-forwarding/pat-simulator";
 import { StaticNatSimulator } from "./nat-port-forwarding/static-nat-simulator";
@@ -27,9 +32,9 @@ const registry: Record<ScenarioKey, ComponentType> = {
   "packet-forwarding/remote-delivery": () => <PacketJourneyLab configuration="remote" />,
   "packet-forwarding/missing-gateway": () => <PacketJourneyLab configuration="no-gateway" />,
 
-  "ip-subnetting/find-the-subnet-mask": () => <ChallengeLab rounds={subnetMaskRounds} />,
-  "ip-subnetting/identify-network-and-broadcast": () => <ChallengeLab rounds={networkBroadcastRounds} />,
-  "ip-subnetting/vlsm-subnet-design": () => <ChallengeLab rounds={vlsmSubnetDesignRounds} />,
+  "ip-subnetting/find-the-subnet-mask": () => <SubnetBlockLab config={subnetMaskSim} />,
+  "ip-subnetting/identify-network-and-broadcast": () => <SubnetBlockLab config={networkBroadcastSim} />,
+  "ip-subnetting/vlsm-subnet-design": () => <SubnetBlockLab config={vlsmSubnetDesignSim} />,
 
   "nat-port-forwarding/static-nat-basics": () => <StaticNatSimulator />,
   "nat-port-forwarding/pat-overload": () => <PatSimulator />,
@@ -43,9 +48,13 @@ const registry: Record<ScenarioKey, ComponentType> = {
   "access-control-lists/acl-rule-order": () => <AclSimulator config={aclRuleOrderSim} />,
   "access-control-lists/acl-direction-troubleshooting": () => <AclSimulator config={aclDirectionTroubleshootingSim} />,
 
-  "dns-resolution/dns-record-types": () => <ChallengeLab rounds={dnsRecordTypesRounds} />,
-  "dns-resolution/dns-resolution-order": () => <ChallengeLab rounds={dnsResolutionOrderRounds} />,
-  "dns-resolution/dns-troubleshooting": () => <ChallengeLab rounds={dnsTroubleshootingRounds} />,
+  "dns-resolution/dns-record-types": () => <DnsJourneyLab config={dnsRecordTypesSim} />,
+  "dns-resolution/dns-resolution-order": () => <DnsJourneyLab config={dnsResolutionOrderSim} />,
+  "dns-resolution/dns-troubleshooting": () => <DnsJourneyLab config={dnsTroubleshootingSim} />,
+
+  "arp-resolution/same-subnet-arp": () => <ArpResolutionLab config={sameSubnetArpSim} />,
+  "arp-resolution/cross-subnet-arp": () => <ArpResolutionLab config={crossSubnetArpSim} />,
+  "arp-resolution/stale-arp-cache": () => <ArpResolutionLab config={staleArpCacheSim} />,
 };
 
 export function getScenarioComponent(topicSlug: string, scenarioSlug: string): ComponentType | undefined {
