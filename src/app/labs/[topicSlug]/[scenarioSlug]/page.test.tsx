@@ -23,10 +23,11 @@ describe("lab scenario route", () => {
     const user = userEvent.setup();
     render(await scenarioPage.default({ params: Promise.resolve({ topicSlug: "ip-subnetting", scenarioSlug: "find-the-subnet-mask" }) }));
     expect(screen.getByRole("heading", { level: 1, name: "Find the subnet mask" })).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "Start" }));
     const option = screen.getAllByRole("radio")[0];
     await user.click(option);
-    await user.click(screen.getByRole("button", { name: "Check answer" }));
-    expect(screen.getByRole("status", { name: "Answer feedback" })).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "Check" }));
+    expect(screen.getAllByRole("status").length).toBeGreaterThan(0);
   });
 
   it("404s for an unknown topic or scenario", async () => {

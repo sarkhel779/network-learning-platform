@@ -8,14 +8,14 @@ import { ArpResolutionLab } from "./arp-resolution/arp-resolution-lab";
 import { crossSubnetArpSim } from "./arp-resolution/cross-subnet-arp-sim";
 import { sameSubnetArpSim } from "./arp-resolution/same-subnet-arp-sim";
 import { staleArpCacheSim } from "./arp-resolution/stale-arp-cache-sim";
-import { ChallengeLab } from "./challenge-lab";
 import { DnsJourneyLab } from "./dns-resolution/dns-journey-lab";
 import { dnsRecordTypesSim } from "./dns-resolution/dns-record-types-sim";
 import { dnsResolutionOrderSim } from "./dns-resolution/dns-resolution-order-sim";
 import { dnsTroubleshootingSim } from "./dns-resolution/dns-troubleshooting-sim";
-import { networkBroadcastRounds } from "./ip-subnetting/network-broadcast-rounds";
-import { subnetMaskRounds } from "./ip-subnetting/subnet-mask-rounds";
-import { vlsmSubnetDesignRounds } from "./ip-subnetting/vlsm-subnet-design-rounds";
+import { networkBroadcastSim } from "./ip-subnetting/network-broadcast-sim";
+import { SubnetBlockLab } from "./ip-subnetting/subnet-block-lab";
+import { subnetMaskSim } from "./ip-subnetting/subnet-mask-sim";
+import { vlsmSubnetDesignSim } from "./ip-subnetting/vlsm-subnet-design-sim";
 import { natTroubleshootingSim } from "./nat-port-forwarding/nat-troubleshooting-sim";
 import { PatSimulator } from "./nat-port-forwarding/pat-simulator";
 import { StaticNatSimulator } from "./nat-port-forwarding/static-nat-simulator";
@@ -32,9 +32,9 @@ const registry: Record<ScenarioKey, ComponentType> = {
   "packet-forwarding/remote-delivery": () => <PacketJourneyLab configuration="remote" />,
   "packet-forwarding/missing-gateway": () => <PacketJourneyLab configuration="no-gateway" />,
 
-  "ip-subnetting/find-the-subnet-mask": () => <ChallengeLab rounds={subnetMaskRounds} />,
-  "ip-subnetting/identify-network-and-broadcast": () => <ChallengeLab rounds={networkBroadcastRounds} />,
-  "ip-subnetting/vlsm-subnet-design": () => <ChallengeLab rounds={vlsmSubnetDesignRounds} />,
+  "ip-subnetting/find-the-subnet-mask": () => <SubnetBlockLab config={subnetMaskSim} />,
+  "ip-subnetting/identify-network-and-broadcast": () => <SubnetBlockLab config={networkBroadcastSim} />,
+  "ip-subnetting/vlsm-subnet-design": () => <SubnetBlockLab config={vlsmSubnetDesignSim} />,
 
   "nat-port-forwarding/static-nat-basics": () => <StaticNatSimulator />,
   "nat-port-forwarding/pat-overload": () => <PatSimulator />,
