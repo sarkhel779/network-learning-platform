@@ -9,9 +9,10 @@ import { crossSubnetArpSim } from "./arp-resolution/cross-subnet-arp-sim";
 import { sameSubnetArpSim } from "./arp-resolution/same-subnet-arp-sim";
 import { staleArpCacheSim } from "./arp-resolution/stale-arp-cache-sim";
 import { ChallengeLab } from "./challenge-lab";
-import { dnsRecordTypesRounds } from "./dns-resolution/dns-record-types-rounds";
-import { dnsResolutionOrderRounds } from "./dns-resolution/dns-resolution-order-rounds";
-import { dnsTroubleshootingRounds } from "./dns-resolution/dns-troubleshooting-rounds";
+import { DnsJourneyLab } from "./dns-resolution/dns-journey-lab";
+import { dnsRecordTypesSim } from "./dns-resolution/dns-record-types-sim";
+import { dnsResolutionOrderSim } from "./dns-resolution/dns-resolution-order-sim";
+import { dnsTroubleshootingSim } from "./dns-resolution/dns-troubleshooting-sim";
 import { networkBroadcastRounds } from "./ip-subnetting/network-broadcast-rounds";
 import { subnetMaskRounds } from "./ip-subnetting/subnet-mask-rounds";
 import { vlsmSubnetDesignRounds } from "./ip-subnetting/vlsm-subnet-design-rounds";
@@ -47,9 +48,9 @@ const registry: Record<ScenarioKey, ComponentType> = {
   "access-control-lists/acl-rule-order": () => <AclSimulator config={aclRuleOrderSim} />,
   "access-control-lists/acl-direction-troubleshooting": () => <AclSimulator config={aclDirectionTroubleshootingSim} />,
 
-  "dns-resolution/dns-record-types": () => <ChallengeLab rounds={dnsRecordTypesRounds} />,
-  "dns-resolution/dns-resolution-order": () => <ChallengeLab rounds={dnsResolutionOrderRounds} />,
-  "dns-resolution/dns-troubleshooting": () => <ChallengeLab rounds={dnsTroubleshootingRounds} />,
+  "dns-resolution/dns-record-types": () => <DnsJourneyLab config={dnsRecordTypesSim} />,
+  "dns-resolution/dns-resolution-order": () => <DnsJourneyLab config={dnsResolutionOrderSim} />,
+  "dns-resolution/dns-troubleshooting": () => <DnsJourneyLab config={dnsTroubleshootingSim} />,
 
   "arp-resolution/same-subnet-arp": () => <ArpResolutionLab config={sameSubnetArpSim} />,
   "arp-resolution/cross-subnet-arp": () => <ArpResolutionLab config={crossSubnetArpSim} />,
