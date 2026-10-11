@@ -1,4 +1,3 @@
-import { HostIcon, ServerIcon } from "../hop-icons";
 import { dnsRecordTypesRounds } from "./dns-record-types-rounds";
 import type { DnsHop, DnsJourneyConfig } from "./dns-journey-types";
 
@@ -14,11 +13,12 @@ const hops: DnsHop[] = dnsRecordTypesRounds.map((round, index) => ({ ...round, .
 export const dnsRecordTypesSim: DnsJourneyConfig = {
   title: "DNS record types",
   canvasAriaLabel: "A DNS query being routed to the right destination depending on the record type involved",
+  startNodeId: "client",
   nodes: [
-    { id: "client", x: 10, y: 50, label: "Client", icon: HostIcon() },
-    { id: "dns", x: 48, y: 50, label: "DNS server", sublabel: "example.com zone", icon: ServerIcon() },
-    { id: "web", x: 88, y: 22, label: "Web server", icon: ServerIcon() },
-    { id: "mail", x: 88, y: 78, label: "Mail server", icon: ServerIcon() },
+    { id: "client", x: 40, y: 130, label: "Client" },
+    { id: "dns", x: 200, y: 130, label: "DNS server", sublabel: "example.com zone", shape: "ellipse" },
+    { id: "web", x: 360, y: 55, label: "Web server" },
+    { id: "mail", x: 360, y: 205, label: "Mail server" },
   ],
   links: [
     { from: "client", to: "dns" },

@@ -1,4 +1,3 @@
-import { HostIcon, ServerIcon } from "../hop-icons";
 import { dnsTroubleshootingRounds } from "./dns-troubleshooting-rounds";
 import type { DnsHop, DnsJourneyConfig } from "./dns-journey-types";
 
@@ -13,11 +12,12 @@ const hops: DnsHop[] = dnsTroubleshootingRounds.map((round, index) => ({ ...roun
 export const dnsTroubleshootingSim: DnsJourneyConfig = {
   title: "DNS troubleshooting",
   canvasAriaLabel: "A client's DNS query being served from a resolver's cache instead of reaching the authoritative server",
+  startNodeId: "client",
   nodes: [
-    { id: "client", x: 10, y: 50, label: "Client", icon: HostIcon() },
-    { id: "resolver", x: 45, y: 50, label: "Resolver", sublabel: "cache", icon: ServerIcon() },
-    { id: "oldServer", x: 85, y: 22, label: "Old server", sublabel: "stale cached IP", icon: ServerIcon() },
-    { id: "newServer", x: 85, y: 78, label: "New server", sublabel: "current IP", icon: ServerIcon() },
+    { id: "client", x: 40, y: 130, label: "Client" },
+    { id: "resolver", x: 200, y: 130, label: "Resolver", sublabel: "cache", shape: "ellipse" },
+    { id: "oldServer", x: 360, y: 55, label: "Old server", sublabel: "stale cached IP" },
+    { id: "newServer", x: 360, y: 205, label: "New server", sublabel: "current IP" },
   ],
   links: [
     { from: "client", to: "resolver" },

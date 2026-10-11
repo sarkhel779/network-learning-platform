@@ -2207,6 +2207,22 @@ a,a:hover,a:focus-visible,a *,a:hover *{text-decoration:none!important}
 .network-canvas__node--blocked strong{color:#ff8fa3}
 .network-canvas__packet{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;width:1.7rem;height:1.7rem;border:1px solid #dcfffa;border-radius:.4rem;background:#24dcb3;color:#08261f;box-shadow:0 0 15px #29ebca;transition:left 900ms ease,top 900ms ease;z-index:2}
 @media(prefers-reduced-motion:reduce){.network-canvas__packet{transition:none}}
+.flow-diagram{position:relative;width:100%;max-width:38rem;margin:0 auto}
+.flow-diagram__lines{position:absolute;inset:0;width:100%;height:100%}
+.flow-diagram__edge{fill:none;stroke:#314960;stroke-width:2.5;stroke-dasharray:5 5;transition:stroke 400ms ease}
+.flow-diagram__edge--traveled{stroke:#2bb79b;stroke-dasharray:none}
+.flow-diagram__arrowhead{fill:#314960}
+.flow-diagram__arrowhead--traveled{fill:#2bb79b}
+.flow-diagram__node{position:absolute;display:grid;justify-items:center;align-content:center;gap:.15rem;width:7.2rem;min-height:2.6rem;padding:.5rem .6rem;transform:translate(-50%,-50%);text-align:center;border:2px solid #3a5a78;border-radius:.5rem;background:#101d2e;color:#cfe2ee;box-shadow:0 10px 25px #0004}
+.flow-diagram__node--ellipse{border-radius:50%;width:6.6rem;height:6.6rem;padding:.6rem}
+.flow-diagram__node strong{font-size:.8rem;line-height:1.25;color:#eafbf6}
+.flow-diagram__node small{font:.68rem/1.2 monospace;color:#8ca6bc}
+.flow-diagram__node--active{border-color:#2bdcb6;background:#0e2a26;box-shadow:0 0 0 3px #2bdcb640,0 10px 25px #0004}
+.flow-diagram__node--active strong{color:#58e4cb}
+.flow-diagram__node--blocked{border-color:#e8667a;background:#2c121a}
+.flow-diagram__node--blocked strong{color:#ff8fa3}
+@media(prefers-reduced-motion:reduce){.flow-diagram__edge{transition:none}}
+@media(max-width:30rem){.flow-diagram__node{width:5.6rem;font-size:.9em}.flow-diagram__node--ellipse{width:5.6rem;height:5.6rem}}
 .acl-sim{display:grid;gap:1.1rem}
 .acl-sim__rules{display:grid;gap:.5rem}
 .acl-sim__rule{display:flex;align-items:center;gap:.6rem;padding:.6rem .75rem;border:1px solid #30435d;border-radius:.5rem;background:#0d1a29}

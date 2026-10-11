@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 
-import { NetworkCanvas, type CanvasNode } from "../network-canvas";
+import { FlowDiagram, type FlowLink, type FlowNode } from "./flow-diagram";
 import type { DnsJourneyConfig } from "./dns-journey-types";
 
 export function DnsJourneyLab({ config }: { config: DnsJourneyConfig }) {
@@ -12,8 +12,9 @@ export function DnsJourneyLab({ config }: { config: DnsJourneyConfig }) {
   const [finished, setFinished] = useState(false);
   const [answers, setAnswers] = useState<(string | null)[]>(() => config.hops.map(() => null));
   const [checked, setChecked] = useState<boolean[]>(() => config.hops.map(() => false));
-  const [packetAt, setPacketAt] = useState<string | null>(null);
+  const [activeNode, setActiveNode] = useState<string | null>(null);
   const [blockedAt, setBlockedAt] = useState<string | null>(null);
+  const [pathHistory, setPathHistory] = useState<string[]>([]);
 
   function selectAnswer(hopIndex: number, optionId: string) {
     setAnswers((current) => current.map((value, index) => (index === hopIndex ? optionId : value)));
@@ -22,6 +23,12 @@ export function DnsJourneyLab({ config }: { config: DnsJourneyConfig }) {
 
   function checkHop(hopIndex: number) {
     setChecked((current) => current.map((value, index) => (index === hopIndex ? true : value)));
+  }
+
+  function start() {
+    setStarted(true);
+    setActiveNode(config.startNodeId);
+    setPathHistory([config.startNodeId]);
   }
 
   function advanceHop(hopIndex: number) {
@@ -34,7 +41,8 @@ export function DnsJourneyLab({ config }: { config: DnsJourneyConfig }) {
     hop.activateSequence.forEach((nodeId, stepIndex) => {
       const delay = 50 + stepIndex * 900;
       window.setTimeout(() => {
-        setPacketAt(nodeId);
+        setActiveNode(nodeId);
+        setPathHistory((current) => [...current, nodeId]);
         if (stepIndex === hop.activateSequence.length - 1) {
           setBlockedAt(hop.blockedAtEnd ? nodeId : null);
           if (isLastHop) setFinished(true); else setCurrentHopIndex(hopIndex + 1);
@@ -49,24 +57,30 @@ export function DnsJourneyLab({ config }: { config: DnsJourneyConfig }) {
     setFinished(false);
     setAnswers(config.hops.map(() => null));
     setChecked(config.hops.map(() => false));
-    setPacketAt(null);
+    setActiveNode(null);
     setBlockedAt(null);
+    setPathHistory([]);
   }
 
-  const nodes: CanvasNode[] = config.nodes.map((node) => ({
+  const traveledEdges = new Set(pathHistory.slice(0, -1).map((nodeId, index) => `${nodeId}->${pathHistory[index + 1]}`));
+  const nodes: FlowNode[] = config.nodes.map((node) => ({
     ...node,
-    state: blockedAt === node.id ? "blocked" : packetAt === node.id ? "active" : "idle",
+    state: blockedAt === node.id ? "blocked" : activeNode === node.id ? "active" : "idle",
+  }));
+  const links: FlowLink[] = config.links.map((link) => ({
+    ...link,
+    traveled: traveledEdges.has(`${link.from}->${link.to}`),
   }));
 
   return (
     <section aria-label={config.title} className="sample-lab">
       <div className="sample-lab__panel acl-sim">
-        <NetworkCanvas ariaLabel={config.canvasAriaLabel} nodes={nodes} links={config.links} packetAt={packetAt} />
+        <FlowDiagram ariaLabel={config.canvasAriaLabel} nodes={nodes} links={links} />
 
         {!started ? (
           <div className="acl-sim__controls">
             <p>{config.intro}</p>
-            <button type="button" onClick={() => setStarted(true)}>Start</button>
+            <button type="button" onClick={start}>Start</button>
           </div>
         ) : null}
 
