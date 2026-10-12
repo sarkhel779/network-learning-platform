@@ -19,6 +19,15 @@ describe("lab scenario route", () => {
     expect(screen.getByRole("img", { name: /Packet path from your PC/ })).toBeVisible();
   });
 
+  it("offers a reachable way back to the topic's scenario list after the lab", async () => {
+    render(await scenarioPage.default({ params: Promise.resolve({ topicSlug: "packet-forwarding", scenarioSlug: "local-delivery" }) }));
+    expect(screen.getByRole("link", { name: /Back to Packet Forwarding scenarios/ })).toHaveAttribute("href", "/labs/packet-forwarding");
+    expect(screen.getByRole("heading", { level: 2, name: "More in Packet Forwarding" })).toBeVisible();
+    expect(screen.getByRole("link", { name: /Delivery across a gateway/ })).toHaveAttribute("href", "/labs/packet-forwarding/remote-delivery");
+    expect(screen.getByRole("link", { name: /Missing default gateway/ })).toHaveAttribute("href", "/labs/packet-forwarding/missing-gateway");
+    expect(screen.queryByRole("link", { name: /Local delivery on one LAN/ })).not.toBeInTheDocument();
+  });
+
   it("renders a genuinely independent challenge-style scenario", async () => {
     const user = userEvent.setup();
     render(await scenarioPage.default({ params: Promise.resolve({ topicSlug: "ip-subnetting", scenarioSlug: "find-the-subnet-mask" }) }));
