@@ -38,7 +38,8 @@ describe("DnsJourneyLab", () => {
     const correctOption = dnsResolutionOrderSim.hops[0].options.find((option) => option.id === dnsResolutionOrderSim.hops[0].correctId)!;
     fireEvent.click(hopGroup(0).getByRole("radio", { name: correctOption.label }));
     fireEvent.click(hopGroup(0).getByRole("button", { name: "Check" }));
-    expect(screen.getByText(dnsResolutionOrderSim.hops[0].explanation)).toBeVisible();
+    expect(screen.getByText(dnsResolutionOrderSim.hops[0].explanation, { exact: false })).toBeVisible();
+    expect(screen.getByText("Correct!")).toBeVisible();
 
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
     act(() => vi.advanceTimersByTime(1000));

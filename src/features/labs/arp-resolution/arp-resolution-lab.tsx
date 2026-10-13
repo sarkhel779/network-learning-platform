@@ -149,7 +149,9 @@ export function ArpResolutionLab({ config }: { config: ArpResolutionConfig }) {
   return (
     <section aria-label={config.title} className="sample-lab">
       <div className="sample-lab__panel acl-sim">
-        <NetworkCanvas ariaLabel={config.canvasAriaLabel} nodes={nodes} links={links} packetAt={packetAt} />
+        <div className="labs-sticky-diagram">
+          <NetworkCanvas ariaLabel={config.canvasAriaLabel} nodes={nodes} links={links} packetAt={packetAt} />
+        </div>
 
         {step === "idle" ? (
           <div className="acl-sim__controls">
@@ -189,7 +191,7 @@ export function ArpResolutionLab({ config }: { config: ArpResolutionConfig }) {
                     <BinaryRow label={`${config.destinationLabel} AND mask`} ip={andIp(config.destinationIp, config.subnetMask)} />
                   </dl>
                   <p role="status" className="acl-sim__result" data-outcome={onSameSubnet ? "permit" : "blocked"}>
-                    {config.nextHopConclusion}
+                    <strong>Correct!</strong> {config.nextHopConclusion}
                   </p>
                   {step === "and" ? (
                     <button type="button" onClick={() => setStep(config.decisionStep ? "decision" : "request")}>Continue</button>
@@ -226,7 +228,7 @@ export function ArpResolutionLab({ config }: { config: ArpResolutionConfig }) {
             {decisionChecked ? (
               decisionCorrect ? (
                 <>
-                  <p role="status" className="acl-sim__result" data-outcome="permit">{config.decisionStep.proceedExplanation}</p>
+                  <p role="status" className="acl-sim__result" data-outcome="permit"><strong>Correct!</strong> {config.decisionStep.proceedExplanation}</p>
                   {step === "decision" ? <button type="button" onClick={() => setStep("request")}>Continue</button> : null}
                 </>
               ) : (

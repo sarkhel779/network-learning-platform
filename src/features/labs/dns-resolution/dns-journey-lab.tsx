@@ -75,7 +75,9 @@ export function DnsJourneyLab({ config }: { config: DnsJourneyConfig }) {
   return (
     <section aria-label={config.title} className="sample-lab">
       <div className="sample-lab__panel acl-sim">
-        <FlowDiagram ariaLabel={config.canvasAriaLabel} nodes={nodes} links={links} />
+        <div className="labs-sticky-diagram">
+          <FlowDiagram ariaLabel={config.canvasAriaLabel} nodes={nodes} links={links} />
+        </div>
 
         {!started ? (
           <div className="acl-sim__controls">
@@ -111,7 +113,7 @@ export function DnsJourneyLab({ config }: { config: DnsJourneyConfig }) {
                   {checked[hopIndex] ? (
                     isCorrect ? (
                       <>
-                        <p role="status" className="acl-sim__result" data-outcome="permit">{hop.explanation}</p>
+                        <p role="status" className="acl-sim__result" data-outcome="permit"><strong>Correct!</strong> {hop.explanation}</p>
                         {isCurrent ? (
                           <button type="button" onClick={() => advanceHop(hopIndex)}>
                             {hopIndex === config.hops.length - 1 ? "Finish" : "Continue"}

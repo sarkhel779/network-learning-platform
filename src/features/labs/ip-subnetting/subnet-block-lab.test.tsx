@@ -35,6 +35,7 @@ describe("SubnetBlockLab", () => {
     const correctOption = hop.options.find((option) => option.id === hop.correctId)!;
     fireEvent.click(hopGroup(0).getByRole("radio", { name: correctOption.label }));
     fireEvent.click(hopGroup(0).getByRole("button", { name: "Check" }));
+    expect(screen.getByText("Correct!")).toBeVisible();
     const bar = screen.getByRole("img");
     expect(within(bar).getByText("62 usable")).toBeInTheDocument();
   });
