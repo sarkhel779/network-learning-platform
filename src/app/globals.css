@@ -2242,9 +2242,9 @@ a,a:hover,a:focus-visible,a *,a:hover *{text-decoration:none!important}
 @media(max-width:30rem){.address-block-bar__cell{font-size:.62rem}}
 .acl-sim{display:flex;flex-direction:column;gap:1.1rem}
 .labs-sticky-diagram{position:sticky;top:4.5rem;z-index:5;padding-bottom:.75rem;background:#111a29}
+.labs-sticky-diagram--inset{padding-top:1.35rem;padding-left:1.35rem;padding-right:1.35rem}
 .sample-lab:has(.labs-sticky-diagram){overflow:visible}
 .sample-lab:has(.labs-sticky-diagram) > .sample-lab__panel{overflow:visible}
-@media(max-width:750px){.labs-sticky-diagram{position:static}}
 .acl-sim__rules{display:grid;gap:.5rem}
 .acl-sim__rule{display:flex;align-items:center;gap:.6rem;padding:.6rem .75rem;border:1px solid #30435d;border-radius:.5rem;background:#0d1a29}
 .acl-sim__rule code{flex:1;color:#dce9f2;font-size:.82rem}

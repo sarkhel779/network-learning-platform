@@ -1,11 +1,12 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import { HostIcon, RouterIcon, ServerIcon, SwitchIcon } from "../hop-icons";
 import { NetworkCanvas, type CanvasLink, type CanvasNode } from "../network-canvas";
 import { PacketEnvelope } from "../packet-envelope";
 import { buildLabJourney, layersForHop, quizFor, type LabConfiguration, type LabDevice } from "./packet-journey-scenarios";
+import { focusLessonAnchor } from "@/features/progress/progress-navigation";
 
 const deviceNames: Record<LabDevice, string> = { pc: "Your PC", switch: "Switch", router: "Gateway router", server: "Destination server" };
 
@@ -21,6 +22,14 @@ export function PacketJourneyLab({ configuration }: { configuration: LabConfigur
   const [index, setIndex] = useState(0);
   const [prediction, setPrediction] = useState<string | null>(null);
   const [checked, setChecked] = useState(false);
+  const prevIndexRef = useRef(0);
+
+  useEffect(() => {
+    if (prevIndexRef.current === index) return;
+    prevIndexRef.current = index;
+    focusLessonAnchor(`${id}-hop`);
+  }, [index, id]);
+
   const journey = buildLabJourney(configuration);
   const step = journey[index];
   const previousStep = index > 0 ? journey[index - 1] : null;
@@ -55,14 +64,16 @@ export function PacketJourneyLab({ configuration }: { configuration: LabConfigur
 
   return (
     <section aria-label="Packet forwarding experiment" className="sample-lab">
-      <div className="sample-lab__panel acl-sim">
+      <div className="labs-sticky-diagram labs-sticky-diagram--inset">
         <NetworkCanvas
           ariaLabel={`Packet path from your PC to ${configuration === "local" ? "a local server" : "a remote server"}`}
           nodes={nodes}
           links={links}
           packetAt={packetAt}
         />
-        <div className="packet-envelope-wrap">
+      </div>
+      <div className="sample-lab__panel acl-sim">
+        <div className="packet-envelope-wrap" id={`${id}-hop`}>
           <h3>{step.title}</h3>
           <p>Unfold each layer below to inspect what this hop&apos;s packet actually carries.</p>
           <PacketEnvelope ariaLabel={`Packet contents at hop ${index + 1}`} layers={layers} />
