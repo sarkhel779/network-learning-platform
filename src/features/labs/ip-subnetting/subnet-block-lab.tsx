@@ -1,9 +1,10 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 import { AddressBlockBar } from "./address-block-bar";
 import type { BlockSegment, SubnetBlockConfig } from "./subnet-block-types";
+import { focusLessonAnchor } from "@/features/progress/progress-navigation";
 
 export function SubnetBlockLab({ config }: { config: SubnetBlockConfig }) {
   const id = useId();
@@ -14,6 +15,12 @@ export function SubnetBlockLab({ config }: { config: SubnetBlockConfig }) {
   const [checked, setChecked] = useState<boolean[]>(() => config.hops.map(() => false));
   const [segments, setSegments] = useState<BlockSegment[]>([]);
   const [totalUnits, setTotalUnits] = useState(config.hops[0]?.totalUnits ?? 1);
+
+  useEffect(() => {
+    if (finished) { focusLessonAnchor(`${id}-finished`); return; }
+    if (currentHopIndex === 0) return;
+    focusLessonAnchor(`${id}-hop-${currentHopIndex}`);
+  }, [currentHopIndex, finished, id]);
 
   function selectAnswer(hopIndex: number, optionId: string) {
     setAnswers((current) => current.map((value, index) => (index === hopIndex ? optionId : value)));
@@ -65,7 +72,8 @@ export function SubnetBlockLab({ config }: { config: SubnetBlockConfig }) {
               const isCurrent = hopIndex === currentHopIndex;
               const isCorrect = checked[hopIndex] && answers[hopIndex] === hop.correctId;
               return (
-                <div className="arp-and-step" key={hopIndex}>
+                <div className="arp-and-step" id={`${id}-hop-${hopIndex}`} key={hopIndex}>
+                  <p className="labs-step-progress">Step {hopIndex + 1} of {config.hops.length}</p>
                   <p>{hop.prompt}</p>
                   {hop.detail ? <p className="acl-sim__hint">{hop.detail}</p> : null}
                   <fieldset className="acl-sim__controls">
@@ -104,12 +112,12 @@ export function SubnetBlockLab({ config }: { config: SubnetBlockConfig }) {
           : null}
 
         {finished ? (
-          <>
+          <div id={`${id}-finished`}>
             <p role="status" className="acl-sim__result" data-outcome="permit">{config.completionMessage}</p>
             <div className="sample-lab__controls">
               <button type="button" onClick={restart}>Restart</button>
             </div>
-          </>
+          </div>
         ) : null}
       </div>
     </section>

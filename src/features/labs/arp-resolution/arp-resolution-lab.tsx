@@ -1,11 +1,12 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import { HostIcon, ServerIcon, SwitchIcon } from "../hop-icons";
 import { NetworkCanvas, type CanvasNode } from "../network-canvas";
 import type { ArpFieldKey, ArpResolutionConfig } from "./arp-resolution-types";
 import { andIp, ipToBinary, sameSubnet } from "./ip-math";
+import { focusLessonAnchor } from "@/features/progress/progress-navigation";
 
 type Step = "idle" | "and" | "decision" | "request" | "reply" | "done";
 
@@ -51,10 +52,21 @@ export function ArpResolutionLab({ config }: { config: ArpResolutionConfig }) {
   const [sending, setSending] = useState(false);
   const [decisionSelected, setDecisionSelected] = useState("");
   const [decisionChecked, setDecisionChecked] = useState(false);
+  const prevStepRef = useRef<Step>("idle");
 
   const andCorrect = andChecked && andSelected === config.andCorrectValue;
   const onSameSubnet = sameSubnet(config.hostIp, config.destinationIp, config.subnetMask);
   const decisionCorrect = decisionChecked && decisionSelected === config.decisionStep?.correctValue;
+  const totalArpSteps = config.decisionStep ? 3 : 2;
+
+  useEffect(() => {
+    const prev = prevStepRef.current;
+    prevStepRef.current = step;
+    if (prev === "idle" || prev === step) return;
+    if (step === "decision") focusLessonAnchor(`${id}-decision`);
+    else if (step === "request") focusLessonAnchor(`${id}-request`);
+    else if (step === "done") focusLessonAnchor(`${id}-done`);
+  }, [step, id]);
 
   function checkAnd() {
     setAndChecked(true);
@@ -162,6 +174,7 @@ export function ArpResolutionLab({ config }: { config: ArpResolutionConfig }) {
 
         {step !== "idle" ? (
           <div className="arp-and-step">
+            <p className="labs-step-progress">Step 1 of {totalArpSteps}</p>
             <p>{config.andQuestion}</p>
             <fieldset className="acl-sim__controls">
               <legend>Pick the operation</legend>
@@ -207,7 +220,8 @@ export function ArpResolutionLab({ config }: { config: ArpResolutionConfig }) {
         ) : null}
 
         {config.decisionStep && (step === "decision" || step === "request" || step === "reply" || step === "done") ? (
-          <div className="arp-and-step">
+          <div className="arp-and-step" id={`${id}-decision`}>
+            <p className="labs-step-progress">Step 2 of {totalArpSteps}</p>
             <p>{config.decisionStep.prompt}</p>
             <fieldset className="acl-sim__controls">
               <legend>Pick one</legend>
@@ -242,7 +256,8 @@ export function ArpResolutionLab({ config }: { config: ArpResolutionConfig }) {
         ) : null}
 
         {step === "request" || step === "reply" || step === "done" ? (
-          <div className="arp-fields">
+          <div className="arp-fields" id={`${id}-request`}>
+            <p className="labs-step-progress">Step {totalArpSteps} of {totalArpSteps}</p>
             <h3>Draft ARP request</h3>
             <p>{config.requestIntro ?? `Host A has an ARP cache miss for ${requestTarget(config).ip}. Here's a draft of the request it's about to send — fix anything that's wrong, then send it.`}</p>
             {config.requestFields.map((field) => (
@@ -284,12 +299,12 @@ export function ArpResolutionLab({ config }: { config: ArpResolutionConfig }) {
         ) : null}
 
         {step === "done" ? (
-          <>
+          <div id={`${id}-done`}>
             <p role="status" className="acl-sim__result" data-outcome="permit">{config.cacheLearnedMessage}</p>
             <div className="sample-lab__controls">
               <button type="button" onClick={restart}>Restart</button>
             </div>
-          </>
+          </div>
         ) : null}
       </div>
     </section>
