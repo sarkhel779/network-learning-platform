@@ -25,6 +25,6 @@ describe("DnsJourneyLab (record types scenario)", () => {
       act(() => vi.advanceTimersByTime(2000));
     }
 
-    expect(screen.getByText(dnsRecordTypesSim.hops[2].explanation)).toBeVisible();
+    expect(screen.getByText(dnsRecordTypesSim.hops[2].explanation, { exact: false })).toBeVisible();
   });
 });

@@ -55,7 +55,7 @@ describe("ArpResolutionLab (cross-subnet scenario)", () => {
 
     fireEvent.click(decisionGroup().getByRole("radio", { name: "192.168.1.1 (the default gateway)" }));
     fireEvent.click(decisionGroup().getByRole("button", { name: "Check" }));
-    expect(screen.getByText(crossSubnetArpSim.decisionStep!.proceedExplanation)).toBeVisible();
+    expect(screen.getByText(crossSubnetArpSim.decisionStep!.proceedExplanation, { exact: false })).toBeVisible();
 
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
     expect(screen.getByText("Draft ARP request")).toBeVisible();

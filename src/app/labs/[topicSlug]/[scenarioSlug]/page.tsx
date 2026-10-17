@@ -34,6 +34,7 @@ export default async function LabScenarioPage({ params }: ScenarioPageProps) {
   const { topic, scenario } = findScenario(topicSlug, scenarioSlug);
   const ScenarioComponent = getScenarioComponent(topicSlug, scenarioSlug);
   if (!ScenarioComponent) notFound();
+  const otherScenarios = topic.scenarios.filter((candidate) => candidate.slug !== scenario.slug);
 
   return (
     <main id="main-content" className="labs-page">
@@ -48,6 +49,28 @@ export default async function LabScenarioPage({ params }: ScenarioPageProps) {
         <p>{scenario.summary}</p>
       </header>
       <ScenarioComponent />
+      <footer className="labs-scenario__outro">
+        <Link href={`/labs/${topic.slug}`} className="labs-scenario__back-link">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M13 8H3M3 8L7 4M3 8L7 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          Back to {topic.title} scenarios
+        </Link>
+        {otherScenarios.length > 0 ? (
+          <section aria-labelledby="labs-scenario-more-heading" className="labs-scenario__more">
+            <h2 id="labs-scenario-more-heading">More in {topic.title}</h2>
+            <div className="labs-page__cards">
+              {otherScenarios.map((other) => (
+                <Link key={other.slug} href={`/labs/${topic.slug}/${other.slug}`}>
+                  <strong>{other.title}</strong>
+                  <span>{other.summary}</span>
+                  <small>{other.difficulty} · ~{other.estimatedMinutes} min</small>
+                </Link>
+              ))}
+            </div>
+          </section>
+        ) : null}
+      </footer>
     </main>
   );
 }
