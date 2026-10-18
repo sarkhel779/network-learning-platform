@@ -2171,6 +2171,11 @@ a,a:hover,a:focus-visible,a *,a:hover *{text-decoration:none!important}
 .labs-page{min-height:100vh;padding:3rem max(1rem,calc((100vw - 1200px)/2));background:#0b111c;color:#f5f8fc}
 .labs-page__intro{max-width:46rem;margin-bottom:2rem}.labs-page__intro h1{margin:.4rem 0;font-size:clamp(2.2rem,5vw,4rem);line-height:1.08}.labs-page__intro>p:last-child,.labs-page__practice p,.labs-page__checks>p{color:#b4c4d7;line-height:1.6}
 .labs-scenario__breadcrumb{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;color:#8ca6bc;font-size:.85rem;font-weight:600}.labs-scenario__breadcrumb a{color:#8ca6bc}.labs-scenario__breadcrumb a:hover,.labs-scenario__breadcrumb a:focus-visible{color:#56eac9}
+.labs-scenario__outro{margin-top:3rem;padding-top:2rem;border-top:1px solid #30435d}
+.labs-scenario__back-link{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.1rem;border:1px solid #30435d;border-radius:.6rem;background:#111a29;color:#f5f8fc;font-weight:700;text-decoration:none}
+.labs-scenario__back-link svg{width:1rem;height:1rem}
+.labs-scenario__back-link:hover,.labs-scenario__back-link:focus-visible{border-color:#23d6a8;color:#56eac9}
+.labs-scenario__more{margin-top:2rem}.labs-scenario__more h2{font-size:1.3rem;margin:0 0 1rem}
 .challenge-lab{display:grid;gap:1.1rem;padding:1.6rem;border:1px solid #30435d;border-radius:1rem;background:#111a29;box-shadow:0 20px 60px #0003}
 .challenge-lab__progress{margin:0;color:#8ca6bc;font-weight:700;font-variant-numeric:tabular-nums}
 .challenge-lab__question{display:grid;gap:.7rem;border:0;padding:0}.challenge-lab__prompt{padding:0;color:#f5f8fc;font-size:1.1rem;font-weight:800;line-height:1.4;white-space:pre-line}
@@ -2235,7 +2240,11 @@ a,a:hover,a:focus-visible,a *,a:hover *{text-decoration:none!important}
 .address-block-bar__cell--allocated{background:#0e2a4a;color:#8fc7ff}
 .address-block-bar__cell--free{background:#161f2e;color:#6d8296}
 @media(max-width:30rem){.address-block-bar__cell{font-size:.62rem}}
-.acl-sim{display:grid;gap:1.1rem}
+.acl-sim{display:flex;flex-direction:column;gap:1.1rem}
+.labs-sticky-diagram{position:sticky;top:4.5rem;z-index:5;padding-bottom:.75rem;background:#111a29}
+.labs-sticky-diagram--inset{padding-top:1.35rem;padding-left:1.35rem;padding-right:1.35rem}
+.sample-lab:has(.labs-sticky-diagram){overflow:visible}
+.sample-lab:has(.labs-sticky-diagram) > .sample-lab__panel{overflow:visible}
 .acl-sim__rules{display:grid;gap:.5rem}
 .acl-sim__rule{display:flex;align-items:center;gap:.6rem;padding:.6rem .75rem;border:1px solid #30435d;border-radius:.5rem;background:#0d1a29}
 .acl-sim__rule code{flex:1;color:#dce9f2;font-size:.82rem}
@@ -2264,6 +2273,7 @@ a,a:hover,a:focus-visible,a *,a:hover *{text-decoration:none!important}
 .packet-envelope__fields dd{margin:.15rem 0 0;font:700 .86rem/1.4 monospace;color:#eafbf6;overflow-wrap:anywhere}
 .packet-envelope__fields div[data-changed="true"] dt{color:#ffcf6d}
 .arp-and-step{display:grid;gap:1rem}
+.labs-step-progress{margin:0;color:#8ca6bc;text-transform:uppercase;letter-spacing:.1em;font-size:.72rem;font-weight:800}
 .arp-and-step__reveal{display:grid;gap:.9rem}
 .arp-and-step__table{display:grid;gap:.4rem;margin:0;padding:.9rem 1rem;border:1px solid #30435d;border-radius:.55rem;background:#0d1a29}
 .arp-and-step__row{display:grid;grid-template-columns:9rem 1fr;gap:.6rem;align-items:baseline}

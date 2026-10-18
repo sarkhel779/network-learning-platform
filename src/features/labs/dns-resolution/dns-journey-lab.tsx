@@ -1,9 +1,10 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 import { FlowDiagram, type FlowLink, type FlowNode } from "./flow-diagram";
 import type { DnsJourneyConfig } from "./dns-journey-types";
+import { focusLessonAnchor } from "@/features/progress/progress-navigation";
 
 export function DnsJourneyLab({ config }: { config: DnsJourneyConfig }) {
   const id = useId();
@@ -15,6 +16,12 @@ export function DnsJourneyLab({ config }: { config: DnsJourneyConfig }) {
   const [activeNode, setActiveNode] = useState<string | null>(null);
   const [blockedAt, setBlockedAt] = useState<string | null>(null);
   const [pathHistory, setPathHistory] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (finished) { focusLessonAnchor(`${id}-finished`); return; }
+    if (currentHopIndex === 0) return;
+    focusLessonAnchor(`${id}-hop-${currentHopIndex}`);
+  }, [currentHopIndex, finished, id]);
 
   function selectAnswer(hopIndex: number, optionId: string) {
     setAnswers((current) => current.map((value, index) => (index === hopIndex ? optionId : value)));
@@ -75,7 +82,9 @@ export function DnsJourneyLab({ config }: { config: DnsJourneyConfig }) {
   return (
     <section aria-label={config.title} className="sample-lab">
       <div className="sample-lab__panel acl-sim">
-        <FlowDiagram ariaLabel={config.canvasAriaLabel} nodes={nodes} links={links} />
+        <div className="labs-sticky-diagram">
+          <FlowDiagram ariaLabel={config.canvasAriaLabel} nodes={nodes} links={links} />
+        </div>
 
         {!started ? (
           <div className="acl-sim__controls">
@@ -90,7 +99,8 @@ export function DnsJourneyLab({ config }: { config: DnsJourneyConfig }) {
               const isCurrent = hopIndex === currentHopIndex;
               const isCorrect = checked[hopIndex] && answers[hopIndex] === hop.correctId;
               return (
-                <div className="arp-and-step" key={hopIndex}>
+                <div className="arp-and-step" id={`${id}-hop-${hopIndex}`} key={hopIndex}>
+                  <p className="labs-step-progress">Step {hopIndex + 1} of {config.hops.length}</p>
                   <p>{hop.prompt}</p>
                   <fieldset className="acl-sim__controls">
                     <legend>Pick one</legend>
@@ -111,7 +121,7 @@ export function DnsJourneyLab({ config }: { config: DnsJourneyConfig }) {
                   {checked[hopIndex] ? (
                     isCorrect ? (
                       <>
-                        <p role="status" className="acl-sim__result" data-outcome="permit">{hop.explanation}</p>
+                        <p role="status" className="acl-sim__result" data-outcome="permit"><strong>Correct!</strong> {hop.explanation}</p>
                         {isCurrent ? (
                           <button type="button" onClick={() => advanceHop(hopIndex)}>
                             {hopIndex === config.hops.length - 1 ? "Finish" : "Continue"}
@@ -128,12 +138,12 @@ export function DnsJourneyLab({ config }: { config: DnsJourneyConfig }) {
           : null}
 
         {finished ? (
-          <>
+          <div id={`${id}-finished`}>
             <p role="status" className="acl-sim__result" data-outcome="permit">{config.completionMessage}</p>
             <div className="sample-lab__controls">
               <button type="button" onClick={restart}>Restart</button>
             </div>
-          </>
+          </div>
         ) : null}
       </div>
     </section>
