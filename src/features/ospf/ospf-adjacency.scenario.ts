@@ -6,10 +6,10 @@ export const ospfAdjacencyScenario: PacketFlowScenario = parsePacketFlowScenario
   description: "Watch four OSPF routers on a shared multi-access segment exchange Hellos, elect a Designated Router and Backup Designated Router by priority, and see why two non-DR/BDR routers never form a full adjacency with each other.",
   defaultSpeed: 1,
   devices: [
-    { id: "r1", label: "R1", role: "Priority 1 (becomes DROTHER)", x: 160, y: 90 },
-    { id: "r2", label: "R2", role: "Priority 1 (becomes DROTHER)", x: 620, y: 90 },
-    { id: "r3", label: "R3", role: "Priority 100 (becomes BDR)", x: 620, y: 195 },
-    { id: "r4", label: "R4", role: "Priority 255 (becomes DR)", x: 160, y: 195 },
+    { id: "r1", label: "R1", role: "OSPF router, Priority 1 (becomes DROTHER)", x: 160, y: 90 },
+    { id: "r2", label: "R2", role: "OSPF router, Priority 1 (becomes DROTHER)", x: 620, y: 90 },
+    { id: "r3", label: "R3", role: "OSPF router, Priority 100 (becomes BDR)", x: 620, y: 195 },
+    { id: "r4", label: "R4", role: "OSPF router, Priority 255 (becomes DR)", x: 160, y: 195 },
   ],
   links: [
     { id: "r1-r2", from: "r1", to: "r2" },
