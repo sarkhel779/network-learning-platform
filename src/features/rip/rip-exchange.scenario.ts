@@ -8,7 +8,7 @@ export const ripExchangeScenario: PacketFlowScenario = parsePacketFlowScenario({
   devices: [
     { id: "r1", label: "R1", role: "RIP router, LAN 192.168.10.0/24", x: 160, y: 90 },
     { id: "r2", label: "R2", role: "RIP router", x: 620, y: 90 },
-    { id: "r3", label: "R3", role: "RIP router", x: 390, y: 320 },
+    { id: "r3", label: "R3", role: "RIP router", x: 390, y: 195 },
   ],
   links: [
     { id: "r1-r2", from: "r1", to: "r2" },
