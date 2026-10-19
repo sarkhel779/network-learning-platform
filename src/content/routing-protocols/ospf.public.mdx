@@ -14,13 +14,29 @@ OSPF's metric is **cost**, calculated per interface as `reference bandwidth ÷ i
 
 <h2 id="ospf-packet-types">OSPF packet types</h2>
 
-OSPF runs directly over IP (**IP protocol 89**, no UDP or TCP header) and defines five packet types: **Hello** (type 1, discovers and maintains neighbors), **Database Description / DBD** (type 2, summarizes LSA headers during adjacency formation), **Link State Request / LSR** (type 3, asks a neighbor for a specific LSA in full), **Link State Update / LSU** (type 4, carries one or more complete LSAs), and **Link State Acknowledgment / LSAck** (type 5, confirms receipt of an LSU). Every one of these packet types plays a role in the adjacency-formation sequence covered next.
+OSPF runs directly over IP (**IP protocol 89**, no UDP or TCP header) and defines five packet types, each playing a role in the adjacency-formation sequence covered next:
+
+- **Hello** (type 1): discovers and maintains neighbors.
+- **Database Description / DBD** (type 2): summarizes LSA headers during adjacency formation.
+- **Link State Request / LSR** (type 3): asks a neighbor for a specific LSA in full.
+- **Link State Update / LSU** (type 4): carries one or more complete LSAs.
+- **Link State Acknowledgment / LSAck** (type 5): confirms receipt of an LSU.
 
 <SectionContinue itemId="ospf_section_ospf_packet_types" anchor="ospf-packet-types" />
 
 <h2 id="forming-an-ospf-adjacency">Forming an OSPF adjacency</h2>
 
-Two OSPF routers move through a well-defined sequence of neighbor states on their way to a full adjacency: **Down** → **Init** (a Hello has been heard, but the local router isn't listed yet) → **2-Way** (both routers see each other's Router ID in a Hello) → **ExStart** (negotiating which router will be master for the exchange) → **Exchange** (trading DBD summaries of the LSDB) → **Loading** (requesting and receiving any LSAs not yet held in full) → **Full** (LSDBs synchronized). On a multi-access network (such as Ethernet) with more than two routers, OSPF also elects a **Designated Router (DR)** and **Backup Designated Router (BDR)** so that routers form full adjacencies with the DR/BDR rather than with every other router, cutting down on redundant flooding.
+Two OSPF routers move through a well-defined sequence of neighbor states on their way to a full adjacency:
+
+1. **Down**: no Hello has been heard from this neighbor yet.
+2. **Init**: a Hello has been heard, but the local router isn't listed in it yet.
+3. **2-Way**: both routers see each other's Router ID in a Hello.
+4. **ExStart**: negotiating which router will be master for the exchange.
+5. **Exchange**: trading DBD summaries of the LSDB.
+6. **Loading**: requesting and receiving any LSAs not yet held in full.
+7. **Full**: the LSDBs are synchronized.
+
+On a multi-access network (such as Ethernet) with more than two routers, OSPF also elects a **Designated Router (DR)** and **Backup Designated Router (BDR)** so that routers form full adjacencies with the DR/BDR rather than with every other router, cutting down on redundant flooding.
 
 <SectionContinue itemId="ospf_section_forming_an_ospf_adjacency" anchor="forming-an-ospf-adjacency" />
 
@@ -32,6 +48,12 @@ Step through four routers on a shared multi-access segment: Hellos exchanged wit
 
 <h2 id="ospf-areas-and-lsa-types">OSPF areas and LSA types</h2>
 
-OSPF scales by dividing a network into **areas**; **Area 0**, the **backbone**, must exist, and every other area normally attaches directly to it, which limits how far a single topology change has to propagate. Different **Link-State Advertisement (LSA)** types carry different information: **Type 1 (Router LSA)** describes a router's own links within an area; **Type 2 (Network LSA)** describes a multi-access segment's attached routers, originated by the DR; **Type 3 (Summary LSA)** lets an **Area Border Router (ABR)** advertise routes between areas; **Type 4 (ASBR Summary LSA)** advertises the location of an **Autonomous System Boundary Router (ASBR)**; and **Type 5 (AS External LSA)** carries routes redistributed from outside OSPF entirely, originated by an ASBR.
+OSPF scales by dividing a network into **areas**; **Area 0**, the **backbone**, must exist, and every other area normally attaches directly to it, which limits how far a single topology change has to propagate. Different **Link-State Advertisement (LSA)** types carry different information:
+
+- **Type 1 (Router LSA)**: describes a router's own links within an area.
+- **Type 2 (Network LSA)**: describes a multi-access segment's attached routers, originated by the DR.
+- **Type 3 (Summary LSA)**: lets an **Area Border Router (ABR)** advertise routes between areas.
+- **Type 4 (ASBR Summary LSA)**: advertises the location of an **Autonomous System Boundary Router (ASBR)**.
+- **Type 5 (AS External LSA)**: carries routes redistributed from outside OSPF entirely, originated by an ASBR.
 
 <SectionContinue itemId="ospf_section_ospf_areas_and_lsa_types" anchor="ospf-areas-and-lsa-types" />
