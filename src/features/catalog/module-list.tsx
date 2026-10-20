@@ -23,8 +23,9 @@ export function ModuleList({ modules, pathwaySlug }: ModuleListProps) {
             <span className="module__count">{module.lessons.length} {module.lessons.length === 1 ? "lesson" : "lessons"}</span>
           </div>
           <ol className="lesson-list">
-            {module.lessons.map((lesson) => (
+            {module.lessons.map((lesson, lessonIndex) => (
               <li className="lesson-card" key={lesson.id}>
+                <span aria-hidden="true" className="lesson-card__index">{lessonIndex + 1}</span>
                 <div className="lesson-card__main">
                   <h3>
                     {lesson.published ? (
