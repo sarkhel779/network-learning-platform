@@ -7,7 +7,7 @@ export const bgpSessionEstablishmentScenario: PacketFlowScenario = parsePacketFl
   defaultSpeed: 1,
   devices: [
     { id: "r1", label: "R1 (AS 65001)", role: "eBGP peer, originates the prefix", x: 160, y: 60 },
-    { id: "r2", label: "R2 (AS 65003)", role: "eBGP peer, forwards from AS 65004", x: 160, y: 280 },
+    { id: "r2", label: "R2 (AS 65003)", role: "eBGP peer, forwards from AS 65004", x: 160, y: 195 },
     { id: "r3", label: "R3 (AS 65002)", role: "runs the decision process", x: 560, y: 170 },
   ],
   links: [
