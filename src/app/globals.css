@@ -264,8 +264,8 @@
   z-index: 3;
   inset-block-start: .25rem;
   inset-inline-start: clamp(11rem, var(--device-role-cloud-anchor), calc(100% - 11rem));
-  inline-size: min(22rem, calc(100% - 1.6rem));
-  aspect-ratio: 330 / 250;
+  inline-size: min(23rem, calc(100% - 1.6rem));
+  aspect-ratio: 330 / 300;
   isolation: isolate;
   animation: device-role-callout-pop 220ms ease-out;
   transform: translateX(-50%);
@@ -292,7 +292,7 @@
 .device-role-tour__cloud-content {
   position: absolute;
   z-index: 1;
-  inset: 15% 12% 18% 16%;
+  inset: 25% 14% 28% 18%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -317,7 +317,7 @@
     position: absolute;
     inset-block-start: .25rem;
     inset-inline-start: clamp(9.5rem, var(--device-role-cloud-anchor), calc(100% - 9.5rem));
-    inline-size: min(19rem, calc(100% - 1rem));
+    inline-size: min(21rem, calc(100% - 1rem));
     margin: 0;
     transform: translateX(-50%);
   }
@@ -1039,7 +1039,7 @@ a { color: inherit; }
 .lesson-section-navigation--network-map .network-map__hop { min-width: 0; }
 .lesson-section-navigation--network-map .network-map__groups ol { display: grid; gap: .4rem; margin: 0; padding-inline-start: 1.25rem; }
 .network-map__groups section { min-width: 0; }
-@media (max-width: 35rem) { .dns-map__groups, .network-map__groups { grid-template-columns: minmax(0, 1fr); } .network-map__route { align-items: flex-start; flex-direction: column; row-gap: 0; } .network-map__hop { flex-direction: column; align-items: center; gap: .3rem; width: auto; } .network-map__hop > i { flex: 0 0 auto; min-block-size: 1rem; inline-size: 2px; margin-inline-start: 0; } }
+@media (max-width: 35rem) { .dns-map__groups, .network-map__groups { grid-template-columns: minmax(0, 1fr); } .network-map__route { align-items: stretch; flex-direction: column; row-gap: 0; } .network-map__hop { flex-direction: column; align-items: center; gap: .3rem; width: 100%; } .network-map__hop > i { flex: 0 0 auto; min-block-size: 1rem; inline-size: 2px; margin-inline-start: 0; } .dns-map__travelling-packet, .network-map__travelling-packet { display: none; } }
 .lesson-section-navigation__locked-link { padding: .2rem .3rem; border-radius: .35rem; color: var(--muted); text-decoration: none; }
 .lesson-section-navigation__locked-link:hover, .lesson-section-navigation__locked-link:focus-visible { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--foreground); }
 .lesson-section-navigation__locked-link > span:first-child { text-decoration: underline; text-decoration-style: dotted; text-underline-offset: .2em; }
