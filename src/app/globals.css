@@ -318,9 +318,17 @@
     inset-block-start: .25rem;
     inset-inline-start: clamp(9.5rem, var(--device-role-cloud-anchor), calc(100% - 9.5rem));
     inline-size: min(21rem, calc(100% - 1rem));
+    min-block-size: 15rem;
     margin: 0;
     transform: translateX(-50%);
   }
+}
+
+@media (max-width: 26rem) {
+  .device-role-tour__cloud { min-block-size: 21rem; }
+  .device-role-tour__cloud p { font-size: .78rem; }
+  .device-role-tour__cloud h4 { font-size: 1.05rem; }
+  .device-role-tour__eyebrow { font-size: .7rem; letter-spacing: .04em; }
 }
 
 @media (prefers-reduced-motion: reduce) {
