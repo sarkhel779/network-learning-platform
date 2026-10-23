@@ -264,8 +264,8 @@
   z-index: 3;
   inset-block-start: .25rem;
   inset-inline-start: clamp(11rem, var(--device-role-cloud-anchor), calc(100% - 11rem));
-  inline-size: min(22rem, calc(100% - 1.6rem));
-  aspect-ratio: 330 / 250;
+  inline-size: min(23rem, calc(100% - 1.6rem));
+  aspect-ratio: 330 / 300;
   isolation: isolate;
   animation: device-role-callout-pop 220ms ease-out;
   transform: translateX(-50%);
@@ -292,7 +292,7 @@
 .device-role-tour__cloud-content {
   position: absolute;
   z-index: 1;
-  inset: 15% 12% 18% 16%;
+  inset: 25% 14% 28% 18%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -317,7 +317,7 @@
     position: absolute;
     inset-block-start: .25rem;
     inset-inline-start: clamp(9.5rem, var(--device-role-cloud-anchor), calc(100% - 9.5rem));
-    inline-size: min(19rem, calc(100% - 1rem));
+    inline-size: min(21rem, calc(100% - 1rem));
     margin: 0;
     transform: translateX(-50%);
   }
