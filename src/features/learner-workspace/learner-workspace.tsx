@@ -87,11 +87,12 @@ export function LearnerWorkspace({ pathway, currentLessonSlug, viewer, myLearnin
 
       <button
         aria-expanded={mobileMenuOpen || activeTool !== null}
+        aria-label="Learning tools"
         className="learner-workspace-mobile-trigger"
         onClick={openMobileMenu}
         type="button"
       >
-        Learning tools
+        <ToolIcon id="course" />
       </button>
 
       <WorkspaceDrawer
