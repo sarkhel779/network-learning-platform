@@ -950,7 +950,7 @@ a { color: inherit; }
 .learner-workspace__tool[aria-expanded="true"] { background: color-mix(in srgb, var(--accent) 10%, transparent); }
 .learner-workspace__tool[aria-expanded="true"] .learner-workspace__tool-icon { background: var(--accent); color: var(--accent-foreground); }
 .learner-workspace__tool svg, .learner-workspace-mobile-menu svg { flex: 0 0 auto; }
-.learner-workspace-mobile-trigger { display: flex; position: fixed; inset-inline-start: max(0.75rem, env(safe-area-inset-left)); inset-block-end: max(1rem, env(safe-area-inset-bottom)); z-index: 20; border-color: var(--accent); background: var(--accent); color: var(--accent-foreground); }
+.learner-workspace-mobile-trigger { display: flex; position: fixed; inset-inline-start: max(0.75rem, env(safe-area-inset-left)); inset-block-end: max(1rem, env(safe-area-inset-bottom)); z-index: 20; inline-size: 44px; block-size: 44px; padding: 0; justify-content: center; border-radius: 50%; border-color: var(--accent); background: var(--accent); color: var(--accent-foreground); box-shadow: 0 0.3rem 1rem rgb(0 0 0 / 22%); }
 .workspace-drawer { width: min(26rem, calc(100vw - 2rem)); transition: transform 180ms ease-out; }
 .workspace-drawer__body { min-width: 0; overflow-wrap: anywhere; }
 .learner-workspace-mobile-menu { display: grid; gap: 0.5rem; }
