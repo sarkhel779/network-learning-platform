@@ -100,6 +100,11 @@ export function LessonShell({
         data-progress-manifest={progressManifest?.contentVersion}
         data-progress-unavailable={progressUnavailable || undefined}
       >
+        <nav aria-label="Breadcrumb" className="lesson-shell__breadcrumb">
+          <Link href="/courses">Courses</Link>
+          <span aria-hidden="true">/</span>
+          <Link href={`/paths/${pathway.slug}`}>{pathway.title}</Link>
+        </nav>
         <noscript>
           <details className="lesson-curriculum lesson-curriculum--fallback">
             <summary>Course contents</summary>
