@@ -9,18 +9,14 @@ test("renders the public essential-services lesson without protected content", a
   await expect(page.getByRole("heading", { name: /RFC validation/ })).toHaveCount(0);
 });
 
-test("replays the service map and preserves a locked section anchor", async ({ page }) => {
+test("opens the service map and preserves a locked section anchor", async ({ page }) => {
   await page.goto(route);
   const trigger = page.getByRole("button", { name: "Page contents" });
   await trigger.click();
-  await expect(page.getByTestId("network-map-route")).toHaveAttribute("data-reveal-cycle", "1");
   await expect(page.getByRole("link", { name: /Web-service Wireshark analysis.*Pro.*Locked/ })).toHaveAttribute(
     "href",
     `/sign-in?returnTo=${encodeURIComponent(`${route}#web-capture-analysis`)}`,
   );
-  await trigger.click();
-  await trigger.click();
-  await expect(page.getByTestId("network-map-route")).toHaveAttribute("data-reveal-cycle", "2");
 });
 
 test("contains the service map at mobile width without page overflow", async ({ page }) => {

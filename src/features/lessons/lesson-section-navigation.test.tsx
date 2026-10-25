@@ -72,8 +72,6 @@ describe("LessonSectionNavigation", () => {
     await user.click(disclosure);
     expect(disclosure).toHaveAttribute("aria-expanded", "true");
     expect(within(navigation).getByRole("link", { name: "Why name resolution exists" })).toBeVisible();
-    const firstPacket = navigation.querySelector(".dns-map__travelling-packet");
-    expect(firstPacket).toBeInTheDocument();
     const accountLink = within(navigation).getByRole("link", { name: /DNS packet and capture practice.*Locked/ });
     const proLink = within(navigation).getByRole("link", { name: /Bonus: root-server bootstrap.*Pro.*Locked/ });
     expect(accountLink).toHaveAttribute(
@@ -89,11 +87,9 @@ describe("LessonSectionNavigation", () => {
 
     await user.click(disclosure);
     expect(disclosure).toHaveAttribute("aria-expanded", "false");
-    expect(navigation.querySelector(".dns-map__travelling-packet")).not.toBeInTheDocument();
 
     await user.click(disclosure);
     expect(disclosure).toHaveAttribute("aria-expanded", "true");
-    expect(navigation.querySelector(".dns-map__travelling-packet")).not.toBe(firstPacket);
   });
 
   it("renders a reusable service-station map and preserves locked anchors", async () => {
@@ -110,14 +106,11 @@ describe("LessonSectionNavigation", () => {
     await user.click(button);
     expect(screen.getByRole("link", { name: "HTTP request and response" })).toHaveAttribute("href", "#http-request-response");
     expect(screen.getByRole("link", { name: /Pro capture analysis.*Pro.*Locked/ })).toHaveAttribute("href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fhttp-https-tls-and-essential-network-services%23web-capture-analysis");
-    const firstRoute = screen.getByTestId("network-map-route");
-    expect(firstRoute).toHaveAttribute("data-reveal-cycle", "1");
-    await user.click(button);
-    await user.click(button);
-    expect(screen.getByTestId("network-map-route")).toHaveAttribute("data-reveal-cycle", "2");
+    expect(screen.getByText("Web services")).toBeVisible();
+    expect(screen.getByText("Advanced evidence")).toBeVisible();
   });
 
-  it("groups every section of an ordinary lesson into a short packet route", async () => {
+  it("groups every section of an ordinary lesson into topic sections", async () => {
     const user = userEvent.setup();
     const ordinarySections: LessonSection[] = Array.from({ length: 9 }, (_, index) => ({
       id: `topic-${index + 1}`,
@@ -129,13 +122,12 @@ describe("LessonSectionNavigation", () => {
     const button = within(navigation).getByRole("button", { name: "Page contents" });
     expect(button).toHaveAttribute("aria-expanded", "false");
     await user.click(button);
-    expect(within(navigation).getAllByText(/^Hop [1-4]$/)).toHaveLength(4);
     expect(within(navigation).getByRole("link", { name: "Topic 1" })).toHaveAttribute("href", "#topic-1");
     expect(within(navigation).getByRole("link", { name: /Topic 9.*Locked/ })).toHaveAttribute("href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fhosts-and-network-devices%23topic-9");
     expect(within(navigation).getAllByRole("listitem")).toHaveLength(9);
   });
 
-  it("renders the NAT packet route, preserves locked anchors, and replays on every open", async () => {
+  it("renders the NAT topic groups and preserves locked anchors", async () => {
     const user = userEvent.setup();
     render(<LessonSectionNavigation
       presentation="nat-network-map"
@@ -149,15 +141,11 @@ describe("LessonSectionNavigation", () => {
     />);
     const button = screen.getByRole("button", { name: "Page contents" });
     await user.click(button);
-    expect(screen.getByText("Boundary")).toBeVisible();
-    expect(screen.getByText("PAT State")).toBeVisible();
+    expect(screen.getByText("Translation boundary")).toBeVisible();
+    expect(screen.getByText("Mappings and state")).toBeVisible();
     expect(screen.getByRole("link", { name: "The IPv4 translation boundary" })).toHaveAttribute("href", "#ipv4-translation-boundary");
     expect(screen.getByRole("link", { name: /Control the PAT journey.*Locked/ })).toHaveAttribute("href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fnat-pat-and-the-complete-internet-packet-journey%23account-pat-journey");
     expect(screen.getByRole("link", { name: /U-Turn NAT lab.*Pro.*Locked/ })).toHaveAttribute("href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fnat-pat-and-the-complete-internet-packet-journey%23pro-u-turn-nat-lab");
-    expect(screen.getByTestId("network-map-route")).toHaveAttribute("data-reveal-cycle", "1");
-    await user.click(button);
-    await user.click(button);
-    expect(screen.getByTestId("network-map-route")).toHaveAttribute("data-reveal-cycle", "2");
   });
 
   it("unlocks account anchors for authenticated learners while retaining Pro locks", async () => {
@@ -171,7 +159,7 @@ describe("LessonSectionNavigation", () => {
     expect(screen.getByRole("link", { name: /U-Turn NAT lab.*Pro.*Locked/ })).toBeVisible();
   });
 
-  it("renders and replays the troubleshooting Page contents route with tier-aware anchors", async () => {
+  it("renders the troubleshooting Page contents topic groups with tier-aware anchors", async () => {
     const user = userEvent.setup();
     render(<LessonSectionNavigation presentation="troubleshooting-network-map" viewerAccess="account" lockedReturnTo="/learn/networking-foundations/systematic-network-troubleshooting-capstone" sections={[
       { id: "scope-the-incident", label: "Scope the incident", access: "public" },
@@ -180,11 +168,9 @@ describe("LessonSectionNavigation", () => {
     ]} />);
     const button = screen.getByRole("button", { name: "Page contents" });
     await user.click(button);
-    for (const node of ["Scope", "Evidence", "Isolation", "Restore", "Report"]) expect(screen.getByText(node)).toBeVisible();
+    for (const label of ["Define the boundary", "Collect proof", "Narrow the cause"]) expect(screen.getByText(label)).toBeVisible();
     expect(screen.getByRole("link", { name: "Guided branch incident" })).toHaveAttribute("href", "#guided-branch-incident");
     expect(screen.getByRole("link", { name: /Sparse enterprise incident.*Pro.*Locked/ })).toHaveAttribute("href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fsystematic-network-troubleshooting-capstone%23pro-sparse-incident");
-    await user.click(button); await user.click(button);
-    expect(screen.getByTestId("network-map-route")).toHaveAttribute("data-reveal-cycle", "2");
   });
 
   it("server-renders locked previews without paragraph nesting or parser repairs", () => {

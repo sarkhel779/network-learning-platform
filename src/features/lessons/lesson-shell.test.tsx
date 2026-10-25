@@ -171,7 +171,6 @@ describe("LessonShell", () => {
     expect(pageContentsButton).toHaveAttribute("aria-expanded", "false");
     await user.click(pageContentsButton);
     expect(pageContentsButton).toHaveAttribute("aria-expanded", "true");
-    expect(within(sectionNavigation).getByTestId("network-map-route")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Course contents" }));
     const curriculumNavigation = screen.getByRole("navigation", { name: "Course curriculum" });
 

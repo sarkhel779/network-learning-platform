@@ -87,16 +87,12 @@ function SectionItem({
 
 export function LessonSectionNavigation({ sections, presentation = "list", lockedReturnTo, mapGroups, panelId = "lesson-page-contents", viewerAccess = "anonymous" }: LessonSectionNavigationProps) {
   const [isMapOpen, setIsMapOpen] = useState(false);
-  const [revealCycle, setRevealCycle] = useState(0);
 
   if (!sections?.length) return null;
 
   if (presentation === "dns-network-map" || presentation === "network-map" || presentation === "nat-network-map" || presentation === "troubleshooting-network-map") {
     const groups = mapGroups ?? (presentation === "nat-network-map" ? natGroups : presentation === "troubleshooting-network-map" ? troubleshootingGroups : presentation === "dns-network-map" ? dnsGroups : lessonGroups(sections));
-    const toggleMap = () => {
-      if (!isMapOpen) setRevealCycle((cycle) => cycle + 1);
-      setIsMapOpen(!isMapOpen);
-    };
+    const toggleMap = () => setIsMapOpen(!isMapOpen);
 
     return (
       <nav aria-label="Page contents" className="lesson-section-navigation lesson-section-navigation--network-map">
@@ -111,15 +107,6 @@ export function LessonSectionNavigation({ sections, presentation = "list", locke
         </button>
         {isMapOpen ? (
           <div className="dns-map__panel network-map__panel" id={panelId}>
-            <div className="dns-map__route network-map__route" data-reveal-cycle={revealCycle} data-testid="network-map-route" key={revealCycle} aria-hidden="true">
-              <span className="dns-map__travelling-packet network-map__travelling-packet">◆</span>
-              {groups.map(({ node }, index) => (
-                <span key={node} className="dns-map__hop network-map__hop">
-                  <span>{node}</span>
-                  {index < groups.length - 1 ? <i /> : null}
-                </span>
-              ))}
-            </div>
             <div className="dns-map__groups network-map__groups">
               {groups.map(({ label, ids }) => {
                 const grouped = sections.filter(({ id }) => (ids as readonly string[]).includes(id));

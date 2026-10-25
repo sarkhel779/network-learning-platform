@@ -1035,31 +1035,17 @@ a { color: inherit; }
 .dns-map__trigger:hover { transform: translateY(-1px); }
 .dns-map__trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .dns-map__trigger strong { font-size: 1.05rem; }
-.dns-map__route { position: relative; display: flex; align-items: center; gap: .35rem; min-width: 0; padding: .25rem 1rem 1rem; overflow: hidden; }
-.dns-map__travelling-packet { position: absolute; z-index: 2; inset-inline-start: 1rem; inset-block-start: .7rem; color: var(--accent); font-size: .7rem; opacity: 0; filter: drop-shadow(0 0 .3rem color-mix(in srgb, var(--accent) 70%, transparent)); pointer-events: none; }
-.dns-map__panel .dns-map__travelling-packet { animation: dns-packet-route 1.35s ease-in-out .12s both; }
-.dns-map__hop { display: flex; flex: 1 0 auto; align-items: center; gap: .35rem; }
-.dns-map__hop > span { padding: .35rem .6rem; border-radius: 999px; background: color-mix(in srgb, var(--accent) 12%, var(--background)); font-weight: 700; white-space: nowrap; }
-.dns-map__panel .dns-map__hop > span { animation: dns-node-reveal .28s ease-out both; }
-.dns-map__panel .dns-map__hop:nth-of-type(3) > span { animation-delay: .38s; }
-.dns-map__panel .dns-map__hop:nth-of-type(4) > span { animation-delay: .7s; }
-.dns-map__panel .dns-map__hop:nth-of-type(5) > span { animation-delay: 1.02s; }
-.dns-map__hop > i { display: block; flex: 1 0 1.25rem; block-size: 2px; background: var(--border); }
-.dns-map__groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.25rem; padding: 0 1rem 1rem; border-block-start: 1px solid var(--border); }
-.dns-map__groups section { min-width: 0; padding-block-start: 1rem; }
+.dns-map__groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.25rem; padding: 1rem; }
+.dns-map__groups section { min-width: 0; }
 .dns-map__groups h3 { margin: 0 0 .5rem; font-size: 1rem; }
 .lesson-section-navigation--dns-map .dns-map__groups ol { display: grid; gap: .4rem; margin: 0; padding-inline-start: 1.25rem; }
-.lesson-section-navigation--network-map .network-map__route { flex-wrap: wrap; row-gap: .65rem; }
-.lesson-section-navigation--network-map .network-map__hop { min-width: 0; }
 .lesson-section-navigation--network-map .network-map__groups ol { display: grid; gap: .4rem; margin: 0; padding-inline-start: 1.25rem; }
 .network-map__groups section { min-width: 0; }
-@media (max-width: 35rem) { .dns-map__groups, .network-map__groups { grid-template-columns: minmax(0, 1fr); } .network-map__route { align-items: stretch; flex-direction: column; row-gap: 0; } .network-map__hop { flex-direction: column; align-items: center; gap: .3rem; width: 100%; } .network-map__hop > i { flex: 0 0 auto; min-block-size: 1rem; inline-size: 2px; margin-inline-start: 0; } .dns-map__travelling-packet, .network-map__travelling-packet { display: none; } }
+@media (max-width: 35rem) { .dns-map__groups, .network-map__groups { grid-template-columns: minmax(0, 1fr); } }
 .lesson-section-navigation__locked-link { padding: .2rem .3rem; border-radius: .35rem; color: var(--muted); text-decoration: none; }
 .lesson-section-navigation__locked-link:hover, .lesson-section-navigation__locked-link:focus-visible { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--foreground); }
 .lesson-section-navigation__locked-link > span:first-child { text-decoration: underline; text-decoration-style: dotted; text-underline-offset: .2em; }
-@keyframes dns-packet-route { 0% { inset-inline-start: 1rem; opacity: 0; transform: scale(.75); } 10% { opacity: 1; } 88% { opacity: 1; } 100% { inset-inline-start: calc(100% - 2rem); opacity: 0; transform: scale(1); } }
-@keyframes dns-node-reveal { from { opacity: .45; transform: translateY(.25rem); } to { opacity: 1; transform: translateY(0); } }
-@media (prefers-reduced-motion: reduce) { .dns-map__trigger, .network-map__trigger { transition: none; } .dns-map__panel .dns-map__travelling-packet, .dns-map__panel .dns-map__hop > span, .network-map__panel .network-map__travelling-packet, .network-map__panel .network-map__hop > span { animation: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .dns-map__trigger, .network-map__trigger { transition: none; } }
 .access-card { min-width: 0; padding: clamp(1rem, 4vw, 1.5rem); overflow-wrap: anywhere; border: 1px solid var(--border); border-inline-start: 0.35rem solid var(--accent); border-radius: 0.5rem; background: color-mix(in srgb, var(--accent) 6%, var(--background)); }
 .access-card h2 { margin-top: 0; }
 .access-card > p:not(.eyebrow) { color: var(--muted); }
