@@ -61,6 +61,21 @@ describe("LessonShell", () => {
     expect(screen.getByText("Estimated time: 5–15 min · Public introduction · Free account to continue")).toBeVisible();
   });
 
+  it("offers a back button to the pathway and a link to all courses", () => {
+    render(
+      <LessonShell viewer={null} pathway={pathway} lesson={lesson}>
+        <p>Lesson content</p>
+      </LessonShell>,
+    );
+
+    const breadcrumb = screen.getByRole("navigation", { name: "Breadcrumb" });
+    expect(within(breadcrumb).getByRole("link", { name: `Back to ${pathway.title}` })).toHaveAttribute(
+      "href",
+      `/paths/${pathway.slug}`,
+    );
+    expect(within(breadcrumb).getByRole("link", { name: "All courses" })).toHaveAttribute("href", "/courses");
+  });
+
   it("links a published previous lesson", () => {
     render(
       <LessonShell

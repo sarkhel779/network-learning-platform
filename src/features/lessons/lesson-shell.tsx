@@ -101,9 +101,13 @@ export function LessonShell({
         data-progress-unavailable={progressUnavailable || undefined}
       >
         <nav aria-label="Breadcrumb" className="lesson-shell__breadcrumb">
-          <Link href="/courses">Courses</Link>
-          <span aria-hidden="true">/</span>
-          <Link href={`/paths/${pathway.slug}`}>{pathway.title}</Link>
+          <Link className="lesson-shell__back-link" href={`/paths/${pathway.slug}`}>
+            <svg aria-hidden="true" fill="none" viewBox="0 0 16 16">
+              <path d="M13 8H3M3 8L7 4M3 8L7 12" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+            </svg>
+            Back to {pathway.title}
+          </Link>
+          <Link className="lesson-shell__courses-link" href="/courses">All courses</Link>
         </nav>
         <noscript>
           <details className="lesson-curriculum lesson-curriculum--fallback">
