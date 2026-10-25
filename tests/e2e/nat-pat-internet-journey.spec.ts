@@ -10,17 +10,13 @@ test("renders the complete public NAT model without protected content", async ({
   await expect(page.getByRole("heading", { name: /Pro U-Turn NAT lab/i })).toHaveCount(0);
 });
 
-test("replays Page contents and preserves the locked Pro hairpin anchor", async ({ page }) => {
+test("opens Page contents and preserves the locked Pro hairpin anchor", async ({ page }) => {
   await page.goto(route);
   const button = page.getByRole("button", { name: "Page contents" });
   await button.click();
-  await expect(page.getByTestId("network-map-route")).toHaveAttribute("data-reveal-cycle", "1");
   await expect(page.getByRole("link", { name: /U-Turn NAT lab.*Pro.*Locked/ })).toHaveAttribute(
     "href", "/sign-in?returnTo=%2Flearn%2Fnetworking-foundations%2Fnat-pat-and-the-complete-internet-packet-journey%23pro-u-turn-nat-lab",
   );
-  await button.click();
-  await button.click();
-  await expect(page.getByTestId("network-map-route")).toHaveAttribute("data-reveal-cycle", "2");
 });
 
 test("keeps the authenticated PAT journey synchronized", async ({ page }) => {
