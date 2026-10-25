@@ -119,6 +119,8 @@ export function NetworkTopology({
             const to = devicesById.get(link.to);
             if (!from || !to) return null;
             const active = isLinkActive(link.id, step);
+            const lineStart = insetLinkPoint(from, to, false);
+            const lineEnd = insetLinkPoint(from, to, true);
 
             return (
               <g key={link.id}>
@@ -126,10 +128,10 @@ export function NetworkTopology({
                   className={`network-topology__link${active ? " network-topology__link--active" : ""}`}
                   data-active={active ? "true" : undefined}
                   data-link-id={link.id}
-                  x1={from.x}
-                  y1={from.y}
-                  x2={to.x}
-                  y2={to.y}
+                  x1={lineStart.x}
+                  y1={lineStart.y}
+                  x2={lineEnd.x}
+                  y2={lineEnd.y}
                 />
               </g>
             );
