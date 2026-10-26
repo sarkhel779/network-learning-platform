@@ -3,6 +3,7 @@
 import { useEffect, useId, useState } from "react";
 
 import { FlowDiagram, type FlowLink, type FlowNode } from "./flow-diagram";
+import { FloatingTopology } from "../floating-topology";
 import type { DnsJourneyConfig } from "./dns-journey-types";
 import { focusLessonAnchor } from "@/features/progress/progress-navigation";
 
@@ -82,9 +83,9 @@ export function DnsJourneyLab({ config }: { config: DnsJourneyConfig }) {
   return (
     <section aria-label={config.title} className="sample-lab">
       <div className="sample-lab__panel acl-sim">
-        <div className="labs-sticky-diagram">
+        <FloatingTopology>
           <FlowDiagram ariaLabel={config.canvasAriaLabel} nodes={nodes} links={links} />
-        </div>
+        </FloatingTopology>
 
         {!started ? (
           <div className="acl-sim__controls">

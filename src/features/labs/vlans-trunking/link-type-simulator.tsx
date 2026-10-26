@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 
+import { FloatingTopology } from "../floating-topology";
 import { NetworkCanvas, type CanvasNode } from "../network-canvas";
 import type { LinkTypeSimConfig } from "./link-type-simulator-types";
 
@@ -55,9 +56,9 @@ export function LinkTypeSimulator({ config }: { config: LinkTypeSimConfig }) {
   return (
     <section aria-label={config.title} className="sample-lab">
       <div className="sample-lab__panel acl-sim">
-        <div className="labs-sticky-diagram">
+        <FloatingTopology>
           <NetworkCanvas ariaLabel={config.canvasAriaLabel} nodes={nodes} links={links} packetAt={packetAt} />
-        </div>
+        </FloatingTopology>
 
         <div className="acl-sim__controls">
           <p>{config.prompt}</p>

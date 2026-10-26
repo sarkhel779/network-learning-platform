@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 
+import { FloatingTopology } from "../floating-topology";
 import { SwitchIcon } from "../hop-icons";
 import { NetworkCanvas, type CanvasNode } from "../network-canvas";
 
@@ -42,9 +43,9 @@ export function NativeVlanSimulator() {
   return (
     <section aria-label="Native VLAN mismatch simulator" className="sample-lab">
       <div className="sample-lab__panel acl-sim">
-        <div className="labs-sticky-diagram">
+        <FloatingTopology>
           <NetworkCanvas ariaLabel="An untagged native VLAN frame crossing a trunk between two switches" nodes={nodes} links={links} packetAt={packetAt} />
-        </div>
+        </FloatingTopology>
 
         <div className="acl-sim__controls">
           <p>Set each switch&apos;s native VLAN, then send an untagged frame from Switch A and see how Switch B interprets it.</p>

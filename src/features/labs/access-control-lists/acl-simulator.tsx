@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 
+import { FloatingTopology } from "../floating-topology";
 import { HostIcon, RouterIcon, ServerIcon } from "../hop-icons";
 import { NetworkCanvas, type CanvasNode } from "../network-canvas";
 import type { AclSimConfig, AclSimRule } from "./acl-simulator-types";
@@ -84,9 +85,9 @@ export function AclSimulator({ config }: { config: AclSimConfig }) {
   return (
     <section aria-label={config.title} className="sample-lab">
       <div className="sample-lab__panel acl-sim">
-        <div className="labs-sticky-diagram">
+        <FloatingTopology>
           <NetworkCanvas ariaLabel={config.canvasAriaLabel} nodes={canvasNodes} links={links} packetAt={packetAt} />
-        </div>
+        </FloatingTopology>
 
         <fieldset className="acl-sim__rules" aria-label="ACL rules">
           <legend>{config.rulesLegend ?? "ACL rules, in evaluation order"}</legend>
