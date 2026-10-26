@@ -50,7 +50,9 @@ export function PatSimulator() {
   return (
     <section aria-label="PAT / NAT overload simulator" className="sample-lab">
       <div className="sample-lab__panel acl-sim">
-        <NetworkCanvas ariaLabel="Two hosts sharing one public IP through PAT" nodes={nodes} links={links} packetAt={packetAt} />
+        <div className="labs-sticky-diagram">
+          <NetworkCanvas ariaLabel="Two hosts sharing one public IP through PAT" nodes={nodes} links={links} packetAt={packetAt} />
+        </div>
 
         <NatTablePanel
           rows={tableRows.length ? tableRows : []}

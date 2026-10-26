@@ -55,7 +55,9 @@ export function LinkTypeSimulator({ config }: { config: LinkTypeSimConfig }) {
   return (
     <section aria-label={config.title} className="sample-lab">
       <div className="sample-lab__panel acl-sim">
-        <NetworkCanvas ariaLabel={config.canvasAriaLabel} nodes={nodes} links={links} packetAt={packetAt} />
+        <div className="labs-sticky-diagram">
+          <NetworkCanvas ariaLabel={config.canvasAriaLabel} nodes={nodes} links={links} packetAt={packetAt} />
+        </div>
 
         <div className="acl-sim__controls">
           <p>{config.prompt}</p>
