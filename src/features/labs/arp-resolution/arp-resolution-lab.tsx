@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 
+import { FloatingTopology } from "../floating-topology";
 import { HostIcon, ServerIcon, SwitchIcon } from "../hop-icons";
 import { NetworkCanvas, type CanvasNode } from "../network-canvas";
 import type { ArpFieldKey, ArpResolutionConfig } from "./arp-resolution-types";
@@ -161,9 +162,9 @@ export function ArpResolutionLab({ config }: { config: ArpResolutionConfig }) {
   return (
     <section aria-label={config.title} className="sample-lab">
       <div className="sample-lab__panel acl-sim">
-        <div className="labs-sticky-diagram">
+        <FloatingTopology>
           <NetworkCanvas ariaLabel={config.canvasAriaLabel} nodes={nodes} links={links} packetAt={packetAt} />
-        </div>
+        </FloatingTopology>
 
         {step === "idle" ? (
           <div className="acl-sim__controls">

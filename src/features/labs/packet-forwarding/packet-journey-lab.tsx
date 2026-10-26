@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 
+import { FloatingTopology } from "../floating-topology";
 import { HostIcon, RouterIcon, ServerIcon, SwitchIcon } from "../hop-icons";
 import { NetworkCanvas, type CanvasLink, type CanvasNode } from "../network-canvas";
 import { PacketEnvelope } from "../packet-envelope";
@@ -64,14 +65,14 @@ export function PacketJourneyLab({ configuration }: { configuration: LabConfigur
 
   return (
     <section aria-label="Packet forwarding experiment" className="sample-lab">
-      <div className="labs-sticky-diagram labs-sticky-diagram--inset">
+      <FloatingTopology className="floating-topology__placeholder--inset">
         <NetworkCanvas
           ariaLabel={`Packet path from your PC to ${configuration === "local" ? "a local server" : "a remote server"}`}
           nodes={nodes}
           links={links}
           packetAt={packetAt}
         />
-      </div>
+      </FloatingTopology>
       <div className="sample-lab__panel acl-sim">
         <div className="packet-envelope-wrap" id={`${id}-hop`}>
           <h3>{step.title}</h3>
