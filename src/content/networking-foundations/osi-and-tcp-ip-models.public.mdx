@@ -12,23 +12,27 @@ For now, aim to explain each layer's main job rather than memorize every protoco
 
 **OSI** means **Open Systems Interconnection**. Its seven conceptual layers are numbered from Physical (1) to Application (7). The table is shown from the top down, as data is prepared for sending.
 
+To make each layer concrete, follow one everyday activity through all seven: **making a video call to a friend**.
+
 <div className="lesson-table" role="region" aria-label="OSI layer responsibilities" tabIndex={0}>
   <table>
-    <caption>Seven layers, seven responsibilities</caption>
+    <caption>Seven layers, seven responsibilities, one video call</caption>
     <thead>
-      <tr><th scope="col">OSI layer</th><th scope="col">Main job</th><th scope="col">Simple example</th></tr>
+      <tr><th scope="col">OSI layer</th><th scope="col">Main job</th><th scope="col">Video-call example</th></tr>
     </thead>
     <tbody>
-      <tr><th scope="row">7 — Application</th><td>Provides network services to applications.</td><td>HTTP supplies a web service; DNS supplies name lookup.</td></tr>
-      <tr><th scope="row">6 — Presentation</th><td>Handles how data is represented, compressed, or encrypted.</td><td>Representing text in a format the receiver can understand.</td></tr>
-      <tr><th scope="row">5 — Session</th><td>Organizes the dialogue between applications.</td><td>Coordinating an exchange or its checkpoints.</td></tr>
-      <tr><th scope="row">4 — Transport</th><td>Supports communication between application processes.</td><td>TCP and UDP; ports distinguish application endpoints.</td></tr>
-      <tr><th scope="row">3 — Network</th><td>Provides logical addressing and delivery between networks.</td><td>IP addresses and a router's network role.</td></tr>
-      <tr><th scope="row">2 — Data Link</th><td>Handles frames on a local link.</td><td>Ethernet frames, MAC addresses, and a switch's usual role.</td></tr>
-      <tr><th scope="row">1 — Physical</th><td>Carries bits using signals.</td><td>Electrical signals on copper, light in fiber, or radio.</td></tr>
+      <tr><th scope="row">7 — Application</th><td>Provides network services to applications.</td><td>The video-call app itself: it is the service you open to start the call, using HTTP-style requests and DNS to find your friend's server by name.</td></tr>
+      <tr><th scope="row">6 — Presentation</th><td>Handles how data is represented, compressed, or encrypted.</td><td>Your webcam video is compressed into a smaller format and encrypted with TLS before it leaves your laptop, so it travels faster and privately.</td></tr>
+      <tr><th scope="row">5 — Session</th><td>Organizes the dialogue between applications.</td><td>The call keeps one ongoing session open for its full 20 minutes, instead of reconnecting from scratch every time either of you speaks.</td></tr>
+      <tr><th scope="row">4 — Transport</th><td>Supports communication between application processes.</td><td>Your laptop can stream the call's audio and video (UDP) while a chat message you send during the call uses a separate, reliable connection (TCP); ports keep the two apart.</td></tr>
+      <tr><th scope="row">3 — Network</th><td>Provides logical addressing and delivery between networks.</td><td>Every packet of your call carries your friend's IP address, so routers along the way know which network to forward it toward next.</td></tr>
+      <tr><th scope="row">2 — Data Link</th><td>Handles frames on a local link.</td><td>Your laptop's Wi-Fi wraps each packet in a frame addressed to your home router's MAC address — the one hop between your laptop and the router.</td></tr>
+      <tr><th scope="row">1 — Physical</th><td>Carries bits using signals.</td><td>Those frames leave your laptop as radio waves over Wi-Fi, then continue as pulses of light through your internet provider's fiber-optic cable.</td></tr>
     </tbody>
   </table>
 </div>
+
+<OsiLayerStackDiagram />
 
 The Application layer is not the entire browser or phone app: it describes the network-service responsibility used by that app. Session and Presentation describe useful jobs, but modern Internet software does not always implement them as separate layers.
 

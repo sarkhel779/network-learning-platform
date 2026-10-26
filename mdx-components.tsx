@@ -8,6 +8,7 @@ import { KnowledgeCheck } from "@/features/lessons/knowledge-check";
 import { LayerModelComparison } from "@/features/layer-models/layer-model-comparison";
 import { EncapsulationExperience } from "@/features/layer-models/encapsulation-experience";
 import { DeviceLayerScope } from "@/features/layer-models/device-layer-scope";
+import { OsiLayerStackDiagram } from "@/features/layer-models/osi-layer-stack-diagram";
 import { LearningObjective } from "@/features/lessons/learning-objective";
 import { PremiumPreview } from "@/features/lessons/premium-preview";
 import { WiresharkCheck } from "@/features/lessons/wireshark-check";
@@ -105,6 +106,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ConnectionMediaComparison,
     EncapsulationExperience,
     DeviceLayerScope,
+    OsiLayerStackDiagram,
     DeviceRoleIdentifier,
     NetworkBasicsDiagram,
     NetworkBenefits,
