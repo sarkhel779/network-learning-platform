@@ -2,8 +2,8 @@ type LayerIconKind = "application" | "presentation" | "session" | "transport" | 
 
 const STACK_LAYERS = [
   { number: 7, name: "Application", icon: "application", caption: "Opens the video-call app and starts the request to your friend." },
-  { number: 6, name: "Presentation", icon: "presentation", caption: "Compresses your webcam video and encrypts it with TLS." },
-  { number: 5, name: "Session", icon: "session", caption: "Keeps one ongoing call session open for the full conversation." },
+  { number: 6, name: "Presentation", icon: "presentation", caption: "Translates, compresses, then encrypts (TLS) your webcam video." },
+  { number: 5, name: "Session", icon: "session", caption: "Opens one call session through the app's API and keeps it alive." },
   { number: 4, name: "Transport", icon: "transport", caption: "Separates the call's audio/video (UDP) from chat (TCP) by port." },
   { number: 3, name: "Network", icon: "network", caption: "Addresses every packet with your friend's IP address." },
   { number: 2, name: "Data Link", icon: "data-link", caption: "Frames each packet for the next hop, such as your Wi-Fi router." },
