@@ -84,7 +84,9 @@ export function AclSimulator({ config }: { config: AclSimConfig }) {
   return (
     <section aria-label={config.title} className="sample-lab">
       <div className="sample-lab__panel acl-sim">
-        <NetworkCanvas ariaLabel={config.canvasAriaLabel} nodes={canvasNodes} links={links} packetAt={packetAt} />
+        <div className="labs-sticky-diagram">
+          <NetworkCanvas ariaLabel={config.canvasAriaLabel} nodes={canvasNodes} links={links} packetAt={packetAt} />
+        </div>
 
         <fieldset className="acl-sim__rules" aria-label="ACL rules">
           <legend>{config.rulesLegend ?? "ACL rules, in evaluation order"}</legend>

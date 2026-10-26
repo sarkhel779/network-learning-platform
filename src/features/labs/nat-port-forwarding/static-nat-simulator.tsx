@@ -66,7 +66,9 @@ export function StaticNatSimulator() {
   return (
     <section aria-label="Static NAT simulator" className="sample-lab">
       <div className="sample-lab__panel acl-sim">
-        <NetworkCanvas ariaLabel="External client sending a test request through a static NAT router" nodes={nodes} links={links} packetAt={packetAt} />
+        <div className="labs-sticky-diagram">
+          <NetworkCanvas ariaLabel="External client sending a test request through a static NAT router" nodes={nodes} links={links} packetAt={packetAt} />
+        </div>
 
         <NatTablePanel rows={tableRows} />
 
