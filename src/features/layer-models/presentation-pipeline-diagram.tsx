@@ -5,6 +5,7 @@ const PIPELINE_STAGES = [
     step: 1,
     name: "Original data",
     kicker: null,
+    network: false,
     icon: "data",
     detail: "Your webcam frame, before any Presentation-layer processing.",
   },
@@ -12,6 +13,7 @@ const PIPELINE_STAGES = [
     step: 2,
     name: "Compressed",
     kicker: "Compress",
+    network: false,
     icon: "compressed",
     detail: "The binary shrinks (lossy for video) to save bandwidth.",
   },
@@ -19,6 +21,7 @@ const PIPELINE_STAGES = [
     step: 3,
     name: "Encrypted",
     kicker: "Encrypt (TLS/SSL)",
+    network: false,
     icon: "locked",
     detail: "The compressed binary is scrambled so only your friend's app can read it.",
   },
@@ -26,6 +29,7 @@ const PIPELINE_STAGES = [
     step: 4,
     name: "Encrypted",
     kicker: "Travels the network",
+    network: true,
     icon: "locked",
     detail: "The same scrambled bytes arrive at your friend's device.",
   },
@@ -33,6 +37,7 @@ const PIPELINE_STAGES = [
     step: 5,
     name: "Compressed",
     kicker: "Decrypt",
+    network: false,
     icon: "compressed",
     detail: "Your friend's app unscrambles the bytes back to compressed form.",
   },
@@ -40,6 +45,7 @@ const PIPELINE_STAGES = [
     step: 6,
     name: "Original data",
     kicker: "Decompress",
+    network: false,
     icon: "data",
     detail: "Expanded back into the original frame, ready to display.",
   },
@@ -47,6 +53,7 @@ const PIPELINE_STAGES = [
   step: number;
   name: string;
   kicker: string | null;
+  network: boolean;
   icon: PipelineIconKind;
   detail: string;
 }[];
@@ -83,23 +90,39 @@ export function PresentationPipelineDiagram() {
   return (
     <div className="presentation-pipeline" data-presentation-pipeline-diagram>
       <p className="presentation-pipeline__intro">
-        A closer look at the Presentation layer's own pipeline: the same packet of video data,
-        compressed and encrypted on the way out, then decrypted and decompressed on the way in.
+        A closer look at the Presentation layer's own pipeline: watch the same packet of video
+        data flow right, compressed and encrypted on the way out, then decrypted and decompressed
+        on the way back in.
       </p>
-      <ol className="presentation-pipeline__list">
-        {PIPELINE_STAGES.map((stage) => (
-          <li className="presentation-pipeline__stage" data-pipeline-step={stage.step} key={stage.step}>
-            <span className="presentation-pipeline__marker" aria-hidden="true">
-              <PipelineIcon kind={stage.icon} />
-            </span>
-            <span className="presentation-pipeline__text">
-              {stage.kicker ? <span className="presentation-pipeline__kicker">{stage.kicker}</span> : null}
-              <strong>{stage.name}</strong>
-              <span>{stage.detail}</span>
-            </span>
-          </li>
-        ))}
-      </ol>
+      <div className="presentation-pipeline__panel" role="region" aria-label="Presentation-layer compress and encrypt pipeline" tabIndex={0}>
+        <ol className="presentation-pipeline__track">
+          {PIPELINE_STAGES.map((stage) => (
+            <li className="presentation-pipeline__stage" data-pipeline-step={stage.step} key={stage.step}>
+              {stage.kicker ? (
+                <span
+                  className={
+                    stage.network
+                      ? "presentation-pipeline__connector presentation-pipeline__connector--network"
+                      : "presentation-pipeline__connector"
+                  }
+                >
+                  <span className="presentation-pipeline__kicker">{stage.kicker}</span>
+                  <span className="presentation-pipeline__connector-track" aria-hidden="true">
+                    <span className="presentation-pipeline__packet" />
+                  </span>
+                </span>
+              ) : null}
+              <span className="presentation-pipeline__card">
+                <span className="presentation-pipeline__marker" aria-hidden="true">
+                  <PipelineIcon kind={stage.icon} />
+                </span>
+                <strong>{stage.name}</strong>
+                <span>{stage.detail}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   );
 }
