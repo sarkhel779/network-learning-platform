@@ -3,6 +3,7 @@
 import { useEffect, useId, useState } from "react";
 
 import { AddressBlockBar } from "./address-block-bar";
+import { FloatingTopology } from "../floating-topology";
 import type { BlockSegment, SubnetBlockConfig } from "./subnet-block-types";
 import { focusLessonAnchor } from "@/features/progress/progress-navigation";
 
@@ -54,9 +55,9 @@ export function SubnetBlockLab({ config }: { config: SubnetBlockConfig }) {
     <section aria-label={config.title} className="sample-lab">
       <div className="sample-lab__panel acl-sim">
         {segments.length > 0 ? (
-          <div className="labs-sticky-diagram">
+          <FloatingTopology>
             <AddressBlockBar ariaLabel={config.ariaLabel} totalUnits={totalUnits} segments={segments} />
-          </div>
+          </FloatingTopology>
         ) : null}
 
         {!started ? (

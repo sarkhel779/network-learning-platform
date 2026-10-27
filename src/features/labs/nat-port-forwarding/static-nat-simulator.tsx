@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 
+import { FloatingTopology } from "../floating-topology";
 import { CloudIcon, RouterIcon, ServerIcon } from "../hop-icons";
 import { NetworkCanvas, type CanvasNode } from "../network-canvas";
 import { NatTablePanel } from "./nat-table-panel";
@@ -66,9 +67,9 @@ export function StaticNatSimulator() {
   return (
     <section aria-label="Static NAT simulator" className="sample-lab">
       <div className="sample-lab__panel acl-sim">
-        <div className="labs-sticky-diagram">
+        <FloatingTopology>
           <NetworkCanvas ariaLabel="External client sending a test request through a static NAT router" nodes={nodes} links={links} packetAt={packetAt} />
-        </div>
+        </FloatingTopology>
 
         <NatTablePanel rows={tableRows} />
 

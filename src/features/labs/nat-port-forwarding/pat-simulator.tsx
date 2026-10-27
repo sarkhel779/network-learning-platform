@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 
+import { FloatingTopology } from "../floating-topology";
 import { CloudIcon, HostIcon, RouterIcon } from "../hop-icons";
 import { NetworkCanvas, type CanvasNode } from "../network-canvas";
 import { NatTablePanel, type NatTableRow } from "./nat-table-panel";
@@ -50,9 +51,9 @@ export function PatSimulator() {
   return (
     <section aria-label="PAT / NAT overload simulator" className="sample-lab">
       <div className="sample-lab__panel acl-sim">
-        <div className="labs-sticky-diagram">
+        <FloatingTopology>
           <NetworkCanvas ariaLabel="Two hosts sharing one public IP through PAT" nodes={nodes} links={links} packetAt={packetAt} />
-        </div>
+        </FloatingTopology>
 
         <NatTablePanel
           rows={tableRows.length ? tableRows : []}
