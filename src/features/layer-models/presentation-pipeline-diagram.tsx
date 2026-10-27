@@ -90,7 +90,7 @@ export function PresentationPipelineDiagram() {
   return (
     <div className="presentation-pipeline" data-presentation-pipeline-diagram>
       <p className="presentation-pipeline__intro">
-        A closer look at the Presentation layer's own pipeline: watch the same packet of video
+        A closer look at the Presentation layer&apos;s own pipeline: watch the same packet of video
         data flow right, compressed and encrypted on the way out, then decrypted and decompressed
         on the way back in.
       </p>
