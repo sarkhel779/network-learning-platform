@@ -4,8 +4,8 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 const DOCK_OFFSET_PX = 72;
 const TRANSITION_MS = 320;
-const MINI_MAX_WIDTH_PX = 300;
-const MINI_MIN_WIDTH_PX = 160;
+const MINI_MAX_WIDTH_PX = 440;
+const MINI_MIN_WIDTH_PX = 200;
 
 type NaturalSize = { width: number; height: number };
 type MiniSize = { width: number; height: number; scale: number };
@@ -38,7 +38,7 @@ export function FloatingTopology({ children, className }: { children: ReactNode;
     function computeMiniSize(): MiniSize | null {
       const natural = naturalSizeRef.current;
       if (!natural || natural.width === 0) return null;
-      const width = Math.min(MINI_MAX_WIDTH_PX, Math.max(MINI_MIN_WIDTH_PX, window.innerWidth * 0.42));
+      const width = Math.min(MINI_MAX_WIDTH_PX, Math.max(MINI_MIN_WIDTH_PX, window.innerWidth * 0.5));
       const scale = width / natural.width;
       return { width, height: natural.height * scale, scale };
     }
