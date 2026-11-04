@@ -1,5 +1,6 @@
 import type { Pathway } from "./catalog.types";
 import { ModuleList } from "./module-list";
+import { PathwayToc } from "./pathway-toc";
 
 type PathwayOverviewProps = { pathway: Pathway };
 
@@ -21,14 +22,7 @@ export function PathwayOverview({ pathway }: PathwayOverviewProps) {
           <span>~{estimatedHours} {estimatedHours === 1 ? "hour" : "hours"}</span>
         </div>
       </section>
-      <nav aria-label="Jump to module" className="pathway-toc">
-        {pathway.modules.map((module, index) => (
-          <a href={`#${module.id}`} key={module.id}>
-            <span aria-hidden="true">{index + 1}</span>
-            {module.title}
-          </a>
-        ))}
-      </nav>
+      <PathwayToc modules={pathway.modules} />
       <section aria-labelledby="modules-heading" className="pathway-content">
         <h2 id="modules-heading">Modules and lessons</h2>
         <ModuleList modules={pathway.modules} pathwaySlug={pathway.slug} />
