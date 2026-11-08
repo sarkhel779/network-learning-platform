@@ -2455,13 +2455,13 @@ a,a:hover,a:focus-visible,a *,a:hover *{text-decoration:none!important}
 
 /* Core topics: balanced layout and consistent, font-independent icons. */
 .home-topics{grid-template-columns:repeat(5,minmax(0,1fr))}
-.home-topics a:last-child{grid-column:3}
+@media(min-width:901px){.home-topics a:last-child:nth-child(5n+1){grid-column:3}}
 .home-topics a{transition:border-color 150ms ease,transform 150ms ease}
 .home-topics a:hover{border-color:var(--home-accent);transform:translateY(-2px)}
 /* Learning journey: center a lone module left over on its own row, same technique as Core Topics above. */
-.home-journey>div:last-child{grid-column:3}
+@media(min-width:901px){.home-journey>div:last-child:nth-child(5n+1){grid-column:3}}
 .home-topic-icon svg{display:block;width:1.85rem;height:1.85rem}
-@media(max-width:900px){.home-topics{grid-template-columns:repeat(2,minmax(0,1fr))}.home-topics a:last-child{grid-column:1/-1;width:calc((100% - .8rem)/2);justify-self:center}.home-journey>div:last-child{grid-column:1/-1;width:calc((100% - .8rem)/2);justify-self:center}}
+@media(max-width:900px){.home-topics{grid-template-columns:repeat(2,minmax(0,1fr))}.home-topics a:last-child:nth-child(odd){grid-column:1/-1;width:calc((100% - .8rem)/2);justify-self:center}.home-journey>div:last-child:nth-child(odd){grid-column:1/-1;width:calc((100% - .8rem)/2);justify-self:center}}
 @media(prefers-reduced-motion:reduce){.home-topics a{transition:none}.home-topics a:hover{transform:none}}
 
 /* Staff workspace */
