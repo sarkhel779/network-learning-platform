@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { hostRoleConversations } from "./host-role-conversations";
+import { hostRoleConversations, INTRO_STEP_DURATION_MS, TEACHING_STEP_DURATION_MS } from "./host-role-conversations";
 
 describe("hostRoleConversations", () => {
   it("offers the three approved beginner conversations in order", () => {
@@ -26,7 +26,8 @@ describe("hostRoleConversations", () => {
     expect(conversation.scenario.steps.flatMap((step) =>
       step.packet ? [[step.packet.from, step.packet.to]] : [],
     )).toEqual(expectedDirections);
-    expect(conversation.scenario.steps.every((step) => step.durationMs === 5200)).toBe(true);
+    expect(conversation.scenario.steps.filter((step) => step.packet).every((step) => step.durationMs === TEACHING_STEP_DURATION_MS)).toBe(true);
+    expect(conversation.scenario.steps.filter((step) => !step.packet).every((step) => step.durationMs === INTRO_STEP_DURATION_MS)).toBe(true);
   });
 
   it("reverses client and server roles during computer-to-computer file sharing", () => {
