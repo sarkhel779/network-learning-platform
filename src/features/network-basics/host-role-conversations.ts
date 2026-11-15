@@ -25,7 +25,8 @@ export type HostConversation = Readonly<{
   stepRoles: readonly HostConversationStep[];
 }>;
 
-const TEACHING_STEP_DURATION_MS = 5200;
+export const TEACHING_STEP_DURATION_MS = 5200;
+export const INTRO_STEP_DURATION_MS = 2000;
 
 function packetStep({
   id,
@@ -73,7 +74,7 @@ function introStep(deviceId: string, title: string, explanation: string): Packet
     id: `meet-${deviceId}`,
     title,
     explanation,
-    durationMs: TEACHING_STEP_DURATION_MS,
+    durationMs: INTRO_STEP_DURATION_MS,
     activeDeviceIds: [deviceId],
     activeLinkIds: [],
     summaryFields: [{ label: "Starting host", value: title, layer: "context" }],
