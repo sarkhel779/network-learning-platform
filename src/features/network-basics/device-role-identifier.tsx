@@ -20,6 +20,7 @@ const deviceDetails = {
 type DeviceId = keyof typeof deviceDetails;
 type ScenarioId = "hub" | "bridge" | "switch" | "router";
 const TOUR_STEP_DURATION_MS = 5200;
+const INTRO_STEP_DURATION_MS = 2000;
 
 type TourDefinition = Readonly<{
   label: string;
@@ -33,7 +34,7 @@ function step(deviceId: DeviceId, previousDeviceId?: DeviceId, linkId?: string, 
     id: `visit-${deviceId}`,
     title: `Meet the ${details.name}`,
     explanation: details.description,
-    durationMs: TOUR_STEP_DURATION_MS,
+    durationMs: previousDeviceId && linkId ? TOUR_STEP_DURATION_MS : INTRO_STEP_DURATION_MS,
     activeDeviceIds: [deviceId],
     activeLinkIds: activeLinkIds ?? (linkId ? [linkId] : []),
     packet: previousDeviceId && linkId ? { kind: "frame" as const, label: "Teaching frame", from: previousDeviceId, to: deviceId } : undefined,
