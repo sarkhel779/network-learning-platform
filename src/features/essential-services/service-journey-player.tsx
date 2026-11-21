@@ -24,7 +24,9 @@ export function ServiceJourneyPlayer({ service, progressItemId, scenario: suppli
   const authored = suppliedScenario ?? serviceScenarios[service];
   const scenario = useMemo(() => { try { return parseServiceScenario(authored); } catch { return null; } }, [authored]);
   const finalIndex = (scenario?.steps.length ?? 1) - 1;
-  const current = scenario?.steps[Math.min(stepIndex, finalIndex)];
+  const resolvedIndex = Math.min(stepIndex, finalIndex);
+  const current = scenario?.steps[resolvedIndex];
+  const previous = resolvedIndex > 0 ? scenario?.steps[resolvedIndex - 1] : undefined;
 
   useEffect(() => {
     if (!isHydrated) return;
@@ -44,7 +46,7 @@ export function ServiceJourneyPlayer({ service, progressItemId, scenario: suppli
 
   return <section className="service-player" aria-label={`${serviceLabel(service)} service journey`}>
     <h3>{scenario.title}</h3>
-    <ServiceTopology service={service} step={current} />
+    <ServiceTopology service={service} step={current} previousStep={previous} />
     <TransportPlayerControls finalIndex={finalIndex} onNext={() => { setPlaying(false); setStepIndex((value) => Math.min(finalIndex, value + 1)); }} onPrevious={() => { setPlaying(false); setStepIndex((value) => Math.max(0, value - 1)); }} onRestart={() => { setStepIndex(0); setPlaying(!reducedMotion); }} onSpeedChange={setSpeed} onTogglePlay={() => setPlaying((value) => !value)} playing={playing} speed={speed} stepIndex={stepIndex} />
     <p aria-live="polite" role="status">Step {stepIndex + 1} of {scenario.steps.length}: {current.title}</p>
     <p>{current.explanation}</p>
