@@ -21,10 +21,14 @@ describe("ServiceJourneyPlayer", () => {
     const user = userEvent.setup();
     render(<ServiceJourneyPlayer progressItemId="essential_services_interactive_web" service="web" />);
     expect(screen.getByRole("region", { name: "Web service journey" })).toBeVisible();
-    expect(screen.getByRole("status")).toHaveTextContent("Step 1 of 3: HTTP request");
+    expect(screen.getByRole("status")).toHaveTextContent("Step 1 of 4: HTTP request");
     expect(screen.getByRole("table", { name: /protocol message/i })).toHaveTextContent("GET");
     await user.click(screen.getByRole("button", { name: "Next" }));
-    expect(screen.getByRole("status")).toHaveTextContent("Step 2 of 3: HTTPS service");
+    expect(screen.getByRole("status")).toHaveTextContent("Step 2 of 4: HTTP response");
+    expect(screen.getByRole("region", { name: /active service exchange/i })).toHaveTextContent("web-server to browser");
+    expect(screen.getByRole("table", { name: /protocol message/i })).toHaveTextContent("200 OK");
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Step 3 of 4: HTTPS service");
     expect(screen.getByRole("region", { name: /active service exchange/i })).toHaveTextContent("browser to secure-web-server");
     expect(screen.getByText("TCP 51001 → 443")).toBeVisible();
   });
@@ -32,6 +36,8 @@ describe("ServiceJourneyPlayer", () => {
   it("records progress only when the rendered journey reaches its terminal step", async () => {
     const user = userEvent.setup();
     render(<ServiceJourneyPlayer progressItemId="essential_services_interactive_web" service="web" />);
+    expect(markTerminalStateReached).not.toHaveBeenCalled();
+    await user.click(screen.getByRole("button", { name: "Next" }));
     expect(markTerminalStateReached).not.toHaveBeenCalled();
     await user.click(screen.getByRole("button", { name: "Next" }));
     expect(markTerminalStateReached).not.toHaveBeenCalled();
